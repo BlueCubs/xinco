@@ -1,0 +1,1260 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+CREATE SCHEMA IF NOT EXISTS `xinco` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
+CREATE SCHEMA IF NOT EXISTS `xinco_workflow` DEFAULT CHARACTER SET utf8 ;
+USE `xinco` ;
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_add_attribute_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_add_attribute_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_add_attribute_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_data_id` INT(10) UNSIGNED NOT NULL ,
+  `attribute_id` INT(10) UNSIGNED NOT NULL ,
+  `attrib_int` INT(11) NOT NULL ,
+  `attrib_unsignedint` INT(10) UNSIGNED NOT NULL ,
+  `attrib_double` DOUBLE NOT NULL ,
+  `attrib_varchar` VARCHAR(255) NOT NULL ,
+  `attrib_text` TEXT NOT NULL ,
+  `attrib_datetime` DATETIME NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_ace_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_ace_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_user_id` INT(10) UNSIGNED NULL ,
+  `xinco_core_group_id` INT(10) UNSIGNED NULL ,
+  `xinco_core_node_id` INT(10) UNSIGNED NULL ,
+  `xinco_core_data_id` INT(10) UNSIGNED NULL ,
+  `read_permission` TINYINT(1) NOT NULL ,
+  `write_permission` TINYINT(1) NOT NULL ,
+  `execute_permission` TINYINT(1) NOT NULL ,
+  `admin_permission` TINYINT(1) NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_data_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_data_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_node_id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_language_id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_data_type_id` INT(10) UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `status_number` INT(10) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_data_type_attribute_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_data_type_attribute_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_attribute_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_data_type_id` INT(10) UNSIGNED NOT NULL ,
+  `attribute_id` INT(10) UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `data_type` VARCHAR(255) NOT NULL ,
+  `attr_size` INT(10) UNSIGNED NOT NULL DEFAULT 0 ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_data_type_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_data_type_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `id` INT(10) UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `description` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_group_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_group_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_group_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `id` INT(10) UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `status_number` INT(10) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_language_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_language_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_language_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `id` INT(10) UNSIGNED NOT NULL ,
+  `sign` VARCHAR(255) NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_node_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_node_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_node_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_node_id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_language_id` INT(10) UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `status_number` INT(10) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_user_has_xinco_core_group_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_user_has_xinco_core_group_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_user_id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_group_id` INT(10) UNSIGNED NOT NULL ,
+  `status_number` INT(10) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_user_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_user_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_t` (
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `id` INT(10) UNSIGNED NOT NULL ,
+  `username` VARCHAR(255) NOT NULL ,
+  `userpassword` VARCHAR(255) NOT NULL ,
+  `last_name` VARCHAR(255) NOT NULL ,
+  `first_name` VARCHAR(255) NOT NULL ,
+  `email` VARCHAR(255) NOT NULL ,
+  `status_number` INT(10) UNSIGNED NOT NULL ,
+  `attempts` INT(10) UNSIGNED NOT NULL ,
+  `last_modified` DATE NOT NULL ,
+  PRIMARY KEY (`record_id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_user`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_user` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
+  `id` INT UNSIGNED NOT NULL ,
+  `username` VARCHAR(255) NOT NULL ,
+  `userpassword` VARCHAR(255) NOT NULL ,
+  `last_name` VARCHAR(255) NOT NULL ,
+  `first_name` VARCHAR(255) NOT NULL ,
+  `email` VARCHAR(255) NOT NULL ,
+  `status_number` INT UNSIGNED NOT NULL ,
+  `attempts` INT UNSIGNED NOT NULL DEFAULT 0 ,
+  `last_modified` DATE NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_user_index_username` (`username` ASC) ,
+  INDEX `xinco_core_user_index_status` (`status_number` ASC) ,
+  UNIQUE INDEX `unique id` (`username` ASC) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_user_modified_record`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_user_modified_record` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_modified_record` (
+  `id` INT(10) UNSIGNED NOT NULL ,
+  `record_id` INT(10) UNSIGNED NOT NULL ,
+  `xinco_core_user_id` INT UNSIGNED NOT NULL ,
+  `mod_Time` TIMESTAMP NOT NULL ,
+  `mod_Reason` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`id`, `record_id`, `xinco_core_user_id`) ,
+  INDEX `fk_xinco_core_user_modified_record_xinco_core_user1_idx` (`xinco_core_user_id` ASC) ,
+  CONSTRAINT `fk_xinco_core_user_modified_record_xinco_core_user1`
+    FOREIGN KEY (`xinco_core_user_id` )
+    REFERENCES `xinco`.`xinco_core_user` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_language`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_language` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_language` (
+  `id` INT UNSIGNED NOT NULL ,
+  `sign` VARCHAR(255) NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique` (`sign` ASC, `designation` ASC) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_node`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_node` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_node` (
+  `id` INT UNSIGNED NOT NULL ,
+  `xinco_core_node_id` INT UNSIGNED NULL ,
+  `xinco_core_language_id` INT UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `status_number` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_node_FKIndex1` (`xinco_core_node_id` ASC) ,
+  INDEX `xinco_core_node_FKIndex2` (`xinco_core_language_id` ASC) ,
+  INDEX `xinco_core_node_index_designation` (`designation` ASC) ,
+  INDEX `xinco_core_node_index_status` (`status_number` ASC) ,
+  CONSTRAINT `fk_{52D94EF1-ED6A-43AD-9C52-7E883915CF11}`
+    FOREIGN KEY (`xinco_core_node_id` )
+    REFERENCES `xinco`.`xinco_core_node` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_{E427E1BE-0EC7-40B2-9822-8756CE5FFF5C}`
+    FOREIGN KEY (`xinco_core_language_id` )
+    REFERENCES `xinco`.`xinco_core_language` (`id` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_data_type`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_data_type` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type` (
+  `id` INT UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `description` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_data`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_data` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data` (
+  `id` INT UNSIGNED NOT NULL ,
+  `xinco_core_node_id` INT UNSIGNED NOT NULL ,
+  `xinco_core_language_id` INT UNSIGNED NOT NULL ,
+  `xinco_core_data_type_id` INT UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `status_number` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_data_FKIndex1` (`xinco_core_node_id` ASC) ,
+  INDEX `xinco_core_data_FKIndex2` (`xinco_core_language_id` ASC) ,
+  INDEX `xinco_core_data_FKIndex5` (`xinco_core_data_type_id` ASC) ,
+  INDEX `xinco_core_data_index_designation` (`designation` ASC) ,
+  INDEX `xinco_core_data_index_status` (`status_number` ASC) ,
+  CONSTRAINT `fk_{0FE42428-0C82-42FC-923F-7314A740D04F}`
+    FOREIGN KEY (`xinco_core_node_id` )
+    REFERENCES `xinco`.`xinco_core_node` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_{249C3090-F2CF-4C6B-A528-C9DDF697E702}`
+    FOREIGN KEY (`xinco_core_language_id` )
+    REFERENCES `xinco`.`xinco_core_language` (`id` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_{592A6D87-0049-4758-9D7F-D4F421983CDB}`
+    FOREIGN KEY (`xinco_core_data_type_id` )
+    REFERENCES `xinco`.`xinco_core_data_type` (`id` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_group`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_group` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_group` (
+  `id` INT UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `status_number` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_group_index_status` (`status_number` ASC) ,
+  UNIQUE INDEX `unique name` (`designation` ASC) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_ace`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_ace` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace` (
+  `id` INT UNSIGNED NOT NULL ,
+  `xinco_core_user_id` INT UNSIGNED NULL ,
+  `xinco_core_group_id` INT UNSIGNED NULL ,
+  `xinco_core_node_id` INT UNSIGNED NULL ,
+  `xinco_core_data_id` INT UNSIGNED NULL ,
+  `read_permission` TINYINT(1) NOT NULL ,
+  `write_permission` TINYINT(1) NOT NULL ,
+  `execute_permission` TINYINT(1) NOT NULL ,
+  `admin_permission` TINYINT(1) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_ace_FKIndex2` (`xinco_core_group_id` ASC) ,
+  INDEX `xinco_core_ace_FKIndex3` (`xinco_core_node_id` ASC) ,
+  INDEX `xinco_core_ace_FKIndex4` (`xinco_core_data_id` ASC) ,
+  INDEX `fk_xinco_core_ace_xinco_core_user2_idx` (`xinco_core_user_id` ASC) ,
+  CONSTRAINT `fk_{BE5919E0-4B49-4754-861D-E7834EB59238}`
+    FOREIGN KEY (`xinco_core_group_id` )
+    REFERENCES `xinco`.`xinco_core_group` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_{8CCF024C-2E44-468D-B847-EF00897639E3}`
+    FOREIGN KEY (`xinco_core_node_id` )
+    REFERENCES `xinco`.`xinco_core_node` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_{4F26567D-38D8-4210-86D6-524AE418D6EB}`
+    FOREIGN KEY (`xinco_core_data_id` )
+    REFERENCES `xinco`.`xinco_core_data` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_xinco_core_ace_xinco_core_user2`
+    FOREIGN KEY (`xinco_core_user_id` )
+    REFERENCES `xinco`.`xinco_core_user` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_user_has_xinco_core_group`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` (
+  `xinco_core_user_id` INT UNSIGNED NOT NULL ,
+  `xinco_core_group_id` INT UNSIGNED NOT NULL ,
+  `status_number` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`xinco_core_user_id`, `xinco_core_group_id`) ,
+  INDEX `xinco_core_user_has_xinco_core_group_FKIndex2` (`xinco_core_group_id` ASC) ,
+  INDEX `xinco_core_user_has_xinco_core_group_index_status` (`status_number` ASC) ,
+  INDEX `fk_xinco_core_user_has_xinco_core_group_xinco_core_user1_idx` (`xinco_core_user_id` ASC) ,
+  CONSTRAINT `fk_{BB4D6DB4-7E25-4F88-801D-A715A8A28E33}`
+    FOREIGN KEY (`xinco_core_group_id` )
+    REFERENCES `xinco`.`xinco_core_group` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_xinco_core_user_has_xinco_core_group_xinco_core_user1`
+    FOREIGN KEY (`xinco_core_user_id` )
+    REFERENCES `xinco`.`xinco_core_user` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_add_attribute`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_add_attribute` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_add_attribute` (
+  `xinco_core_data_id` INT UNSIGNED NOT NULL ,
+  `attribute_id` INT UNSIGNED NOT NULL ,
+  `attrib_int` INT NULL ,
+  `attrib_unsignedint` INT UNSIGNED NULL ,
+  `attrib_double` DOUBLE NULL ,
+  `attrib_varchar` VARCHAR(255) NULL ,
+  `attrib_text` TEXT NULL ,
+  `attrib_datetime` DATETIME NULL ,
+  PRIMARY KEY (`xinco_core_data_id`, `attribute_id`) ,
+  INDEX `xinco_add_attribute_FKIndex1` (`xinco_core_data_id` ASC) ,
+  CONSTRAINT `fk_{DEA334D0-7F8F-4E6B-81EA-671A6C493FCC}`
+    FOREIGN KEY (`xinco_core_data_id` )
+    REFERENCES `xinco`.`xinco_core_data` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_data_type_attribute`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_data_type_attribute` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_attribute` (
+  `xinco_core_data_type_id` INT UNSIGNED NOT NULL ,
+  `attribute_id` INT UNSIGNED NOT NULL ,
+  `designation` VARCHAR(255) NOT NULL ,
+  `data_type` VARCHAR(255) NOT NULL ,
+  `attr_size` INT UNSIGNED NOT NULL DEFAULT 0 ,
+  PRIMARY KEY (`xinco_core_data_type_id`, `attribute_id`) ,
+  INDEX `xinco_core_data_type_attribute_FKIndex1` (`xinco_core_data_type_id` ASC) ,
+  CONSTRAINT `fk_{E75392C0-42A1-47BE-8007-549B123B7775}`
+    FOREIGN KEY (`xinco_core_data_type_id` )
+    REFERENCES `xinco`.`xinco_core_data_type` (`id` )
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_log`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_log` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_log` (
+  `id` INT UNSIGNED NOT NULL ,
+  `xinco_core_data_id` INT UNSIGNED NOT NULL ,
+  `xinco_core_user_id` INT UNSIGNED NOT NULL ,
+  `op_code` INT UNSIGNED NOT NULL ,
+  `op_datetime` DATETIME NOT NULL ,
+  `op_description` VARCHAR(255) NOT NULL ,
+  `version_high` INT UNSIGNED NULL ,
+  `version_mid` INT UNSIGNED NULL ,
+  `version_low` INT UNSIGNED NULL ,
+  `version_postfix` VARCHAR(255) NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_log_FKIndex1` (`xinco_core_data_id` ASC) ,
+  INDEX `fk_xinco_core_log_xinco_core_user2_idx` (`xinco_core_user_id` ASC) ,
+  CONSTRAINT `fk_{E4C7D7F8-39B7-48D1-B9EE-BD9DE0D2CB4A}`
+    FOREIGN KEY (`xinco_core_data_id` )
+    REFERENCES `xinco`.`xinco_core_data` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_xinco_core_log_xinco_core_user2`
+    FOREIGN KEY (`xinco_core_user_id` )
+    REFERENCES `xinco`.`xinco_core_user` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_setting`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_setting` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `description` VARCHAR(45) NOT NULL ,
+  `int_value` INT UNSIGNED NULL DEFAULT NULL ,
+  `string_value` TEXT NULL DEFAULT NULL ,
+  `bool_value` TINYINT(1) NULL ,
+  `long_value` BIGINT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique` (`description` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_setting_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_setting_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting_t` (
+  `record_id` INT(10) NOT NULL ,
+  `id` INT NOT NULL ,
+  `description` VARCHAR(45) NOT NULL ,
+  `int_value` INT UNSIGNED NULL DEFAULT NULL ,
+  `string_value` TEXT NULL DEFAULT NULL ,
+  `bool_value` TINYINT(1) NULL ,
+  `long_value` BIGINT NULL ,
+  PRIMARY KEY (`record_id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_dependency_behavior`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_dependency_behavior` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_behavior` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `designation` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(45) NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `Unique` (`designation` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_dependency_type`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_dependency_type` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_type` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `xinco_dependency_behavior_id` INT NOT NULL ,
+  `designation` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(255) NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `designation_UNIQUE` (`designation` ASC) ,
+  INDEX `fk_xinco_dependency_type_xinco_dependency_behavior1_idx` (`xinco_dependency_behavior_id` ASC) ,
+  CONSTRAINT `fk_xinco_dependency_type_xinco_dependency_behavior1`
+    FOREIGN KEY (`xinco_dependency_behavior_id` )
+    REFERENCES `xinco`.`xinco_dependency_behavior` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_data_has_dependency`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_data_has_dependency` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_has_dependency` (
+  `xinco_core_data_parent_id` INT UNSIGNED NOT NULL ,
+  `xinco_core_data_children_id` INT UNSIGNED NOT NULL ,
+  `dependency_type_id` INT NOT NULL ,
+  PRIMARY KEY (`xinco_core_data_parent_id`, `xinco_core_data_children_id`, `dependency_type_id`) ,
+  INDEX `fk_xinco_core_data_has_xinco_core_data_xinco_core_data1_idx` (`xinco_core_data_parent_id` ASC) ,
+  INDEX `fk_xinco_core_data_has_xinco_core_data_xinco_core_data2_idx` (`xinco_core_data_children_id` ASC) ,
+  INDEX `fk_xinco_core_data_has_dependency_dependency_type1_idx` (`dependency_type_id` ASC) ,
+  CONSTRAINT `fk_xinco_core_data_has_xinco_core_data_xinco_core_data1`
+    FOREIGN KEY (`xinco_core_data_parent_id` )
+    REFERENCES `xinco`.`xinco_core_data` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_xinco_core_data_has_xinco_core_data_xinco_core_data2`
+    FOREIGN KEY (`xinco_core_data_children_id` )
+    REFERENCES `xinco`.`xinco_core_data` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_xinco_core_data_has_dependency_dependency_type1`
+    FOREIGN KEY (`dependency_type_id` )
+    REFERENCES `xinco`.`xinco_dependency_type` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_dependency_type_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_dependency_type_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_type_t` (
+  `record_id` INT(10) NOT NULL ,
+  `id` INT NOT NULL ,
+  `xinco_dependency_behavior_id` INT NOT NULL ,
+  `designation` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(255) NULL ,
+  PRIMARY KEY (`record_id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_data_has_dependency_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_data_has_dependency_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_has_dependency_t` (
+  `record_id` INT(10) NOT NULL ,
+  `xinco_core_data_parent_id` INT UNSIGNED NOT NULL ,
+  `xinco_core_data_children_id` INT UNSIGNED NOT NULL ,
+  `dependency_type_id` INT NOT NULL ,
+  PRIMARY KEY (`record_id`) );
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_id`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_id` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_id` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `tablename` VARCHAR(255) NOT NULL ,
+  `last_id` INT(10) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 72
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci
+PACK_KEYS = 0;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_dependency_behavior_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_dependency_behavior_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_behavior_t` (
+  `record_id` INT(10) NOT NULL ,
+  `id` INT NOT NULL ,
+  `designation` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(45) NULL ,
+  PRIMARY KEY (`record_id`) )
+ENGINE = InnoDB;
+
+USE `xinco_workflow` ;
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`user_link`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`user_link` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`user_link` (
+  `id` INT(11) NOT NULL ,
+  `system_id` VARCHAR(45) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique_id` (`system_id` ASC) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_workflow`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_workflow` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_workflow` (
+  `id` INT(11) NOT NULL ,
+  `version` INT(11) NOT NULL ,
+  `name` VARCHAR(45) NOT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `user_link_id` INT(11) NOT NULL ,
+  PRIMARY KEY (`id`, `version`, `user_link_id`) ,
+  UNIQUE INDEX `unique name` (`name` ASC) ,
+  INDEX `fk_xinco_workflow_user_link1_idx` (`user_link_id` ASC) ,
+  CONSTRAINT `fk_xinco_workflow_user_link1`
+    FOREIGN KEY (`user_link_id` )
+    REFERENCES `xinco_workflow`.`user_link` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_state_type`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_state_type` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_state_type` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(45) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique name` (`name` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_workflow_state`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_workflow_state` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_workflow_state` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `xinco_workflow_id` INT(11) NOT NULL ,
+  `xinco_workflow_version` INT(11) NOT NULL ,
+  `name` VARCHAR(45) NULL DEFAULT NULL ,
+  `xinco_state_type_id` INT(11) NOT NULL ,
+  PRIMARY KEY (`id`, `xinco_workflow_id`, `xinco_workflow_version`) ,
+  INDEX `fk_xinco_state_xinco_workflow1_idx` (`xinco_workflow_id` ASC, `xinco_workflow_version` ASC) ,
+  INDEX `fk_xinco_state_xinco_state_type1_idx` (`xinco_state_type_id` ASC) ,
+  CONSTRAINT `fk_xinco_state_xinco_workflow1`
+    FOREIGN KEY (`xinco_workflow_id` , `xinco_workflow_version` )
+    REFERENCES `xinco_workflow`.`xinco_workflow` (`id` , `version` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_xinco_state_xinco_state_type1`
+    FOREIGN KEY (`xinco_state_type_id` )
+    REFERENCES `xinco_workflow`.`xinco_state_type` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_state_transitions_to_xinco_state`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_state_transitions_to_xinco_state` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_state_transitions_to_xinco_state` (
+  `source_state_id` INT(11) NOT NULL ,
+  `source_xinco_state_xinco_workflow_id` INT(11) NOT NULL ,
+  `source_xinco_state_xinco_workflow_version` INT(11) NOT NULL ,
+  `destination_state_id` INT(11) NOT NULL ,
+  `dest_xinco_state_xinco_workflow_id1` INT(11) NOT NULL ,
+  `dest_xinco_state_xinco_workflow_version1` INT(11) NOT NULL ,
+  PRIMARY KEY (`source_state_id`, `source_xinco_state_xinco_workflow_id`, `source_xinco_state_xinco_workflow_version`, `destination_state_id`, `dest_xinco_state_xinco_workflow_id1`, `dest_xinco_state_xinco_workflow_version1`) ,
+  INDEX `fk_xinco_state_has_xinco_state_xinco_state1_idx` (`source_state_id` ASC, `source_xinco_state_xinco_workflow_id` ASC, `source_xinco_state_xinco_workflow_version` ASC) ,
+  INDEX `fk_xinco_state_has_xinco_state_xinco_state2_idx` (`destination_state_id` ASC, `dest_xinco_state_xinco_workflow_id1` ASC, `dest_xinco_state_xinco_workflow_version1` ASC) ,
+  CONSTRAINT `fk_xinco_state_has_xinco_state_xinco_state1`
+    FOREIGN KEY (`source_state_id` , `source_xinco_state_xinco_workflow_id` , `source_xinco_state_xinco_workflow_version` )
+    REFERENCES `xinco_workflow`.`xinco_workflow_state` (`id` , `xinco_workflow_id` , `xinco_workflow_version` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_xinco_state_has_xinco_state_xinco_state2`
+    FOREIGN KEY (`destination_state_id` , `dest_xinco_state_xinco_workflow_id1` , `dest_xinco_state_xinco_workflow_version1` )
+    REFERENCES `xinco_workflow`.`xinco_workflow_state` (`id` , `xinco_workflow_id` , `xinco_workflow_version` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_action`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_action` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_action` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `implementation_class` VARCHAR(45) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique name` (`name` ASC) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = 'Configuration of actions to be performed.';
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`transition_has_xinco_action`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`transition_has_xinco_action` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`transition_has_xinco_action` (
+  `source_state_id` INT(11) NOT NULL ,
+  `source_xinco_workflow_id` INT(11) NOT NULL ,
+  `source_xinco_workflow_version` INT(11) NOT NULL ,
+  `destination_state_id` INT(11) NOT NULL ,
+  `dest_xinco_workflow_id` INT(11) NOT NULL ,
+  `dest_workflow_version` INT(11) NOT NULL ,
+  `xinco_action_id` INT(11) NOT NULL ,
+  PRIMARY KEY (`source_state_id`, `source_xinco_workflow_id`, `source_xinco_workflow_version`, `destination_state_id`, `dest_xinco_workflow_id`, `dest_workflow_version`, `xinco_action_id`) ,
+  INDEX `fk_xinco_state_transitions_to_xinco_state_has_xinco_action__idx` (`source_state_id` ASC, `source_xinco_workflow_id` ASC, `source_xinco_workflow_version` ASC, `destination_state_id` ASC, `dest_xinco_workflow_id` ASC, `dest_workflow_version` ASC) ,
+  INDEX `fk_xinco_state_transitions_to_xinco_state_has_xinco_action__idx1` (`xinco_action_id` ASC) ,
+  CONSTRAINT `fk_xinco_state_transitions_to_xinco_state_has_xinco_action_xi1`
+    FOREIGN KEY (`source_state_id` , `source_xinco_workflow_id` , `source_xinco_workflow_version` , `destination_state_id` , `dest_xinco_workflow_id` , `dest_workflow_version` )
+    REFERENCES `xinco_workflow`.`xinco_state_transitions_to_xinco_state` (`source_state_id` , `source_xinco_state_xinco_workflow_id` , `source_xinco_state_xinco_workflow_version` , `destination_state_id` , `dest_xinco_state_xinco_workflow_id1` , `dest_xinco_state_xinco_workflow_version1` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_xinco_state_transitions_to_xinco_state_has_xinco_action_xi2`
+    FOREIGN KEY (`xinco_action_id` )
+    REFERENCES `xinco_workflow`.`xinco_action` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`transition_has_xinco_core_user_restriction`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`transition_has_xinco_core_user_restriction` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`transition_has_xinco_core_user_restriction` (
+  `source_state_id` INT(11) NOT NULL ,
+  `source_xinco_workflow_id` INT(11) NOT NULL ,
+  `source_xinco_workflow_version` INT(11) NOT NULL ,
+  `destination_state_id` INT(11) NOT NULL ,
+  `dest_xinco_workflow_id` INT(11) NOT NULL ,
+  `dest_xinco_workflow_version` INT(11) NOT NULL ,
+  `user_link_id` INT(11) NOT NULL ,
+  PRIMARY KEY (`source_state_id`, `source_xinco_workflow_id`, `source_xinco_workflow_version`, `destination_state_id`, `dest_xinco_workflow_id`, `dest_xinco_workflow_version`, `user_link_id`) ,
+  INDEX `fk_xinco_state_transitions_to_xinco_state_has_xinco_core_us_idx` (`source_state_id` ASC, `source_xinco_workflow_id` ASC, `source_xinco_workflow_version` ASC, `destination_state_id` ASC, `dest_xinco_workflow_id` ASC, `dest_xinco_workflow_version` ASC) ,
+  INDEX `fk_transition_has_xinco_core_user_restriction_user_link1_idx` (`user_link_id` ASC) ,
+  CONSTRAINT `fk_xinco_state_transitions_to_xinco_state_has_xinco_core_user1`
+    FOREIGN KEY (`source_state_id` , `source_xinco_workflow_id` , `source_xinco_workflow_version` , `destination_state_id` , `dest_xinco_workflow_id` , `dest_xinco_workflow_version` )
+    REFERENCES `xinco_workflow`.`xinco_state_transitions_to_xinco_state` (`source_state_id` , `source_xinco_state_xinco_workflow_id` , `source_xinco_state_xinco_workflow_version` , `destination_state_id` , `dest_xinco_state_xinco_workflow_id1` , `dest_xinco_state_xinco_workflow_version1` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_transition_has_xinco_core_user_restriction_user_link1`
+    FOREIGN KEY (`user_link_id` )
+    REFERENCES `xinco_workflow`.`user_link` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_parameter`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_parameter` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_parameter` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `xinco_action_id` INT(11) NOT NULL ,
+  `name` VARCHAR(45) NOT NULL ,
+  `value_type` VARCHAR(45) NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`id`, `xinco_action_id`) ,
+  INDEX `fk_xinco_parameter_xinco_action1_idx` (`xinco_action_id` ASC) ,
+  CONSTRAINT `fk_xinco_parameter_xinco_action1`
+    FOREIGN KEY (`xinco_action_id` )
+    REFERENCES `xinco_workflow`.`xinco_action` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_state_has_actors`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_state_has_actors` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_state_has_actors` (
+  `xinco_state_id` INT(11) NOT NULL ,
+  `xinco_state_xinco_workflow_id` INT(11) NOT NULL ,
+  `xinco_state_xinco_workflow_version` INT(11) NOT NULL ,
+  `user_link_id` INT(11) NOT NULL ,
+  PRIMARY KEY (`xinco_state_id`, `xinco_state_xinco_workflow_id`, `xinco_state_xinco_workflow_version`, `user_link_id`) ,
+  INDEX `fk_xinco_state_has_xinco_core_user_xinco_state1_idx` (`xinco_state_id` ASC, `xinco_state_xinco_workflow_id` ASC, `xinco_state_xinco_workflow_version` ASC) ,
+  INDEX `fk_xinco_state_has_actors_user_link1_idx` (`user_link_id` ASC) ,
+  CONSTRAINT `fk_xinco_state_has_xinco_core_user_xinco_state1`
+    FOREIGN KEY (`xinco_state_id` , `xinco_state_xinco_workflow_id` , `xinco_state_xinco_workflow_version` )
+    REFERENCES `xinco_workflow`.`xinco_workflow_state` (`id` , `xinco_workflow_id` , `xinco_workflow_version` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_xinco_state_has_actors_user_link1`
+    FOREIGN KEY (`user_link_id` )
+    REFERENCES `xinco_workflow`.`user_link` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_state_has_xinco_action`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_state_has_xinco_action` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_state_has_xinco_action` (
+  `xinco_state_id` INT(11) NOT NULL ,
+  `xinco_state_xinco_workflow_id` INT(11) NOT NULL ,
+  `xinco_state_xinco_workflow_version` INT(11) NOT NULL ,
+  `xinco_action_id` INT(11) NOT NULL ,
+  PRIMARY KEY (`xinco_state_id`, `xinco_state_xinco_workflow_id`, `xinco_state_xinco_workflow_version`, `xinco_action_id`) ,
+  INDEX `fk_xinco_state_has_xinco_action_xinco_state1_idx` (`xinco_state_id` ASC, `xinco_state_xinco_workflow_id` ASC, `xinco_state_xinco_workflow_version` ASC) ,
+  INDEX `fk_xinco_state_has_xinco_action_xinco_action1_idx` (`xinco_action_id` ASC) ,
+  CONSTRAINT `fk_xinco_state_has_xinco_action_xinco_state1`
+    FOREIGN KEY (`xinco_state_id` , `xinco_state_xinco_workflow_id` , `xinco_state_xinco_workflow_version` )
+    REFERENCES `xinco_workflow`.`xinco_workflow_state` (`id` , `xinco_workflow_id` , `xinco_workflow_version` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_xinco_state_has_xinco_action_xinco_action1`
+    FOREIGN KEY (`xinco_action_id` )
+    REFERENCES `xinco_workflow`.`xinco_action` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_workflow_item`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_workflow_item` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_workflow_item` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `creation_date` DATETIME NOT NULL ,
+  `completion_date` DATETIME NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_work_item_has_xinco_state`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_work_item_has_xinco_state` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_work_item_has_xinco_state` (
+  `xinco_work_item_id` INT(11) NOT NULL ,
+  `xinco_state_id` INT(11) NOT NULL ,
+  `xinco_state_xinco_workflow_id` INT(11) NOT NULL ,
+  `xinco_state_xinco_workflow_version` INT(11) NOT NULL ,
+  `sequence` INT(11) NOT NULL DEFAULT '1' ,
+  `state_reached_date` DATETIME NOT NULL ,
+  PRIMARY KEY (`xinco_work_item_id`, `xinco_state_id`, `xinco_state_xinco_workflow_id`, `xinco_state_xinco_workflow_version`) ,
+  INDEX `fk_xinco_work_item_has_xinco_state_xinco_work_item1_idx` (`xinco_work_item_id` ASC) ,
+  INDEX `fk_xinco_work_item_has_xinco_state_xinco_state1_idx` (`xinco_state_id` ASC, `xinco_state_xinco_workflow_id` ASC, `xinco_state_xinco_workflow_version` ASC) ,
+  CONSTRAINT `fk_xinco_work_item_has_xinco_state_xinco_work_item1`
+    FOREIGN KEY (`xinco_work_item_id` )
+    REFERENCES `xinco_workflow`.`xinco_workflow_item` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_xinco_work_item_has_xinco_state_xinco_state1`
+    FOREIGN KEY (`xinco_state_id` , `xinco_state_xinco_workflow_id` , `xinco_state_xinco_workflow_version` )
+    REFERENCES `xinco_workflow`.`xinco_workflow_state` (`id` , `xinco_workflow_id` , `xinco_workflow_version` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = 'This will hold the history od this work item in the workflow';
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_work_item_parameter`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_work_item_parameter` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_work_item_parameter` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `xinco_work_item_id` INT(11) NOT NULL ,
+  `xinco_state_id` INT(11) NOT NULL ,
+  `xinco_workflow_id` INT(11) NOT NULL ,
+  `xinco_workflow_version` INT(11) NOT NULL ,
+  `name` VARCHAR(45) NOT NULL ,
+  `value_type` VARCHAR(45) NOT NULL ,
+  `value` BLOB NOT NULL ,
+  PRIMARY KEY (`id`, `xinco_work_item_id`, `xinco_state_id`, `xinco_workflow_id`, `xinco_workflow_version`) ,
+  INDEX `fk_xinco_work_item_parameter_xinco_work_item_has_xinco_stat_idx` (`xinco_work_item_id` ASC, `xinco_state_id` ASC, `xinco_workflow_id` ASC, `xinco_workflow_version` ASC) ,
+  CONSTRAINT `fk_xinco_work_item_parameter_xinco_work_item_has_xinco_state1`
+    FOREIGN KEY (`xinco_work_item_id` , `xinco_state_id` , `xinco_workflow_id` , `xinco_workflow_version` )
+    REFERENCES `xinco_workflow`.`xinco_work_item_has_xinco_state` (`xinco_work_item_id` , `xinco_state_id` , `xinco_state_xinco_workflow_id` , `xinco_state_xinco_workflow_version` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = 'This will hold the item\'s parameters in this state.';
+
+
+-- -----------------------------------------------------
+-- Table `xinco_workflow`.`xinco_workflow_id`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco_workflow`.`xinco_workflow_id` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_workflow_id` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `tablename` VARCHAR(255) NOT NULL ,
+  `last_id` INT(10) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8
+PACK_KEYS = 0;
+
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_user`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (3, 'bluecubs', MD5('system'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_language`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (1, 'n/a', 'language.unknonw');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (2, 'en', 'language.en');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (3, 'de', 'language.de');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (4, 'fr', 'language.fr');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (5, 'it', 'language.it');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (6, 'es', 'language.es');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (7, 'ru', 'language.ru');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (8, 'cz', 'language.cz');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (9, 'nl', 'language.nl');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (10, 'pl', 'language.pl');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (11, 'pt', 'language.pt');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (12, 'pt_BR', 'language.pt.BR');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (13, 'zh_CN', 'language.zh.CN');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_node`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES (1, NULL, 1, 'xincoRoot', 1);
+INSERT INTO `xinco`.`xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES (2, 1, 1, 'Trash', 1);
+INSERT INTO `xinco`.`xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES (3, 1, 1, 'Temp', 1);
+INSERT INTO `xinco`.`xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES (4, 1, 1, 'News', 1);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_data_type`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES (1, 'general.data.type.file', 'general.data.type.file.description');
+INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES (2, 'general.data.type.text', 'general.data.type.text.description');
+INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES (3, 'general.data.type.URL', 'general.data.type.URL.description');
+INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES (4, 'general.data.type.contact', 'general.data.type.contact.description');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_data`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `xinco_core_data_type_id`, `designation`, `status_number`) VALUES (1, 1, 2, 3, 'Apache License 2.0', 5);
+INSERT INTO `xinco`.`xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `xinco_core_data_type_id`, `designation`, `status_number`) VALUES (2, 1, 2, 3, 'xinco.org', 1);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_group`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_group` (`id`, `designation`, `status_number`) VALUES (1, 'general.group.admin', 1);
+INSERT INTO `xinco`.`xinco_core_group` (`id`, `designation`, `status_number`) VALUES (2, 'general.group.allusers', 1);
+INSERT INTO `xinco`.`xinco_core_group` (`id`, `designation`, `status_number`) VALUES (3, 'general.group.public', 1);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_ace`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (1, 1, NULL, 1, NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (2, 1, NULL, 2, NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (3, 1, NULL, 3, NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (4, NULL, 1, 1, NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (5, NULL, 1, 2, NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (6, NULL, 1, 3, NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (7, NULL, 2, 1, NULL, 1, 1, 1, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (8, NULL, 2, 2, NULL, 1, 1, 1, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (9, NULL, 2, 3, NULL, 1, 1, 1, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (10, 1, NULL, NULL, 1, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (11, 1, NULL, NULL, 2, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (12, NULL, 1, NULL, 1, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (13, NULL, 1, NULL, 2, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (14, NULL, 2, NULL, 1, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (15, NULL, 2, NULL, 2, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_user_has_xinco_core_group`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_user_has_xinco_core_group` (`xinco_core_user_id`, `xinco_core_group_id`, `status_number`) VALUES (1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_user_has_xinco_core_group` (`xinco_core_user_id`, `xinco_core_group_id`, `status_number`) VALUES (1, 2, 1);
+INSERT INTO `xinco`.`xinco_core_user_has_xinco_core_group` (`xinco_core_user_id`, `xinco_core_group_id`, `status_number`) VALUES (2, 2, 1);
+INSERT INTO `xinco`.`xinco_core_user_has_xinco_core_group` (`xinco_core_user_id`, `xinco_core_group_id`, `status_number`) VALUES (3, 2, 1);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_add_attribute`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES (2, 1, 0, 0, 0, 'http://www.xinco.org', '', now());
+INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES (1, 1, 0, 0, 0, 'http://www.apache.org/licenses/LICENSE-2.0.html', '', now());
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_data_type_attribute`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 1, 'general.filename', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 2, 'general.size', 'unsignedint', 0);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 3, 'general.checksum', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 4, 'general.revision.model', 'unsignedint', 0);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 5, 'general.archive.model', 'unsignedint', 0);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 6, 'general.archive.date', 'datetime', 0);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 7, 'general.archive.days', 'unsignedint', 0);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 8, 'general.archive.location', 'text', 0);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 9, 'general.description', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 10, 'general.keyword_1', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 11, 'general.keyword_2', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (1, 12, 'general.keyword_3', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (2, 1, 'general.data.type.text', 'text', 0);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (3, 1, 'general.data.type.URL', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 1, 'general.salutation', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 2, 'general.name', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 3, 'general.middle_name', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 4, 'general.last_name', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 5, 'general.name_affix', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 6, 'general.phone_business', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 7, 'general.phone_private', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 8, 'general.phone_mobile', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 9, 'general.fax', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 10, 'general.email', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 11, 'general.website', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 12, 'general.steet_address', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 13, 'general.postal_code', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 14, 'general.city', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 15, 'general.state_province', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 16, 'general.country', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 17, 'general.company_name', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 18, 'general.position', 'varchar', 255);
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 19, 'general.notes', 'text', 0);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_log`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES (1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, '');
+INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES (2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, '');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_setting`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (5, 'password.aging', 120, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (6, 'password.attempts', 3, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (7, 'password.unusable_period', 365, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (8, 'general.copyright.date', 0, '2004-2012', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (9, 'setting.enable.savepassword', NULL, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (10, 'system.password', NULL, 'system', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (11, 'xinco/FileRepositoryPath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (12, 'xinco/FileIndexPath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\index\\\\', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (13, 'xinco/FileArchivePath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\archive\\\\', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (14, 'xinco/FileArchivePeriod', NULL, NULL, 0, 14400000);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (15, 'xinco/FileIndexer_1_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (16, 'xinco/FileIndexer_1_Ext', NULL, 'pdf', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (17, 'xinco/FileIndexer_2_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (18, 'xinco/FileIndexer_2_Ext', NULL, 'doc', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (19, 'xinco/FileIndexer_3_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (20, 'xinco/FileIndexer_3_Ext', NULL, 'xls', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (21, 'xinco/FileIndexer_4_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (22, 'xinco/FileIndexer_4_Ext', NULL, 'ppt', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (23, 'xinco/FileIndexer_5_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexHTML', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (24, 'xinco/FileIndexer_5_Ext', NULL, 'asp;htm;html;jsf;jsp;php;php3;php4', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (25, 'xinco/IndexNoIndex', NULL, ';aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (26, 'xinco/MaxSearchResult', 100, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (27, 'setting.email.host', NULL, 'smtp.bluecubs.com', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (28, 'setting.email.user', NULL, 'info@bluecubs.com', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (29, 'setting.email.password', NULL, 'password', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (30, 'setting.email.port', 25, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (31, 'setting.allowoutsidelinks', NULL, NULL, 1, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (32, 'setting.backup.path', NULL, 'C:\\\\Temp\\\\xinco\\\\backup\\\\', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (33, 'xinco/FileIndexOptimizerPeriod', NULL, NULL, 0, 14400000);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (34, 'setting.allowpublisherlist', NULL, NULL, 1, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (35, 'setting.guessLanguage', NULL, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (36, 'setting.OOPort', -1, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (1, 'version.high', 3, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (2, 'version.mid', 0, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (3, 'version.low', 0, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', 0, 'M5', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (37, 'import.path', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\import', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (38, 'import.period', NULL, NULL, 0, 14400000);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_dependency_behavior`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (1, 'dependency.behavior.one-way', 'dependency.behavior.one-way.desc');
+INSERT INTO `xinco`.`xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (2, 'dependency.behavior.two-way', 'dependency.behavior.two-way.desc');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_dependency_type`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (1, 2, 'dependency.related', 'dependency.related.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (2, 1, 'dependency.component', 'dependency.component.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (3, 2, 'dependency.group', 'dependency.group.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (4, 2, 'dependency.package', 'dependency.package.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (5, 1, 'dependency.rendering', 'dependency.rendering.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (6, 1, 'dependency.supporting', 'dependency.supporting.desc');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco_workflow`.`xinco_workflow_id`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `xinco_workflow`;
+INSERT INTO `xinco_workflow`.`xinco_workflow_id` (`id`, `tablename`, `last_id`) VALUES (1, 'xinco_action', 1000);
+
+COMMIT;

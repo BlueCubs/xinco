@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>build</actionName>
+            <goals>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <context.xml.file>${basedir}/src/main/resources/META-INF/context.xml</context.xml.file>
+                
+            </properties>
+        </action>
+    </actions>

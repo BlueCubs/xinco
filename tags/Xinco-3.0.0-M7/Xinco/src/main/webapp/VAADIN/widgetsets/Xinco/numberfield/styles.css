@@ -1,0 +1,7 @@
+.v-numberfield {
+	text-align: right;
+}
+
+.v-numberfield-error {
+	background: #F9E5E5 url(error_underline.png) bottom left repeat-x !important;
+}
