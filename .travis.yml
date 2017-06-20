@@ -13,6 +13,7 @@ jdk:
 - oraclejdk8
 - openjdk8
 script: git submodule update --init --recursive
+script: cd Xinco
 script: mvn install cobertura:cobertura -Dmaven.javadoc.skip=true -B -V --also-make-dependents
 
 after_success:
