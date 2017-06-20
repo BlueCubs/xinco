@@ -343,11 +343,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     @Override
     public void init() {
+        //Switch to Xinco theme
+        setTheme("xinco");
         setInstance(this);
         try {
             reload();
-            //Switch to Xinco theme
-            setTheme("xinco");
             com.vaadin.ui.Window window = new com.vaadin.ui.Window("Xinco");
             setMainWindow(window);
             //Build the window
