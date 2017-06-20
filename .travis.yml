@@ -12,8 +12,9 @@ dist: trusty
 jdk:
 - oraclejdk8
 - openjdk8
+
+before_script: cd Xinco
 script: git submodule update --init --recursive
-script: cd Xinco
 script: mvn install cobertura:cobertura -Dmaven.javadoc.skip=true -B -V --also-make-dependents
 
 after_success:
