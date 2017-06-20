@@ -4,7 +4,7 @@
     <groupId>com.bluecubs.xinco</groupId>
     <artifactId>Xinco</artifactId>
     <packaging>war</packaging>
-    <version>3.0.0-M9-SNAPSHOT</version>
+    <version>3.0.0-M9</version>
     <name>Xinco DMS</name>
 
     <description>The Core of Information and Document Management
@@ -40,9 +40,9 @@
         </license>
     </licenses>
     <scm>
-        <url>https://xinco.svn.sourceforge.net/svnroot/xinco/trunk/Xinco</url>
-        <connection>scm:svn:https://svn.code.sf.net/p/xinco/code/trunk/Xinco</connection>
-        <developerConnection>scm:svn:https://svn.code.sf.net/p/xinco/code/trunk/Xinco</developerConnection>
+        <url>https://xinco.svn.sourceforge.net/svnroot/xinco/tags/Xinco-3.0.0-M9</url>
+        <connection>scm:svn:https://svn.code.sf.net/p/xinco/code/tags/Xinco-3.0.0-M9</connection>
+        <developerConnection>scm:svn:https://svn.code.sf.net/p/xinco/code/tags/Xinco-3.0.0-M9</developerConnection>
     </scm>
     <ciManagement>
         <system>Jenkins</system>
