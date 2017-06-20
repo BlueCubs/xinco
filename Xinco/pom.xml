@@ -174,42 +174,6 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>install-gsp</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>mvn</executable>
-                            <arguments>
-                                <argument>install:install-file</argument>
-                                <argument>-Dfile=repo/gudosoft/gsqlparser/gsp/4.2/gsp-4.2.jar</argument>
-                                <argument>-DgroupId=gudosoft.gsqlparser</argument>
-                                <argument>-DartifactId=gsp</argument>
-                                <argument>-Dversion=4.2</argument>
-                                <argument>-Dpackaging=jar</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>install-jodconverter</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>mvn</executable>
-                            <arguments>
-                                <argument>install:install-file</argument>
-                                <argument>-Dfile=repo/org/artofsolving/jodconverter-core/3.0-beta-4/jodconverter-core-3.0-beta-4.jar</argument>
-                                <argument>-DgroupId=org.artofsolving</argument>
-                                <argument>-DartifactId=jod</argument>
-                                <argument>-Dversion=3.0-beta-4</argument>
-                                <argument>-Dpackaging=jar</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>install-vaadin-chameleon-theme</id>
                         <phase>validate</phase>
                         <goals>
@@ -577,7 +541,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin</artifactId>
-            <version>6.8.17</version>
+            <version>6.8.18</version>
         </dependency>
 
         <!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
@@ -613,7 +577,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.193</version>
+            <version>1.4.196</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -653,14 +617,9 @@
             <version>1.14</version>
         </dependency>
         <dependency>
-            <groupId>org.artofsolving</groupId>
+            <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-core</artifactId>
-            <version>3.0-beta-4</version>
-        </dependency>
-        <dependency>
-            <groupId>gudosoft.gsqlparser</groupId>
-            <artifactId>gsp</artifactId>
-            <version>4.2</version>
+            <version>4.0.0-RELEASE</version>
         </dependency>
         <!--Vaadin plugins-->
         <dependency>

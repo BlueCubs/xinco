@@ -45,19 +45,8 @@ import static com.bluecubs.xinco.core.server.db.DBState.START_UP;
 import static com.bluecubs.xinco.core.server.db.DBState.UPDATED;
 import static com.bluecubs.xinco.core.server.db.DBState.VALID;
 import static com.bluecubs.xinco.tools.MD5.encrypt;
-import static gudusoft.gsqlparser.EDbVendor.dbvmysql;
-import static gudusoft.gsqlparser.ESqlStatementType.sstcreatetable;
-import static gudusoft.gsqlparser.ESqlStatementType.sstinvalid;
-import static gudusoft.gsqlparser.ESqlStatementType.sstmysqlcommit;
-import static gudusoft.gsqlparser.ESqlStatementType.sstmysqldroptable;
-import static gudusoft.gsqlparser.ESqlStatementType.sstmysqlset;
-import static gudusoft.gsqlparser.ESqlStatementType.sstmysqlsetautocommit;
-import static gudusoft.gsqlparser.ESqlStatementType.sstmysqlstarttransaction;
-import static gudusoft.gsqlparser.ESqlStatementType.sstmysqluse;
-import gudusoft.gsqlparser.TGSqlParser;
 import java.io.*;
 import static java.lang.Class.forName;
-import static java.lang.System.getProperty;
 import static java.lang.Thread.sleep;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -413,6 +402,7 @@ public class XincoDBManager {
             LOG.info("Validating migration...");
             flyway.validate();
             LOG.info("Done!");
+            displayDBStatus(flyway.info().current());
             setState(flyway.info().current().getState() == SUCCESS
                     ? VALID : ERROR);
         } catch (FlywayException fe) {
@@ -425,84 +415,6 @@ public class XincoDBManager {
         LOG.log(INFO, "Description: {0}\nState: {1}\nVersion: {2}",
                 new Object[]{status.getDescription(), status.getState(),
                     status.getVersion()});
-    }
-
-    protected static void executeSQL(String filePath, Class relativeTo)
-            throws XincoException, java.io.IOException {
-        //Get the statements to run
-        ArrayList<String> statements;
-        if (relativeTo == null) {
-            //This assumes that the path is relative to XincoDBManager class
-            statements = readFileAsString(filePath);
-        } else {
-            statements = readFileAsString(filePath, relativeTo);
-        }
-        //Now run them
-        if (!statements.isEmpty()) {
-            for (String statement : statements) {
-                LOG.log(Level.CONFIG, "Executing statement: {0}", statement);
-                nativeQuery(statement);
-                LOG.log(Level.CONFIG, "Done!", statement);
-            }
-        } else {
-            throw new XincoException("Nothing to execute!");
-        }
-    }
-
-    protected static ArrayList<String> readFileAsString(String filePath)
-            throws java.io.IOException, XincoException {
-        return readFileAsString(filePath, XincoDBManager.class);
-    }
-
-    protected static ArrayList<String> readFileAsString(String filePath,
-            Class relativeTo) throws java.io.IOException, XincoException {
-        InputStream in = relativeTo == null
-                ? new FileInputStream(new File(filePath))
-                : relativeTo.getResourceAsStream(filePath);
-        InputStreamReader is = new InputStreamReader(in, "utf8");
-        BufferedReader br = new BufferedReader(is);
-        String line;
-        ArrayList<String> statements = new ArrayList<>();
-        StringBuilder sql = new StringBuilder();
-        try {
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                sql.append(line).append("\n");
-            }
-            //The list of statement types to ignore
-            ArrayList<String> ignore = new ArrayList<>();
-            ignore.add(sstmysqlset.toString());
-            ignore.add(sstinvalid.toString());
-            ignore.add(sstmysqluse.toString());
-            ignore.add(sstmysqldroptable.toString());
-            ignore.add(sstcreatetable.toString());
-            ignore.add(sstmysqlsetautocommit.toString());
-            ignore.add(sstmysqlcommit.toString());
-            ignore.add(sstmysqlstarttransaction.toString());
-            //-------------------------------------
-            if (!sql.toString().isEmpty()) {
-                TGSqlParser sqlparser = new TGSqlParser(dbvmysql);
-                sqlparser.sqltext = sql.toString();
-                //Check statements for correctness first
-                sqlparser.parse();
-                //Everything fine, keep going
-                for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
-                    if (!ignore.contains(
-                            sqlparser.sqlstatements.get(i).sqlstatementtype
-                                    .toString())) {
-                        statements.add(sqlparser.sqlstatements.get(i).toString()
-                                .replaceAll("`xinco`.", ""));
-                    }
-                }
-            }
-        } finally {
-            br.close();
-            is.close();
-            if (in != null) {
-                in.close();
-            }
-        }
-        return statements;
     }
 
     /**
@@ -703,53 +615,6 @@ public class XincoDBManager {
      */
     public String getPersistenceUnitName() {
         return puName;
-    }
-
-    public static void main(String[] args) {
-        //Used to update the init script
-        //Get the MySQL script file
-        File script = new File(new File(getProperty("user.dir"))
-                .getParent()
-                + getProperty("file.separator")
-                + "DB" + getProperty("file.separator")
-                + "xinco_MySQL.sql");
-        if (script.exists()) {
-            try {
-                ArrayList<String> contents
-                        = readFileAsString(script.getAbsolutePath(), null);
-                if (!contents.isEmpty()) {
-                    //Create the init.sql file
-                    //src\java\com\bluecubs\xinco\core\server\db\script
-                    File initFile = new File(getProperty("user.dir")
-                            + getProperty("file.separator") + "src"
-                            + getProperty("file.separator") + "main"
-                            + getProperty("file.separator") + "resources"
-                            + getProperty("file.separator") + "com"
-                            + getProperty("file.separator") + "bluecubs"
-                            + getProperty("file.separator") + "xinco"
-                            + getProperty("file.separator") + "core"
-                            + getProperty("file.separator") + "server"
-                            + getProperty("file.separator") + "db"
-                            + getProperty("file.separator") + "script"
-                            + getProperty("file.separator")
-                            + "init.sql");
-                    if (initFile.exists()) {
-                        if (!initFile.delete()) {
-                            throw new XincoException(
-                                    "Unable to delete DB script");
-                        }
-                    }
-                    if (initFile.createNewFile()) {
-                        setContents(initFile, contents);
-                    } else {
-                        throw new XincoException(
-                                "Unable to create/update DB script");
-                    }
-                }
-            } catch (IOException | XincoException ex) {
-                LOG.log(SEVERE, ex.getLocalizedMessage(), ex);
-            }
-        }
     }
 
     /**

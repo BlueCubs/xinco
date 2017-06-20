@@ -16,13 +16,13 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More FINErmation on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoRenderingThread
- * 
+ *
  * Description: Thread in charge of generating pdf rendering of files when uploaded (if needed)
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 21, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.rendering;
@@ -44,18 +44,20 @@ import static com.bluecubs.xinco.tools.Tool.copyFile;
 import static com.bluecubs.xinco.tools.Tool.isPortAvaialble;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import static java.lang.System.getProperty;
 import static java.util.Locale.getDefault;
+import java.util.logging.Level;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
-import org.artofsolving.jodconverter.OfficeDocumentConverter;
-import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
-import org.artofsolving.jodconverter.office.OfficeException;
-import org.artofsolving.jodconverter.office.OfficeManager;
+import org.jodconverter.OfficeDocumentConverter;
+import org.jodconverter.office.DefaultOfficeManagerBuilder;
+import org.jodconverter.office.OfficeException;
+import org.jodconverter.office.OfficeManager;
 
 /**
  *
@@ -71,8 +73,8 @@ public class XincoRenderingThread extends Thread {
     private File rendition;
     private File xincoFile;
     private static int port;
-    private static final Logger LOG =
-            getLogger(XincoRenderingThread.class.getName());
+    private static final Logger LOG
+            = getLogger(XincoRenderingThread.class.getName());
 
     public XincoRenderingThread(XincoCoreData original, XincoCoreUser user) {
         this.original = original;
@@ -85,7 +87,7 @@ public class XincoRenderingThread extends Thread {
                 "setting.OOPort").getIntValue();
         if (port >= 0 && !original.getXincoAddAttributes().isEmpty()
                 && !original.getXincoAddAttributes().get(0).getAttribVarchar()
-                .toLowerCase(getDefault()).endsWith(".pdf")) {
+                        .toLowerCase(getDefault()).endsWith(".pdf")) {
             try {
                 xincoFile = new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath,
                         original.getId(),
@@ -107,13 +109,13 @@ public class XincoRenderingThread extends Thread {
                         rendering, user);
                 LOG.log(FINE, "Rendering id: {0}", rendering.getId());
                 //Mark as a rendering
-                dependency =
-                        new XincoCoreDataHasDependencyServer(
-                        new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(
-                        original.getId()),
-                        new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(
-                        rendering.getId()),
-                        new XincoDependencyTypeJpaController(getEntityManagerFactory()).findXincoDependencyType(5));//rendering
+                dependency
+                        = new XincoCoreDataHasDependencyServer(
+                                new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(
+                                        original.getId()),
+                                new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(
+                                        rendering.getId()),
+                                new XincoDependencyTypeJpaController(getEntityManagerFactory()).findXincoDependencyType(5));//rendering
                 dependency.write2DB();
                 LOG.log(FINE, "Marked as rendering");
                 //Now create the pdf rendering
@@ -132,7 +134,7 @@ public class XincoRenderingThread extends Thread {
                         .setAttribUnsignedint(rendition.length());
                 rendering.getXincoAddAttributes().get(2).setAttribVarchar(""
                         + new CheckedInputStream(new FileInputStream(rendition),
-                        new CRC32()).getChecksum().getValue());
+                                new CRC32()).getChecksum().getValue());
                 rendering.getXincoAddAttributes().get(3)
                         .setAttribUnsignedint(1);
                 rendering.getXincoAddAttributes().get(4)
@@ -145,14 +147,14 @@ public class XincoRenderingThread extends Thread {
                         + rendering.getId()));
                 rendition.delete();
                 LOG.log(FINE, "Converted the file!");
-            } catch (Exception ex) {
+            } catch (IOException | IllegalStateException ex) {
                 LOG.log(WARNING, null, ex);
                 //Cleanup
                 if (dependency != null) {
                     dependency.deleteFromDB();
                 }
-                XincoCoreDataServer render =
-                        new XincoCoreDataServer(rendering.getId());
+                XincoCoreDataServer render
+                        = new XincoCoreDataServer(rendering.getId());
                 if (render != null) {
                     render.deleteFromDB();
                 }
@@ -179,33 +181,42 @@ public class XincoRenderingThread extends Thread {
             }
             // Connect to an OpenOffice.org instance running on available port
             try {
-                officeManager = new DefaultOfficeManagerConfiguration()
-                        .setPortNumber(port).buildOfficeManager();
+                officeManager = new DefaultOfficeManagerBuilder()
+                        .setPortNumber(port)
+                        .build();
                 officeManager.start();
 
-                OfficeDocumentConverter converter =
-                        new OfficeDocumentConverter(officeManager);
+                OfficeDocumentConverter converter
+                        = new OfficeDocumentConverter(officeManager);
                 converter.convert(source, dest);
                 // close the connection
                 officeManager.stop();
                 return true;
-            } catch (IllegalStateException ise) {
+            } catch (IllegalStateException | OfficeException ise) {
                 //Looks like OpenOffice or LibreOffice is not installed
                 LOG.warning("Unable to find OpenOffice and/or LibreOffice "
                         + "installation. Disabling rendering generation!");
                 disable();
                 throw ise;
             }
+            //Looks like OpenOffice or LibreOffice is not installed
+
         } catch (OfficeException e) {
-            officeManager.stop();
+            try {
+                officeManager.stop();
+            } catch (OfficeException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                throw new XincoException(ex);
+            }
+            LOG.log(Level.SEVERE, null, e);
             throw new XincoException(e);
         }
     }
 
     private static void disable() {
-        XincoSettingServer setting = 
-                getSetting(new XincoCoreUserServer(1), 
-                "setting.OOPort");
+        XincoSettingServer setting
+                = getSetting(new XincoCoreUserServer(1),
+                        "setting.OOPort");
         setting.setIntValue(-1);
         setting.write2DB();
     }
