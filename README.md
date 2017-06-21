@@ -1,3 +1,7 @@
+<p align="center"> 
+<img src="http://xinco.org/images/blueCubs.gif">
+</p>
+
 # Xinco
 
 [![Build Status](https://travis-ci.org/BlueCubs/xinco.svg?branch=master)](https://travis-ci.org/BlueCubs/xinco)
