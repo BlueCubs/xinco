@@ -4,7 +4,7 @@
     <groupId>com.bluecubs.xinco</groupId>
     <artifactId>Xinco</artifactId>
     <packaging>war</packaging>
-    <version>3.0.0-M9-SNAPSHOT</version>
+    <version>3.0.0-M9</version>
     <name>Xinco DMS</name>
 
     <description>The Core of Information and Document Management
@@ -38,7 +38,8 @@
         <url>https://github.com/BlueCubs/xinco</url>
         <connection>scm:git:git://github.com/BlueCubs/xinco.git</connection>
         <developerConnection>scm:git:git@github.com:BlueCubs/xinco.git</developerConnection>
-    </scm>
+      <tag>Xinco-3.0.0-M9</tag>
+  </scm>
     <ciManagement>
         <system>Jenkins</system>
         <url>https://xinco.ci.cloudbees.com/</url>
