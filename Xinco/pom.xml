@@ -38,8 +38,8 @@
         <url>https://github.com/BlueCubs/xinco</url>
         <connection>scm:git:git://github.com/BlueCubs/xinco.git</connection>
         <developerConnection>scm:git:git@github.com:BlueCubs/xinco.git</developerConnection>
-      <tag>Xinco-3.0.0-M9</tag>
-  </scm>
+        <tag>Xinco-3.0.0-M9</tag>
+    </scm>
     <ciManagement>
         <system>Jenkins</system>
         <url>https://xinco.ci.cloudbees.com/</url>
@@ -167,42 +167,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>downloads-maven-plugin</artifactId>
-                <version>0.6</version>
-                <configuration>
-                    <description>Official ${project.name} build of the ${project.version} release</description>
-                    <override>true</override>
-                    <includeAttached>true</includeAttached>
-                    <server>github</server>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>upload</goal>
-                        </goals>
-                        <phase>install</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.12</version>
-                <configuration>
-                    <message>Building site for ${project.version}</message>
-                    <server>github</server>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        <phase>site</phase>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -404,67 +368,17 @@
                     <!-- The name of your generated source package -->
                     <packageName>com.bluecubs.xinco.core.server.service</packageName>
                 </configuration>
-                <!-- if you want to use a specific version of JAX-WS, you can do so like this
-                <dependencies>
-                    <dependency>
-                        <groupId>com.sun.xml.ws</groupId>
-                        <artifactId>jaxws-tools</artifactId>
-                        <version>2.2.7</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>org.jvnet.staxex</groupId>
-                                <artifactId>stax-ex</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jvnet.staxex</groupId>
-                        <artifactId>stax-ex</artifactId>
-                        <version>1.7.1</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>javax.xml.stream</groupId>
-                                <artifactId>stax-api</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                </dependencies>-->
             </plugin>
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
-                            <silent>true</silent>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>javax.xml.bind</groupId>
-                                    <artifactId>jaxb-api</artifactId>
-                                    <version>2.2.7</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>javax.xml.ws</groupId>
-                                    <artifactId>jaxws-api</artifactId>
-                                    <version>2.2.8</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
         </plugins>
     </build>
     
     <reporting>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
