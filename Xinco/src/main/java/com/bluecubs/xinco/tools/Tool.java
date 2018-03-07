@@ -30,14 +30,13 @@ import static javax.xml.datatype.DatatypeFactory.newInstance;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class Tool {
 
     public static int MIN_PORT_NUMBER = 1;
     public static int MAX_PORT_NUMBER = 65535;
-    private static final Logger LOG =
-            getLogger(Tool.class.getName());
+    private static final Logger LOG = getLogger(Tool.class.getName());
 
     private Tool() {
     }
@@ -47,7 +46,7 @@ public class Tool {
      *
      * @param first first string to compare
      * @param second second string to compare
-     * @return
+     * @return result
      */
     public static boolean compareNumberStrings(String first, String second) {
         return compareNumberStrings(first, second, ".");
@@ -59,7 +58,7 @@ public class Tool {
      * @param first first string to compare
      * @param second second string to compare
      * @param separator separator of fields (i.e. for 2.1.0 is '.')
-     * @return
+     * @return result
      */
     public static boolean compareNumberStrings(String first, String second,
             String separator) {
@@ -79,7 +78,8 @@ public class Tool {
                     }
                 }
                 //Everything the same
-            } catch (java.lang.NumberFormatException e) {
+            }
+            catch (java.lang.NumberFormatException e) {
                 //Is not a number
                 return false;
             }
@@ -99,9 +99,11 @@ public class Tool {
             ds = new DatagramSocket(port);
             ds.setReuseAddress(true);
             return true;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.log(FINE, null, e);
-        } finally {
+        }
+        finally {
             if (ds != null) {
                 ds.close();
             }
@@ -109,7 +111,8 @@ public class Tool {
             if (ss != null) {
                 try {
                     ss.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     /*
                      * should not be thrown
                      */
@@ -121,7 +124,15 @@ public class Tool {
         return false;
     }
 
-    public static void copyFile(File sourceFile, File destFile) throws IOException {
+    /**
+     * Copy file.
+     *
+     * @param sourceFile file to copy
+     * @param destFile new destination
+     * @throws IOException if something goes wrong.
+     */
+    public static void copyFile(File sourceFile, File destFile)
+            throws IOException {
         if (!destFile.exists()) {
             destFile.createNewFile();
         }
@@ -133,27 +144,31 @@ public class Tool {
             source = new FileInputStream(sourceFile).getChannel();
             destination = new FileOutputStream(destFile).getChannel();
             destination.transferFrom(source, 0, source.size());
-        } finally {
+        }
+        finally {
+            if (source != null) {
                 source.close();
+            }
+            if (destination != null) {
                 destination.close();
+            }
         }
     }
 
     /**
      * Validate the form of an email address.
      *
-     * <P>Return <tt>true</tt> only if <ul> <li> <tt>aEmailAddress</tt> can
-     * successfully construct an {@link javax.mail.internet.InternetAddress}
-     * <li> when parsed with "
+     * Return true only if aEmailAddress can successfully construct an
+     * {@link javax.mail.internet.InternetAddress} when parsed with "@" as
+     * delimiter, aEmailAddress contains two tokens which satisfy
+     * hirondelle.web4j.util.Util#textHasContent.
      *
-     * @" as delimiter, <tt>aEmailAddress</tt> contains two tokens which satisfy
-     * {@link hirondelle.web4j.util.Util#textHasContent}. </ul>
-     *
-     * <P> The second condition arises since local email addresses, simply of
-     * the form "<tt>albert</tt>", for example, are valid for
+     * The second condition arises since local email addresses, simply of the
+     * form "albert", for example, are valid for
      * {@link javax.mail.internet.InternetAddress}, but almost always undesired.
-     * @param aEmailAddress
-     * @return
+     *
+     * @param aEmailAddress address to check
+     * @return result
      */
     public static boolean isValidEmailAddress(String aEmailAddress) {
         if (aEmailAddress == null) {
@@ -161,11 +176,12 @@ public class Tool {
         }
         boolean result = true;
         try {
-            InternetAddress internetAddress = new InternetAddress(aEmailAddress);
+            new InternetAddress(aEmailAddress);
             if (!hasNameAndDomain(aEmailAddress)) {
                 result = false;
             }
-        } catch (AddressException ex) {
+        }
+        catch (AddressException ex) {
             LOG.log(FINE, null, ex);
             result = false;
         }
@@ -184,11 +200,12 @@ public class Tool {
      * after trimming. (Trimming removes both leading/trailing whitespace and
      * ASCII control characters.)
      *
-     * <P> For checking argument validity, {@link Args#checkForContent} should
-     * be used instead of this method.
+     * <P>
+     * For checking argument validity, Args#checkForContent should be used
+     * instead of this method.
      *
-     * <P>This method is particularly useful, since it is very commonly
-     * required.
+     * <P>
+     * This method is particularly useful, since it is very commonly required.
      *
      * @param aText possibly-null.
      * @return true if has content
@@ -204,15 +221,17 @@ public class Tool {
         if (iter.hasNext()) {
             ImageReader reader = iter.next();
             try {
-                ImageInputStream stream = 
-                        new FileImageInputStream(new File(path));
+                ImageInputStream stream
+                        = new FileImageInputStream(new File(path));
                 reader.setInput(stream);
                 int width = reader.getWidth(reader.getMinIndex());
                 int height = reader.getHeight(reader.getMinIndex());
                 result = new Dimension(width, height);
-            } catch (Exception e) {
+            }
+            catch (IOException e) {
                 LOG.log(SEVERE, null, e);
-            } finally {
+            }
+            finally {
                 reader.dispose();
             }
         }
@@ -238,7 +257,8 @@ public class Tool {
         //add specific attributes
         data.getXincoAddAttributes().clear();
         XincoAddAttribute xaa;
-        for (XincoCoreDataTypeAttribute attr : data.getXincoCoreDataType().getXincoCoreDataTypeAttributes()) {
+        for (XincoCoreDataTypeAttribute attr : data.getXincoCoreDataType()
+                .getXincoCoreDataTypeAttributes()) {
             try {
                 xaa = new XincoAddAttribute();
                 xaa.setAttributeId(attr.getAttributeId());
@@ -247,9 +267,11 @@ public class Tool {
                 GregorianCalendar calendar = new GregorianCalendar();
                 calendar.setTime(new Date());
                 newInstance().newXMLGregorianCalendar(calendar);
-                xaa.setAttribDatetime(newInstance().newXMLGregorianCalendar(calendar));
+                xaa.setAttribDatetime(newInstance()
+                        .newXMLGregorianCalendar(calendar));
                 data.getXincoAddAttributes().add(xaa);
-            } catch (DatatypeConfigurationException ex) {
+            }
+            catch (DatatypeConfigurationException ex) {
                 LOG.log(SEVERE, null, ex);
             }
         }

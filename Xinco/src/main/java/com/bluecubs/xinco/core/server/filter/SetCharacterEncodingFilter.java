@@ -75,7 +75,7 @@ public class SetCharacterEncodingFilter implements Filter {
      * interpret request parameters for this request.
      *
      * @param request The servlet request we are processing
-     * @param result The servlet response we are creating
+     * @param response The servlet response we are creating
      * @param chain The filter chain we are processing
      *
      * @exception IOException if an input/output error occurs
@@ -102,6 +102,7 @@ public class SetCharacterEncodingFilter implements Filter {
      * Place this filter into service.
      *
      * @param filterConfig The filter configuration object
+     * @throws javax.servlet.ServletException on an error
      */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -113,12 +114,9 @@ public class SetCharacterEncodingFilter implements Filter {
             this.ignore = true;
         } else if (value.equalsIgnoreCase("true")) {
             this.ignore = true;
-        } else if (value.equalsIgnoreCase("yes")) {
-            this.ignore = true;
         } else {
-            this.ignore = false;
+            this.ignore = value.equalsIgnoreCase("yes");
         }
-
     }
 
     // ------------------------------------------------------ Protected Methods
@@ -126,15 +124,16 @@ public class SetCharacterEncodingFilter implements Filter {
      * Select an appropriate character encoding to be used, based on the
      * characteristics of the current request and/or filter initialization
      * parameters. If no character encoding should be set, return
-     * <code>null</code>. <p> The default implementation unconditionally returns
-     * the value configured by the <strong>encoding</strong> initialization
-     * parameter for this filter.
+     * <code>null</code>.
+     * <p>
+     * The default implementation unconditionally returns the value configured
+     * by the <strong>encoding</strong> initialization parameter for this
+     * filter.
      *
      * @param request The servlet request we are processing
+     * @return encoding
      */
     protected String selectEncoding(ServletRequest request) {
-
         return (this.encoding);
-
     }
 }

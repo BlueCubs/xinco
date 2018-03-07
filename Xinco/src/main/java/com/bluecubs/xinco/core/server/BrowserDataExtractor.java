@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Extracts information from browser
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public final class BrowserDataExtractor extends HttpServlet {
 
@@ -65,11 +65,11 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
 
     private void setCompany() {
-        if (userAgent.indexOf("msie") > -1) {
+        if (userAgent.contains("msie")) {
             company = "Microsoft";
-        } else if (userAgent.indexOf("opera") > -1) {
+        } else if (userAgent.contains("opera")) {
             company = "Opera Software";
-        } else if (userAgent.indexOf("mozilla") > -1) {
+        } else if (userAgent.contains("mozilla")) {
             company = "Netscape Communications";
         } else {
             company = "unknown";
@@ -78,6 +78,8 @@ public final class BrowserDataExtractor extends HttpServlet {
 
     /**
      * Get company.
+     *
+     * @return company
      */
     public String getCompany() {
         return company;
@@ -102,6 +104,8 @@ public final class BrowserDataExtractor extends HttpServlet {
 
     /**
      * Get name.
+     *
+     * @return name
      */
     public String getName() {
         return name;
@@ -123,6 +127,8 @@ public final class BrowserDataExtractor extends HttpServlet {
 
     /**
      * Get version.
+     *
+     * @return version
      */
     public String getVersion() {
         return version;
@@ -134,6 +140,8 @@ public final class BrowserDataExtractor extends HttpServlet {
 
     /**
      * Get main version.
+     *
+     * @return main version
      */
     public String getMainVersion() {
         return mainVersion;
@@ -145,32 +153,34 @@ public final class BrowserDataExtractor extends HttpServlet {
 
     /**
      * Get minor version.
+     *
+     * @return minor version
      */
     public String getMinorVersion() {
         return minorVersion;
     }
 
     private void setOs() {
-        if (userAgent.indexOf("win") > -1) {
-            if (userAgent.indexOf("windows 95") > -1
-                    || userAgent.indexOf("win95") > -1) {
+        if (userAgent.contains("win")) {
+            if (userAgent.contains("windows 95")
+                    || userAgent.contains("win95")) {
                 os = "Windows 95";
-            } else if (userAgent.indexOf("windows 98") > -1
-                    || userAgent.indexOf("win98") > -1) {
+            } else if (userAgent.contains("windows 98")
+                    || userAgent.contains("win98")) {
                 os = "Windows 98";
-            } else if (userAgent.indexOf("windows nt") > -1
-                    || userAgent.indexOf("winnt") > -1) {
+            } else if (userAgent.contains("windows nt")
+                    || userAgent.contains("winnt")) {
                 os = "Windows NT";
-            } else if (userAgent.indexOf("win16") > -1
-                    || userAgent.indexOf("windows 3.") > -1) {
+            } else if (userAgent.contains("win16")
+                    || userAgent.contains("windows 3.")) {
                 os = "Windows 3.x";
             }
 
-        } else if (userAgent.indexOf("Mac") > -1) {
-            if (userAgent.indexOf("Mac_PowerPC") > -1
-                    || userAgent.indexOf("Mac_PPC") > -1) {
+        } else if (userAgent.contains("Mac")) {
+            if (userAgent.contains("Mac_PowerPC")
+                    || userAgent.contains("Mac_PPC")) {
                 os = "Macintosh Power PC";
-            } else if (userAgent.indexOf("Macintosh") > -1) {
+            } else if (userAgent.contains("Macintosh")) {
                 os = "Macintosh";
             } else {
                 os = "Unknown Mac";
@@ -180,6 +190,8 @@ public final class BrowserDataExtractor extends HttpServlet {
 
     /**
      * Get OS.
+     *
+     * @return OS
      */
     public String getOs() {
         return os;
@@ -219,6 +231,8 @@ public final class BrowserDataExtractor extends HttpServlet {
 
     /**
      * Get language.
+     *
+     * @return language
      */
     public String getLanguage() {
         return language;
@@ -230,6 +244,8 @@ public final class BrowserDataExtractor extends HttpServlet {
 
     /**
      * Get locale
+     *
+     * @return locale
      */
     public Locale getLocale() {
         return locale;

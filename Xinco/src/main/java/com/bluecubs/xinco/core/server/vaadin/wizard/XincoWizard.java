@@ -12,18 +12,21 @@ import static java.util.ResourceBundle.getBundle;
 /**
  * Component for displaying multi-step wizard style user interface.
  *
- * <p> The steps of the wizard must be implementations of the {@link WizardStep}
+ * <p>
+ * The steps of the wizard must be implementations of the {@link WizardStep}
  * interface. Use the {@link #addStep(WizardStep)} method to add these steps in
  * the same order they are supposed to be displayed. </p>
  *
- * <p> The wizard also supports navigation through URI fragments. This feature
- * is disabled by default, but you can enable it using
- * {@link #setUriFragmentEnabled(boolean)} method. Each step will get a
- * generated identifier that is used as the URI fragment. If you wish to
- * override these with your own identifiers, you can add the steps using the
- * overloaded {@link #addStep(WizardStep, String)} method. </p>
+ * <p>
+ * The wizard also supports navigation through URI fragments. This feature is
+ * disabled by default, but you can enable it using
+ * setUriFragmentEnabled(boolean) method. Each step will get a generated
+ * identifier that is used as the URI fragment. If you wish to override these
+ * with your own identifiers, you can add the steps using the overloaded
+ * {@link #addStep(WizardStep, String)} method. </p>
  *
- * <p> To react on the progress, cancellation or completion of this
+ * <p>
+ * To react on the progress, cancellation or completion of this
  * {@code XincoWizard} you should add one or more listeners that implement the
  * {@link WizardProgressListener} interface. These listeners are added using the
  * {@link #addListener(WizardProgressListener)} method and removed with the
@@ -31,15 +34,15 @@ import static java.util.ResourceBundle.getBundle;
  *
  * Based on code from Teemu PÃ¶ntelin / Vaadin Ltd
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public final class XincoWizard extends CustomComponent {
 
     private final List<WizardStep> steps = new ArrayList<>();
-    private final List<WizardProgressListener> listeners =
-            new ArrayList<>();
-    private final Map<String, WizardStep> idMap =
-            new HashMap<>();
+    private final List<WizardProgressListener> listeners
+            = new ArrayList<>();
+    private final Map<String, WizardStep> idMap
+            = new HashMap<>();
     private VerticalLayout mainLayout;
     private Panel contentPanel;
     private Button nextButton;
@@ -60,7 +63,8 @@ public final class XincoWizard extends CustomComponent {
     @Override
     public void setLocale(Locale locale) {
         super.setLocale(locale);
-        xerb = getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
+        xerb = getBundle("com.bluecubs.xinco.messages.XincoMessages",
+                getLocale());
     }
 
     private void init() {
@@ -210,9 +214,10 @@ public final class XincoWizard extends CustomComponent {
      * Returns a {@link Component} that is displayed on top of the actual
      * content or {@code null} if no header is specified.
      *
-     * <p> By default the header is a {@link WizardProgressBar} component that
-     * is also registered as a {@link WizardProgressListener} to this
-     * XincoWizard. </p>
+     * <p>
+     * By default the header is a {@link WizardProgressBar} component that is
+     * also registered as a {@link WizardProgressListener} to this XincoWizard.
+     * </p>
      *
      * @return {@link Component} that is displayed on top of the actual content
      * or {@code null}.
@@ -417,7 +422,8 @@ public final class XincoWizard extends CustomComponent {
         WizardStep step = idMap.get(id);
         if (step != null) {
             // check that we don't go past the lastCompletedStep by using the id
-            int lastCompletedIndex = lastCompletedStep == null ? -1 : steps.indexOf(lastCompletedStep);
+            int lastCompletedIndex = lastCompletedStep == null ? -1
+                    : steps.indexOf(lastCompletedStep);
             int stepIndex = steps.indexOf(step);
 
             if (lastCompletedIndex < stepIndex) {

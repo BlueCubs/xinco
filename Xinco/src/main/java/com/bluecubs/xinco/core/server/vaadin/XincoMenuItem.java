@@ -5,7 +5,7 @@ import com.vaadin.terminal.ThemeResource;
 
 /**
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class XincoMenuItem {
 
@@ -31,6 +31,7 @@ public class XincoMenuItem {
      * @param dataOnly Only for data objects
      * @param nodeOnly Only for node objects
      * @param selected Does something needs to be selected to enable this item?
+     * @param validDataTypes Valid types
      */
     protected XincoMenuItem(int index, String groupName, String name,
             ThemeResource icon, com.vaadin.ui.MenuBar.Command command,
@@ -49,18 +50,12 @@ public class XincoMenuItem {
     }
 
     /**
-     * @return the pos
-     */
-    /**
-     * @return the pos
+     * @return the index
      */
     public int getIndex() {
         return index;
     }
 
-    /**
-     * @return the name
-     */
     /**
      * @return the name
      */
@@ -71,16 +66,10 @@ public class XincoMenuItem {
     /**
      * @return the icon
      */
-    /**
-     * @return the icon
-     */
     public ThemeResource getIcon() {
         return icon;
     }
 
-    /**
-     * @return the command
-     */
     /**
      * @return the command
      */
@@ -91,16 +80,10 @@ public class XincoMenuItem {
     /**
      * @return the loggedIn
      */
-    /**
-     * @return the loggedIn
-     */
     public boolean isLoggedIn() {
         return loggedIn;
     }
 
-    /**
-     * @return the dataOnly
-     */
     /**
      * @return the dataOnly
      */
@@ -111,16 +94,10 @@ public class XincoMenuItem {
     /**
      * @return the nodeOnly
      */
-    /**
-     * @return the nodeOnly
-     */
     public boolean isNodeOnly() {
         return nodeOnly;
     }
 
-    /**
-     * @return the dataTypes
-     */
     /**
      * @return the dataTypes
      */
@@ -136,9 +113,6 @@ public class XincoMenuItem {
         this.dataTypes = dataTypes;
     }
 
-    /**
-     * @return the groupName
-     */
     /**
      * @return the groupName
      */

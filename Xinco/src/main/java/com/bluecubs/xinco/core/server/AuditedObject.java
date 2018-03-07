@@ -4,14 +4,14 @@ import java.sql.Timestamp;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public interface AuditedObject {
 
     /**
      * Reason for the change
      *
-     * @param reason
+     * @param reason reason for modification
      */
     public void setModificationReason(String reason);
 
@@ -25,7 +25,7 @@ public interface AuditedObject {
     /**
      * User id that modified the record
      *
-     * @param id
+     * @param id modifier id
      */
     public void setModifierId(int id);
 

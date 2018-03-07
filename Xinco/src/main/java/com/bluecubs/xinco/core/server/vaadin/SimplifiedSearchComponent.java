@@ -49,7 +49,7 @@ import org.vaadin.lucenecontainer.LuceneContainer;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
  */
 public final class SimplifiedSearchComponent extends CustomComponent {
 

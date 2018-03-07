@@ -16,13 +16,13 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoSettingFieldFactory
- * 
+ *
  * Description: Custom field factory for the setting form
- * 
- * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 19, 2011
- * 
+ *
+ * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Dec 19, 2011
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.vaadin.setting;
@@ -32,7 +32,7 @@ import com.vaadin.ui.DefaultFieldFactory;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class XincoSettingFieldFactory extends DefaultFieldFactory {
 
@@ -40,7 +40,7 @@ public class XincoSettingFieldFactory extends DefaultFieldFactory {
      * If name follows method naming conventions, convert the name to spaced
      * upper case text. For example, convert "firstName" to "First Name"
      *
-     * @param propertyId
+     * @param propertyId property id to use
      * @return the formatted caption string
      */
     public static String createCaptionByPropertyId(Object propertyId) {

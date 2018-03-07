@@ -5,7 +5,7 @@ import javax.swing.Timer;
 
 /**
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public final class XincoActivityTimer {
 
@@ -14,8 +14,7 @@ public final class XincoActivityTimer {
     /**
      * Creates a new instance of XincoActivityTimer
      *
-     * @param e
-     * @param delay
+     * @param delay Timer delay
      */
     public XincoActivityTimer(int delay) {
         ActionListener lockExplorer = new XincoActivityActionListener();
@@ -25,8 +24,9 @@ public final class XincoActivityTimer {
     }
 
     /**
+     * Get timer.
      *
-     * @return
+     * @return the timer
      */
     public Timer getActivityTimer() {
         return activityTimer;

@@ -130,7 +130,8 @@ public class XincoDBManager {
                             ? getState().name() : null));
             try {
                 sleep(10000);
-            } catch (InterruptedException ex) {
+            }
+            catch (InterruptedException ex) {
                 LOG.log(SEVERE, null, ex);
             }
         }
@@ -169,7 +170,8 @@ public class XincoDBManager {
                     }
                 }
             }
-        } finally {
+        }
+        finally {
             try {
                 if (LOG.isLoggable(Level.CONFIG)) {
                     for (XincoIdServer next : getIds()) {
@@ -178,7 +180,8 @@ public class XincoDBManager {
                                     next.getTablename(), next.getLastId()});
                     }
                 }
-            } catch (XincoException ex1) {
+            }
+            catch (XincoException ex1) {
                 LOG.log(SEVERE, null, ex1);
             }
         }
@@ -228,7 +231,8 @@ public class XincoDBManager {
         try {
             lrb = getBundle(
                     "com.bluecubs.xinco.messages.XincoMessages", loc);
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             LOG.log(FINE, null, e);
             lrb = getBundle("com.bluecubs.xinco.messages.XincoMessages",
                     getDefault());
@@ -237,7 +241,7 @@ public class XincoDBManager {
 
     /**
      * @param aPU the Persistence Unit to set
-     * @throws XincoException
+     * @throws XincoException when something goes wrong
      */
     public static void setPU(String aPU) throws XincoException {
         puName = aPU;
@@ -263,7 +267,8 @@ public class XincoDBManager {
             try {
                 ds = (javax.sql.DataSource) new InitialContext()
                         .lookup("java:comp/env/jdbc/XincoDB");
-            } catch (NamingException ne) {
+            }
+            catch (NamingException ne) {
                 try {
                     LOG.log(FINE, null, ne);
                     //It might be the tests, use an H2 Database
@@ -274,7 +279,8 @@ public class XincoDBManager {
                             "jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
                     //Load the H2 driver
                     forName("org.h2.Driver");
-                } catch (ClassNotFoundException ex) {
+                }
+                catch (ClassNotFoundException ex) {
                     LOG.log(SEVERE, null, ex);
                 }
             }
@@ -294,32 +300,37 @@ public class XincoDBManager {
                 } else {
                     throw new RuntimeException("Null Datasource!");
                 }
-            } catch (SQLException ex) {
+            }
+            catch (SQLException ex) {
                 LOG.log(FINE, null, ex);
                 //Need INIT, probably nothing there
                 setState(NEED_INIT);
                 //Create the database
                 getEntityManager();
-            } finally {
+            }
+            finally {
                 try {
                     if (conn != null) {
                         conn.close();
                     }
-                } catch (SQLException ex) {
+                }
+                catch (SQLException ex) {
                     LOG.log(SEVERE, null, ex);
                 }
                 try {
                     if (stmt != null) {
                         stmt.close();
                     }
-                } catch (SQLException ex) {
+                }
+                catch (SQLException ex) {
                     LOG.log(SEVERE, null, ex);
                 }
                 try {
                     if (rs != null) {
                         rs.close();
                     }
-                } catch (SQLException ex) {
+                }
+                catch (SQLException ex) {
                     LOG.log(SEVERE, null, ex);
                 }
             }
@@ -333,7 +344,8 @@ public class XincoDBManager {
             if (state != VALID) {
                 waitForDB();
             }
-        } catch (XincoException ex) {
+        }
+        catch (XincoException ex) {
             LOG.log(SEVERE, null, ex);
             state = ERROR;
         }
@@ -367,7 +379,8 @@ public class XincoDBManager {
             version.append(getSetting("version.low")
                     .getIntValue());
             return version.toString();
-        } catch (XincoException ex) {
+        }
+        catch (XincoException ex) {
             LOG.log(FINE, null, ex);
             return null;
         }
@@ -379,7 +392,8 @@ public class XincoDBManager {
                     + (getSetting("version.postfix")
                             .getStringValue().isEmpty()
                             ? "" : " " + getSetting("version.postfix").getStringValue());
-        } catch (XincoException ex) {
+        }
+        catch (XincoException ex) {
             LOG.log(SEVERE, null, ex);
             return null;
         }
@@ -394,7 +408,8 @@ public class XincoDBManager {
             LOG.info("Starting migration...");
             flyway.migrate();
             LOG.info("Done!");
-        } catch (FlywayException fe) {
+        }
+        catch (FlywayException fe) {
             LOG.log(SEVERE, "Unable to migrate data", fe);
             setState(ERROR);
         }
@@ -405,7 +420,8 @@ public class XincoDBManager {
             displayDBStatus(flyway.info().current());
             setState(flyway.info().current().getState() == SUCCESS
                     ? VALID : ERROR);
-        } catch (FlywayException fe) {
+        }
+        catch (FlywayException fe) {
             LOG.log(SEVERE, "Unable to validate", fe);
             setState(ERROR);
         }
@@ -419,7 +435,7 @@ public class XincoDBManager {
 
     /**
      * @return the Entity Manager Factory
-     * @throws XincoException
+     * @throws XincoException when something goes wrong
      */
     public static EntityManagerFactory getEntityManagerFactory()
             throws XincoException {
@@ -430,7 +446,8 @@ public class XincoDBManager {
                 try {
                     demo = (Boolean) (new InitialContext())
                             .lookup("java:comp/env/xinco/demo");
-                } catch (NamingException e) {
+                }
+                catch (NamingException e) {
                     LOG.log(SEVERE, null, e);
                     demo = false;
                 }
@@ -438,7 +455,8 @@ public class XincoDBManager {
                     try {
                         demoResetPeriod = (Long) (new InitialContext()).lookup(
                                 "java:comp/env/xinco/demo-period");
-                    } catch (NamingException e) {
+                    }
+                    catch (NamingException e) {
                         LOG.log(SEVERE, null, e);
                         demoResetPeriod = 0;
                     }
@@ -455,7 +473,8 @@ public class XincoDBManager {
                         CONFIG.getJNDIDB());
                 usingContext = true;
 
-            } catch (NamingException e) {
+            }
+            catch (NamingException e) {
                 demo = false;
                 if (!usingContext) {
                     LOG.log(WARNING,
@@ -485,7 +504,8 @@ public class XincoDBManager {
         EntityManager em = null;
         try {
             em = getEntityManagerFactory().createEntityManager();
-        } catch (XincoException ex) {
+        }
+        catch (XincoException ex) {
             LOG.log(SEVERE, null, ex);
         }
         return em;
@@ -593,7 +613,8 @@ public class XincoDBManager {
     static void close() {
         try {
             getEntityManagerFactory().close();
-        } catch (XincoException ex) {
+        }
+        catch (XincoException ex) {
             LOG.log(SEVERE, null, ex);
         }
         emf = null;
@@ -653,7 +674,8 @@ public class XincoDBManager {
                 output.write(line);
                 output.write("\n");
             }
-        } finally {
+        }
+        finally {
             fw.close();
         }
     }
