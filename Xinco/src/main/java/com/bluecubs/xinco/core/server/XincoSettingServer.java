@@ -17,7 +17,7 @@ import static java.util.logging.Logger.getLogger;
 /**
  * Handles the XincoSetting CRUD operations.
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class XincoSettingServer extends XincoSetting {
 

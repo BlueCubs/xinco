@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Xinco exception
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class XincoException extends Error {
 

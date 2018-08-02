@@ -21,7 +21,7 @@
  * 
  * Description: Thread in charge of resseting the database (for demo purposes only)
  * 
- * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 16, 2011
+ * Original Author: Javier A. Ortiz Bultron javier.ortiz.78@gmail.com Date: Dec 16, 2011
  * 
  * ************************************************************
  */
@@ -36,7 +36,7 @@ import static java.util.logging.Logger.getLogger;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class XincoDemoResetThread extends Thread {
 

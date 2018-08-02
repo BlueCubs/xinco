@@ -21,7 +21,7 @@
  * 
  * Description: Admin window for managing settings
  * 
- * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 14, 2011
+ * Original Author: Javier A. Ortiz Bultron javier.ortiz.78@gmail.com Date: Dec 14, 2011
  * 
  * ************************************************************
  */
@@ -38,7 +38,7 @@ import java.util.ResourceBundle;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class SettingAdminWindow extends Panel implements ComponentContainer {
 

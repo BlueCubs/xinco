@@ -6,7 +6,7 @@ import com.vaadin.ui.ProgressIndicator;
 /**
  * Based on code from Teemu PÃ¶ntelin / Vaadin Ltd
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultronjavier.ortiz.78@gmail.com
  */
 public class WizardProgressBar extends ProgressIndicator implements
         WizardProgressListener {

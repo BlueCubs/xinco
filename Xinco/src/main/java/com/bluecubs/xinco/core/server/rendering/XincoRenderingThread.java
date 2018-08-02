@@ -21,7 +21,7 @@
  *
  * Description: Thread in charge of generating pdf rendering of files when uploaded (if needed)
  *
- * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 21, 2011
+ * Original Author: Javier A. Ortiz Bultron javier.ortiz.78@gmail.com Date: Dec 21, 2011
  *
  * ************************************************************
  */
@@ -61,7 +61,7 @@ import org.jodconverter.office.OfficeManager;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class XincoRenderingThread extends Thread {
 

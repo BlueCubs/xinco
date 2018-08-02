@@ -69,7 +69,7 @@ import static javax.xml.ws.soap.SOAPBinding.SOAP11HTTP_BINDING;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 @WebService(serviceName = "Xinco", portName = "XincoPort",
         endpointInterface = "com.bluecubs.xinco.core.server.service.Xinco",

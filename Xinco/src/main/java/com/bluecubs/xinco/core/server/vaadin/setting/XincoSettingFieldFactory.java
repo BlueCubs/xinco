@@ -21,7 +21,7 @@
  * 
  * Description: Custom field factory for the setting form
  * 
- * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 19, 2011
+ * Original Author: Javier A. Ortiz Bultron javier.ortiz.78@gmail.com Date: Dec 19, 2011
  * 
  * ************************************************************
  */
@@ -32,15 +32,17 @@ import com.vaadin.ui.DefaultFieldFactory;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class XincoSettingFieldFactory extends DefaultFieldFactory {
+
+    private static final long serialVersionUID = 1831528865571722465L;
 
     /**
      * If name follows method naming conventions, convert the name to spaced
      * upper case text. For example, convert "firstName" to "First Name"
      *
-     * @param propertyId
+     * @param propertyId Property ID
      * @return the formatted caption string
      */
     public static String createCaptionByPropertyId(Object propertyId) {

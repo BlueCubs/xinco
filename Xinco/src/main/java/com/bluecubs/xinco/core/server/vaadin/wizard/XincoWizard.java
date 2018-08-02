@@ -18,8 +18,7 @@ import static java.util.ResourceBundle.getBundle;
  *
  * <p> The wizard also supports navigation through URI fragments. This feature
  * is disabled by default, but you can enable it using
- * {@link #setUriFragmentEnabled(boolean)} method. Each step will get a
- * generated identifier that is used as the URI fragment. If you wish to
+ * setUriFragmentEnabled(boolean) method. Each step will get a * generated identifier that is used as the URI fragment. If you wish to
  * override these with your own identifiers, you can add the steps using the
  * overloaded {@link #addStep(WizardStep, String)} method. </p>
  *
@@ -31,9 +30,11 @@ import static java.util.ResourceBundle.getBundle;
  *
  * Based on code from Teemu PÃ¶ntelin / Vaadin Ltd
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultronjavier.ortiz.78@gmail.com
  */
 public final class XincoWizard extends CustomComponent {
+
+    private static final long serialVersionUID = 2137937818558467436L;
 
     private final List<WizardStep> steps = new ArrayList<>();
     private final List<WizardProgressListener> listeners =

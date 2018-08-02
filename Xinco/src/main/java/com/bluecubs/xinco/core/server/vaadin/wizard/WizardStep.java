@@ -5,7 +5,7 @@ import com.vaadin.ui.Component;
 /**
  * Based on code from Teemu PÃ¶ntelin / Vaadin Ltd
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultronjavier.ortiz.78@gmail.com
  */
 public interface WizardStep {
 
@@ -27,7 +27,7 @@ public interface WizardStep {
     /**
      * Returns true if user is allowed to navigate forward past this WizardStep.
      * Typically this method is called when user clicks the Next button of the
-     * {@link Wizard}.
+     * Wizard.
      *
      * @return true if user is allowed to navigate past this WizardStep.
      */
@@ -36,7 +36,7 @@ public interface WizardStep {
     /**
      * Returns true if user is allowed to navigate backwards from this
      * WizardStep. Typically this method is called when user clicks the Back
-     * button of the {@link Wizard}.
+     * button of the Wizard.
      *
      * @return true if user is allowed to navigate backwards from this
      * WizardStep.

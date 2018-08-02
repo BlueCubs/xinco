@@ -10,7 +10,7 @@ import org.vaadin.risto.stepper.IntStepper;
 
 /**
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultronjavier.ortiz.78@gmail.com
  */
 public class VersionSelector extends CustomComponent {
 
@@ -64,6 +64,8 @@ public class VersionSelector extends CustomComponent {
         postfix.setValue(version.getVersionPostfix() == null ? "" : version.getVersionPostfix());
         panel.addComponent(postfix);
         minor.addListener(new ValueChangeListener() {
+            private static final long serialVersionUID = -4675330193390697530L;
+
             @Override
             public void valueChange(ValueChangeEvent event) {
                 if ((Boolean) minor.getValue()) {
@@ -92,11 +94,11 @@ public class VersionSelector extends CustomComponent {
     public void increaseHigh() {
         high.setValue((Integer) high.getValue() + 1);
     }
-    
+
     public void increaseMid() {
         mid.setValue((Integer) mid.getValue() + 1);
     }
-    
+
     public void increaseLow() {
         low.setValue((Integer) low.getValue() + 1);
     }
@@ -104,7 +106,7 @@ public class VersionSelector extends CustomComponent {
     /**
      * Get the version currently displayed in the component
      *
-     * @return
+     * @return version
      */
     public XincoVersion getVersion() {
         version.setVersionHigh((Integer) high.getValue());
@@ -117,7 +119,7 @@ public class VersionSelector extends CustomComponent {
      * Enable/disable the version fields (only modifiable with the minor check
      * box)
      *
-     * @param enable
+     * @param enable True to enable, false otherwise.
      */
     public void setVersionEnabled(boolean enable) {
         high.setEnabled(enable);

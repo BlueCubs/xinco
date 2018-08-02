@@ -21,7 +21,7 @@
  * 
  * Description: AddAttributeDialog
  * 
- * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
+ * Original Author: Javier A. Ortiz Bultron javier.ortiz.78@gmail.com Date: Jan 26, 2012
  * 
  * ************************************************************
  */
@@ -38,7 +38,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 class AddAttributeDialog extends CustomComponent {
 

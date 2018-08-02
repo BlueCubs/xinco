@@ -237,7 +237,7 @@ public class XincoDBManager {
 
     /**
      * @param aPU the Persistence Unit to set
-     * @throws XincoException
+     * @throws XincoException if something goes wrong.
      */
     public static void setPU(String aPU) throws XincoException {
         puName = aPU;
@@ -419,7 +419,7 @@ public class XincoDBManager {
 
     /**
      * @return the Entity Manager Factory
-     * @throws XincoException
+     * @throws XincoException if something goes wrong.
      */
     public static EntityManagerFactory getEntityManagerFactory()
             throws XincoException {

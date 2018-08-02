@@ -21,7 +21,7 @@
  * 
  * Description: Edit settings
  * 
- * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 14, 2011
+ * Original Author: Javier A. Ortiz Bultron javier.ortiz.78@gmail.com Date: Dec 14, 2011
  * 
  * ************************************************************
  */
@@ -46,7 +46,7 @@ import static java.util.logging.Logger.getLogger;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 class SettingEditor extends Window implements Button.ClickListener {
 

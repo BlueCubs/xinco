@@ -212,7 +212,7 @@ import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
 
 /**
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultronjavier.ortiz.78@gmail.com
  */
 public class Xinco extends Application implements HttpServletRequestListener {
 

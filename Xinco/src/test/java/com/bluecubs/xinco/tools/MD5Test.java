@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNotSame;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class MD5Test {
 

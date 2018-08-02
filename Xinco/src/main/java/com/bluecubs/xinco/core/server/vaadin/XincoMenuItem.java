@@ -5,7 +5,7 @@ import com.vaadin.terminal.ThemeResource;
 
 /**
  *
- * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultronjavier.ortiz.78@gmail.com
  */
 public class XincoMenuItem {
 
@@ -31,6 +31,7 @@ public class XincoMenuItem {
      * @param dataOnly Only for data objects
      * @param nodeOnly Only for node objects
      * @param selected Does something needs to be selected to enable this item?
+     * @param validDataTypes Valid data types.
      */
     protected XincoMenuItem(int index, String groupName, String name,
             ThemeResource icon, com.vaadin.ui.MenuBar.Command command,
