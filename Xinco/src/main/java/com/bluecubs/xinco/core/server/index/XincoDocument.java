@@ -58,7 +58,7 @@ import static org.apache.lucene.document.Field.Store.YES;
  */
 public class XincoDocument {
 
-    private static final Logger logger =
+    private static final Logger LOG =
             getLogger(XincoDocument.class.getSimpleName());
 
     public static Document getXincoDocument(XincoCoreData d, boolean indexContent)
@@ -138,8 +138,8 @@ public class XincoDocument {
                     if (ContentString != null) {
                         doc.add(new Field("file", ContentString, YES, ANALYZED));
                     }
-                } catch (Exception ie) {
-                    logger.log(SEVERE, d.toString(), ie);
+                } catch (IllegalAccessException | InstantiationException ie) {
+                    LOG.log(SEVERE, d.toString(), ie);
                 }
             }
         }

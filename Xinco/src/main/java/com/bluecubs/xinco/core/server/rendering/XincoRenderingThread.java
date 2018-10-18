@@ -54,22 +54,23 @@ import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
-import org.jodconverter.OfficeDocumentConverter;
-import org.jodconverter.office.DefaultOfficeManagerBuilder;
+import org.jodconverter.JodConverter;
+import org.jodconverter.office.LocalOfficeManager;
 import org.jodconverter.office.OfficeException;
 import org.jodconverter.office.OfficeManager;
+import org.jodconverter.office.OfficeUtils;
 
 /**
  *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public class XincoRenderingThread extends Thread {
 
-    private XincoCoreData original;
+    private final XincoCoreData original;
     private XincoCoreDataServer rendering = null;
     private XincoCoreDataHasDependencyServer dependency = null;
     private final XincoCoreUser user;
-    private XincoWebService service = new XincoWebService();
+    private final XincoWebService service = new XincoWebService();
     private File rendition;
     private File xincoFile;
     private static int port;
@@ -147,7 +148,8 @@ public class XincoRenderingThread extends Thread {
                         + rendering.getId()));
                 rendition.delete();
                 LOG.log(FINE, "Converted the file!");
-            } catch (IOException | IllegalStateException ex) {
+            }
+            catch (IOException | IllegalStateException ex) {
                 LOG.log(WARNING, null, ex);
                 //Cleanup
                 if (dependency != null) {
@@ -155,9 +157,7 @@ public class XincoRenderingThread extends Thread {
                 }
                 XincoCoreDataServer render
                         = new XincoCoreDataServer(rendering.getId());
-                if (render != null) {
-                    render.deleteFromDB();
-                }
+                render.deleteFromDB();
             }
         }
     }
@@ -181,30 +181,37 @@ public class XincoRenderingThread extends Thread {
             }
             // Connect to an OpenOffice.org instance running on available port
             try {
-                officeManager = new DefaultOfficeManagerBuilder()
-                        .setPortNumber(port)
+                officeManager = LocalOfficeManager.builder()
+                        .portNumbers(port)
                         .build();
                 officeManager.start();
 
-                OfficeDocumentConverter converter
-                        = new OfficeDocumentConverter(officeManager);
-                converter.convert(source, dest);
-                // close the connection
-                officeManager.stop();
+                JodConverter.convert(source)
+                        .to(dest)
+                        .execute();
                 return true;
-            } catch (IllegalStateException | OfficeException ise) {
+            }
+            catch (IllegalStateException | OfficeException ise) {
                 //Looks like OpenOffice or LibreOffice is not installed
                 LOG.warning("Unable to find OpenOffice and/or LibreOffice "
                         + "installation. Disabling rendering generation!");
                 disable();
                 throw ise;
             }
+            finally {
+                // Stop the office process
+                OfficeUtils.stopQuietly(officeManager);
+            }
             //Looks like OpenOffice or LibreOffice is not installed
 
-        } catch (OfficeException e) {
+        }
+        catch (OfficeException e) {
             try {
-                officeManager.stop();
-            } catch (OfficeException ex) {
+                if (officeManager != null) {
+                    officeManager.stop();
+                }
+            }
+            catch (OfficeException ex) {
                 LOG.log(Level.SEVERE, null, ex);
                 throw new XincoException(ex);
             }

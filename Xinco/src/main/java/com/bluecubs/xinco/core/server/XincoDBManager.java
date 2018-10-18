@@ -69,13 +69,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.*;
 import static javax.persistence.Persistence.createEntityManagerFactory;
-import javax.persistence.metamodel.EmbeddableType;
-import javax.persistence.metamodel.EntityType;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.MigrationInfo;
 import static org.flywaydb.core.api.MigrationState.SUCCESS;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.h2.jdbcx.JdbcDataSource;
 
 public class XincoDBManager {
@@ -174,11 +173,11 @@ public class XincoDBManager {
         finally {
             try {
                 if (LOG.isLoggable(Level.CONFIG)) {
-                    for (XincoIdServer next : getIds()) {
+                    getIds().forEach((next) -> {
                         LOG.log(Level.CONFIG,
                                 "{0}, {1}, {2}", new Object[]{next.getId(),
                                     next.getTablename(), next.getLastId()});
-                    }
+                    });
                 }
             }
             catch (XincoException ex1) {
@@ -192,15 +191,15 @@ public class XincoDBManager {
                 "Creating ids to work around eclipse issue "
                 + "(https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852)...");
         LOG.log(FINE, "Embeddables:");
-        for (EmbeddableType et : getEntityManager().getMetamodel()
-                .getEmbeddables()) {
-            processFields(et.getJavaType().getDeclaredFields());
-        }
+        getEntityManager().getMetamodel()
+                .getEmbeddables().forEach((et) -> {
+                    processFields(et.getJavaType().getDeclaredFields());
+        });
         LOG.log(FINE, "Entities:");
-        for (EntityType et : getEntityManager().getMetamodel()
-                .getEntities()) {
-            processFields(et.getBindableJavaType().getDeclaredFields());
-        }
+        getEntityManager().getMetamodel()
+                .getEntities().forEach((et) -> {
+                    processFields(et.getBindableJavaType().getDeclaredFields());
+        });
         LOG.log(FINE, "Done!");
     }
 
@@ -400,11 +399,12 @@ public class XincoDBManager {
     }
 
     private static void updateDatabase(DataSource dataSource) {
-        Flyway flyway = new Flyway();
+        FluentConfiguration configuration = Flyway.configure();
+        configuration.baselineOnMigrate(true);
+        configuration.dataSource(dataSource);
+        configuration.locations("db.migration");
+        Flyway flyway = new Flyway(configuration);
         try {
-            flyway.setBaselineOnMigrate(true);
-            flyway.setDataSource(dataSource);
-            flyway.setLocations("db.migration");
             LOG.info("Starting migration...");
             flyway.migrate();
             LOG.info("Done!");

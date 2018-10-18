@@ -27,11 +27,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import org.eclipse.persistence.config.SessionCustomizer;
-import org.eclipse.persistence.sessions.DatabaseLogin;
 import org.eclipse.persistence.sessions.JNDIConnector;
-import static org.eclipse.persistence.sessions.JNDIConnector.STRING_LOOKUP;
 import org.eclipse.persistence.sessions.Session;
-import org.eclipse.persistence.sessions.server.ServerSession;
 
 /**
  * See http://wiki.eclipse.org/Customizing_the_EclipseLink_Application_(ELUG)
@@ -66,16 +63,6 @@ public class JPAEclipseLinkSessionCustomizer implements SessionCustomizer {
             // Lookup this new dataSource
             dataSource = (DataSource) context.lookup(JNDI_DATASOURCE_NAME);
             connector.setDataSource(dataSource);
-            // Change from COMPOSITE_NAME_LOOKUP to STRING_LOOKUP
-            // Note: if both jta and non-jta elements exist this will only change the first one - and may still result in the COMPOSITE_NAME_LOOKUP being set
-            // Make sure only jta-data-source is in persistence.xml with no non-jta-data-source property set
-            connector.setLookupType(STRING_LOOKUP);
-
-            // if you are specifying both JTA and non-JTA in your persistence.xml then set both connectors to be safe
-            JNDIConnector writeConnector = (JNDIConnector) session.getLogin().getConnector();
-            writeConnector.setLookupType(STRING_LOOKUP);
-            JNDIConnector readConnector = (JNDIConnector) ((DatabaseLogin) ((ServerSession) session).getReadConnectionPool().getLogin()).getConnector();
-            readConnector.setLookupType(STRING_LOOKUP);
 
             // Set the new connection on the session
             session.getLogin().setConnector(connector);
