@@ -46,7 +46,6 @@ import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import static org.apache.commons.lang3.SystemUtils.IS_OS_LINUX;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 
 /**
@@ -108,7 +107,7 @@ public final class XincoConfigSingletonServer {
                 if (IS_OS_WINDOWS) {
                     fileRepositoryPath = "C:"
                             + getProperty("file.separator") + "Temp";
-                } else if (IS_OS_LINUX) {
+                } else {
                     fileRepositoryPath = getProperty("file.separator")
                             + "tmp";
                 }
