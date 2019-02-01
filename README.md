@@ -5,6 +5,7 @@
 # Xinco
 
 [![Build Status](https://travis-ci.org/BlueCubs/xinco.svg?branch=master)](https://travis-ci.org/BlueCubs/xinco)
+[![Build status](https://ci.appveyor.com/api/projects/status/tnjq705i70j8txhl?svg=true)](https://ci.appveyor.com/project/javydreamercsw/xinco)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e7997fa81ff74355ae4036f73b4af7d4)](https://www.codacy.com/app/javydreamercsw/xinco?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=BlueCubs/xinco&amp;utm_campaign=Badge_Grade)
 
 xinco [eXtensibe INformation COre] is a powerful Web-Service based Information and Document Management System (DMS) for files, text, URLs and contacts, featuring ACLs, versioning, full text search, an FTP-like client (easy install, J2EE+MySQL/PostgreSQL)
