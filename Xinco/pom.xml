@@ -601,7 +601,7 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>7.5.0</version>
+            <version>3.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
