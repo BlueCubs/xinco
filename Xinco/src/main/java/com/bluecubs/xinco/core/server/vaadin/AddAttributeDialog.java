@@ -112,20 +112,15 @@ class AddAttributeDialog extends CustomComponent {
                     dataTypeAttributes.get(i).getDesignation();
             attrTable.addItem(new Object[]{type, value}, i);
         }
-        attrTable.setTableFieldFactory(new TableFieldFactory() {
-            @Override
-            public Field createField(com.vaadin.data.Container container, 
-            Object itemId, Object propertyId, 
-            com.vaadin.ui.Component uiContext) {
-                if (propertyId.equals(getInstance().getResource()
-                        .getString("general.attribute"))) {
-                    com.vaadin.ui.TextField textField =
-                            new com.vaadin.ui.TextField();
-                    textField.setEnabled(false);
-                    return textField;
-                } else {
-                    return new com.vaadin.ui.TextField();
-                }
+        attrTable.setTableFieldFactory((com.vaadin.data.Container container, Object itemId, Object propertyId, com.vaadin.ui.Component uiContext) -> {
+            if (propertyId.equals(getInstance().getResource()
+                    .getString("general.attribute"))) {
+                com.vaadin.ui.TextField textField =
+                        new com.vaadin.ui.TextField();
+                textField.setEnabled(false);
+                return textField;
+            } else {
+                return new com.vaadin.ui.TextField();
             }
         });
         attrTable.setEditable(true);

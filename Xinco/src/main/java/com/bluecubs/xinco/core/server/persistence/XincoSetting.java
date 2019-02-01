@@ -63,7 +63,7 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_setting",
     allocationSize = 1,
-    initialValue = 1000)
+    initialValue = 1_000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
@@ -74,7 +74,7 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
     @Column(name = "int_value")
     private Integer intValue;
     @Lob
-    @Size(max = 65535)
+    @Size(max = 65_535)
     @Column(name = "string_value")
     private String stringValue;
     @Column(name = "bool_value")

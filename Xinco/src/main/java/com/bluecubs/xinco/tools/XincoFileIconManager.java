@@ -35,6 +35,7 @@ package com.bluecubs.xinco.tools;
 
 import java.io.File;
 import static java.io.File.createTempFile;
+import java.io.IOException;
 import static java.lang.System.getProperty;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
@@ -78,7 +79,7 @@ public class XincoFileIconManager {
                 //Delete the temporary file
                 file.delete();
             }
-        } catch (Exception ioe) {
+        } catch (IOException ioe) {
             getLogger(XincoFileIconManager.class.getSimpleName()).log(SEVERE, null, ioe);
             return null;
         }

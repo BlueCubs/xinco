@@ -62,7 +62,7 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_core_ace",
     allocationSize = 1,
-    initialValue = 1000)
+    initialValue = 1_000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)

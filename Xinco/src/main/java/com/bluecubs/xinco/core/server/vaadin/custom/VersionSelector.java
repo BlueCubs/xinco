@@ -63,18 +63,15 @@ public final class VersionSelector extends CustomComponent {
         postfix = new TextField(getString("general.version.postfix"));
         postfix.setValue(version.getVersionPostfix() == null ? "" : version.getVersionPostfix());
         panel.addComponent(postfix);
-        minor.addListener(new ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                if ((Boolean) minor.getValue()) {
-                    high.setValue(version.getVersionHigh());
-                    mid.setValue(version.getVersionMid() + 1);
-                    low.setValue(version.getVersionLow());
-                } else {
-                    high.setValue(version.getVersionHigh() + 1);
-                    mid.setValue(0);
-                    low.setValue(0);
-                }
+        minor.addListener((ValueChangeEvent event) -> {
+            if ((Boolean) minor.getValue()) {
+                high.setValue(version.getVersionHigh());
+                mid.setValue(version.getVersionMid() + 1);
+                low.setValue(version.getVersionLow());
+            } else {
+                high.setValue(version.getVersionHigh() + 1);
+                mid.setValue(0);
+                low.setValue(0);
             }
         });
         panel.addComponent(minor);

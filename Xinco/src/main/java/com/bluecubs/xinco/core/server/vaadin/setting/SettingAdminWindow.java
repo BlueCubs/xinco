@@ -59,32 +59,23 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
         table.addStyleName("striped");
         com.vaadin.ui.Button newButton =
                 new com.vaadin.ui.Button(getResource().getString("general.add"));
-        newButton.addListener(new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                final BeanItem<com.bluecubs.xinco.core.server.persistence.XincoSetting> newSettingItem =
-                        new BeanItem<>(new com.bluecubs.xinco.core.server.persistence.XincoSetting());
-                SettingEditor settingEditor =
-                        new SettingEditor(newSettingItem);
-                settingEditor.addListener(new SettingEditor.EditorSavedListener() {
-                    @Override
-                    public void editorSaved(SettingEditor.EditorSavedEvent event) {
-                        container.addEntity(newSettingItem.getBean());
-                    }
-                });
-            }
+        newButton.addListener((com.vaadin.ui.Button.ClickListener) (com.vaadin.ui.Button.ClickEvent event) -> {
+            final BeanItem<com.bluecubs.xinco.core.server.persistence.XincoSetting> newSettingItem =
+                    new BeanItem<>(new com.bluecubs.xinco.core.server.persistence.XincoSetting());
+            SettingEditor settingEditor =
+                    new SettingEditor(newSettingItem);
+            settingEditor.addListener((SettingEditor.EditorSavedListener) (SettingEditor.EditorSavedEvent event1) -> {
+                container.addEntity(newSettingItem.getBean());
+            });
         });
         final com.vaadin.ui.Button editButton = new com.vaadin.ui.Button(getResource().getString("general.edit"));
-        editButton.addListener(new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                if (table.getValue() != null) {
-                    SettingEditor settingEditor = new SettingEditor(
-                            table.getItem(table.getValue()));
-                    settingEditor.center();
-                    settingEditor.setModal(true);
-                    getApplication().getMainWindow().addWindow(settingEditor);
-                }
+        editButton.addListener((com.vaadin.ui.Button.ClickListener) (com.vaadin.ui.Button.ClickEvent event) -> {
+            if (table.getValue() != null) {
+                SettingEditor settingEditor = new SettingEditor(
+                        table.getItem(table.getValue()));
+                settingEditor.center();
+                settingEditor.setModal(true);
+                getApplication().getMainWindow().addWindow(settingEditor);
             }
         });
         table.addListener(new Property.ValueChangeListener() {

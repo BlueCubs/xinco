@@ -83,7 +83,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                 cal.setTime(xaa.getAttribDatetime());
                 setAttribDatetime(factory.newXMLGregorianCalendar(cal));
             }
-        } catch (Exception e) {
+        } catch (DatatypeConfigurationException e) {
             throw new XincoException(e.fillInStackTrace());
         }
     }

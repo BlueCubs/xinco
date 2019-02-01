@@ -68,7 +68,7 @@ public class XincoSettingT implements Serializable {
     @Column(name = "int_value")
     private Integer intValue;
     @Lob
-    @Size(max = 65535)
+    @Size(max = 65_535)
     @Column(name = "string_value")
     private String stringValue;
     @Column(name = "bool_value")

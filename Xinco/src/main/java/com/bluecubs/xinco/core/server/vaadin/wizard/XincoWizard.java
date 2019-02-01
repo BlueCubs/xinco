@@ -96,36 +96,24 @@ public final class XincoWizard extends CustomComponent {
 
     private void initControlButtons() {
         nextButton = new Button(xerb.getString("general.next"));
-        nextButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                next();
-            }
+        nextButton.addListener((Button.ClickListener) (Button.ClickEvent event) -> {
+            next();
         });
 
         backButton = new Button(xerb.getString("general.back"));
-        backButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                back();
-            }
+        backButton.addListener((Button.ClickListener) (Button.ClickEvent event) -> {
+            back();
         });
 
         finishButton = new Button(xerb.getString("general.finish"));
-        finishButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                finish();
-            }
+        finishButton.addListener((Button.ClickListener) (Button.ClickEvent event) -> {
+            finish();
         });
         finishButton.setEnabled(false);
 
         cancelButton = new Button(xerb.getString("general.cancel"));
-        cancelButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                cancel();
-            }
+        cancelButton.addListener((Button.ClickListener) (Button.ClickEvent event) -> {
+            cancel();
         });
     }
 

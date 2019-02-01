@@ -287,7 +287,7 @@ public class XincoWebService {
                         getXincoCoreDataPath(CONFIG.fileRepositoryPath,
                                 data.getId(), data.getId() + revision)), new CRC32());
                 out = new ByteArrayOutputStream();
-                byte[] buf = new byte[4096];
+                byte[] buf = new byte[4_096];
                 int len;
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
@@ -334,7 +334,7 @@ public class XincoWebService {
                         "" + data.getId()));
                 try (CheckedOutputStream out = new CheckedOutputStream(
                         new FileOutputStream(xincoFile), new CRC32())) {
-                    byte[] buf = new byte[4096];
+                    byte[] buf = new byte[4_096];
                     totalLen = 0;
                     while ((len = in.read(buf)) > 0) {
                         out.write(buf, 0, len);
@@ -365,7 +365,7 @@ public class XincoWebService {
                                         data.getId(), "" + data.getId())));
                         fcos = new FileOutputStream(new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath,
                                 data.getId(), data.getId() + "-" + MaxLogId)));
-                        byte[] fcbuf = new byte[4096];
+                        byte[] fcbuf = new byte[4_096];
                         while ((len = fcis.read(fcbuf)) != -1) {
                             fcos.write(fcbuf, 0, len);
                         }
@@ -849,7 +849,7 @@ public class XincoWebService {
             return validCredentials(in1.getUsername(),
                     in1.getUserpassword(), true)
                     ? XincoCoreDataHasDependencyServer.getRenderings(in0.getId())
-                    : new ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>();
+                    : new ArrayList<>();
         } catch (XincoException e) {
             return new ArrayList<>();
         }

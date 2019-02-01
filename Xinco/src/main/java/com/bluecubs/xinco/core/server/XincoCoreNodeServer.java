@@ -42,6 +42,8 @@ import static com.bluecubs.xinco.core.server.index.XincoIndexer.removeXincoCoreD
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreNodeJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreNode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -198,7 +200,7 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
                     ((XincoCoreDataServer) ((ArrayList) getXincoCoreData()).get(i)).deleteFromDB();
                 }
             }
-        } catch (Exception e) {
+        } catch (IllegalOrphanException | NonexistentEntityException e) {
             logger.log(SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }

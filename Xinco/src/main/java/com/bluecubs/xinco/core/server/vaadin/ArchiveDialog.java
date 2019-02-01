@@ -127,26 +127,23 @@ class ArchiveDialog extends CustomComponent {
         panel.addComponent(days);
         //Disabled by default
         days.setEnabled(false);
-        archiveModel.addListener(new ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                switch (valueOf(event.getProperty().toString())) {
-                    case 1:
-                        //Enable date
-                        date.setEnabled(true);
-                        days.setEnabled(false);
-                        break;
-                    case 2:
-                        //Enable days
-                        days.setEnabled(true);
-                        date.setEnabled(false);
-                        break;
-                    default:
-                        //Disable both
-                        date.setEnabled(false);
-                        days.setEnabled(false);
-                        break;
-                }
+        archiveModel.addListener((ValueChangeEvent event) -> {
+            switch (valueOf(event.getProperty().toString())) {
+                case 1:
+                    //Enable date
+                    date.setEnabled(true);
+                    days.setEnabled(false);
+                    break;
+                case 2:
+                    //Enable days
+                    days.setEnabled(true);
+                    date.setEnabled(false);
+                    break;
+                default:
+                    //Disable both
+                    date.setEnabled(false);
+                    days.setEnabled(false);
+                    break;
             }
         });
         // Set the size as undefined at all levels

@@ -39,6 +39,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -141,7 +142,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute) o;
                 new XincoCoreDataTypeAttributeJpaController(getEntityManagerFactory()).destroy(xcdta.getXincoCoreDataTypeAttributePK());
             }
-        } catch (Exception ex) {
+        } catch (NonexistentEntityException ex) {
             getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(SEVERE, null, ex);
             throw new XincoException();
         }

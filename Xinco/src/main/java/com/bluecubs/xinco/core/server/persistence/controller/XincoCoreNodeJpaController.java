@@ -61,13 +61,13 @@ public class XincoCoreNodeJpaController implements Serializable {
 
     public void create(XincoCoreNode xincoCoreNode) throws PreexistingEntityException, Exception {
         if (xincoCoreNode.getXincoCoreNodeList() == null) {
-            xincoCoreNode.setXincoCoreNodeList(new ArrayList<XincoCoreNode>());
+            xincoCoreNode.setXincoCoreNodeList(new ArrayList<>());
         }
         if (xincoCoreNode.getXincoCoreAceList() == null) {
-            xincoCoreNode.setXincoCoreAceList(new ArrayList<XincoCoreAce>());
+            xincoCoreNode.setXincoCoreAceList(new ArrayList<>());
         }
         if (xincoCoreNode.getXincoCoreDataList() == null) {
-            xincoCoreNode.setXincoCoreDataList(new ArrayList<XincoCoreData>());
+            xincoCoreNode.setXincoCoreDataList(new ArrayList<>());
         }
         EntityManager em = null;
         try {
@@ -270,7 +270,7 @@ public class XincoCoreNodeJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
+        } catch (IllegalOrphanException ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = xincoCoreNode.getId();

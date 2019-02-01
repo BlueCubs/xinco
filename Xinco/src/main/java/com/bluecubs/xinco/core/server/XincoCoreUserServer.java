@@ -176,7 +176,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                     Calendar cal2 = getInstance(), now = getInstance();
                     cal2.setTime(xcu.getLastModified());
                     long diffMillis = now.getTimeInMillis() - cal2.getTimeInMillis();
-                    long diffDays = diffMillis / (24 * 60 * 60 * 1000);
+                    long diffDays = diffMillis / (24 * 60 * 60 * 1_000);
                     long age = getSetting("password.aging").getIntValue();
                     if (diffDays >= age) {
                         status = 3;
@@ -517,7 +517,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 //Now check the aging
                 XincoCoreUserT user = (XincoCoreUserT) o;
                 long diff = currentTimeMillis() - user.getLastModified().getTime();
-                if (diff / (1000 * 60 * 60 * 24) > getSetting("password.unusable_period").getIntValue()) {
+                if (diff / (1_000 * 60 * 60 * 24) > getSetting("password.unusable_period").getIntValue()) {
                     return false;
                 }
             }

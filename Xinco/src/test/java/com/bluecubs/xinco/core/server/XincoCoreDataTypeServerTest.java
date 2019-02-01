@@ -30,7 +30,7 @@ public class XincoCoreDataTypeServerTest extends AbstractXincoDataBaseTestCase {
      */
     public void testWrite2DB() {
         try {
-            XincoCoreDataTypeServer instance = new XincoCoreDataTypeServer(0, "Test", "Test desc", new ArrayList<XincoCoreDataTypeAttribute>());
+            XincoCoreDataTypeServer instance = new XincoCoreDataTypeServer(0, "Test", "Test desc", new ArrayList<>());
             assertTrue(instance.write2DB() > 0);
             deleteFromDB(instance);
         } catch (XincoException ex) {

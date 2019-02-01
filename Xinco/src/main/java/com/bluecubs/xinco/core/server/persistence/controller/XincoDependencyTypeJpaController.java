@@ -59,7 +59,7 @@ public class XincoDependencyTypeJpaController implements Serializable {
 
     public void create(XincoDependencyType xincoDependencyType) {
         if (xincoDependencyType.getXincoCoreDataHasDependencyList() == null) {
-            xincoDependencyType.setXincoCoreDataHasDependencyList(new ArrayList<XincoCoreDataHasDependency>());
+            xincoDependencyType.setXincoCoreDataHasDependencyList(new ArrayList<>());
         }
         EntityManager em = null;
         try {
@@ -152,7 +152,7 @@ public class XincoDependencyTypeJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
+        } catch (IllegalOrphanException ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = xincoDependencyType.getId();

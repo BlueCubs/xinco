@@ -79,11 +79,11 @@ public final class XincoArchiveThread extends Thread {
             } catch (Exception e) {
                 LOG.log(SEVERE, null, e);
                 //continue, wait and try again...
-                archive_period = 14400000;
+                archive_period = 14_400_000;
             }
             try {
                 sleep(archive_period);
-            } catch (Exception se) {
+            } catch (InterruptedException se) {
                 LOG.log(SEVERE, null, se);
                 break;
             }

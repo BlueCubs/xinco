@@ -48,7 +48,7 @@ public class XincoIndexOptimizeThread extends Thread {
     public static XincoIndexOptimizeThread instance = null;
     public Calendar firstRun = null;
     public Calendar lastRun = null;
-    public long index_period = 604800000; //Weekly
+    public long index_period = 604_800_000; //Weekly
 
     @Override
     @SuppressWarnings("static-access")
@@ -67,7 +67,7 @@ public class XincoIndexOptimizeThread extends Thread {
             }
             try {
                 sleep(index_period);
-            } catch (Exception se) {
+            } catch (InterruptedException se) {
                 break;
             }
         }

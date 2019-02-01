@@ -37,6 +37,7 @@ import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
@@ -167,7 +168,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
         try {
             XincoCoreAceJpaController controller = new XincoCoreAceJpaController(getEntityManagerFactory());
             controller.destroy(attrCACE.getId());
-        } catch (Exception ex) {
+        } catch (NonexistentEntityException ex) {
             getLogger(XincoCoreACEServer.class.getSimpleName()).log(SEVERE, null, ex);
             throw new XincoException(ex.getMessage());
         }

@@ -60,10 +60,10 @@ public class XincoCoreGroupJpaController implements Serializable {
 
     public void create(XincoCoreGroup xincoCoreGroup) throws PreexistingEntityException, Exception {
         if (xincoCoreGroup.getXincoCoreAceList() == null) {
-            xincoCoreGroup.setXincoCoreAceList(new ArrayList<XincoCoreAce>());
+            xincoCoreGroup.setXincoCoreAceList(new ArrayList<>());
         }
         if (xincoCoreGroup.getXincoCoreUserHasXincoCoreGroupList() == null) {
-            xincoCoreGroup.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<XincoCoreUserHasXincoCoreGroup>());
+            xincoCoreGroup.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
         }
         EntityManager em = null;
         try {
@@ -179,7 +179,7 @@ public class XincoCoreGroupJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
+        } catch (IllegalOrphanException ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = xincoCoreGroup.getId();

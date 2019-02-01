@@ -36,6 +36,7 @@ package com.bluecubs.xinco.core.server.index.filetypes;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
@@ -60,7 +61,7 @@ public class XincoIndexHTML implements XincoIndexFileType {
         try {
             HTMLParser parser = new HTMLParser(fis);
             reader = parser.getReader();
-        } catch (Exception fe) {
+        } catch (IOException fe) {
             reader = null;
         }
         return reader;

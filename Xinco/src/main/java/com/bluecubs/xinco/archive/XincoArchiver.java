@@ -133,7 +133,7 @@ public final class XincoArchiver {
                     fcos = new FileOutputStream(new File(archiveBaseDir
                             + archiveFileDir
                             + getProperty("file.separator") + fileName));
-                    fcbuf = new byte[4096];
+                    fcbuf = new byte[4_096];
                     len = 0;
                     while ((len = fcis.read(fcbuf)) != -1) {
                         fcos.write(fcbuf, 0, len);

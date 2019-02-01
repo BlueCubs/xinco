@@ -167,7 +167,7 @@ public final class XincoConfigSingletonServer {
                             .getLongValue();
         } catch (Exception e) {
             LOG.log(SEVERE, null, e);
-            fileArchivePeriod = 14400000;
+            fileArchivePeriod = 14_400_000;
             exceptions.add(e);
             loadDefault = true;
         }
@@ -178,7 +178,7 @@ public final class XincoConfigSingletonServer {
                             .getLongValue();
         } catch (Exception e) {
             LOG.log(SEVERE, null, e);
-            fileIndexOptimizerPeriod = 14400000;
+            fileIndexOptimizerPeriod = 14_400_000;
             exceptions.add(e);
             loadDefault = true;
         }
@@ -289,7 +289,7 @@ public final class XincoConfigSingletonServer {
                     .getIntValue();
         } catch (Exception e) {
             LOG.log(SEVERE, null, e);
-            OOPort = 8100;
+            OOPort = 8_100;
             exceptions.add(e);
             loadDefault = true;
         }

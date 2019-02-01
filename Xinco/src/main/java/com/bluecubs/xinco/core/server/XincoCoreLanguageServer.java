@@ -37,6 +37,8 @@ import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreLanguage;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -120,7 +122,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     public static int deleteFromDB(XincoCoreLanguage attrCL, int userID) throws XincoException {
         try {
             new XincoCoreLanguageJpaController(getEntityManagerFactory()).destroy(attrCL.getId());
-        } catch (Exception ex) {
+        } catch (IllegalOrphanException | NonexistentEntityException ex) {
             getLogger(XincoCoreLanguageServer.class.getName()).log(SEVERE, null, ex);
             throw new XincoException();
         }

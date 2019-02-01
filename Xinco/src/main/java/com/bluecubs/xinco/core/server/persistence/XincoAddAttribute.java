@@ -69,7 +69,7 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
     @Column(name = "attrib_varchar")
     private String attribVarchar;
     @Lob
-    @Size(max = 65535)
+    @Size(max = 65_535)
     @Column(name = "attrib_text")
     private String attribText;
     @Column(name = "attrib_datetime")

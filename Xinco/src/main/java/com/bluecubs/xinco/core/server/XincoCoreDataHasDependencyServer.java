@@ -107,7 +107,7 @@ public class XincoCoreDataHasDependencyServer extends XincoCoreDataHasDependency
                 new XincoCoreDataHasDependencyJpaController(getEntityManagerFactory()).destroy(
                         ((XincoCoreDataHasDependency) result.get(0)).getXincoCoreDataHasDependencyPK());
             }
-        } catch (Exception ex) {
+        } catch (NonexistentEntityException ex) {
             getLogger(XincoCoreDataHasDependencyServer.class.getName()).log(SEVERE, null, ex);
             throw new XincoException(ex.getLocalizedMessage());
         }

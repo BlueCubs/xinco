@@ -37,6 +37,8 @@ import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.sql.Timestamp;
@@ -156,7 +158,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
         try {
             new XincoCoreDataTypeJpaController(getEntityManagerFactory()).destroy(xcdt.getId());
             return 0;
-        } catch (Exception ex) {
+        } catch (IllegalOrphanException | NonexistentEntityException ex) {
             getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(SEVERE, null, ex);
             return -1;
         }

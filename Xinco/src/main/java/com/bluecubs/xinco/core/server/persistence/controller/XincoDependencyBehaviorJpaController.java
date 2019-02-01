@@ -58,7 +58,7 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
 
     public void create(XincoDependencyBehavior xincoDependencyBehavior) {
         if (xincoDependencyBehavior.getXincoDependencyTypeList() == null) {
-            xincoDependencyBehavior.setXincoDependencyTypeList(new ArrayList<XincoDependencyType>());
+            xincoDependencyBehavior.setXincoDependencyTypeList(new ArrayList<>());
         }
         EntityManager em = null;
         try {
@@ -128,7 +128,7 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
+        } catch (IllegalOrphanException ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = xincoDependencyBehavior.getId();

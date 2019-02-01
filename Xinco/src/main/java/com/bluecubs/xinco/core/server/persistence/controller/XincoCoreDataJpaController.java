@@ -58,19 +58,19 @@ public class XincoCoreDataJpaController implements Serializable {
 
     public void create(XincoCoreData xincoCoreData) throws PreexistingEntityException, Exception {
         if (xincoCoreData.getXincoCoreDataHasDependencyList() == null) {
-            xincoCoreData.setXincoCoreDataHasDependencyList(new ArrayList<XincoCoreDataHasDependency>());
+            xincoCoreData.setXincoCoreDataHasDependencyList(new ArrayList<>());
         }
         if (xincoCoreData.getXincoCoreDataHasDependencyList1() == null) {
-            xincoCoreData.setXincoCoreDataHasDependencyList1(new ArrayList<XincoCoreDataHasDependency>());
+            xincoCoreData.setXincoCoreDataHasDependencyList1(new ArrayList<>());
         }
         if (xincoCoreData.getXincoCoreAceList() == null) {
-            xincoCoreData.setXincoCoreAceList(new ArrayList<XincoCoreAce>());
+            xincoCoreData.setXincoCoreAceList(new ArrayList<>());
         }
         if (xincoCoreData.getXincoCoreLogList() == null) {
-            xincoCoreData.setXincoCoreLogList(new ArrayList<XincoCoreLog>());
+            xincoCoreData.setXincoCoreLogList(new ArrayList<>());
         }
         if (xincoCoreData.getXincoAddAttributeList() == null) {
-            xincoCoreData.setXincoAddAttributeList(new ArrayList<XincoAddAttribute>());
+            xincoCoreData.setXincoAddAttributeList(new ArrayList<>());
         }
         EntityManager em = null;
         try {
@@ -384,7 +384,7 @@ public class XincoCoreDataJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
+        } catch (IllegalOrphanException ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = xincoCoreData.getId();

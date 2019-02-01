@@ -41,7 +41,7 @@ import static java.util.logging.Logger.getLogger;
 public class XincoDemoResetThread extends Thread {
 
     public static XincoDemoResetThread instance = null;
-    public long reset_period = 86400000; //Daily
+    public long reset_period = 86_400_000; //Daily
     private static final Logger logger = getLogger(XincoDemoResetThread.class.getName());
 
     @Override
@@ -51,7 +51,7 @@ public class XincoDemoResetThread extends Thread {
             if (reset_period > 0) {
                 try {
                     sleep(reset_period);
-                } catch (Exception se) {
+                } catch (InterruptedException se) {
                     break;
                 }
                 //Check again this is a demo environment, just in case

@@ -62,7 +62,7 @@ public class XincoDependencyType implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_dependency_type",
     allocationSize = 1,
-    initialValue = 1000)
+    initialValue = 1_000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)

@@ -71,6 +71,7 @@ import javax.persistence.*;
 import static javax.persistence.Persistence.createEntityManagerFactory;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
+import static org.flywaydb.core.Flyway.configure;
 import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.MigrationInfo;
 import static org.flywaydb.core.api.MigrationState.SUCCESS;
@@ -128,7 +129,7 @@ public class XincoDBManager {
                     (getState() != null
                             ? getState().name() : null));
             try {
-                sleep(10000);
+                sleep(10_000);
             }
             catch (InterruptedException ex) {
                 LOG.log(SEVERE, null, ex);
@@ -399,7 +400,7 @@ public class XincoDBManager {
     }
 
     private static void updateDatabase(DataSource dataSource) {
-        FluentConfiguration configuration = Flyway.configure();
+        FluentConfiguration configuration = configure();
         configuration.baselineOnMigrate(true);
         configuration.dataSource(dataSource);
         configuration.locations("db.migration");

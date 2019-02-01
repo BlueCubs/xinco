@@ -80,7 +80,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             } else {
                 throw new XincoException("Invalid id: " + attrID);
             }
-        } catch (Exception ex) {
+        } catch (DatatypeConfigurationException ex) {
             getLogger(XincoCoreLogServer.class.getName()).log(SEVERE, null, ex);
             throw new XincoException(ex.getMessage());
         }

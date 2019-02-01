@@ -49,16 +49,20 @@ import static java.lang.System.getProperty;
 import static java.util.Locale.getDefault;
 import java.util.logging.Level;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import org.jodconverter.JodConverter;
+import static org.jodconverter.JodConverter.convert;
 import org.jodconverter.office.LocalOfficeManager;
+import static org.jodconverter.office.LocalOfficeManager.builder;
 import org.jodconverter.office.OfficeException;
 import org.jodconverter.office.OfficeManager;
 import org.jodconverter.office.OfficeUtils;
+import static org.jodconverter.office.OfficeUtils.stopQuietly;
 
 /**
  *
@@ -181,12 +185,12 @@ public class XincoRenderingThread extends Thread {
             }
             // Connect to an OpenOffice.org instance running on available port
             try {
-                officeManager = LocalOfficeManager.builder()
+                officeManager = builder()
                         .portNumbers(port)
                         .build();
                 officeManager.start();
 
-                JodConverter.convert(source)
+                convert(source)
                         .to(dest)
                         .execute();
                 return true;
@@ -200,7 +204,7 @@ public class XincoRenderingThread extends Thread {
             }
             finally {
                 // Stop the office process
-                OfficeUtils.stopQuietly(officeManager);
+                stopQuietly(officeManager);
             }
             //Looks like OpenOffice or LibreOffice is not installed
 
@@ -212,10 +216,10 @@ public class XincoRenderingThread extends Thread {
                 }
             }
             catch (OfficeException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
                 throw new XincoException(ex);
             }
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             throw new XincoException(e);
         }
     }

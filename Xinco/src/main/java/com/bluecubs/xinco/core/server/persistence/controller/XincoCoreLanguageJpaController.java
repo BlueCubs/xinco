@@ -60,10 +60,10 @@ public class XincoCoreLanguageJpaController implements Serializable {
 
     public void create(XincoCoreLanguage xincoCoreLanguage) throws PreexistingEntityException, Exception {
         if (xincoCoreLanguage.getXincoCoreNodeList() == null) {
-            xincoCoreLanguage.setXincoCoreNodeList(new ArrayList<XincoCoreNode>());
+            xincoCoreLanguage.setXincoCoreNodeList(new ArrayList<>());
         }
         if (xincoCoreLanguage.getXincoCoreDataList() == null) {
-            xincoCoreLanguage.setXincoCoreDataList(new ArrayList<XincoCoreData>());
+            xincoCoreLanguage.setXincoCoreDataList(new ArrayList<>());
         }
         EntityManager em = null;
         try {
@@ -181,7 +181,7 @@ public class XincoCoreLanguageJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
+        } catch (IllegalOrphanException ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = xincoCoreLanguage.getId();

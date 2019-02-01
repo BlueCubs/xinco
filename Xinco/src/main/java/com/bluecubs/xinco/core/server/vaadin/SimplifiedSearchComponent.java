@@ -72,98 +72,86 @@ public final class SimplifiedSearchComponent extends CustomComponent {
         final TextField criteria = new TextField();
         panel.addComponent(criteria);
         search = new Button(getInstance().getResource()
-                .getString("menu.search"),
-                new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                String query = criteria.getValue().toString();
-                if (query == null || query.length() == 0) {
-                    query = "*";
-                } else {
-                    //Search file name and content
-                    query = "general.filename:" + query + "  OR file:"
-                            + query + " ";
-                }
-                table.setContainerDataSource(null);
-                long st = currentTimeMillis();
-                dataSource.search(query, null, false);
-                long time = currentTimeMillis() - st;
-                int hits = dataSource.size();
-                table.setContainerDataSource(dataSource);
-                fixTable();
-                if (hits > 0) {
-                    results = new Window();
-                    results.addComponent(table);
-                    results.addComponent(goToSelection);
-                    results.setWidth(table.getWidth(), table.getWidthUnits());
-                    getInstance().getMainWindow().addWindow(results);
-                    results.center();
-                }
-            }
+                .getString("menu.search"), (com.vaadin.ui.Button.ClickEvent event) -> {
+                    String query = criteria.getValue().toString();
+                    if (query == null || query.length() == 0) {
+                        query = "*";
+                    } else {
+                        //Search file name and content
+                        query = "general.filename:" + query + "  OR file:"
+                                + query + " ";
+                    }
+                    table.setContainerDataSource(null);
+                    long st = currentTimeMillis();
+                    dataSource.search(query, null, false);
+                    long time = currentTimeMillis() - st;
+                    int hits = dataSource.size();
+                    table.setContainerDataSource(dataSource);
+                    fixTable();
+                    if (hits > 0) {
+                        results = new Window();
+                        results.addComponent(table);
+                        results.addComponent(goToSelection);
+                        results.setWidth(table.getWidth(), table.getWidthUnits());
+                        getInstance().getMainWindow().addWindow(results);
+                        results.center();
+                    }
         });
-        table.addListener(new ItemClickListener() {
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                goToSelection.setEnabled(
-                        table.getValue() != null);
-            }
+        table.addListener((ItemClickListener) (ItemClickEvent event) -> {
+            goToSelection.setEnabled(
+                    table.getValue() != null);
         });
         goToSelection.setEnabled(false);
-        goToSelection.addListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                boolean haveAccess;
-                boolean loggedIn = getInstance().getLoggedUser() != null;
-                //Get selected data
-                XincoCoreDataServer data = new XincoCoreDataServer(
-                        valueOf(table.getItem(table.getValue())
-                                .getItemProperty("id").toString()));
-                //Now check permissions on the file for the user
-                data.loadACL();
-                if (loggedIn) {
-                    XincoCoreACE ace = checkAccess(getInstance().getLoggedUser(),
-                            (ArrayList) data.getXincoCoreAcl());
-                    haveAccess = ace.isReadPermission();
-                } else {
-                    haveAccess = canRead(data.getXincoCoreAcl());
-                }
-                //Store path of ids
-                LinkedList<Integer> parents = new LinkedList<>();
-                if (haveAccess) {
-                    //Now have to make sure there is access to all parent folders of data
-                    XincoCoreNodeServer parent = null;
-                    if (data.getXincoCoreNodeId() > 0) {
-                        parent = new XincoCoreNodeServer(
-                                data.getXincoCoreNodeId());
-                    }
-                    while (parent != null) {
-                        if ((loggedIn && checkAccess(getInstance().getLoggedUser(),
-                                (ArrayList) data.getXincoCoreAcl())
-                                .isReadPermission())
-                                || canRead(parent.getXincoCoreAcl())) {
-                            parents.add(parent.getId());
-                        }
-                        if (parent.getXincoCoreNodeId() > 0) {
-                            parent = new XincoCoreNodeServer(
-                                    parent.getXincoCoreNodeId());
-                        } else {
-                            parent = null;
-                        }
-                    }
-                    //If the last in the list is the root (1) we can access it!
-                    haveAccess = parents.getLast() == 1;
-                }
-                if (!(haveAccess && getInstance()
-                        .expandTreeNodes(parents))) {
-                    //Able to expand nodes
-                    getApplication().getMainWindow().showNotification(getInstance().getResource()
-                                    .getString("error.data.sufficientrights"), TYPE_WARNING_MESSAGE);
-                } else {
-                    getInstance().getXincoTree().setValue("data-"
-                            + data.getId());
-                }
-                getInstance().getMainWindow().removeWindow(results);
+        goToSelection.addListener((ClickListener) (ClickEvent event) -> {
+            boolean haveAccess;
+            boolean loggedIn = getInstance().getLoggedUser() != null;
+            //Get selected data
+            XincoCoreDataServer data = new XincoCoreDataServer(
+                    valueOf(table.getItem(table.getValue())
+                            .getItemProperty("id").toString()));
+            //Now check permissions on the file for the user
+            data.loadACL();
+            if (loggedIn) {
+                XincoCoreACE ace = checkAccess(getInstance().getLoggedUser(),
+                        (ArrayList) data.getXincoCoreAcl());
+                haveAccess = ace.isReadPermission();
+            } else {
+                haveAccess = canRead(data.getXincoCoreAcl());
             }
+            //Store path of ids
+            LinkedList<Integer> parents = new LinkedList<>();
+            if (haveAccess) {
+                //Now have to make sure there is access to all parent folders of data
+                XincoCoreNodeServer parent1 = null;
+                if (data.getXincoCoreNodeId() > 0) {
+                    parent1 = new XincoCoreNodeServer(
+                            data.getXincoCoreNodeId());
+                }
+                while (parent1 != null) {
+                    if ((loggedIn && checkAccess(getInstance().getLoggedUser(),
+                            (ArrayList) data.getXincoCoreAcl())
+                            .isReadPermission()) || canRead(parent1.getXincoCoreAcl())) {
+                        parents.add(parent1.getId());
+                    }
+                    if (parent1.getXincoCoreNodeId() > 0) {
+                        parent1 = new XincoCoreNodeServer(parent1.getXincoCoreNodeId());
+                    } else {
+                        parent1 = null;
+                    }
+                }
+                //If the last in the list is the root (1) we can access it!
+                haveAccess = parents.getLast() == 1;
+            }
+            if (!(haveAccess && getInstance()
+                    .expandTreeNodes(parents))) {
+                //Able to expand nodes
+                getApplication().getMainWindow().showNotification(getInstance().getResource()
+                        .getString("error.data.sufficientrights"), TYPE_WARNING_MESSAGE);
+            } else {
+                getInstance().getXincoTree().setValue("data-"
+                        + data.getId());
+            }
+            getInstance().getMainWindow().removeWindow(results);
         });
         panel.addComponent(search);
         // Set the size as undefined at all levels

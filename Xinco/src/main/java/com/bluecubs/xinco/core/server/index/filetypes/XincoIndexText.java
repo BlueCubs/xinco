@@ -53,19 +53,19 @@ public class XincoIndexText implements XincoIndexFileType {
         try {
             is = new FileInputStream(f);
             reader = new BufferedReader(new InputStreamReader(is));
-        } catch (Exception fe) {
+        } catch (FileNotFoundException fe) {
             logger.log(SEVERE, null, fe);
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (Exception re) {
+                } catch (IOException re) {
                     logger.log(SEVERE, null, re);
                 }
             }
             if (is != null) {
                 try {
                     is.close();
-                } catch (Exception ise) {
+                } catch (IOException ise) {
                     logger.log(SEVERE, null, ise);
                 }
             }

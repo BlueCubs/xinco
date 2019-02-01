@@ -88,7 +88,7 @@ public class XincoAddAttributeT implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Lob
-    @Size(min = 1, max = 65535)
+    @Size(min = 1, max = 65_535)
     @Column(name = "attrib_text")
     private String attribText;
     @Basic(optional = false)

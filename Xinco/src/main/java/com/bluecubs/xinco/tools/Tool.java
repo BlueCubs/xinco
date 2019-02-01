@@ -35,7 +35,7 @@ import static javax.xml.datatype.DatatypeFactory.newInstance;
 public class Tool {
 
     public static int MIN_PORT_NUMBER = 1;
-    public static int MAX_PORT_NUMBER = 65535;
+    public static int MAX_PORT_NUMBER = 65_535;
     private static final Logger LOG = getLogger(Tool.class.getName());
 
     private Tool() {
