@@ -1,11 +1,13 @@
 package com.bluecubs.xinco.core.server;
 
+import static java.util.Locale.getDefault;
+import static java.util.ResourceBundle.getBundle;
+
 import java.util.HashMap;
 import java.util.Locale;
-import static java.util.Locale.getDefault;
 import java.util.ResourceBundle;
-import static java.util.ResourceBundle.getBundle;
 import java.util.StringTokenizer;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpSession;
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public final class BrowserDataExtractor extends HttpServlet {
+  private static final long serialVersionUID = 8403308041839164132L;
 
     HttpServletRequest request;
     HttpSession session;

@@ -27,48 +27,50 @@
  */
 package com.bluecubs.xinco.core.server.rendering;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.*;
 import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getXincoCoreDataPath;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.tools.Tool.MIN_PORT_NUMBER;
+import static com.bluecubs.xinco.tools.Tool.addDefaultAddAttributes;
+import static com.bluecubs.xinco.tools.Tool.copyFile;
+import static com.bluecubs.xinco.tools.Tool.isPortAvaialble;
+import static java.lang.System.getProperty;
+import static java.util.Locale.getDefault;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
+import static java.util.logging.Logger.getLogger;
+import static org.jodconverter.JodConverter.convert;
+import static org.jodconverter.office.LocalOfficeManager.builder;
+import static org.jodconverter.office.OfficeUtils.stopQuietly;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.logging.Logger;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
+
+import org.jodconverter.office.OfficeException;
+import org.jodconverter.office.OfficeManager;
+
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreDataHasDependencyServer;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoDependencyTypeJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoWebService;
-import static com.bluecubs.xinco.tools.Tool.MIN_PORT_NUMBER;
-import static com.bluecubs.xinco.tools.Tool.addDefaultAddAttributes;
-import static com.bluecubs.xinco.tools.Tool.copyFile;
-import static com.bluecubs.xinco.tools.Tool.isPortAvaialble;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import static java.lang.System.getProperty;
-import static java.util.Locale.getDefault;
-import java.util.logging.Level;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.SEVERE;
-import static java.util.logging.Level.WARNING;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedInputStream;
-import org.jodconverter.JodConverter;
-import static org.jodconverter.JodConverter.convert;
-import org.jodconverter.office.LocalOfficeManager;
-import static org.jodconverter.office.LocalOfficeManager.builder;
-import org.jodconverter.office.OfficeException;
-import org.jodconverter.office.OfficeManager;
-import org.jodconverter.office.OfficeUtils;
-import static org.jodconverter.office.OfficeUtils.stopQuietly;
 
 /**
  *
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
-public class XincoRenderingThread extends Thread {
+public class XincoRenderingThread extends Thread { 
 
     private final XincoCoreData original;
     private XincoCoreDataServer rendering = null;

@@ -1,5 +1,4 @@
 
-Xinco/target/
+**/target/
 Xinco/nbproject/
-/XincoWorkflow/build/
-/XincoWorkflow/dist/
+/XincoWorkflow
