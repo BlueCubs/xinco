@@ -36,6 +36,8 @@
 
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes;
+
 import java.util.Vector;
 import java.sql.*;
 
@@ -57,16 +59,20 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
                 setId(rs.getInt("id"));
                 setDesignation(rs.getString("designation"));
                 setDescription(rs.getString("description"));
-				setXinco_core_data_type_attributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId(), DBM));
+				setXinco_core_data_type_attributes(getXincoCoreDataTypeAttributes(getId(), DBM));
             }
 			if (RowCount < 1) {
 				throw new XincoException();
 			}
 
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
         	throw new XincoException();
         }
+    catch (SQLException e)
+    {
+      throw new XincoException();
+    }
         
     }
 
@@ -90,13 +96,17 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY designation");
 
             while (rs.next()) {
-                coreDataTypes.addElement(new XincoCoreDataTypeServer(rs.getInt("id"), rs.getString("designation"), rs.getString("description"), XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(rs.getInt("id"), DBM)));
+                coreDataTypes.addElement(new XincoCoreDataTypeServer(rs.getInt("id"), rs.getString("designation"), rs.getString("description"), getXincoCoreDataTypeAttributes(rs.getInt("id"), DBM)));
             }
 
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             coreDataTypes.removeAllElements();
         }
+    catch (SQLException e)
+    {
+      coreDataTypes.removeAllElements();
+    }
 
         return coreDataTypes;
     }

@@ -39,7 +39,9 @@ package com.bluecubs.xinco.index.filetypes;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
+
 import org.apache.lucene.demo.html.HTMLParser;
 
 public class XincoIndexHTML implements XincoIndexFileType {
@@ -48,6 +50,7 @@ public class XincoIndexHTML implements XincoIndexFileType {
         super();
     }
     
+    @Override
     public Reader getFileContentReader(File f) {
         try {
             fis = new FileInputStream(f);
@@ -58,12 +61,13 @@ public class XincoIndexHTML implements XincoIndexFileType {
         try {
             HTMLParser parser = new HTMLParser(fis);
             reader = parser.getReader();
-        } catch (Exception fe) {
+        } catch (IOException fe) {
             reader = null;
         }
         return reader;
     }
     
+    @Override
     public String getFileContentString(File f) {
         return null;
     }

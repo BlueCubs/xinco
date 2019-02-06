@@ -36,6 +36,10 @@
 
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.core.server.XincoCoreACEServer.getXincoCoreACL;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.removeFromDB;
+import static com.bluecubs.xinco.index.XincoIndexer.removeXincoCoreData;
+
 import java.sql.*;
 import java.util.Vector;
 
@@ -64,7 +68,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 setXinco_core_nodes(new Vector());
                 setXinco_core_data(new Vector());
                 //load acl for this object
-                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_node_id", DBM));
+                setXinco_core_acl(getXincoCoreACL(rs.getInt("id"), "xinco_core_node_id", DBM));
             }
             if (RowCount < 1) {
                 throw new XincoException();
@@ -72,13 +76,21 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             
             stmt.close();
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             setXinco_core_language(null);
             getXinco_core_acl().removeAllElements();
             getXinco_core_nodes().removeAllElements();
             getXinco_core_data().removeAllElements();
             throw new XincoException();
         }
+    catch (SQLException e)
+    {
+      setXinco_core_language(null);
+      getXinco_core_acl().removeAllElements();
+      getXinco_core_nodes().removeAllElements();
+      getXinco_core_data().removeAllElements();
+      throw new XincoException();
+    }
         
     }
     
@@ -94,8 +106,8 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             setXinco_core_nodes(new Vector());
             setXinco_core_data(new Vector());
             //load acl for this object
-            setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_node_id", DBM));
-        } catch (Exception e) {
+            setXinco_core_acl(getXincoCoreACL(getId(), "xinco_core_node_id", DBM));
+        } catch (XincoException e) {
             setXinco_core_language(null);
             getXinco_core_acl().removeAllElements();
             getXinco_core_nodes().removeAllElements();
@@ -144,7 +156,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -170,8 +182,8 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 ((XincoCoreNodeServer)getXinco_core_nodes().elementAt(i)).deleteFromDB(true, DBM,userID);
             }
             for (i=0;i<getXinco_core_data().size();i++) {
-                XincoIndexer.removeXincoCoreData((XincoCoreDataServer)getXinco_core_data().elementAt(i), DBM);
-                XincoCoreDataServer.removeFromDB(DBM,userID,
+                removeXincoCoreData((XincoCoreDataServer)getXinco_core_data().elementAt(i), DBM);
+                removeFromDB(DBM,userID,
                         ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).getId());
                 ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).setChangerID(userID);
                 ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
@@ -193,13 +205,21 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 stmt.close();
             }
             DBM.con.commit();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
+    catch (SQLException e)
+    {
+      try {
+        DBM.con.rollback();
+      } catch (Exception erollback) {
+      }
+      throw new XincoException();
+    }
         
     }
     
@@ -216,9 +236,13 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             
             stmt.close();
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             getXinco_core_nodes().removeAllElements();
         }
+    catch (SQLException e)
+    {
+      getXinco_core_nodes().removeAllElements();
+    }
         
     }
     
@@ -235,9 +259,13 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             
             stmt.close();
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             getXinco_core_data().removeAllElements();
         }
+    catch (SQLException e)
+    {
+      getXinco_core_data().removeAllElements();
+    }
         
     }
     
@@ -261,9 +289,13 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             
             stmt.close();
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             nodes.removeAllElements();
         }
+    catch (SQLException e)
+    {
+      nodes.removeAllElements();
+    }
         
         return nodes;
         
@@ -295,9 +327,13 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 stmt.close();
             }
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             nodes.removeAllElements();
         }
+    catch (SQLException e)
+    {
+      nodes.removeAllElements();
+    }
         
         return nodes;
         

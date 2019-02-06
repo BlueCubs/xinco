@@ -38,7 +38,9 @@ package com.bluecubs.xinco.index.filetypes;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Reader;
+
 import org.textmining.text.extraction.WordExtractor;
 
 public class XincoIndexMicrosoftWord implements XincoIndexFileType {
@@ -47,10 +49,12 @@ public class XincoIndexMicrosoftWord implements XincoIndexFileType {
 		super();
 	}
 
+        @Override
 	public Reader getFileContentReader(File f) {
 		return null;
 	}
 
+        @Override
 	public String getFileContentString(File f) {
 		String word_string = null;
 		FileInputStream is =null;
@@ -64,7 +68,7 @@ public class XincoIndexMicrosoftWord implements XincoIndexFileType {
 			if (is != null) {
 				try {
 					is.close();
-				} catch (Exception ise) {}
+				} catch (IOException ise) {}
 			}
 		}
 		return word_string;

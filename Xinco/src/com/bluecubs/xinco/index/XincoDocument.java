@@ -36,11 +36,18 @@
 
 package com.bluecubs.xinco.index;
 
+import static com.bluecubs.xinco.core.XincoDataStatus.ARCHIVED;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getXincoCoreDataPath;
+import static java.lang.Class.forName;
+import static org.apache.lucene.document.Field.Text;
+
 import java.io.File;
 import java.io.Reader;
 import java.io.FileInputStream;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.add.*;
 import com.bluecubs.xinco.core.server.*;
@@ -66,12 +73,12 @@ public class XincoDocument {
 		
 		//add XincoCoreData information
 		doc.add(new Field("id", (new Integer(d.getId())).toString(), true, true, false));
-		doc.add(Field.Text("designation", d.getDesignation()));
+		doc.add(Text("designation", d.getDesignation()));
 		doc.add(new Field("language", (new Integer(d.getXinco_core_language().getId())).toString(), true, true, false));
 		
 		//add content of file
 		if (index_content) {
-			if ((d.getXinco_core_data_type().getId() == 1) && (d.getStatus_number() != XincoDataStatus.ARCHIVED.ordinal() + 1)) { //process non-archived file
+			if ((d.getXinco_core_data_type().getId() == 1) && (d.getStatus_number() != ARCHIVED.ordinal() + 1)) { //process non-archived file
 				//extract file extension from file name
 				file_ext_index =((XincoAddAttribute)d.getXinco_add_attributes().elementAt(0)).getAttrib_varchar().lastIndexOf(".");
 				if (file_ext_index == -1) {
@@ -111,22 +118,28 @@ public class XincoDocument {
 				if (file_type == 0) {
 					// index as TEXT
 					xift = new XincoIndexText();
-					doc.add(Field.Text("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())))));
+					doc.add(Text("file", xift.getFileContentReader(new File(getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())))));
 				} else if (file_type > 0) {
 					// file-type specific indexing
 					try {
-						xift = (XincoIndexFileType)Class.forName((String)dbm.config.IndexFileTypesClass.elementAt(file_type-1)).newInstance();
-						ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())));
+						xift = (XincoIndexFileType)forName((String)dbm.config.IndexFileTypesClass.elementAt(file_type-1)).newInstance();
+						ContentReader = xift.getFileContentReader(new File(getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())));
 						if (ContentReader != null) {
-							doc.add(Field.Text("file", ContentReader));
+							doc.add(Text("file", ContentReader));
 						} else {
-							ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())));
+							ContentString = xift.getFileContentString(new File(getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())));
 							if (ContentString != null) {
-								doc.add(Field.Text("file", ContentString));
+								doc.add(Text("file", ContentString));
 							}
 						}
-					} catch (Exception ie) {
+					} catch (ClassNotFoundException ie) {
 					}
+          catch (IllegalAccessException ie)
+          {
+          }
+          catch (InstantiationException ie)
+          {
+          }
 				}
 				
 			}
@@ -135,22 +148,22 @@ public class XincoDocument {
 		//add attributes
 		for (i=0;i<d.getXinco_add_attributes().size();i++) {
 			if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("int") == 0) {
-				doc.add(Field.Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_int()));
+				doc.add(Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_int()));
 			}
 			if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("unsignedint") == 0) {
-				doc.add(Field.Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint()));
+				doc.add(Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint()));
 			}
 			if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("double") == 0) {
-				doc.add(Field.Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_double()));
+				doc.add(Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_double()));
 			}
 			if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("varchar") == 0) {
-				doc.add(Field.Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_varchar()));
+				doc.add(Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_varchar()));
 			}
 			if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("text") == 0) {
-				doc.add(Field.Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_text()));
+				doc.add(Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_text()));
 			}
 			if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("datetime") == 0) {
-				doc.add(Field.Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_datetime()));
+				doc.add(Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_datetime()));
 			}
 		}
 		

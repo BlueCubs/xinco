@@ -60,9 +60,13 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
                 throw new XincoException();
             }
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             throw new XincoException(e.getMessage());
         }
+      catch (SQLException e)
+      {
+        throw new XincoException(e.getMessage());
+      }
     }
     
     //create group object for data structures
@@ -93,7 +97,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -110,9 +114,13 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
                 coreGroups.addElement(new XincoCoreGroupServer(rs.getInt("id"), rs.getString("designation"), rs.getInt("status_number")));
             }
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             coreGroups.removeAllElements();
         }
+      catch (SQLException e)
+      {
+        coreGroups.removeAllElements();
+      }
         return coreGroups;
     }
 }

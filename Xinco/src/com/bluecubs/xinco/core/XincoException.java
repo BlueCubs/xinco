@@ -50,6 +50,7 @@ public class XincoException extends Exception {
 		xinco_message = s;
 	}
 	
+        @Override
 	public String toString() {
 		return xinco_message;
 	}

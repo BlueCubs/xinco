@@ -35,488 +35,621 @@
  */
 package com.bluecubs.xinco.server;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
-import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
-import java.io.*;
+import static com.bluecubs.xinco.conf.XincoConfigSingletonServer.getInstance;
+import static com.bluecubs.xinco.core.XincoDataStatus.ARCHIVED;
+import static com.bluecubs.xinco.core.XincoDataStatus.PUBLISHED;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getLastMajorVersionDataPath;
+import static java.lang.Integer.parseInt;
+import static java.util.Locale.getDefault;
+import static java.util.ResourceBundle.getBundle;
+import static org.apache.axis.encoding.Base64.decode;
+import static org.apache.axis.encoding.Base64.encode;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.core.server.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import org.apache.axis.encoding.Base64;
 
-public class XincoPublisherServlet extends HttpServlet {
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-    private XincoDBManager DBM;
-    private ResourceBundle rb;
-    private XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
+import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
+import com.bluecubs.xinco.core.XincoCoreACE;
+import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.core.server.XincoDBManager;
 
-    /** Initializes the servlet.
-     * @param config
-     * @throws javax.servlet.ServletException
-     */
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
+public class XincoPublisherServlet extends HttpServlet
+{
+  private static final long serialVersionUID = -723886731980752249L;
+
+  private XincoDBManager DBM;
+  private ResourceBundle rb;
+  private XincoConfigSingletonServer config = getInstance();
+
+  /**
+   * Initializes the servlet.
+   *
+   * @param config
+   * @throws javax.servlet.ServletException
+   */
+  @Override
+  public void init(ServletConfig config) throws ServletException
+  {
+    super.init(config);
+  }
+
+  /**
+   * Destroys the servlet.
+   */
+  @Override
+  public void destroy()
+  {
+  }
+
+  /**
+   * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+   * methods.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws javax.servlet.ServletException
+   * @throws java.io.IOException
+   */
+  protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
+          throws ServletException, IOException
+  {
+    Locale loc;
+    try
+    {
+      String list = request.getParameter("list");
+      String[] locales;
+      locales = list.split("_");
+      switch (locales.length)
+      {
+        case 1:
+          loc = new Locale(locales[0]);
+          break;
+        case 2:
+          loc = new Locale(locales[0], locales[1]);
+          break;
+        case 3:
+          loc = new Locale(locales[0], locales[1], locales[2]);
+          break;
+        default:
+          loc = getDefault();
+      }
     }
-
-    /** Destroys the servlet.
-     */
-    @Override
-    public void destroy() {
+    catch (Exception e)
+    {
+      loc = getDefault();
     }
+    rb = getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
+    int i;
+    int j;
+    String request_path;
+    String request_path_array[];
+    boolean fileDownload = false;
+    int core_data_id;
+    XincoCoreDataServer xcd = null;
+    XincoCoreDataTypeAttribute xcdta;
+    XincoAddAttribute xaa;
+    boolean printList = false;
+    boolean browseFolder = false;
+    String temp_url;
+    String temp_server_url;
+    boolean isPublic;
 
-    /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws javax.servlet.ServletException
-     * @throws java.io.IOException
-     */
-    protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Locale loc = null;
-        try {
-            String list = request.getParameter("list");
-            String[] locales;
-            locales = list.split("_");
-            switch (locales.length) {
-                case 1:
-                    loc = new Locale(locales[0]);
-                    break;
-                case 2:
-                    loc = new Locale(locales[0], locales[1]);
-                    break;
-                case 3:
-                    loc = new Locale(locales[0], locales[1], locales[2]);
-                    break;
-                default:
-                    loc = Locale.getDefault();
+    //connect to db
+    try
+    {
+      DBM = new XincoDBManager();
+    }
+    catch (Exception e)
+    {
+      //start output
+      response.setContentType("text/html");
+      PrintWriter out = response.getWriter();
+      out.println(e.toString());
+      return;
+    }
+    //get requested data
+    if (request.getParameter("MainMenu") == null)
+    {
+      request_path = request.getPathInfo();
+      if (request_path != null)
+      {
+        request_path_array = request_path.split("/");
+        if (!(request_path_array.length > 1))
+        {
+          core_data_id = 0;
+        }
+        else
+        {
+          try
+          {
+            core_data_id = parseInt(request_path_array[1]);
+            xcd = new XincoCoreDataServer(core_data_id, DBM);
+            isPublic = false;
+            //check status (5 = published)
+            if (xcd.getStatus_number() == PUBLISHED.ordinal() + 1)
+            {
+              isPublic = true;
             }
-        } catch (Exception e) {
-            loc = Locale.getDefault();
+            else
+            {
+              //check read permission for group "public"
+              for (i = 0; i < xcd.getXinco_core_acl().size(); i++)
+              {
+                if ((((XincoCoreACE) xcd.getXinco_core_acl().elementAt(i)).getXinco_core_group_id() == 3)
+                        && ((XincoCoreACE) xcd.getXinco_core_acl().elementAt(i)).isRead_permission())
+                {
+                  isPublic = true;
+                  break;
+                }
+              }
+            }
+            if (!isPublic)
+            {
+              core_data_id = -1;
+            }
+          }
+          catch (XincoException | NumberFormatException e)
+          {
+            core_data_id = -1;
+          }
         }
-        rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-        int i = 0;
-        int j = 0;
-        String request_path;
-        String request_path_array[];
-        boolean fileDownload = false;
-        int core_data_id = 0;
-        XincoCoreDataServer xcd = null;
-        XincoCoreDataTypeAttribute xcdta = null;
-        XincoAddAttribute xaa = null;
-        boolean printList = false;
-        boolean browseFolder = false;
-        String temp_url = "";
-        String temp_server_url = "";
-        boolean isPublic = false;
+      }
+      else
+      {
+        core_data_id = 0;
+      }
+    }
+    else
+    {
+      core_data_id = 0;
+      if (request.getParameter("MainMenu").compareTo("list") == 0)
+      {
+        printList = true;
+      }
+      else if ((request.getParameter("MainMenu").compareTo("browse") == 0))
+      {
+        browseFolder = true;
+      }
+    }
+    //check data type
+    if (core_data_id > 0)
+    {
+      fileDownload = xcd.getXinco_core_data_type().getId() == 1;
+    }
 
-        //connect to db
-        try {
-            DBM = new XincoDBManager();
-        } catch (Exception e) {
-            //start output
-            response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-            out.println(e.toString());
-            return;
+    //generate specific output
+    if (fileDownload)
+    { // begin FILE output
+      try
+      {
+        response.setContentType("unknown/unknown");
+        OutputStream out = response.getOutputStream();
+        try (FileInputStream in = new FileInputStream(getLastMajorVersionDataPath(core_data_id, DBM)))
+        {
+          byte[] buf = new byte[4_096];
+          int len;
+          while ((len = in.read(buf)) > 0)
+          {
+            out.write(buf, 0, len);
+          }
         }
-        //get requested data
-        if (request.getParameter("MainMenu") == null) {
-            request_path = request.getPathInfo();
-            if (request_path != null) {
-                request_path_array = request_path.split("/");
-                if (!(request_path_array.length > 1)) {
-                    core_data_id = 0;
-                } else {
-                    try {
-                        core_data_id = Integer.parseInt(request_path_array[1]);
-                        xcd = new XincoCoreDataServer(core_data_id, DBM);
-                        isPublic = false;
-                        //check status (5 = published)
-                        if (xcd.getStatus_number() == XincoDataStatus.PUBLISHED.ordinal() + 1) {
+      }
+      catch (XincoException | IOException | SQLException e)
+      {
+        //Can't call both getWriter() and getOutputStream()
+        e.printStackTrace(System.err);
+      }
+      //end FILE output
+
+    }
+    else
+    {
+      // begin HTML output
+
+      //start output
+      response.setContentType("text/html");
+      //show header
+      try (PrintWriter out = response.getWriter())
+      {
+        //show header
+        out.println("<html>");
+        out.println("<head>");
+        if (core_data_id == 0)
+        {
+          out.println("<title>XincoPublisher</title>");
+          out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
+        }
+        if (core_data_id > 0)
+        {
+          out.println("<title>" + xcd.getDesignation() + "</title>");
+          out.println("<link rel=\"stylesheet\" href=\"../../xincostyle.css\" type=\"text/css\"/>");
+        }
+        out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
+        out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
+        out.println("</head>");
+        out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
+        out.println("<center>");
+        out.println("<span class=\"text\">");
+        out.println("");
+        //show main menu
+        if (core_data_id == 0)
+        {
+          out.println("<br>");
+          out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+          out.println("<tr>");
+          out.println("<td class=\"text\" width=\"100\"><img src='resources/images/blueCubsSmall.gif' border=\"0\"/></td>");
+          out.println("<td class=\"bigtext\" width=\"650\">" + rb.getString("message.admin.main.publisher.label") + "</td>");
+          out.println("</tr>");
+          out.println("</table>");
+          out.println("<br>");
+          out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+          if (printList)
+          {
+            try
+            {
+              XincoCoreDataServer xdata_temp;
+              //Only display data with at least one major version
+              try (Statement stmt = DBM.con.createStatement())
+              {
+                //Only display data with at least one major version
+                ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation "
+                        + "FROM xinco_core_data xcd, xinco_core_ace xca, xinco_core_log xcl WHERE xcd.id=xca.xinco_core_data_id AND "
+                        + "xcd.id=xcl.xinco_core_data_id AND (xcd.status_number <>" + (ARCHIVED.ordinal() + 1) + " AND (xca.xinco_core_group_id=3 AND xca.read_permission=1)" + "|| xcd.status_number = " + (PUBLISHED.ordinal() + 1) + ") " + " and xcl.version_mid='0' ORDER BY xcd.designation");
+                while (rs.next())
+                {
+                  xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
+                  temp_server_url = request.getRequestURL().toString();
+                  temp_url = "";
+                  //file = 1
+                  if (xdata_temp.getXinco_core_data_type().getId() == 1)
+                  {
+                    temp_url = ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
+                  }
+                  else
+                  {
+                    temp_url = xdata_temp.getDesignation();
+                  }
+                  out.println("<tr>");
+                  out.println("<td class=\"text\">" + xdata_temp.getDesignation()
+                          + " (" + (rb.containsKey(xdata_temp.getXinco_core_data_type().getDesignation())
+                          ? rb.getString(xdata_temp.getXinco_core_data_type().getDesignation())
+                          : xdata_temp.getXinco_core_data_type().getDesignation()) + " | "
+                          + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
+                  out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId()
+                          + "/" + temp_url + "?list=" + request.getParameter("list") + "\" target=\"_blank\">"
+                          + temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
+                  out.println("</tr>");
+                  out.flush();
+                }
+              }
+            }
+            catch (XincoException | SQLException sqle)
+            {
+              sqle.printStackTrace(System.err);
+            }
+          }
+          else if (browseFolder)
+          {
+            try
+            {
+              XincoCoreNodeServer xnode_temp ;
+              XincoCoreNodeServer xnode_temp2 ;
+              XincoCoreDataServer xdata_temp ;
+              String temp_path ;
+              String temp_path2  ;
+              int temp_xcn_id ;
+              if (!(request.getParameter("FolderId") == null))
+              {
+                temp_xcn_id = parseInt(request.getParameter("FolderId"));
+                xnode_temp = new XincoCoreNodeServer(temp_xcn_id, DBM);
+                //check read permission for group "public"
+                isPublic = false;
+                for (i = 0; i < xnode_temp.getXinco_core_acl().size(); i++)
+                {
+                  if ((((XincoCoreACE) xnode_temp.getXinco_core_acl().elementAt(i)).getXinco_core_group_id() == 3)
+                          && ((XincoCoreACE) xnode_temp.getXinco_core_acl().elementAt(i)).isRead_permission())
+                  {
+                    isPublic = true;
+                    break;
+                  }
+                }
+                if (isPublic)
+                {
+                  xnode_temp.fillXincoCoreNodes(DBM);
+                  xnode_temp.fillXincoCoreData(DBM);
+                  // print current path
+                  if (!(request.getParameter("Path") == null))
+                  {
+                    temp_path = request.getParameter("Path");
+                    temp_path = new String(decode(temp_path));
+                    out.println("<tr>");
+                    out.println("<td colspan=\"2\" class=\"text\"><b>" + rb.getString("general.path") + "</b> " + temp_path + "</td>");
+                    out.println("</tr>");
+                    out.println("<tr>");
+                    out.println("<td colspan=\"2\" class=\"text\">&nbsp;</td>");
+                    out.println("</tr>");
+                    out.flush();
+                  }
+                  else
+                  {
+                    temp_path = null;
+                  }
+                  // list public folders
+                  out.println("<tr>");
+                  out.println("<td colspan=\"2\" class=\"text\"><b>" + rb.getString("message.xincopublisher.subfolders") + "</b></td>");
+                  out.println("</tr>");
+                  out.flush();
+                  for (i = 0; i < xnode_temp.getXinco_core_nodes().size(); i++)
+                  {
+                    xnode_temp2 = new XincoCoreNodeServer(((XincoCoreNodeServer) xnode_temp.getXinco_core_nodes().elementAt(i)).getId(), DBM);
+                    isPublic = false;
+                    //check read permission for group "public"
+                    for (j = 0; j < xnode_temp2.getXinco_core_acl().size(); j++)
+                    {
+                      if ((((XincoCoreACE) xnode_temp2.getXinco_core_acl().elementAt(j)).getXinco_core_group_id() == 3)
+                              && ((XincoCoreACE) xnode_temp2.getXinco_core_acl().elementAt(j)).isRead_permission())
+                      {
+                        isPublic = true;
+                        break;
+                      }
+                    }
+                    if (isPublic)
+                    {
+                      if (temp_path != null)
+                      {
+                        temp_path2 = temp_path + " / " + xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")";
+                        temp_path2 = encode(temp_path2.getBytes());
+                        temp_path2 = "&Path=" + temp_path2;
+                      }
+                      else
+                      {
+                        temp_path2 = "";
+                      }
+                      out.println("<tr>");
+                      out.println("<td class=\"text\">&nbsp;</td>");
+                      out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId="
+                              + xnode_temp2.getId() + temp_path2 + "&list=" + request.getParameter("list") + "\">["
+                              + xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")"
+                              + "]</a></td>");
+                      out.println("</tr>");
+                      out.flush();
+                    }
+                  }
+                  out.println("<tr>");
+                  out.println("<td colspan=\"2\" class=\"text\">&nbsp;</td>");
+                  out.println("</tr>");
+                  out.flush();
+                  // list public data
+                  out.println("<tr>");
+                  out.println("<td colspan=\"2\" class=\"text\"><b>"
+                          + rb.getString("message.xincopublisher.publicdata") + "</b></td>");
+                  out.println("</tr>");
+                  out.flush();
+                  for (i = 0; i < xnode_temp.getXinco_core_data().size(); i++)
+                  {
+                    xdata_temp = new XincoCoreDataServer(((XincoCoreDataServer) xnode_temp.getXinco_core_data().elementAt(i)).getId(), DBM);
+                    isPublic = false;
+                    //check status (5 = published)
+                    if (xdata_temp.getStatus_number() == PUBLISHED.ordinal() + 1)
+                    {
+                      isPublic = true;
+                    }
+                    else
+                    {
+                      //check read permission for group "public"
+                      if (xdata_temp.getStatus_number() != ARCHIVED.ordinal() + 1)
+                      {
+                        for (j = 0; j < xdata_temp.getXinco_core_acl().size(); j++)
+                        {
+                          if ((((XincoCoreACE) xdata_temp.getXinco_core_acl().elementAt(j)).getXinco_core_group_id() == 3) && ((XincoCoreACE) xdata_temp.getXinco_core_acl().elementAt(j)).isRead_permission())
+                          {
                             isPublic = true;
-                        } else {
-                            //check read permission for group "public"
-                            for (i = 0; i < xcd.getXinco_core_acl().size(); i++) {
-                                if ((((XincoCoreACE) xcd.getXinco_core_acl().elementAt(i)).getXinco_core_group_id() == 3)
-                                        && ((XincoCoreACE) xcd.getXinco_core_acl().elementAt(i)).isRead_permission()) {
-                                    isPublic = true;
-                                    break;
-                                }
-                            }
+                            break;
+                          }
                         }
-                        if (!isPublic) {
-                            core_data_id = -1;
-                        }
-                    } catch (Exception e) {
-                        core_data_id = -1;
+                      }
                     }
+                    if (isPublic)
+                    {
+                      temp_server_url = request.getRequestURL().toString();
+                      temp_url = "";
+                      //file = 1
+                      if (xdata_temp.getXinco_core_data_type().getId() == 1)
+                      {
+                        temp_url = ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
+                      }
+                      else
+                      {
+                        temp_url = xdata_temp.getDesignation();
+                      }
+                      out.println("<tr>");
+                      out.println("<td class=\"text\">" + xdata_temp.getDesignation() 
+                              + " (" + (rb.containsKey(xdata_temp.getXinco_core_data_type().getDesignation())
+                              ? rb.getString(xdata_temp.getXinco_core_data_type().getDesignation())
+                              : xdata_temp.getXinco_core_data_type().getDesignation()) + " | " 
+                              + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
+                      out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId() 
+                              + "/" + temp_url + "?list=" + request.getParameter("list") + "\" target=\"_blank\">"
+                              + temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
+                      out.println("</tr>");
+                      out.flush();
+                    }
+                  }
                 }
-            } else {
-                core_data_id = 0;
+              }
             }
-        } else {
-            core_data_id = 0;
-            if (request.getParameter("MainMenu").compareTo("list") == 0) {
-                printList = true;
-            } else if ((request.getParameter("MainMenu").compareTo("browse") == 0)) {
-                browseFolder = true;
+            catch (XincoException | NumberFormatException sqle)
+            {
+              sqle.printStackTrace(System.err);
             }
+          }
+          else
+          {
+            if (config.isAllowPublisherList())
+            {
+              out.println("<tr>");
+              out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list&list=" 
+                      + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.list") + "</td>");
+              out.println("</tr>");
+            }
+            out.println("<tr>");
+            out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path="
+                    + (encode(("xincoRoot").getBytes())) + "&list=" + request.getParameter("list") + "\" class=\"link\">"
+                    + rb.getString("message.xincopublisher.browse") + "</td>");
+            out.println("</tr>");
+          }
+          out.println("<tr>");
+          out.println("<td class=\"text\" colspan=\"2\">&nbsp;<br><br></td>");
+          out.println("</tr>");
+          out.println("<tr>");
+          out.println("<td class=\"text\" colspan=\"2\">" + rb.getString("message.xincopublisher.howto") + "</td>");
+          out.println("</tr>");
+          out.println("</table>");
         }
-        //check data type
-        if (core_data_id > 0) {
-            if (xcd.getXinco_core_data_type().getId() == 1) {
-                fileDownload = true;
-            } else {
-                fileDownload = false;
+        if (core_data_id > 0)
+        {
+
+          out.println("<br>");
+          out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+          out.println("<tr>");
+          //out.println("<td class=\"text\">Designation:</td>");
+          out.println("<td class=\"bigtext\" colspan=\"2\">" + xcd.getDesignation() + "</td>");
+          out.println("</tr>");
+          out.println("<tr>");
+          out.println("<td class=\"text\" colspan=\"2\">&nbsp;</td>");
+          out.println("</tr>");
+
+          //print additional attributes
+          for (i = 0; i < xcd.getXinco_add_attributes().size(); i++)
+          {
+            xcdta = ((XincoCoreDataTypeAttribute) xcd.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i));
+            xaa = ((XincoAddAttribute) xcd.getXinco_add_attributes().elementAt(i));
+            out.println("<tr>");
+            out.println("<td class=\"text\" valign=\"top\"><b>" + xcdta.getDesignation() + ":</b></td>");
+            if (xcdta.getData_type().toLowerCase().compareTo("int") == 0)
+            {
+              out.println("<td class=\"text\"><pre>" + xaa.getAttrib_int() + "</pre></td>");
             }
+            if (xcdta.getData_type().toLowerCase().compareTo("unsignedint") == 0)
+            {
+              out.println("<td class=\"text\"><pre>" + xaa.getAttrib_unsignedint() + "</pre></td>");
+            }
+            if (xcdta.getData_type().toLowerCase().compareTo("double") == 0)
+            {
+              out.println("<td class=\"text\"><pre>" + xaa.getAttrib_double() + "</pre></td>");
+            }
+            if (xcdta.getData_type().toLowerCase().compareTo("varchar") == 0)
+            {
+              out.println("<td class=\"text\"><pre>" + xaa.getAttrib_varchar() + "</pre></td>");
+            }
+            if (xcdta.getData_type().toLowerCase().compareTo("text") == 0)
+            {
+              out.println("<td class=\"text\"><pre>" + xaa.getAttrib_text() + "</pre></td>");
+            }
+            if (xcdta.getData_type().toLowerCase().compareTo("datetime") == 0)
+            {
+              out.println("<td class=\"text\"><pre>" + xaa.getAttrib_datetime() + "</pre></td>");
+            }
+            out.println("</tr>");
+          }
+
+          out.println("</table>");
+
         }
-
-        //generate specific output
-        if (fileDownload) { // begin FILE output
-            try {
-                response.setContentType("unknown/unknown");
-                OutputStream out = response.getOutputStream();
-                FileInputStream in = new FileInputStream(XincoCoreDataServer.getLastMajorVersionDataPath(core_data_id, DBM));
-                byte[] buf = new byte[4096];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-            } catch (Exception e) {
-                //Can't call both getWriter() and getOutputStream()
-                e.printStackTrace();
-            }
-            //end FILE output
-
-        } else {
-            // begin HTML output
-
-            //start output
-            response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-
-            //show header
-            out.println("<html>");
-            out.println("<head>");
-            if (core_data_id == 0) {
-                out.println("<title>XincoPublisher</title>");
-                out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
-            }
-            if (core_data_id > 0) {
-                out.println("<title>" + xcd.getDesignation() + "</title>");
-                out.println("<link rel=\"stylesheet\" href=\"../../xincostyle.css\" type=\"text/css\"/>");
-            }
-            out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
-            out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
-            out.println("</head>");
-            out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
-            out.println("<center>");
-            out.println("<span class=\"text\">");
-
-            out.println("");
-
-            //show main menu
-            if (core_data_id == 0) {
-                out.println("<br>");
-                out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-                out.println("<tr>");
-                out.println("<td class=\"text\" width=\"100\"><img src='resources/images/blueCubsSmall.gif' border=\"0\"/></td>");
-                out.println("<td class=\"bigtext\" width=\"650\">" + rb.getString("message.admin.main.publisher.label") + "</td>");
-                out.println("</tr>");
-                out.println("</table>");
-                out.println("<br>");
-                out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-                if (printList) {
-                    try {
-                        XincoCoreDataServer xdata_temp = null;
-                        Statement stmt = DBM.con.createStatement();
-                        //Only display data with at least one major version
-                        ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation "
-                                + "FROM xinco_core_data xcd, xinco_core_ace xca, xinco_core_log xcl WHERE xcd.id=xca.xinco_core_data_id AND "
-                                + "xcd.id=xcl.xinco_core_data_id AND (xcd.status_number <>"
-                                + (XincoDataStatus.ARCHIVED.ordinal() + 1) + " AND (xca.xinco_core_group_id=3 AND xca.read_permission=1)"
-                                + "|| xcd.status_number = "+(XincoDataStatus.PUBLISHED.ordinal() + 1)+") "
-                                + " and xcl.version_mid='0' ORDER BY xcd.designation");
-                        while (rs.next()) {
-                            xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
-                            temp_server_url = request.getRequestURL().toString();
-                            temp_url = "";
-                            //file = 1
-                            if (xdata_temp.getXinco_core_data_type().getId() == 1) {
-                                temp_url = ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
-                            } else {
-                                temp_url = xdata_temp.getDesignation();
-                            }
-                            out.println("<tr>");
-                            out.println("<td class=\"text\">" + xdata_temp.getDesignation()
-                                    + " (" + (rb.containsKey(xdata_temp.getXinco_core_data_type().getDesignation())
-                                    ? rb.getString(xdata_temp.getXinco_core_data_type().getDesignation())
-                                    : xdata_temp.getXinco_core_data_type().getDesignation()) + " | "
-                                    + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
-                            out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId()
-                                    + "/" + temp_url + "?list=" + request.getParameter("list") + "\" target=\"_blank\">"
-                                    + temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
-                            out.println("</tr>");
-                            out.flush();
-                        }
-                        stmt.close();
-                    } catch (Exception sqle) {
-                        sqle.printStackTrace();
-                    }
-                } else if (browseFolder) {
-                    try {
-                        XincoCoreNodeServer xnode_temp = null;
-                        XincoCoreNodeServer xnode_temp2 = null;
-                        XincoCoreDataServer xdata_temp = null;
-                        String temp_path = null;
-                        String temp_path2 = null;
-                        int temp_xcn_id = 0;
-
-                        if (!(request.getParameter("FolderId") == null)) {
-                            temp_xcn_id = Integer.parseInt(request.getParameter("FolderId"));
-                            xnode_temp = new XincoCoreNodeServer(temp_xcn_id, DBM);
-                            //check read permission for group "public"
-                            isPublic = false;
-                            for (i = 0; i < xnode_temp.getXinco_core_acl().size(); i++) {
-                                if ((((XincoCoreACE) xnode_temp.getXinco_core_acl().elementAt(i)).getXinco_core_group_id() == 3)
-                                        && ((XincoCoreACE) xnode_temp.getXinco_core_acl().elementAt(i)).isRead_permission()) {
-                                    isPublic = true;
-                                    break;
-                                }
-                            }
-                            if (isPublic) {
-                                xnode_temp.fillXincoCoreNodes(DBM);
-                                xnode_temp.fillXincoCoreData(DBM);
-                                // print current path
-                                if (!(request.getParameter("Path") == null)) {
-                                    temp_path = request.getParameter("Path");
-                                    temp_path = new String(Base64.decode(temp_path));
-                                    out.println("<tr>");
-                                    out.println("<td colspan=\"2\" class=\"text\"><b>" + rb.getString("general.path") + "</b> " + temp_path + "</td>");
-                                    out.println("</tr>");
-                                    out.println("<tr>");
-                                    out.println("<td colspan=\"2\" class=\"text\">&nbsp;</td>");
-                                    out.println("</tr>");
-                                    out.flush();
-                                } else {
-                                    temp_path = null;
-                                }
-                                // list public folders
-                                out.println("<tr>");
-                                out.println("<td colspan=\"2\" class=\"text\"><b>" + rb.getString("message.xincopublisher.subfolders") + "</b></td>");
-                                out.println("</tr>");
-                                out.flush();
-                                for (i = 0; i < xnode_temp.getXinco_core_nodes().size(); i++) {
-                                    xnode_temp2 = new XincoCoreNodeServer(((XincoCoreNodeServer) xnode_temp.getXinco_core_nodes().elementAt(i)).getId(), DBM);
-                                    isPublic = false;
-                                    //check read permission for group "public"
-                                    for (j = 0; j < xnode_temp2.getXinco_core_acl().size(); j++) {
-                                        if ((((XincoCoreACE) xnode_temp2.getXinco_core_acl().elementAt(j)).getXinco_core_group_id() == 3) 
-                                                && ((XincoCoreACE) xnode_temp2.getXinco_core_acl().elementAt(j)).isRead_permission()) {
-                                            isPublic = true;
-                                            break;
-                                        }
-                                    }
-                                    if (isPublic) {
-                                        if (temp_path != null) {
-                                            temp_path2 = temp_path + " / " + xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")";
-                                            temp_path2 = Base64.encode(temp_path2.getBytes());
-                                            temp_path2 = "&Path=" + temp_path2;
-                                        } else {
-                                            temp_path2 = "";
-                                        }
-                                        out.println("<tr>");
-                                        out.println("<td class=\"text\">&nbsp;</td>");
-                                        out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId="
-                                                + xnode_temp2.getId() + temp_path2 + "&list=" + request.getParameter("list") + "\">["
-                                                + xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")"
-                                                + "]</a></td>");
-                                        out.println("</tr>");
-                                        out.flush();
-                                    }
-                                }
-                                out.println("<tr>");
-                                out.println("<td colspan=\"2\" class=\"text\">&nbsp;</td>");
-                                out.println("</tr>");
-                                out.flush();
-                                // list public data
-                                out.println("<tr>");
-                                out.println("<td colspan=\"2\" class=\"text\"><b>"
-                                        + rb.getString("message.xincopublisher.publicdata") + "</b></td>");
-                                out.println("</tr>");
-                                out.flush();
-                                for (i = 0; i < xnode_temp.getXinco_core_data().size(); i++) {
-                                    xdata_temp = new XincoCoreDataServer(((XincoCoreDataServer) xnode_temp.getXinco_core_data().elementAt(i)).getId(), DBM);
-                                    isPublic = false;
-                                    //check status (5 = published)
-                                    if (xdata_temp.getStatus_number() == XincoDataStatus.PUBLISHED.ordinal() + 1) {
-                                        isPublic = true;
-                                    } else {
-                                        //check read permission for group "public"
-                                        if (xdata_temp.getStatus_number() != XincoDataStatus.ARCHIVED.ordinal() + 1) {
-                                        for (j = 0; j < xdata_temp.getXinco_core_acl().size(); j++) {
-                                            if ((((XincoCoreACE) xdata_temp.getXinco_core_acl().elementAt(j)).getXinco_core_group_id() == 3) && ((XincoCoreACE) xdata_temp.getXinco_core_acl().elementAt(j)).isRead_permission()) {
-                                                isPublic = true;
-                                                break;
-                                            }
-                                        }
-                                        }
-                                    }
-                                    if (isPublic) {
-                                        temp_server_url = request.getRequestURL().toString();
-                                        temp_url = "";
-                                        //file = 1
-                                        if (xdata_temp.getXinco_core_data_type().getId() == 1) {
-                                            temp_url = ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
-                                        } else {
-                                            temp_url = xdata_temp.getDesignation();
-                                        }
-                                        out.println("<tr>");
-                                        out.println("<td class=\"text\">" + xdata_temp.getDesignation() + " (" + (rb.containsKey(xdata_temp.getXinco_core_data_type().getDesignation())
-                                                ? rb.getString(xdata_temp.getXinco_core_data_type().getDesignation())
-                                                : xdata_temp.getXinco_core_data_type().getDesignation()) + " | " + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
-                                        out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId() + "/" + temp_url + "?list=" + request.getParameter("list") + "\" target=\"_blank\">" + temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
-                                        out.println("</tr>");
-                                        out.flush();
-                                    }
-                                }
-                            }
-                        }
-                    } catch (Exception sqle) {
-                        sqle.printStackTrace();
-                    }
-                } else {
-                    if (config.isAllowPublisherList()) {
-                        out.println("<tr>");
-                        out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.list") + "</td>");
-                        out.println("</tr>");
-                    }
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encode(("xincoRoot").getBytes())) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
-                    out.println("</tr>");
-                }
-                out.println("<tr>");
-                out.println("<td class=\"text\" colspan=\"2\">&nbsp;<br><br></td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"text\" colspan=\"2\">" + rb.getString("message.xincopublisher.howto") + "</td>");
-                out.println("</tr>");
-                out.println("</table>");
-            }
-            if (core_data_id > 0) {
-
-                out.println("<br>");
-                out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-                out.println("<tr>");
-                //out.println("<td class=\"text\">Designation:</td>");
-                out.println("<td class=\"bigtext\" colspan=\"2\">" + xcd.getDesignation() + "</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"text\" colspan=\"2\">&nbsp;</td>");
-                out.println("</tr>");
-
-                //print additional attributes
-                for (i = 0; i < xcd.getXinco_add_attributes().size(); i++) {
-                    xcdta = ((XincoCoreDataTypeAttribute) xcd.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i));
-                    xaa = ((XincoAddAttribute) xcd.getXinco_add_attributes().elementAt(i));
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" valign=\"top\"><b>" + xcdta.getDesignation() + ":</b></td>");
-                    if (xcdta.getData_type().toLowerCase().compareTo("int") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_int() + "</pre></td>");
-                    }
-                    if (xcdta.getData_type().toLowerCase().compareTo("unsignedint") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_unsignedint() + "</pre></td>");
-                    }
-                    if (xcdta.getData_type().toLowerCase().compareTo("double") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_double() + "</pre></td>");
-                    }
-                    if (xcdta.getData_type().toLowerCase().compareTo("varchar") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_varchar() + "</pre></td>");
-                    }
-                    if (xcdta.getData_type().toLowerCase().compareTo("text") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_text() + "</pre></td>");
-                    }
-                    if (xcdta.getData_type().toLowerCase().compareTo("datetime") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_datetime() + "</pre></td>");
-                    }
-                    out.println("</tr>");
-                }
-
-                out.println("</table>");
-
-            }
-
-            //show footer
-            if (core_data_id == 0) {
-                out.println("<br><br><br>");
-                out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-                out.println("<tr>");
-                out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\">&copy; " + rb.getString("general.copyright.date") + ", "
-                        + //Avoid external links if general.setting.allowoutsidelinks is set to false
-                        //Security bug
-                        (DBM.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
-                out.println("</tr>");
-                out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"
-                        + rb.getString("message.admin.main.backtomain") + "' />"
-                        + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>"
-                        + "<tr><FORM><INPUT TYPE='button' VALUE='" + rb.getString("message.admin.main.back")
-                        + "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='"
-                        + request.getParameter("list") + "'/></FORM></tr>");
-            }
-
-            out.println("</span>");
-            out.println("</center>");
-            out.println("</body>");
-            out.println("</html>");
-
-            out.close();
-
-        } //end HTML output
-
-        //close db connection
-        try {
-            DBM.con.close();
-        } catch (Exception e) {
+        //show footer
+        if (core_data_id == 0)
+        {
+          out.println("<br><br><br>");
+          out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+          out.println("<tr>");
+          out.println("<td class=\"text\">&nbsp;</td>");
+          out.println("<td class=\"text\">&copy; " + rb.getString("general.copyright.date") + ", "
+                  + //Avoid external links if general.setting.allowoutsidelinks is set to false
+                  //Security bug
+                  (DBM.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+          out.println("</tr>");
+          out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"
+                  + rb.getString("message.admin.main.backtomain") + "' />"
+                  + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>"
+                  + "<tr><FORM><INPUT TYPE='button' VALUE='" + rb.getString("message.admin.main.back")
+                  + "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='"
+                  + request.getParameter("list") + "'/></FORM></tr>");
         }
+        out.println("</span>");
+        out.println("</center>");
+        out.println("</body>");
+        out.println("</html>");
+      }
 
+    } //end HTML output
+
+    //close db connection
+    try
+    {
+      DBM.con.close();
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace(System.err);
     }
 
-    /** Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws javax.servlet.ServletException
-     * @throws java.io.IOException
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
+  }
 
-    /** Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws javax.servlet.ServletException
-     * @throws java.io.IOException
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
+  /**
+   * Handles the HTTP <code>GET</code> method.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws javax.servlet.ServletException
+   * @throws java.io.IOException
+   */
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+          throws ServletException, IOException
+  {
+    processRequest(request, response);
+  }
 
-    /** Returns a short description of the servlet.
-     * @return
-     */
-    @Override
-    public String getServletInfo() {
-        return "Servlet of xinco";
-    }
+  /**
+   * Handles the HTTP <code>POST</code> method.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws javax.servlet.ServletException
+   * @throws java.io.IOException
+   */
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+          throws ServletException, IOException
+  {
+    processRequest(request, response);
+  }
+
+  /**
+   * Returns a short description of the servlet.
+   *
+   * @return
+   */
+  @Override
+  public String getServletInfo()
+  {
+    return "Servlet of xinco";
+  }
 }

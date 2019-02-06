@@ -13,9 +13,15 @@ Author : Sudhir Ancha
  */
 package com.bluecubs.xinco.core.server.email;
 
+import static javax.mail.Message.RecipientType.TO;
+import static javax.mail.Session.getDefaultInstance;
+import static javax.mail.Transport.send;
+
 import com.bluecubs.xinco.core.server.XincoDBManager;
+
 import javax.mail.*;
 import javax.mail.internet.*;
+
 import java.util.*;
 
 public class XincoMailer {
@@ -63,7 +69,7 @@ public class XincoMailer {
         props.put("mail.smtp.auth ", "true ");
         
         Authenticator auth = new SMTPAuthenticator();
-        Session session = Session.getDefaultInstance(props, auth);
+        Session session = getDefaultInstance(props, auth);
         
         session.setDebug(debug);
         
@@ -78,13 +84,13 @@ public class XincoMailer {
         for (int i = 0; i < recipients.length; i++) {
             addressTo[i] = new InternetAddress(recipients[i]);
         }
-        msg.setRecipients(Message.RecipientType.TO, addressTo);
+        msg.setRecipients(TO, addressTo);
         
         
         // Setting the Subject and Content Type
         msg.setSubject(subject);
         msg.setContent(message, "text/plain");
-        Transport.send(msg);
+        send(msg);
     }
     
     

@@ -36,11 +36,14 @@
 
 package com.bluecubs.xinco.index.filetypes;
 
+import static java.lang.String.copyValueOf;
+
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.File;
 import java.io.BufferedReader;
+import java.io.IOException;
 
 import org.apache.poi.hpsf.PropertySet;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
@@ -54,11 +57,13 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
 		super();
 	}
 
+  @Override
 	public Reader getFileContentReader(File f) {
 		Reader reader = null;
 		return reader;
 	}
 
+  @Override
 	public String getFileContentString(File f) {
         String text = null;
 		try {
@@ -67,7 +72,7 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
 			r.registerListener(ximpprl);
 	        r.read(new FileInputStream(f));
 	        text = ximpprl.getEventText();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			text = null;
 		}
 		return text;
@@ -81,6 +86,7 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
 			return EventText;
 		}
 		
+    @Override
 		public void processPOIFSReaderEvent(POIFSReaderEvent event) {
 			PropertySet ps = null;
 			try {
@@ -94,9 +100,9 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
 					if (!(l>0)) {
 						break;
 					}
-					EventText = EventText + String.copyValueOf(ca, 0 , l);
+					EventText = EventText + copyValueOf(ca, 0 , l);
 				}
-			} catch (Exception ex) {
+			} catch (IOException ex) {
 				EventText = "";
 			}
 		}

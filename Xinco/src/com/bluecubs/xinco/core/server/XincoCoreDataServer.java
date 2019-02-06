@@ -35,12 +35,21 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.add.server.XincoAddAttributeServer.getXincoAddAttributes;
+import static com.bluecubs.xinco.core.OPCode.CHECKIN;
+import static com.bluecubs.xinco.core.OPCode.CREATION;
+import static com.bluecubs.xinco.core.server.XincoCoreACEServer.getXincoCoreACL;
+import static com.bluecubs.xinco.core.server.XincoCoreLogServer.getXincoCoreLogs;
+import static java.lang.System.getProperty;
+import static java.lang.System.out;
+
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoException;
+
 import java.util.Vector;
 import java.io.File;
 import java.sql.ResultSet;
@@ -68,13 +77,13 @@ public class XincoCoreDataServer extends XincoCoreData {
                 setXinco_core_language(new XincoCoreLanguageServer(rs.getInt("xinco_core_language_id"), DBM));
                 setXinco_core_data_type(new XincoCoreDataTypeServer(rs.getInt("xinco_core_data_type_id"), DBM));
                 //load logs
-                setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(rs.getInt("id"), DBM));
+                setXinco_core_logs(getXincoCoreLogs(rs.getInt("id"), DBM));
                 //load add attributes
-                setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(rs.getInt("id"), DBM));
+                setXinco_add_attributes(getXincoAddAttributes(rs.getInt("id"), DBM));
                 setDesignation(rs.getString("designation"));
                 setStatus_number(rs.getInt("status_number"));
                 //load acl for this object
-                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_data_id", DBM));
+                setXinco_core_acl(getXincoCoreACL(rs.getInt("id"), "xinco_core_data_id", DBM));
             }
             if (RowCount < 1) {
                 throw new XincoException();
@@ -82,10 +91,15 @@ public class XincoCoreDataServer extends XincoCoreData {
 
             stmt.close();
 
-        } catch (Exception e) {
+        } catch (XincoException e) {
             getXinco_core_acl().removeAllElements();
             throw new XincoException();
         }
+    catch (SQLException e)
+    {
+      getXinco_core_acl().removeAllElements();
+      throw new XincoException();
+    }
 
     }
 
@@ -97,13 +111,13 @@ public class XincoCoreDataServer extends XincoCoreData {
         setXinco_core_language(new XincoCoreLanguageServer(attrLID, DBM));
         setXinco_core_data_type(new XincoCoreDataTypeServer(attrDTID, DBM));
         //load logs
-        setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(attrID, DBM));
+        setXinco_core_logs(getXincoCoreLogs(attrID, DBM));
         //security: don't load add attribute, force direct access to data including check of access rights!
         setXinco_add_attributes(new Vector());
         setDesignation(attrD);
         setStatus_number(attrSN);
         //load acl for this object
-        setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_data_id", DBM));
+        setXinco_core_acl(getXincoCoreACL(getId(), "xinco_core_data_id", DBM));
 
     }
 
@@ -126,11 +140,11 @@ public class XincoCoreDataServer extends XincoCoreData {
         //Issue #2997801: Correct query to handle data without a second major version.
         ResultSet rs = stmt.executeQuery("select id from xinco.xinco_core_log " +
                 "where xinco_core_data_id = " + xinco_core_data_id + " and version_mid='0' " +
-                "and (op_code=" + (OPCode.CHECKIN.ordinal() + 1) + " or op_code=" + (OPCode.CREATION.ordinal() + 1) + ") order by id desc");
+                "and (op_code=" + (CHECKIN.ordinal() + 1) + " or op_code=" + (CREATION.ordinal() + 1) + ") order by id desc");
         if (rs.next()) {
             XincoCoreLogServer log = new XincoCoreLogServer(rs.getInt("id"), DBM);
-            System.out.println("Getting path: " + XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, xinco_core_data_id, xinco_core_data_id + "-" + log.getId()));
-            return XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, xinco_core_data_id, xinco_core_data_id + "-" + log.getId());
+            out.println("Getting path: " + getXincoCoreDataPath(DBM.config.FileRepositoryPath, xinco_core_data_id, xinco_core_data_id + "-" + log.getId()));
+            return getXincoCoreDataPath(DBM.config.FileRepositoryPath, xinco_core_data_id, xinco_core_data_id + "-" + log.getId());
         } else {
             throw new XincoException("No mayor log history for XincoCoreData with id: " + xinco_core_data_id);
         }
@@ -179,7 +193,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -214,10 +228,10 @@ public class XincoCoreDataServer extends XincoCoreData {
             stmt = DBM.con.createStatement();
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
             stmt.close();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -234,7 +248,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, getId(), "" + getId()))).delete();
+                    (new File(getXincoCoreDataPath(DBM.config.FileRepositoryPath, getId(), "" + getId()))).delete();
                 } catch (Exception dfe) {
                     // continue, file might not exists
                 }
@@ -242,7 +256,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 for (i = 0; i < this.getXinco_core_logs().size(); i++) {
                     if ((((XincoCoreLog) getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog) getXinco_core_logs().elementAt(i)).getOp_code() == 5)) {
                         try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog) getXinco_core_logs().elementAt(i)).getId()))).delete();
+                            (new File(getXincoCoreDataPath(DBM.config.FileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog) getXinco_core_logs().elementAt(i)).getId()))).delete();
                         } catch (Exception drfe) {
                             // continue, delete next revision
                         }
@@ -255,10 +269,10 @@ public class XincoCoreDataServer extends XincoCoreData {
             stmt.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + getId());
             stmt.close();
             DBM.con.commit();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -314,9 +328,13 @@ public class XincoCoreDataServer extends XincoCoreData {
 
             stmt.close();
 
-        } catch (Exception e) {
+        } catch (XincoException e) {
             data.removeAllElements();
         }
+    catch (SQLException e)
+    {
+      data.removeAllElements();
+    }
 
         return data;
 
@@ -335,7 +353,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         // add seperator
         for (int i = 0; i < 7; i++) {
             path4Id = path4Id.substring(0, (i * 2 + 1)) +
-                    System.getProperty("file.separator") + path4Id.substring((i * 2 + 1));
+                    getProperty("file.separator") + path4Id.substring((i * 2 + 1));
         }
         // create path if neccessary
         (new File(attrRP + path4Id)).mkdirs();

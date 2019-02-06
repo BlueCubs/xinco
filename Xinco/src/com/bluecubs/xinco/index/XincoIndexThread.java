@@ -35,6 +35,10 @@
  */
 package com.bluecubs.xinco.index;
 
+import static com.bluecubs.xinco.index.XincoIndexer.indexXincoCoreData;
+
+import java.sql.SQLException;
+
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 
@@ -49,10 +53,10 @@ public class XincoIndexThread extends Thread {
 
     @Override
     public void run() {
-        XincoIndexer.indexXincoCoreData(d, index_content, dbm);
+        indexXincoCoreData(d, index_content, dbm);
         try {
             dbm.con.close();
-        } catch (Exception e) {
+        } catch (SQLException e) {
         //do nothing
         }
     }

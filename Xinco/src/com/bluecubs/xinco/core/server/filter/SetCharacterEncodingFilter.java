@@ -78,6 +78,7 @@ public class SetCharacterEncodingFilter implements Filter {
     /**
      * Take this filter out of service.
      */
+    @Override
     public void destroy() {
         
         this.encoding = null;
@@ -97,6 +98,7 @@ public class SetCharacterEncodingFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
@@ -119,6 +121,7 @@ public class SetCharacterEncodingFilter implements Filter {
      *
      * @param filterConfig The filter configuration object
      */
+    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         
         this.filterConfig = filterConfig;

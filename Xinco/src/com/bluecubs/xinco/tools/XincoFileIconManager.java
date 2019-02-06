@@ -36,8 +36,12 @@
 
 package com.bluecubs.xinco.tools;
 
+import static java.io.File.createTempFile;
+import static javax.swing.filechooser.FileSystemView.getFileSystemView;
+
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
 
@@ -63,9 +67,9 @@ public class XincoFileIconManager {
             if(extension.length()<3)
                 return null;
             //Create a temporary file with the specified extension
-            file = File.createTempFile("icon", "." + extension);
+            file = createTempFile("icon", "." + extension);
             
-            FileSystemView view = FileSystemView.getFileSystemView();
+            FileSystemView view = getFileSystemView();
             icon = view.getSystemIcon(file);
             
             //Delete the temporary file

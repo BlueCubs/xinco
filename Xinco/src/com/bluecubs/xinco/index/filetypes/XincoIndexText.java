@@ -38,6 +38,8 @@ package com.bluecubs.xinco.index.filetypes;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
@@ -47,23 +49,24 @@ public class XincoIndexText implements XincoIndexFileType {
         super();
     }
 
+    @Override
     public Reader getFileContentReader(File f) {
         Reader reader = null;
         FileInputStream is = null;
         try {
             is = new FileInputStream(f);
             reader = new BufferedReader(new InputStreamReader(is));
-        } catch (Exception fe) {
+        } catch (FileNotFoundException fe) {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (Exception re) {
+                } catch (IOException re) {
                 }
             }
             if (is != null) {
                 try {
                     is.close();
-                } catch (Exception ise) {
+                } catch (IOException ise) {
                 }
             }
             reader = null;
@@ -71,6 +74,7 @@ public class XincoIndexText implements XincoIndexFileType {
         return reader;
     }
 
+    @Override
     public String getFileContentString(File f) {
         return null;
     }

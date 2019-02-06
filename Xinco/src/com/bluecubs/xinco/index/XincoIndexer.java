@@ -35,12 +35,21 @@
  */
 package com.bluecubs.xinco.index;
 
+import static com.bluecubs.xinco.index.XincoDocument.getXincoDocument;
+import static java.lang.Integer.parseInt;
+import static org.apache.lucene.index.IndexReader.open;
+import static org.apache.lucene.queryParser.QueryParser.parse;
+
+import java.io.IOException;
 import java.util.Vector;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.analysis.*;
+import org.apache.lucene.queryParser.ParseException;
+
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
 
@@ -57,23 +66,23 @@ public class XincoIndexer {
         try {
 
             //check if document exists in index and delete
-            XincoIndexer.removeXincoCoreData(d, dbm);
+            removeXincoCoreData(d, dbm);
 
             //add document to index
             try {
                 writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
-            } catch (Exception ie) {
+            } catch (IOException ie) {
                 writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), true);
             }
-            writer.addDocument(XincoDocument.getXincoDocument(d, index_content, dbm));
+            writer.addDocument(getXincoDocument(d, index_content, dbm));
             //writer.optimize();
             writer.close();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (Exception we) {
+                } catch (IOException we) {
                 }
             }
             return false;
@@ -88,14 +97,14 @@ public class XincoIndexer {
 
         //check if document exists in index and delete
         try {
-            reader = IndexReader.open(dbm.config.FileIndexPath);
+            reader = open(dbm.config.FileIndexPath);
             reader.delete(new Term("id", "" + d.getId()));
             reader.close();
-        } catch (Exception re) {
+        } catch (IOException re) {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (Exception re2) {
+                } catch (IOException re2) {
                 }
             }
             return false;
@@ -115,11 +124,11 @@ public class XincoIndexer {
             writer.optimize();
             writer.close();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (Exception we) {
+                } catch (IOException we) {
                 }
             }
             return false;
@@ -143,16 +152,24 @@ public class XincoIndexer {
             if (l != 0) {
                 s = s + " AND language:" + l;
             }
-            Query query = QueryParser.parse(s, "designation", analyzer);
+            Query query = parse(s, "designation", analyzer);
 
             Hits hits = searcher.search(query);
 
             for (i = 0; i < hits.length(); i++) {
                 try {
-                    v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), dbm));
-                } catch (Exception xcde) {
+                    v.addElement(new XincoCoreDataServer(parseInt(hits.doc(i).get("id")), dbm));
+                } catch (XincoException xcde) {
                 // don't add non-existing data
                 }
+        catch (IOException xcde)
+        {
+          // don't add non-existing data
+          // don't add non-existing data
+        }
+        catch (NumberFormatException xcde)
+        {
+        }
                 if (i >= dbm.config.MaxSearchResult) {
                     break;
                 }
@@ -160,15 +177,25 @@ public class XincoIndexer {
 
             searcher.close();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             if (searcher != null) {
                 try {
                     searcher.close();
-                } catch (Exception se) {
+                } catch (IOException se) {
                 }
             }
             return null;
         }
+    catch (ParseException e)
+    {
+      if (searcher != null) {
+        try {
+          searcher.close();
+        } catch (Exception se) {
+        }
+      }
+      return null;
+    }
 
         return v;
     }

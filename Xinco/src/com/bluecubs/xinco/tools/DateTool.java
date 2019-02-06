@@ -1,5 +1,7 @@
 package com.bluecubs.xinco.tools;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +12,6 @@ import java.util.concurrent.TimeUnit;
 public class DateTool {
 
     public static long getDifference(Calendar a, Calendar b, TimeUnit units) {
-        return units.convert(b.getTimeInMillis() - a.getTimeInMillis(), TimeUnit.MILLISECONDS);
+        return units.convert(b.getTimeInMillis() - a.getTimeInMillis(), MILLISECONDS);
     }
 }

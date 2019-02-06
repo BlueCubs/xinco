@@ -35,9 +35,14 @@
  */
 package com.bluecubs.xinco.conf;
 
+import static java.lang.System.getProperty;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
+
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -78,10 +83,10 @@ public class XincoConfigSingletonServer {
             FileRepositoryPath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileRepositoryPath");
         } catch (NamingException ex) {
             FileRepositoryPath = "";
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
-        if (!(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
-            FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
+        if (!(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(getProperty("file.separator")))) {
+            FileRepositoryPath = FileRepositoryPath + getProperty("file.separator");
         }
         //optional: FileIndexPath
         try {
@@ -89,35 +94,35 @@ public class XincoConfigSingletonServer {
         } catch (NamingException ce) {
             FileIndexPath = FileRepositoryPath + "index";
         }
-        if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
-            FileIndexPath = FileIndexPath + System.getProperty("file.separator");
+        if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(getProperty("file.separator")))) {
+            FileIndexPath = FileIndexPath + getProperty("file.separator");
         }
         try {
             FileArchivePath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePath");
         } catch (NamingException ex) {
             FileArchivePath = "";
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
-        if (!(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
-            FileArchivePath = FileArchivePath + System.getProperty("file.separator");
+        if (!(FileArchivePath.substring(FileArchivePath.length() - 1).equals(getProperty("file.separator")))) {
+            FileArchivePath = FileArchivePath + getProperty("file.separator");
         }
         try {
             FileArchivePeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod"));
         } catch (NamingException ex) {
             FileArchivePeriod = 14400000;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             FileIndexOptimizerPeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexOptimizerPeriod"));
         } catch (NamingException ex) {
             FileIndexOptimizerPeriod = 14400000;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             FileIndexerCount = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount"));
         } catch (NamingException ex) {
             FileIndexerCount = 4;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         IndexFileTypesClass = new Vector();
         IndexFileTypesExt = new Vector();
@@ -129,7 +134,7 @@ public class XincoConfigSingletonServer {
                 IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
                 IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
                 IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
-                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
             }
             try {
                 IndexFileTypesExt.add(((String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i + 1) + "_Ext")).split(";"));
@@ -150,7 +155,7 @@ public class XincoConfigSingletonServer {
                 tsa[2] = "php";
                 tsa[3] = "jsp";
                 IndexFileTypesExt.add(tsa);
-                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
             }
         }
         try {
@@ -160,49 +165,49 @@ public class XincoConfigSingletonServer {
             IndexNoIndex[0] = "";
             IndexNoIndex[1] = "com";
             IndexNoIndex[2] = "exe";
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             allowOutsideLinks = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowoutsidelinks")).equals("True");
         } catch (NamingException ex) {
             allowOutsideLinks = true;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             guessLanguage = ((String) (new InitialContext()).lookup("java:comp/env/setting.guessLanguage")).equals("True");
         } catch (NamingException ex) {
             guessLanguage = false;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             allowPublisherList = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowpublisherlist")).equals("True");
         } catch (NamingException ex) {
             allowPublisherList = true;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
         } catch (NamingException ex) {
             JNDIDB = "java:comp/env/jdbc/XincoDB";
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             MaxSearchResult = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult"));
         } catch (NamingException ex) {
             MaxSearchResult = 30;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             passwordMax = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/passMax"));
         } catch (NamingException ex) {
             passwordMax = -1;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
         try {
             passwordMin = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/passMin"));
         } catch (NamingException ex) {
             passwordMin = -1;
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoConfigSingletonServer.class.getName()).log(SEVERE, null, ex);
         }
     }
 

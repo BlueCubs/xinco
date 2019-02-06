@@ -36,12 +36,15 @@
 
 package com.bluecubs.xinco.core.server;
 
+import static java.util.ResourceBundle.getBundle;
+
 import java.util.Vector;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
+
 import java.util.ResourceBundle;
 
 public class XincoCoreLogServer extends XincoCoreLog {
@@ -77,9 +80,13 @@ public class XincoCoreLogServer extends XincoCoreLog {
             
             stmt.close();
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             throw new XincoException();
         }
+    catch (SQLException e)
+    {
+      throw new XincoException();
+    }
         
     }
     
@@ -112,7 +119,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             if (getId() > 0) {
                 Statement stmt = DBM.con.createStatement();
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
-                ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+                ResourceBundle xerb = getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.log.change"),this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'","\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
@@ -130,7 +137,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -156,9 +163,13 @@ public class XincoCoreLogServer extends XincoCoreLog {
             }
             
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             core_log.removeAllElements();
         }
+    catch (SQLException e)
+    {
+      core_log.removeAllElements();
+    }
         
         return core_log;
     }

@@ -8,6 +8,8 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import static java.lang.System.currentTimeMillis;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -60,7 +62,7 @@ public class XincoCoreAuditServer {
             }
             sql = "insert into xinco_core_user_modified_record (id, record_id, mod_Time, "
                     + "mod_Reason) values (" + id + ", " + record_ID + ", '"
-                    + new Timestamp(System.currentTimeMillis()) + "', '" + reason + "')";
+                    + new Timestamp(currentTimeMillis()) + "', '" + reason + "')";
             stmt.executeUpdate(sql);
             //System.out.println(sql);
             DBM.con.commit();

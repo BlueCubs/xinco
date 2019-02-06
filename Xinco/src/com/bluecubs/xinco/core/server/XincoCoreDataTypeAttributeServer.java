@@ -66,9 +66,13 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             }
 
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             throw new XincoException();
         }
+      catch (SQLException e)
+      {
+        throw new XincoException();
+      }
 
     }
 
@@ -109,10 +113,10 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 
             DBM.con.commit();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -150,10 +154,10 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 
             DBM.con.commit();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -170,9 +174,13 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 coreDataTypeAttributes.addElement(new XincoCoreDataTypeAttributeServer(rs.getInt("xinco_core_data_type_id"), rs.getInt("attribute_id"), rs.getString("designation"), rs.getString("data_type"), rs.getInt("attr_size")));
             }
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             coreDataTypeAttributes.removeAllElements();
         }
+      catch (SQLException e)
+      {
+        coreDataTypeAttributes.removeAllElements();
+      }
         return coreDataTypeAttributes;
     }
 }

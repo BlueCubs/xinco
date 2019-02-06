@@ -1,6 +1,13 @@
 package com.bluecubs.xinco.tools;
 
+import static java.lang.Integer.toHexString;
+import static java.lang.System.out;
+import static java.security.MessageDigest.getInstance;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
+
 import com.bluecubs.xinco.core.XincoException;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -17,25 +24,26 @@ public class MD5 {
 
     public static void main(String[] args) {
         if (args.length != 0) {
-            for (int i = 0; i < args.length; i++) {
-                try {
-                    System.out.println("MD5 (" + args[i] + ") = " + encrypt(args[i]));
-                } catch (XincoException ex) {
-                    Logger.getLogger(MD5.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+      for (String arg : args) {
+        try {
+          out.println("MD5 (" + arg + ") = " + encrypt(arg));
+        }
+        catch (XincoException ex) {
+          getLogger(MD5.class.getName()).log(SEVERE, null, ex);
+        }
+      }
         } else {
             try {
-                System.out.println("MD5 (admin) = " + encrypt("admin"));
+                out.println("MD5 (admin) = " + encrypt("admin"));
             } catch (XincoException ex) {
-                Logger.getLogger(MD5.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(MD5.class.getName()).log(SEVERE, null, ex);
             }
         }
     }
 
     public static String encrypt(String text) throws XincoException {
         try {
-            algorithm = MessageDigest.getInstance("MD5");
+            algorithm = getInstance("MD5");
         } catch (NoSuchAlgorithmException nsae) {
             throw new XincoException("Cannot find digest algorithm");
         }
@@ -46,7 +54,7 @@ public class MD5 {
         StringBuilder hexString = new StringBuilder();
 
         for (int i = 0; i < messageDigest.length; i++) {
-            String hex = Integer.toHexString(0xFF & messageDigest[i]);
+            String hex = toHexString(0xFF & messageDigest[i]);
             if (hex.length() == 1) {
                 hexString.append('0');
             }

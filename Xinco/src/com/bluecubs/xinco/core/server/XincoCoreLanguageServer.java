@@ -36,10 +36,13 @@
 
 package com.bluecubs.xinco.core.server;
 
+import static java.util.ResourceBundle.getBundle;
+
 import java.sql.*;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
+
 import java.util.ResourceBundle;
 
 public class XincoCoreLanguageServer extends XincoCoreLanguage {
@@ -66,9 +69,13 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             
             stmt.close();
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             throw new XincoException();
         }
+    catch (SQLException e)
+    {
+      throw new XincoException();
+    }
         
     }
     
@@ -91,7 +98,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
-                ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+                ResourceBundle xerb = getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.language.change"),this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_language SET sign='" + getSign().replaceAll("'","\\\\'") + "', designation='" + getDesignation().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
@@ -109,7 +116,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -134,10 +141,10 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             
             DBM.con.commit();
             
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -162,9 +169,13 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             
             stmt.close();
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             coreLanguages.removeAllElements();
         }
+    catch (SQLException e)
+    {
+      coreLanguages.removeAllElements();
+    }
         
         return coreLanguages;
     }
@@ -195,7 +206,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 stmt.close();
             }
             
-        } catch (Exception e) {
+        } catch (SQLException e) {
             is_used = true; // rather lock language in case of error!
         }
         

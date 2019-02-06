@@ -36,8 +36,12 @@
 
 package com.bluecubs.xinco.index.filetypes;
 
+import static org.pdfbox.searchengine.lucene.LucenePDFDocument.getDocument;
+
 import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
+
 import org.pdfbox.searchengine.lucene.LucenePDFDocument;
 import org.apache.lucene.document.Document;
 
@@ -47,18 +51,20 @@ public class XincoIndexAdobePDF implements XincoIndexFileType {
 		super();
 	}
 
+  @Override
 	public Reader getFileContentReader(File f) {
 		Reader reader = null;
 		Document temp_doc = null;
 		try {
-			temp_doc = LucenePDFDocument.getDocument(f);
+			temp_doc = getDocument(f);
 			reader = temp_doc.getField("contents").readerValue();
-		} catch (Exception pdfe) {
+		} catch (IOException pdfe) {
 			reader = null;
 		}
 		return reader;
 	}
 
+  @Override
 	public String getFileContentString(File f) {
 		return null;
 	}

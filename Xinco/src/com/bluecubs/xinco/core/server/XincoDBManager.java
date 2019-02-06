@@ -35,9 +35,18 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.conf.XincoConfigSingletonServer.getInstance;
+import static java.lang.System.err;
+import static java.lang.System.out;
+import static java.util.Locale.getDefault;
+import static java.util.ResourceBundle.getBundle;
+import static java.util.ResourceBundle.getBundle;
+
 import javax.sql.DataSource;
 import javax.naming.InitialContext;
+
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -59,9 +68,9 @@ public class XincoDBManager {
     private Locale loc = null;
 
     public XincoDBManager() throws Exception {
-        lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+        lrb = getBundle("com.bluecubs.xinco.messages.XincoMessages");
         //load compiled configuartion
-        config = XincoConfigSingletonServer.getInstance();
+        config = getInstance();
         DataSource datasource = (DataSource) (new InitialContext()).lookup(config.JNDIDB);
         con = datasource.getConnection();
         con.setAutoCommit(false);
@@ -154,9 +163,9 @@ public class XincoDBManager {
                 out.println("</tr><tr>");
             }
             out.println("</tr></table></center>");
-        } catch (Exception e) {
+        } catch (SQLException e) {
             out.println(lrb.getString("general.nodata"));
-            System.out.println("Exception drawing table: " + e.getMessage());
+            out.println("Exception drawing table: " + e.getMessage());
         }
     }
 
@@ -177,7 +186,7 @@ public class XincoDBManager {
                 list += rsmd.getColumnName(i) + ",";
             }
         } catch (SQLException e) {
-            System.err.println("Error getting names from result set. " + e);
+            err.println("Error getting names from result set. " + e);
         }
         t = new StringTokenizer(list, ",");
         return t;
@@ -201,7 +210,7 @@ public class XincoDBManager {
             }
             header += "</td>";
         } catch (SQLException e) {
-            System.err.println("Error getting names from result set. " + e);
+            err.println("Error getting names from result set. " + e);
         }
         return header;
     }
@@ -224,10 +233,10 @@ public class XincoDBManager {
     public void setLoc(Locale loc) {
         this.loc = loc;
         if (loc == null) {
-            loc = Locale.getDefault();
+            loc = getDefault();
         } else {
             try {
-                lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
+                lrb = getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -35,10 +35,13 @@
  */
 package com.bluecubs.xinco.index;
 
+import static com.bluecubs.xinco.index.XincoIndexer.optimizeIndex;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,7 +68,7 @@ public class XincoIndexOptimizeTimerTask extends TimerTask {
             if (index_period == 0) {
                 return;
             }
-            boolean isIndexOptimized = XincoIndexer.optimizeIndex(DBM);
+            boolean isIndexOptimized = optimizeIndex(DBM);
             /*Logger.getLogger(XincoIndexOptimizeTimerTask.class.getSimpleName()).log(
                     Level.INFO, "isIndexOptimized = " + isIndexOptimized);*/
             lastRun = new GregorianCalendar();

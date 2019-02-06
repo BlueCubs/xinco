@@ -7,6 +7,9 @@
 
 package com.bluecubs.xinco.core;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 public class XincoCoreACE  implements java.io.Serializable {
     private boolean admin_permission;
 
@@ -255,6 +258,7 @@ public class XincoCoreACE  implements java.io.Serializable {
     }
 
     private java.lang.Object __equalsCalc = null;
+  @Override
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoCoreACE)) return false;
         XincoCoreACE other = (XincoCoreACE) obj;
@@ -281,22 +285,23 @@ public class XincoCoreACE  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+  @Override
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        _hashCode += (isAdmin_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isAdmin_permission() ? TRUE : FALSE).hashCode();
         _hashCode += getChangerID();
-        _hashCode += (isExecute_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isExecute_permission() ? TRUE : FALSE).hashCode();
         _hashCode += getXinco_core_data_id();
         _hashCode += getXinco_core_group_id();
         _hashCode += getXinco_core_node_id();
         _hashCode += getXinco_core_user_id();
         _hashCode += getId();
-        _hashCode += (isRead_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isWrite_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isRead_permission() ? TRUE : FALSE).hashCode();
+        _hashCode += (isWrite_permission() ? TRUE : FALSE).hashCode();
         __hashCodeCalc = false;
         return _hashCode;
     }

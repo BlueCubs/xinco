@@ -111,6 +111,7 @@ public class XincoCoreLanguage  implements java.io.Serializable {
     }
 
     private java.lang.Object __equalsCalc = null;
+    @Override
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoCoreLanguage)) return false;
         XincoCoreLanguage other = (XincoCoreLanguage) obj;
@@ -135,6 +136,7 @@ public class XincoCoreLanguage  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+    @Override
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;

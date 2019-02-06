@@ -1,5 +1,8 @@
 package com.bluecubs.xinco.tools;
 
+import static java.util.Locale.getDefault;
+import static java.util.ResourceBundle.getBundle;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -11,9 +14,8 @@ public class LocalizationTool {
 
     //TODO: Manage changing locale from webpage
     //static HashMap<String, String> localeFlagMap = new HashMap<String, String>();
-    static ResourceBundle lrb = ResourceBundle.getBundle(
-            "com.bluecubs.xinco.messages.XincoMessagesLocale",
-            Locale.getDefault());
+    static ResourceBundle lrb = getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale",
+            getDefault());
 
     static public String[] getLocales() {
         return lrb.getString("AvailableLocales").split(",");

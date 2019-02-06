@@ -7,6 +7,9 @@
 
 package com.bluecubs.xinco.core;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 public class XincoSetting  implements java.io.Serializable {
     private int id;
 
@@ -207,6 +210,7 @@ public class XincoSetting  implements java.io.Serializable {
     }
 
     private java.lang.Object __equalsCalc = null;
+  @Override
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoSetting)) return false;
         XincoSetting other = (XincoSetting) obj;
@@ -237,6 +241,7 @@ public class XincoSetting  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+  @Override
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -251,7 +256,7 @@ public class XincoSetting  implements java.io.Serializable {
         if (getString_value() != null) {
             _hashCode += getString_value().hashCode();
         }
-        _hashCode += (isBool_value() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isBool_value() ? TRUE : FALSE).hashCode();
         _hashCode += getChangerID();
         _hashCode += new Long(getLong_value()).hashCode();
         if (getXinco_settings() != null) {

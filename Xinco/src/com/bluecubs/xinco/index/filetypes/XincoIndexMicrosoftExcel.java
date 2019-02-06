@@ -36,10 +36,16 @@
 
 package com.bluecubs.xinco.index.filetypes;
 
+import static org.apache.poi.hssf.usermodel.HSSFCell.CELL_TYPE_FORMULA;
+import static org.apache.poi.hssf.usermodel.HSSFCell.CELL_TYPE_NUMERIC;
+import static org.apache.poi.hssf.usermodel.HSSFCell.CELL_TYPE_STRING;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -52,10 +58,12 @@ public class XincoIndexMicrosoftExcel implements XincoIndexFileType {
 		super();
 	}
 
+  @Override
 	public Reader getFileContentReader(File f) {
 		return null;
 	}
 
+  @Override
 	public String getFileContentString(File f) {
 		int i,j,j2,k;
 		short k2;
@@ -84,12 +92,12 @@ public class XincoIndexMicrosoftExcel implements XincoIndexFileType {
 						}
 						k2++;
 						switch (cell.getCellType()) {
-							case HSSFCell.CELL_TYPE_FORMULA :
+							case CELL_TYPE_FORMULA :
 								break;
-							case HSSFCell.CELL_TYPE_NUMERIC :
+							case CELL_TYPE_NUMERIC :
 								cell_string = cell_string + cell.getNumericCellValue() + "\t";
 								break;
-							case HSSFCell.CELL_TYPE_STRING :
+							case CELL_TYPE_STRING :
 								cell_string = cell_string + cell.getStringCellValue() + "\t";
 								break;
                             default :
@@ -101,12 +109,12 @@ public class XincoIndexMicrosoftExcel implements XincoIndexFileType {
 				cell_string = cell_string + "\n\n\n";
 			}
 			is.close();
-		} catch (Exception fe) {
+		} catch (IOException fe) {
 			cell_string = null;
 			if (is != null) {
 				try {
 					is.close();
-				} catch (Exception ise) {}
+				} catch (IOException ise) {}
 			}
 		}
 		return cell_string;

@@ -35,19 +35,29 @@
  */
 package com.bluecubs.xinco.archive;
 
+import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.getXincoCoreNodeParents;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Logger.getLogger;
+
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.bluecubs.xinco.core.XincoException;
 
 /**
  * This class runs document archiving in a separate thread
@@ -125,16 +135,15 @@ public class XincoArchiveTimerTask extends TimerTask {
                 while (rs.next()) {
                     xdata_temp = new XincoCoreDataServer(rs.getInt("xcd.id"), DBM);
                     XincoArchiver.archiveData(xdata_temp,
-                            XincoCoreNodeServer.getXincoCoreNodeParents(
+                            getXincoCoreNodeParents(
                             xdata_temp.getXinco_core_node_id(), DBM), DBM);
                     cancel();
                 }
                 stmt.close();
             }
             return true;
-        } catch (Exception e) {
-            Logger.getLogger(XincoArchiveTimerTask.class.getSimpleName()).log(
-                    Level.INFO, null, e);
+        } catch (XincoException e) {
+            getLogger(XincoArchiveTimerTask.class.getSimpleName()).log(INFO, null, e);
             try {
                 if (fcis != null) {
                     fcis.close();
@@ -142,10 +151,40 @@ public class XincoArchiveTimerTask extends TimerTask {
                 if (fcos != null) {
                     fcos.close();
                 }
-            } catch (Exception fe) {
+            } catch (IOException fe) {
             }
             return false;
         }
+    catch (IOException e)
+    {
+      Logger.getLogger(XincoArchiveTimerTask.class.getSimpleName()).log(
+              Level.INFO, null, e);
+      try {
+        if (fcis != null) {
+          fcis.close();
+        }
+        if (fcos != null) {
+          fcos.close();
+        }
+      } catch (Exception fe) {
+      }
+      return false;
+    }
+    catch (SQLException e)
+    {
+      Logger.getLogger(XincoArchiveTimerTask.class.getSimpleName()).log(
+              Level.INFO, null, e);
+      try {
+        if (fcis != null) {
+          fcis.close();
+        }
+        if (fcos != null) {
+          fcos.close();
+        }
+      } catch (Exception fe) {
+      }
+      return false;
+    }
 
     }
 }

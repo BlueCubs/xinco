@@ -7,6 +7,9 @@
 
 package com.bluecubs.xinco.core;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 public class XincoCoreUser  implements java.io.Serializable {
     private boolean change;
 
@@ -303,6 +306,7 @@ public class XincoCoreUser  implements java.io.Serializable {
     }
 
     private java.lang.Object __equalsCalc = null;
+  @Override
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoCoreUser)) return false;
         XincoCoreUser other = (XincoCoreUser) obj;
@@ -345,13 +349,14 @@ public class XincoCoreUser  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+  @Override
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        _hashCode += (isChange() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isChange() ? TRUE : FALSE).hashCode();
         _hashCode += getChangerID();
         if (getEmail() != null) {
             _hashCode += getEmail().hashCode();
@@ -373,7 +378,7 @@ public class XincoCoreUser  implements java.io.Serializable {
         if (getUserpassword() != null) {
             _hashCode += getUserpassword().hashCode();
         }
-        _hashCode += (isWriteGroups() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isWriteGroups() ? TRUE : FALSE).hashCode();
         if (getXinco_core_groups() != null) {
             _hashCode += getXinco_core_groups().hashCode();
         }

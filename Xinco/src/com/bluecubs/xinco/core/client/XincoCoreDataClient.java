@@ -43,6 +43,7 @@ public class XincoCoreDataClient extends XincoCoreData {
 	public XincoCoreDataClient() throws XincoException {
 	}
 
+        @Override
 	public String toString() {
 		return this.getDesignation();
 	}

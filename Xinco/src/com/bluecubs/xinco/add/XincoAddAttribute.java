@@ -7,6 +7,9 @@
 
 package com.bluecubs.xinco.add;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 public class XincoAddAttribute  implements java.io.Serializable {
     private java.util.Calendar attrib_datetime;
 
@@ -255,6 +258,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
     }
 
     private java.lang.Object __equalsCalc = null;
+  @Override
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoAddAttribute)) return false;
         XincoAddAttribute other = (XincoAddAttribute) obj;
@@ -287,6 +291,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+  @Override
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -308,7 +313,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
         _hashCode += getAttribute_id();
         _hashCode += getXinco_core_data_id();
         _hashCode += getChangerID();
-        _hashCode += (isChange() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isChange() ? TRUE : FALSE).hashCode();
         __hashCodeCalc = false;
         return _hashCode;
     }

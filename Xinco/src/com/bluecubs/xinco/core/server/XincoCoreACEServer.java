@@ -71,9 +71,13 @@ public class XincoCoreACEServer extends XincoCoreACE {
             
             stmt.close();
             
-        } catch (Exception e) {
+        } catch (XincoException e) {
             throw new XincoException();
         }
+      catch (SQLException e)
+      {
+        throw new XincoException();
+      }
         
     }
     
@@ -169,7 +173,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             throw new XincoException();
         }
@@ -191,10 +195,10 @@ public class XincoCoreACEServer extends XincoCoreACE {
             
             DBM.con.commit();
             
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 DBM.con.rollback();
-            } catch (Exception erollback) {
+            } catch (SQLException erollback) {
             }
             e.printStackTrace();
             throw new XincoException();
@@ -218,9 +222,13 @@ public class XincoCoreACEServer extends XincoCoreACE {
             }
             
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             core_acl.removeAllElements();
         }
+      catch (SQLException e)
+      {
+        core_acl.removeAllElements();
+      }
         
         return core_acl;
     }
