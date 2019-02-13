@@ -19,7 +19,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 class XincoWorkflowDBManager {
 

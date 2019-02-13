@@ -24,7 +24,7 @@ import javax.persistence.UniqueConstraint;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "user_link", uniqueConstraints = {

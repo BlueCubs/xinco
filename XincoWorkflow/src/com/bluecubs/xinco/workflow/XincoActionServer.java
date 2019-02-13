@@ -1,18 +1,19 @@
 package com.bluecubs.xinco.workflow;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.bluecubs.xinco.workflow.persistence.XincoAction;
 import com.bluecubs.xinco.workflow.persistence.controller.XincoActionJpaController;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.NonexistentEntityException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoActionServer extends XincoAction {
-
+  
     private static final long serialVersionUID = 5584044017037257878L;
 
     public XincoActionServer(String name) {
