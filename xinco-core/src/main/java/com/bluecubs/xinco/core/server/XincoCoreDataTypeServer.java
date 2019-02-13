@@ -32,21 +32,27 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataType;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
-import java.sql.Timestamp;
-import java.util.*;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 
-public class XincoCoreDataTypeServer extends XincoCoreDataType {
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+import com.bluecubs.xinco.server.service.XincoCoreDataType;
+import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
+
+public final class XincoCoreDataTypeServer extends XincoCoreDataType {
 
     private static List result;
     private static HashMap parameters = new HashMap();

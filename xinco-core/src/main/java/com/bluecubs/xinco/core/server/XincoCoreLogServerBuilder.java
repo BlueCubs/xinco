@@ -22,7 +22,7 @@
  *
  * Description: log builder
  *
- * Original Author: Javier A. Ortiz Bultrón: 2012
+ * Original Author: Javier A. Ortiz Bultron: 2012
  *
  * Modifications:
  *

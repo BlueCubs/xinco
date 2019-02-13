@@ -34,13 +34,28 @@ package com.bluecubs.xinco.core.server;
 
 import static com.bluecubs.xinco.core.OPCode.ARCHIVED;
 import static com.bluecubs.xinco.core.OPCode.CREATION;
-import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoCoreACEServer.getXincoCoreACL;
 import static com.bluecubs.xinco.core.server.XincoCoreDataHasDependencyServer.getRenderings;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
+import static java.lang.System.getProperty;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
+import static java.util.logging.Logger.getLogger;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
@@ -48,19 +63,10 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaCon
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
-import com.bluecubs.xinco.core.server.service.XincoCoreData;
-import com.bluecubs.xinco.core.server.service.XincoCoreLog;
-import com.bluecubs.xinco.core.server.service.XincoVersion;
-import java.io.File;
-import static java.lang.System.getProperty;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.*;
-import static java.util.logging.Level.SEVERE;
-import static java.util.logging.Level.WARNING;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreData;
+import com.bluecubs.xinco.server.service.XincoCoreLog;
+import com.bluecubs.xinco.server.service.XincoVersion;
 
 public final class XincoCoreDataServer extends XincoCoreData {
 
@@ -339,7 +345,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 setId(xcd.getId());
             }
             //Update add attributes
-            for (com.bluecubs.xinco.core.server.service.XincoAddAttribute temp
+            for (com.bluecubs.xinco.server.service.XincoAddAttribute temp
                     : getXincoAddAttributes()) {
                 /**
                  * Copy fields from XincoAddAttribute to XincoAddAttribute

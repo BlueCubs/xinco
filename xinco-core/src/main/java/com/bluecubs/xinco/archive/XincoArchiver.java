@@ -31,23 +31,29 @@ package com.bluecubs.xinco.archive;
 import static com.bluecubs.xinco.core.OPCode.ARCHIVED;
 import static com.bluecubs.xinco.core.OPCode.CREATION;
 import static com.bluecubs.xinco.core.OPCode.getOPCode;
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getXincoCoreDataPath;
-import com.bluecubs.xinco.core.server.XincoCoreLogServer;
-import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
-import java.io.*;
 import static java.lang.System.getProperty;
-import java.util.ArrayList;
-import java.util.Calendar;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
+import static java.util.ResourceBundle.getBundle;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
-import static java.util.ResourceBundle.getBundle;
+
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreLogServer;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
 
 /**
  * This class handles document archiving for Xinco. Edit configuration values in

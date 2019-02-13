@@ -32,33 +32,32 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
-import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import static java.util.Calendar.DAY_OF_MONTH;
-import static java.util.Calendar.DST_OFFSET;
-import static java.util.Calendar.HOUR_OF_DAY;
-import static java.util.Calendar.MILLISECOND;
-import static java.util.Calendar.MINUTE;
-import static java.util.Calendar.MONTH;
-import static java.util.Calendar.SECOND;
-import static java.util.Calendar.YEAR;
-import static java.util.Calendar.ZONE_OFFSET;
+import static java.util.Calendar.*;
 import static java.util.TimeZone.getTimeZone;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
+import static javax.xml.datatype.DatatypeFactory.newInstance;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import static javax.xml.datatype.DatatypeFactory.newInstance;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class XincoAddAttributeServer extends XincoAddAttribute {
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
+
+public final class XincoAddAttributeServer extends XincoAddAttribute {
 
     private static List result;
     //create add attribute object for data structures

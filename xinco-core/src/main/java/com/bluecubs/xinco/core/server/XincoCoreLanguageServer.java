@@ -32,23 +32,25 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoCoreLanguage;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import static java.util.logging.Level.SEVERE;
-import static java.util.logging.Logger.getLogger;
 
-public class XincoCoreLanguageServer extends XincoCoreLanguage {
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+import com.bluecubs.xinco.server.service.XincoCoreLanguage;
+
+public final class XincoCoreLanguageServer extends XincoCoreLanguage {
 
     private HashMap parameters = new HashMap();
     private static List result;
@@ -134,9 +136,10 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         ArrayList<XincoCoreLanguageServer> coreLanguages = new ArrayList<>();
         try {
             result = createdQuery("SELECT xcl FROM XincoCoreLanguage xcl ORDER BY xcl.designation");
-            for (Object lang : result) {
-                coreLanguages.add(new XincoCoreLanguageServer((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) lang));
-            }
+            result.forEach((lang) ->
+          {
+            coreLanguages.add(new XincoCoreLanguageServer((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) lang));
+          });
         } catch (XincoException ex) {
             getLogger(XincoCoreLanguageServer.class.getName()).log(SEVERE, null, ex);
             coreLanguages.clear();

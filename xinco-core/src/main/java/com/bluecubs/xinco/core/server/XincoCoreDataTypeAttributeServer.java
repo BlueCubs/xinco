@@ -32,26 +32,29 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
-import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
+import static javax.xml.datatype.DatatypeFactory.newInstance;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import static java.util.logging.Level.SEVERE;
-import static java.util.logging.Logger.getLogger;
-import javax.xml.datatype.DatatypeFactory;
-import static javax.xml.datatype.DatatypeFactory.newInstance;
 
-public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
+import javax.xml.datatype.DatatypeFactory;
+
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
+
+public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
 
     private static List result;
     //create data type attribute object for data structures
@@ -115,7 +118,9 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreData) o;
                 DatatypeFactory factory = newInstance();
                 for (XincoAddAttribute attr : xcd.getXincoAddAttributeList()) {
-                    new XincoAddAttributeServer(xcd.getId(), attr.getXincoAddAttributePK().getAttributeId(), 0, 0, 0.0, "", "", factory.newXMLGregorianCalendar()).write2DB();
+                    new XincoAddAttributeServer(xcd.getId(), 
+                            attr.getXincoAddAttributePK().getAttributeId(),
+                            0, 0, 0.0, "", "", factory.newXMLGregorianCalendar()).write2DB();
                 }
             }
         } catch (Exception ex) {
