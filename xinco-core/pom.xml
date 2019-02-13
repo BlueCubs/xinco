@@ -133,7 +133,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>firstFile</id>
+                        <id>service</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>exec</goal>

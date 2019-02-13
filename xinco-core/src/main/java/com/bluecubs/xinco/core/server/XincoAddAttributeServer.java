@@ -55,7 +55,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
 
 public final class XincoAddAttributeServer extends XincoAddAttribute
 {
@@ -94,7 +94,8 @@ public final class XincoAddAttributeServer extends XincoAddAttribute
   }
 
   //create add attribute object for data structures
-  public XincoAddAttributeServer(int attrID1, int attrID2, int attrI, long attrUI, double attrD, String attrVC, String attrT, XMLGregorianCalendar attrDT) throws XincoException
+  public XincoAddAttributeServer(int attrID1, int attrID2, int attrI, long attrUI, 
+          double attrD, String attrVC, String attrT, XMLGregorianCalendar attrDT) throws XincoException
   {
     setXincoCoreDataId(attrID1);
     setAttributeId(attrID2);

@@ -60,9 +60,9 @@ import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoDependencyTypeJpaController;
-import com.bluecubs.xinco.core.server.service.XincoCoreData;
-import com.bluecubs.xinco.core.server.service.XincoCoreUser;
-import com.bluecubs.xinco.core.server.service.XincoWebService;
+import com.bluecubs.xinco.server.service.XincoCoreData;
+import com.bluecubs.xinco.server.service.XincoCoreUser;
+import com.bluecubs.xinco.server.service.XincoWebService;
 import com.bluecubs.xinco.tools.Tool;
 
 /**

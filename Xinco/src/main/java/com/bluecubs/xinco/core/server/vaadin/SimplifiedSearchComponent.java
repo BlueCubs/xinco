@@ -32,8 +32,8 @@ import static com.bluecubs.xinco.core.server.XincoCoreACEServer.checkAccess;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
-import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
+import com.bluecubs.xinco.server.service.XincoCoreACE;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.*;
@@ -52,6 +52,8 @@ import org.vaadin.lucenecontainer.LuceneContainer;
  * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
  */
 public final class SimplifiedSearchComponent extends CustomComponent {
+
+    private static final long serialVersionUID = 7956646304284770550L;
 
     private LuceneContainer dataSource = null;
     private final Table table = new Table();

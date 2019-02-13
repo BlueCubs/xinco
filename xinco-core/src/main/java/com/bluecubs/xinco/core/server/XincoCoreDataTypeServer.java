@@ -49,8 +49,8 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataType;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreDataType;
+import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
 
 public final class XincoCoreDataTypeServer extends XincoCoreDataType
 {

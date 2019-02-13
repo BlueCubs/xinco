@@ -32,8 +32,8 @@ import com.bluecubs.xinco.core.server.XincoCoreLogServerBuilder;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
-import com.bluecubs.xinco.core.server.service.XincoCoreLog;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreLog;
 
 /**
  *

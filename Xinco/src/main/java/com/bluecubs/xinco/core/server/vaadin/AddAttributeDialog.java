@@ -28,9 +28,9 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import static com.bluecubs.xinco.core.server.XincoAddAttributeServer.getXincoAddAttributes;
-import com.bluecubs.xinco.core.server.service.XincoCoreData;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
+import com.bluecubs.xinco.server.service.XincoCoreData;
+import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
 import com.vaadin.data.Item;
 import com.vaadin.ui.*;
 import java.util.Iterator;
@@ -41,6 +41,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
  */
 class AddAttributeDialog extends CustomComponent {
+
+    private static final long serialVersionUID = -8882910370437780800L;
 
     private Table attrTable = new Table("attributes");
 
@@ -67,7 +69,7 @@ class AddAttributeDialog extends CustomComponent {
         if (data.getXincoCoreDataType().getId() == 2) {
             start = 1;
         }
-        java.util.List<com.bluecubs.xinco.core.server.service.XincoAddAttribute> attributes;
+        java.util.List<com.bluecubs.xinco.server.service.XincoAddAttribute> attributes;
         if (data.getId() == 0) {
             // Is a new data, there's nothing yet in the database.
             // Load local values.

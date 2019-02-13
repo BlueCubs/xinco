@@ -5,8 +5,8 @@ import static com.bluecubs.xinco.core.server.XincoCoreACEServer.checkAccess;
 import static com.bluecubs.xinco.core.server.XincoCoreDataTypeServer.getXincoCoreDataTypes;
 import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.getXincoCoreLanguages;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
-import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
+import com.bluecubs.xinco.server.service.XincoCoreACE;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.*;
 import static com.vaadin.ui.Window.Notification.TYPE_WARNING_MESSAGE;
@@ -121,7 +121,7 @@ public class LuceneSearchWindow extends Window {
         ArrayList alldatatypes = getXincoCoreDataTypes();
         for (Iterator<XincoCoreDataTypeServer> it = alldatatypes.iterator(); it.hasNext();) {
             XincoCoreDataTypeServer type = it.next();
-            for (com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute attr : type.getXincoCoreDataTypeAttributes()) {
+            for (com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute attr : type.getXincoCoreDataTypeAttributes()) {
                 text = attr.getDesignation();
                 options.addItem(text);
                 options.setItemCaption(text, getInstance().getResource().containsKey(text) ? getInstance().getResource().getString(text) : text);

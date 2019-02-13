@@ -264,6 +264,5 @@
     <modules>
         <module>xinco-core</module>
         <module>Xinco</module>
-        <module>Xinco2</module>
     </modules>
 </project>

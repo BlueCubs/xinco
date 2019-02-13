@@ -63,10 +63,10 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaCon
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
-import com.bluecubs.xinco.core.server.service.XincoCoreData;
-import com.bluecubs.xinco.core.server.service.XincoCoreLog;
-import com.bluecubs.xinco.core.server.service.XincoVersion;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreData;
+import com.bluecubs.xinco.server.service.XincoCoreLog;
+import com.bluecubs.xinco.server.service.XincoVersion;
 
 public final class XincoCoreDataServer extends XincoCoreData
 {
@@ -392,7 +392,7 @@ public final class XincoCoreDataServer extends XincoCoreData
         setId(xcd.getId());
       }
       //Update add attributes
-      for (com.bluecubs.xinco.core.server.service.XincoAddAttribute temp
+      for (com.bluecubs.xinco.server.service.XincoAddAttribute temp
               : getXincoAddAttributes())
       {
         /**

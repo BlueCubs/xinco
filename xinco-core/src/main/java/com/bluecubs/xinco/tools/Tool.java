@@ -28,8 +28,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
 
 /**
  *
@@ -298,7 +298,7 @@ public class Tool
   }
 
   public static void addDefaultAddAttributes(
-          com.bluecubs.xinco.core.server.service.XincoCoreData data)
+          com.bluecubs.xinco.server.service.XincoCoreData data)
   {
     //add specific attributes
     data.getXincoAddAttributes().clear();

@@ -47,9 +47,9 @@ import java.util.logging.Logger;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoCoreACE;
-import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
-import com.bluecubs.xinco.core.server.service.XincoCoreUser;
+import com.bluecubs.xinco.server.service.XincoCoreACE;
+import com.bluecubs.xinco.server.service.XincoCoreGroup;
+import com.bluecubs.xinco.server.service.XincoCoreUser;
 
 public final class XincoCoreACEServer extends XincoCoreACE
 {
