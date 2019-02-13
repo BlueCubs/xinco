@@ -50,7 +50,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.server.service.XincoCoreGroup;
+import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
 
 public final class XincoCoreGroupServer extends XincoCoreGroup
 {
