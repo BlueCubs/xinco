@@ -31,50 +31,62 @@ import static com.bluecubs.xinco.core.server.XincoDBManager.getDemoResetPeriod;
 import static com.bluecubs.xinco.core.server.XincoDBManager.isDemo;
 import static com.bluecubs.xinco.core.server.XincoDBManager.nativeQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.reload;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
+
+import java.util.logging.Logger;
 
 /**
  *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
-public class XincoDemoResetThread extends Thread {
+public class XincoDemoResetThread extends Thread
+{
 
-    public static XincoDemoResetThread instance = null;
-    public long reset_period = 86_400_000; //Daily
-    private static final Logger logger = getLogger(XincoDemoResetThread.class.getName());
+  public static XincoDemoResetThread instance = null;
+  public long reset_period = 86_400_000; //Daily
+  private static final Logger LOG = getLogger(XincoDemoResetThread.class.getName());
 
-    @Override
-    public void run() {
-        while (true) {
-            reset_period = getDemoResetPeriod();
-            if (reset_period > 0) {
-                try {
-                    sleep(reset_period);
-                } catch (InterruptedException se) {
-                    break;
-                }
-                //Check again this is a demo environment, just in case
-                if (isDemo()) {
-                    logger.warning("Dropping tables...");
-                    nativeQuery("DROP ALL OBJECTS");
-                    logger.warning("Done!");
-                }
-                //Reload the database
-                logger.warning("Reloading DB...");
-                reload(true);
-                logger.warning("Done!");
-            }
+  @Override
+  public void run()
+  {
+    while (true)
+    {
+      reset_period = getDemoResetPeriod();
+      if (reset_period > 0)
+      {
+        try
+        {
+          sleep(reset_period);
         }
-    }
-
-    public static XincoDemoResetThread getInstance() {
-        if (instance == null) {
-            instance = new XincoDemoResetThread();
+        catch (InterruptedException se)
+        {
+          break;
         }
-        return instance;
+        //Check again this is a demo environment, just in case
+        if (isDemo())
+        {
+          LOG.warning("Dropping tables...");
+          nativeQuery("DROP ALL OBJECTS");
+          LOG.warning("Done!");
+        }
+        //Reload the database
+        LOG.warning("Reloading DB...");
+        reload(true);
+        LOG.warning("Done!");
+      }
     }
+  }
 
-    private XincoDemoResetThread() {
+  public static XincoDemoResetThread getInstance()
+  {
+    if (instance == null)
+    {
+      instance = new XincoDemoResetThread();
     }
+    return instance;
+  }
+
+  private XincoDemoResetThread()
+  {
+  }
 }

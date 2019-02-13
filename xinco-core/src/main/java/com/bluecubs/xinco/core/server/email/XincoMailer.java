@@ -13,85 +13,99 @@
  */
 package com.bluecubs.xinco.core.server.email;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.XincoCoreUserServer;
-import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
-import java.util.List;
-import java.util.Properties;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
-import javax.mail.*;
 import static javax.mail.Message.RecipientType.TO;
 import static javax.mail.Session.getDefaultInstance;
 import static javax.mail.Transport.send;
+
+import java.util.List;
+import java.util.Properties;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class XincoMailer {
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 
-    public static void postMail(List<String> recipients, String subject,
-            String message, String from) throws MessagingException, XincoException {
-        boolean debug = false;
+public class XincoMailer
+{
 
-        //Set the host smtp address and related properties
-        Properties props = new Properties();
-        props.put("mail.smtp.host", getSetting(
-                new XincoCoreUserServer(1),
-                "setting.email.host").getStringValue());
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", getSetting(
-                new XincoCoreUserServer(1),
-                "setting.email.port").getIntValue());
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.auth ", "true ");
+  public static void postMail(List<String> recipients, String subject,
+          String message, String from) throws MessagingException, XincoException
+  {
+    boolean debug = false;
 
-        Authenticator auth = new SMTPAuthenticator();
-        Session session = getDefaultInstance(props, auth);
+    //Set the host smtp address and related properties
+    Properties props = new Properties();
+    props.put("mail.smtp.host", XincoSettingServer.getSetting(
+            new XincoCoreUserServer(1),
+            "setting.email.host").getStringValue());
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.port", XincoSettingServer.getSetting(
+            new XincoCoreUserServer(1),
+            "setting.email.port").getIntValue());
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.auth ", "true ");
 
-        session.setDebug(debug);
+    Authenticator auth = new SMTPAuthenticator();
+    Session session = getDefaultInstance(props, auth);
 
-        // create a message
-        Message msg = new MimeMessage(session);
+    session.setDebug(debug);
 
-        // set the from and to address
-        InternetAddress addressFrom = new InternetAddress(from);
-        msg.setFrom(addressFrom);
+    // create a message
+    Message msg = new MimeMessage(session);
 
-        InternetAddress[] addressTo = new InternetAddress[recipients.size()];
-        int i = 0;
-        for (String email : recipients) {
-            addressTo[i] = new InternetAddress(email);
-            i++;
-        }
-        msg.setRecipients(TO, addressTo);
+    // set the from and to address
+    InternetAddress addressFrom = new InternetAddress(from);
+    msg.setFrom(addressFrom);
 
-
-        // Setting the Subject and Content Type
-        msg.setSubject(subject);
-        msg.setContent(message, "text/plain");
-        send(msg);
+    InternetAddress[] addressTo = new InternetAddress[recipients.size()];
+    int i = 0;
+    for (String email : recipients)
+    {
+      addressTo[i] = new InternetAddress(email);
+      i++;
     }
+    msg.setRecipients(TO, addressTo);
 
-    /**
-     * SimpleAuthenticator is used to do simple authentication when the SMTP
-     * server requires it.
-     */
-    private static class SMTPAuthenticator extends javax.mail.Authenticator {
+    // Setting the Subject and Content Type
+    msg.setSubject(subject);
+    msg.setContent(message, "text/plain");
+    send(msg);
+  }
 
-        @Override
-        public PasswordAuthentication getPasswordAuthentication() {
-            try {
-                String username = getSetting(
-                        new XincoCoreUserServer(1),
-                        "setting.email.user").getStringValue();
-                String password = getSetting(
-                        new XincoCoreUserServer(1),
-                        "setting.email.password").getStringValue();
-                return new PasswordAuthentication(username, password);
-            } catch (XincoException ex) {
-                getLogger(XincoMailer.class.getName()).log(SEVERE, null, ex);
-                return null;
-            }
-        }
+  /**
+   * SimpleAuthenticator is used to do simple authentication when the SMTP
+   * server requires it.
+   */
+  private static class SMTPAuthenticator extends javax.mail.Authenticator
+  {
+
+    @Override
+    public PasswordAuthentication getPasswordAuthentication()
+    {
+      try
+      {
+        String username = XincoSettingServer.getSetting(
+                new XincoCoreUserServer(1),
+                "setting.email.user").getStringValue();
+        String password = XincoSettingServer.getSetting(
+                new XincoCoreUserServer(1),
+                "setting.email.password").getStringValue();
+        return new PasswordAuthentication(username, password);
+      }
+      catch (XincoException ex)
+      {
+        getLogger(XincoMailer.class.getName()).log(SEVERE, null, ex);
+        return null;
+      }
     }
+  }
 }
