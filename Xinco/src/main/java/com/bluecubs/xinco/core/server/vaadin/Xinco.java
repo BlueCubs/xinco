@@ -3138,7 +3138,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 com.vaadin.ui.Label.class, null);
         indexAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             private static final long serialVersionUID = -8412830528395601232L;
-            final ProgressIndicator indicator = new ProgressIndicator(new Float(0.0));
+            final ProgressIndicator indicator = new ProgressIndicator(0.0f);
             com.vaadin.ui.Button ok = new com.vaadin.ui.Button(getInstance()
                     .getResource().getString("general.ok"));
 
@@ -3201,7 +3201,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                         new com.vaadin.ui.Label(index_result
                                         ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                                     count++;
-                                    indicator.setValue(new Float(count) / new Float(work_units));
+                                    indicator.setValue(Float.valueOf(count) / Float.valueOf(work_units));
                                 }
                             }
                             index_result = optimizeIndex();
@@ -3211,7 +3211,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                             count++;
                         }
-                        indicator.setValue(new Float(1.0));
+                        indicator.setValue(1.0f);
                         ok.setEnabled(true);
                     }
                     catch (UnsupportedOperationException ex) {
