@@ -1,9 +1,8 @@
 package com.bluecubs.xinco.core.server.vaadin.custom;
 
-import com.bluecubs.xinco.core.server.service.XincoVersion;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
+import com.bluecubs.xinco.server.service.XincoVersion;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
 import static java.lang.Integer.MAX_VALUE;
 import org.vaadin.risto.stepper.IntStepper;
@@ -13,6 +12,8 @@ import org.vaadin.risto.stepper.IntStepper;
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 public final class VersionSelector extends CustomComponent {
+
+    private static final long serialVersionUID = 6980240938236771282L;
 
     private final String caption;
     private final XincoVersion version;

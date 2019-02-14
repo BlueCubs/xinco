@@ -53,11 +53,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
-<<<<<<< vaadin-13
 import com.bluecubs.xinco.server.service.XincoAddAttribute;
-=======
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
->>>>>>> Fix issues with updated dependencies.
 
 /**
  * This class handles document archiving for Xinco. Edit configuration values in

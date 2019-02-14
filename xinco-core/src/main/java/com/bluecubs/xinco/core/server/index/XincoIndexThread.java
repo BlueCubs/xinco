@@ -32,7 +32,7 @@
  */
 package com.bluecubs.xinco.core.server.index;
 
-import com.bluecubs.xinco.core.server.service.XincoCoreData;
+import com.bluecubs.xinco.server.service.XincoCoreData;
 
 /**
  * This class starts document indexing in a separate thread

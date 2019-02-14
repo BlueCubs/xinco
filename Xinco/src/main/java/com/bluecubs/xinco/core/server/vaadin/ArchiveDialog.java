@@ -28,10 +28,9 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import static com.bluecubs.xinco.core.server.XincoAddAttributeServer.getXincoAddAttributes;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
 import de.essendi.vaadin.ui.component.numberfield.NumberField;
 import static java.lang.Integer.MAX_VALUE;
@@ -52,7 +51,9 @@ import static javax.xml.datatype.DatatypeFactory.newInstance;
  *
  * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
  */
-class ArchiveDialog extends CustomComponent {
+final class ArchiveDialog extends CustomComponent {
+
+    private static final long serialVersionUID = -7968557953363984932L;
 
     private final Select archiveModel;
     private final DateField date = new DateField();

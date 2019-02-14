@@ -90,17 +90,6 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaCont
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
-import com.bluecubs.xinco.core.server.service.XincoCoreACE;
-import com.bluecubs.xinco.core.server.service.XincoCoreData;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
-import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
-import com.bluecubs.xinco.core.server.service.XincoCoreLanguage;
-import com.bluecubs.xinco.core.server.service.XincoCoreLog;
-import com.bluecubs.xinco.core.server.service.XincoCoreNode;
-import com.bluecubs.xinco.core.server.service.XincoCoreUser;
-import com.bluecubs.xinco.core.server.service.XincoVersion;
-import com.bluecubs.xinco.core.server.service.XincoWebService;
 import static com.bluecubs.xinco.core.server.vaadin.XincoMenuItemManager.addItem;
 import static com.bluecubs.xinco.core.server.vaadin.XincoMenuItemManager.updateMenuBar;
 import com.bluecubs.xinco.core.server.vaadin.custom.VersionSelector;
@@ -112,6 +101,17 @@ import com.bluecubs.xinco.core.server.vaadin.wizard.event.WizardCompletedEvent;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.WizardProgressListener;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.WizardStepActivationEvent;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.WizardStepSetChangedEvent;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreACE;
+import com.bluecubs.xinco.server.service.XincoCoreData;
+import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreGroup;
+import com.bluecubs.xinco.server.service.XincoCoreLanguage;
+import com.bluecubs.xinco.server.service.XincoCoreLog;
+import com.bluecubs.xinco.server.service.XincoCoreNode;
+import com.bluecubs.xinco.server.service.XincoCoreUser;
+import com.bluecubs.xinco.server.service.XincoVersion;
+import com.bluecubs.xinco.server.service.XincoWebService;
 import static com.bluecubs.xinco.tools.Tool.addDefaultAddAttributes;
 import static com.bluecubs.xinco.tools.Tool.getImageDim;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
@@ -3138,7 +3138,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 com.vaadin.ui.Label.class, null);
         indexAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             private static final long serialVersionUID = -8412830528395601232L;
-            final ProgressIndicator indicator = new ProgressIndicator(new Float(0.0));
+            final ProgressIndicator indicator = new ProgressIndicator(0.0f);
             com.vaadin.ui.Button ok = new com.vaadin.ui.Button(getInstance()
                     .getResource().getString("general.ok"));
 
@@ -3201,7 +3201,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                         new com.vaadin.ui.Label(index_result
                                         ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                                     count++;
-                                    indicator.setValue(new Float(count) / new Float(work_units));
+                                    indicator.setValue(Float.valueOf(count) / Float.valueOf(work_units));
                                 }
                             }
                             index_result = optimizeIndex();
@@ -3211,7 +3211,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                             count++;
                         }
-                        indicator.setValue(new Float(1.0));
+                        indicator.setValue(1.0f);
                         ok.setEnabled(true);
                     }
                     catch (UnsupportedOperationException ex) {

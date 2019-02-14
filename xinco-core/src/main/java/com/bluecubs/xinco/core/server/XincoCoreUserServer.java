@@ -69,7 +69,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserModifi
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserTJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
-import com.bluecubs.xinco.core.server.service.XincoCoreUser;
+import com.bluecubs.xinco.server.service.XincoCoreUser;
 
 //Status list (in DB)
 //1 = unlocked
@@ -79,8 +79,6 @@ import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 //-1 = aged password modified, ready to turn unlocked
 public final class XincoCoreUserServer extends XincoCoreUser
 {
-  private static final long serialVersionUID = -6583874241093797692L;
-
   private boolean hashPassword = true;
   private boolean increaseAttempts = false;
   private java.sql.Timestamp lastModified;
@@ -614,7 +612,8 @@ public final class XincoCoreUserServer extends XincoCoreUser
         //Now check the aging
         XincoCoreUserT user = (XincoCoreUserT) o;
         long diff = currentTimeMillis() - user.getLastModified().getTime();
-        if (diff / (1_000 * 60 * 60 * 24) > getSetting("password.unusable_period").getIntValue())
+        if (diff / (1_000 * 60 * 60 * 24) > 
+                getSetting("password.unusable_period").getIntValue())
         {
           return false;
         }

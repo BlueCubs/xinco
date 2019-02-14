@@ -115,44 +115,24 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
-                        <id>mkdir</id>
+                        <id>generate-sources</id>
                         <phase>generate-sources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
                         <configuration>
-                            <executable>mkdir</executable>
-                            <arguments>
-                                <argument>-pv</argument>
-                                <argument>target/generated-sources/wsimport</argument>
-                            </arguments>
+                            <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/XincoWebService/Xinco.wsdl</wsdl>
+                                </wsdlOption>
+                            </wsdlOptions>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>firstFile</id>
-                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>wsdl2java</goal>
                         </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-classpath</argument>
-                                <classpath/>
-                                <argument>com.sun.tools.ws.WsImport</argument>
-                                <argument>-extension</argument>
-                                <argument>-Xnocompile</argument>
-                                <argument>-wsdllocation</argument>
-                                <argument>/Xinco.wsdl</argument>
-                                <argument>-s</argument>
-                                <argument>target/generated-sources/wsimport</argument>
-                                <argument>src/main/resources/wsdl/XincoWebService/Xinco.wsdl</argument>
-                            </arguments>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -163,4 +143,8 @@
             </plugin>
         </plugins>
     </build>
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
 </project>

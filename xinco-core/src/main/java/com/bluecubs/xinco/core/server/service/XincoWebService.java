@@ -29,7 +29,7 @@
  *
  *************************************************************
  */
-package com.bluecubs.xinco.core.server.service;
+package com.bluecubs.xinco.server.service;
 
 import static com.bluecubs.xinco.core.OPCode.CHECKIN;
 import static com.bluecubs.xinco.core.OPCode.CREATION;
@@ -81,7 +81,7 @@ import com.bluecubs.xinco.core.server.rendering.XincoRenderingThread;
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
 @WebService(serviceName = "Xinco", portName = "XincoPort",
-        endpointInterface = "com.bluecubs.xinco.core.server.service.Xinco",
+        endpointInterface = "com.bluecubs.xinco.server.service.Xinco",
         targetNamespace = "http://service.server.xinco.bluecubs.com/",
         wsdlLocation = "src/main/resources/wsdl/XincoWebService/Xinco.wsdl")
 @BindingType(SOAP11HTTP_BINDING)

@@ -54,8 +54,8 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
-import com.bluecubs.xinco.core.server.service.XincoCoreLog;
-import com.bluecubs.xinco.core.server.service.XincoVersion;
+import com.bluecubs.xinco.server.service.XincoCoreLog;
+import com.bluecubs.xinco.server.service.XincoVersion;
 
 public final class XincoCoreLogServer extends XincoCoreLog
 {

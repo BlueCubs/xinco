@@ -27,9 +27,9 @@
  */
 package com.bluecubs.xinco.core.server.vaadin;
 
-import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
-import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.getXincoCoreLanguages;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
+
+import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
@@ -41,6 +41,8 @@ import static java.util.logging.Logger.getLogger;
  * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
  */
 class DataDialog extends CustomComponent {
+
+    private static final long serialVersionUID = -4284117659154164640L;
 
     private com.vaadin.ui.TextField idField;
     private com.vaadin.ui.TextField designationField;
@@ -71,7 +73,7 @@ class DataDialog extends CustomComponent {
         designationField.setValue(getInstance().getXincoCoreData()
                 .getDesignation());
         //Language selection
-        for (Object language : getXincoCoreLanguages()) {
+        for (Object language : XincoCoreLanguageServer.getXincoCoreLanguages()) {
             String designation = 
                     ((XincoCoreLanguageServer) language).getDesignation();
             if (getInstance().getResource().containsKey(designation)) {

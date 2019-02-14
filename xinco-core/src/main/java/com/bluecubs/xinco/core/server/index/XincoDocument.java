@@ -52,9 +52,9 @@ import org.apache.lucene.document.Field;
 import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexFileType;
 import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexGenericFile;
 import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexText;
-import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
-import com.bluecubs.xinco.core.server.service.XincoCoreData;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreData;
+import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
 
 /**
  * A utility for making Lucene Documents from a File.

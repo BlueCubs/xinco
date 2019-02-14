@@ -51,7 +51,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
 
 public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 {

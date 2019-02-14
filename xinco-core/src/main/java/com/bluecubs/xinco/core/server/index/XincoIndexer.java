@@ -67,7 +67,7 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.util.Version;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.service.XincoCoreData;
+import com.bluecubs.xinco.server.service.XincoCoreData;
 
 /**
  * This class handles document indexing for Xinco. Edit configuration values in
