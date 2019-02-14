@@ -612,7 +612,8 @@ public final class XincoCoreUserServer extends XincoCoreUser
         //Now check the aging
         XincoCoreUserT user = (XincoCoreUserT) o;
         long diff = currentTimeMillis() - user.getLastModified().getTime();
-        if (diff / (1_000 * 60 * 60 * 24) > getSetting("password.unusable_period").getIntValue())
+        if (diff / (1_000 * 60 * 60 * 24) > 
+                getSetting("password.unusable_period").getIntValue())
         {
           return false;
         }

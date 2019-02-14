@@ -8,13 +8,15 @@ import com.vaadin.ui.ProgressIndicator;
  *
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
-public class WizardProgressBar extends ProgressIndicator implements
+public final class WizardProgressBar extends ProgressIndicator implements
         WizardProgressListener {
+
+    private static final long serialVersionUID = 4019670885155445960L;
 
     private final XincoWizard wizard;
 
     public WizardProgressBar(XincoWizard wizard) {
-        super(new Float(0.0));
+        super(0.0f);
         setIndeterminate(false);
         setPollingInterval(500);
         this.wizard = wizard;
@@ -22,8 +24,8 @@ public class WizardProgressBar extends ProgressIndicator implements
     }
 
     private void recalculateProgress() {
-        setValue(new Float(wizard.getProgress() + 1)
-                / new Float(wizard.getSteps().size()));
+        setValue(Float.valueOf(wizard.getProgress() + 1)
+                / Float.valueOf(wizard.getSteps().size()));
         requestRepaint();
     }
 
