@@ -604,7 +604,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin</artifactId>
-            <version>6.8.18</version>
+            <version>10.0.0</version>
         </dependency>
 
         <!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
