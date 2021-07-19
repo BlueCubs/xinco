@@ -1,34 +1,31 @@
 /**
  * Copyright 2012 blueCubs.com
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  *
- *************************************************************
- * This project supports the blueCubs vision of giving back to the community in
- * exchange for free software! More information on: http://www.bluecubs.org
- * ************************************************************
+ * <p>************************************************************ This project supports the
+ * blueCubs vision of giving back to the community in exchange for free software! More information
+ * on: http://www.bluecubs.org ************************************************************
  *
- * Name: XincoCoreLogServer
+ * <p>Name: XincoCoreLogServer
  *
- * Description: log
+ * <p>Description: log
  *
- * Original Author: Alexander Manes Date: 2004
+ * <p>Original Author: Alexander Manes Date: 2004
  *
- * Modifications:
+ * <p>Modifications:
  *
- * Who? When? What? - - -
+ * <p>Who? When? What? - - -
  *
- *************************************************************
+ * <p>************************************************************
  */
 package com.bluecubs.xinco.core.server;
 
@@ -39,6 +36,12 @@ import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 import static javax.xml.datatype.DatatypeFactory.newInstance;
 
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
+import com.bluecubs.xinco.server.service.XincoCoreLog;
+import com.bluecubs.xinco.server.service.XincoVersion;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,36 +49,24 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
-import com.bluecubs.xinco.server.service.XincoCoreLog;
-import com.bluecubs.xinco.server.service.XincoVersion;
-
-public final class XincoCoreLogServer extends XincoCoreLog
-{
+public final class XincoCoreLogServer extends XincoCoreLog {
 
   private static List result;
   private static HashMap parameters = new HashMap();
-  //create single log object for data structures
+  // create single log object for data structures
 
-  public XincoCoreLogServer(int attrID) throws XincoException
-  {
-    try
-    {
+  public XincoCoreLogServer(int attrID) throws XincoException {
+    try {
       parameters.clear();
       parameters.put("id", attrID);
       result = namedQuery("XincoCoreLog.findById", parameters);
-      //throw exception if no result found
-      if (result.size() > 0)
-      {
-        com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl
-                = (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0);
+      // throw exception if no result found
+      if (result.size() > 0) {
+        com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
+            (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0);
         setId(xcl.getId());
         setXincoCoreDataId(xcl.getXincoCoreData().getId());
         setXincoCoreUserId(xcl.getXincoCoreUser().getId());
@@ -90,23 +81,17 @@ public final class XincoCoreLogServer extends XincoCoreLog
         getVersion().setVersionMid(xcl.getVersionMid());
         getVersion().setVersionLow(xcl.getVersionLow());
         getVersion().setVersionPostfix(xcl.getVersionPostfix());
-      }
-      else
-      {
+      } else {
         throw new XincoException("Invalid id: " + attrID);
       }
-    }
-    catch (DatatypeConfigurationException ex)
-    {
+    } catch (DatatypeConfigurationException ex) {
       getLogger(XincoCoreLogServer.class.getName()).log(SEVERE, null, ex);
       throw new XincoException(ex.getMessage());
     }
   }
 
-  private XincoCoreLogServer(com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl)
-  {
-    try
-    {
+  private XincoCoreLogServer(com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl) {
+    try {
       setId(xcl.getId());
       setXincoCoreDataId(xcl.getXincoCoreData().getId());
       setXincoCoreUserId(xcl.getXincoCoreUser().getId());
@@ -121,25 +106,28 @@ public final class XincoCoreLogServer extends XincoCoreLog
       getVersion().setVersionMid(xcl.getVersionMid());
       getVersion().setVersionLow(xcl.getVersionLow());
       getVersion().setVersionPostfix(xcl.getVersionPostfix());
-    }
-    catch (DatatypeConfigurationException ex)
-    {
+    } catch (DatatypeConfigurationException ex) {
       getLogger(XincoCoreLogServer.class.getName()).log(SEVERE, null, ex);
     }
   }
 
-  public void setUser(XincoCoreUserServer user)
-  {
+  public void setUser(XincoCoreUserServer user) {
     setXincoCoreUserId(user.getId());
   }
 
-  //create single log object for data structures
-  public XincoCoreLogServer(int attrCDID, int attrUID, int attrOC,
-          Calendar attrODT, String attrOD, int attrVH, int attrVM,
-          int attrVL, String attrVP) throws XincoException
-  {
-    try
-    {
+  // create single log object for data structures
+  public XincoCoreLogServer(
+      int attrCDID,
+      int attrUID,
+      int attrOC,
+      Calendar attrODT,
+      String attrOD,
+      int attrVH,
+      int attrVM,
+      int attrVL,
+      String attrVP)
+      throws XincoException {
+    try {
       setXincoCoreDataId(attrCDID);
       setXincoCoreUserId(attrUID);
       setOpCode(attrOC);
@@ -153,25 +141,25 @@ public final class XincoCoreLogServer extends XincoCoreLog
       getVersion().setVersionMid(attrVM);
       getVersion().setVersionLow(attrVL);
       getVersion().setVersionPostfix(attrVP);
-    }
-    catch (DatatypeConfigurationException ex)
-    {
+    } catch (DatatypeConfigurationException ex) {
       getLogger(XincoCoreLogServer.class.getName()).log(SEVERE, null, ex);
     }
   }
 
-  //write to db
-  public int write2DB() throws XincoException
-  {
-    try
-    {
-      XincoCoreLogJpaController controller = new XincoCoreLogJpaController(getEntityManagerFactory());
+  // write to db
+  public int write2DB() throws XincoException {
+    try {
+      XincoCoreLogJpaController controller =
+          new XincoCoreLogJpaController(getEntityManagerFactory());
       com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl;
-      if (getId() > 0)
-      {
+      if (getId() > 0) {
         xcl = controller.findXincoCoreLog(getId());
-        xcl.setXincoCoreData(new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
-        xcl.setXincoCoreUser(new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
+        xcl.setXincoCoreData(
+            new XincoCoreDataJpaController(getEntityManagerFactory())
+                .findXincoCoreData(getXincoCoreDataId()));
+        xcl.setXincoCoreUser(
+            new XincoCoreUserJpaController(getEntityManagerFactory())
+                .findXincoCoreUser(getXincoCoreUserId()));
         xcl.setOpCode(getOpCode());
         xcl.setOpDatetime(new Date());
         xcl.setOpDescription(getOpDescription().replaceAll("'", "\\\\'"));
@@ -180,12 +168,14 @@ public final class XincoCoreLogServer extends XincoCoreLog
         xcl.setVersionLow(getVersion().getVersionLow());
         xcl.setVersionPostfix(getVersion().getVersionPostfix().replaceAll("'", "\\\\'"));
         controller.edit(xcl);
-      }
-      else
-      {
+      } else {
         xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog();
-        xcl.setXincoCoreData(new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
-        xcl.setXincoCoreUser(new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
+        xcl.setXincoCoreData(
+            new XincoCoreDataJpaController(getEntityManagerFactory())
+                .findXincoCoreData(getXincoCoreDataId()));
+        xcl.setXincoCoreUser(
+            new XincoCoreUserJpaController(getEntityManagerFactory())
+                .findXincoCoreUser(getXincoCoreUserId()));
         xcl.setOpCode(getOpCode());
         xcl.setOpDatetime(new Date());
         xcl.setOpDescription(getOpDescription().replaceAll("'", "\\\\'"));
@@ -196,39 +186,34 @@ public final class XincoCoreLogServer extends XincoCoreLog
         controller.create(xcl);
       }
       setId(xcl.getId());
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       getLogger(XincoCoreLogServer.class.getSimpleName()).log(SEVERE, null, e);
       throw new XincoException(e.getMessage());
     }
     return getId();
   }
 
-  //create complete log list for data
-  public static List<XincoCoreLogServer> getXincoCoreLogs(int attrID)
-  {
+  // create complete log list for data
+  public static List<XincoCoreLogServer> getXincoCoreLogs(int attrID) {
 
-    ArrayList<XincoCoreLogServer> coreLog
-            = new ArrayList<>();
+    ArrayList<XincoCoreLogServer> coreLog = new ArrayList<>();
     GregorianCalendar cal;
 
-    try
-    {
-      result = createdQuery(
+    try {
+      result =
+          createdQuery(
               "SELECT xcl FROM XincoCoreLog xcl WHERE "
-              + "xcl.xincoCoreData.id=" + attrID + " order by xcl.id");
-      for (Iterator it = result.iterator(); it.hasNext();)
-      {
-        com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl
-                = (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
+                  + "xcl.xincoCoreData.id="
+                  + attrID
+                  + " order by xcl.id");
+      for (Iterator it = result.iterator(); it.hasNext(); ) {
+        com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
+            (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
         cal = new GregorianCalendar();
         cal.setTime(xcl.getOpDatetime());
         coreLog.add(new XincoCoreLogServer(xcl));
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       getLogger(XincoCoreLogServer.class.getSimpleName());
       coreLog.clear();
     }

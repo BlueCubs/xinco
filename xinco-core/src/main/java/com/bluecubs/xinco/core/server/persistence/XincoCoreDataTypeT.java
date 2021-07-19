@@ -16,13 +16,13 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoCoreDataTypeT
- * 
+ *
  * Description: Audit Trail Table
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Nov 29, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
@@ -33,109 +33,121 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
 @Table(name = "xinco_core_data_type_t")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreDataTypeT.findAll", query = "SELECT x FROM XincoCoreDataTypeT x"),
-    @NamedQuery(name = "XincoCoreDataTypeT.findByRecordId", query = "SELECT x FROM XincoCoreDataTypeT x WHERE x.recordId = :recordId"),
-    @NamedQuery(name = "XincoCoreDataTypeT.findById", query = "SELECT x FROM XincoCoreDataTypeT x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoCoreDataTypeT.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeT x WHERE x.designation = :designation"),
-    @NamedQuery(name = "XincoCoreDataTypeT.findByDescription", query = "SELECT x FROM XincoCoreDataTypeT x WHERE x.description = :description")})
+  @NamedQuery(name = "XincoCoreDataTypeT.findAll", query = "SELECT x FROM XincoCoreDataTypeT x"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeT.findByRecordId",
+      query = "SELECT x FROM XincoCoreDataTypeT x WHERE x.recordId = :recordId"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeT.findById",
+      query = "SELECT x FROM XincoCoreDataTypeT x WHERE x.id = :id"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeT.findByDesignation",
+      query = "SELECT x FROM XincoCoreDataTypeT x WHERE x.designation = :designation"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeT.findByDescription",
+      query = "SELECT x FROM XincoCoreDataTypeT x WHERE x.description = :description")
+})
 public class XincoCoreDataTypeT implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "record_id")
-    private Integer recordId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
-    private int id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "designation")
-    private String designation;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "description")
-    private String description;
+  private static final long serialVersionUID = 1L;
 
-    public XincoCoreDataTypeT() {
-    }
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "record_id")
+  private Integer recordId;
 
-    public XincoCoreDataTypeT(Integer recordId) {
-        this.recordId = recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "id")
+  private int id;
 
-    public XincoCoreDataTypeT(Integer recordId, int id, String designation, String description) {
-        this.recordId = recordId;
-        this.id = id;
-        this.designation = designation;
-        this.description = description;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "designation")
+  private String designation;
 
-    public Integer getRecordId() {
-        return recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "description")
+  private String description;
 
-    public void setRecordId(Integer recordId) {
-        this.recordId = recordId;
-    }
+  public XincoCoreDataTypeT() {}
 
-    public int getId() {
-        return id;
-    }
+  public XincoCoreDataTypeT(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public XincoCoreDataTypeT(Integer recordId, int id, String designation, String description) {
+    this.recordId = recordId;
+    this.id = id;
+    this.designation = designation;
+    this.description = description;
+  }
 
-    public String getDesignation() {
-        return designation;
-    }
+  public Integer getRecordId() {
+    return recordId;
+  }
 
-    public void setDesignation(String designation) {
-        this.designation = designation;
-    }
+  public void setRecordId(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (recordId != null ? recordId.hashCode() : 0);
-        return hash;
-    }
+  public String getDesignation() {
+    return designation;
+  }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof XincoCoreDataTypeT)) {
-            return false;
-        }
-        XincoCoreDataTypeT other = (XincoCoreDataTypeT) object;
-        if ((this.recordId == null && other.recordId != null) || (this.recordId != null && !this.recordId.equals(other.recordId))) {
-            return false;
-        }
-        return true;
-    }
+  public void setDesignation(String designation) {
+    this.designation = designation;
+  }
 
-    @Override
-    public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeT[ recordId=" + recordId + " ]";
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (recordId != null ? recordId.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof XincoCoreDataTypeT)) {
+      return false;
     }
+    XincoCoreDataTypeT other = (XincoCoreDataTypeT) object;
+    if ((this.recordId == null && other.recordId != null)
+        || (this.recordId != null && !this.recordId.equals(other.recordId))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeT[ recordId="
+        + recordId
+        + " ]";
+  }
 }

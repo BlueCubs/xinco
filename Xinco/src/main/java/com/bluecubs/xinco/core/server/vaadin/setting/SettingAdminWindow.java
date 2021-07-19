@@ -16,90 +16,97 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: SettingAdminWindow
- * 
+ *
  * Description: Admin window for managing settings
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Dec 14, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
-import com.vaadin.addon.jpacontainer.EntityContainer;
 import static com.vaadin.addon.jpacontainer.JPAContainerFactory.make;
+
+import com.vaadin.addon.jpacontainer.EntityContainer;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
 import java.util.ResourceBundle;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class SettingAdminWindow extends Panel implements ComponentContainer {
 
-    private Table table;
-    private EntityContainer<com.bluecubs.xinco.core.server.persistence.XincoSetting> container;
+  private Table table;
+  private EntityContainer<com.bluecubs.xinco.core.server.persistence.XincoSetting> container;
 
-    public SettingAdminWindow() {
-        buildMainArea();
-    }
+  public SettingAdminWindow() {
+    buildMainArea();
+  }
 
-    private void buildMainArea() {
-        VerticalLayout vl = new VerticalLayout();
-        addComponent(vl);
-        HorizontalLayout toolbar = new HorizontalLayout();
-        container = make(com.bluecubs.xinco.core.server.persistence.XincoSetting.class,
-                getEntityManagerFactory().createEntityManager());
-        table = new Table(null, container);
-        table.addStyleName("striped");
-        com.vaadin.ui.Button newButton =
-                new com.vaadin.ui.Button(getResource().getString("general.add"));
-        newButton.addListener((com.vaadin.ui.Button.ClickListener) (com.vaadin.ui.Button.ClickEvent event) -> {
-            final BeanItem<com.bluecubs.xinco.core.server.persistence.XincoSetting> newSettingItem =
-                    new BeanItem<>(new com.bluecubs.xinco.core.server.persistence.XincoSetting());
-            SettingEditor settingEditor =
-                    new SettingEditor(newSettingItem);
-            settingEditor.addListener((SettingEditor.EditorSavedListener) (SettingEditor.EditorSavedEvent event1) -> {
-                container.addEntity(newSettingItem.getBean());
+  private void buildMainArea() {
+    VerticalLayout vl = new VerticalLayout();
+    addComponent(vl);
+    HorizontalLayout toolbar = new HorizontalLayout();
+    container =
+        make(
+            com.bluecubs.xinco.core.server.persistence.XincoSetting.class,
+            getEntityManagerFactory().createEntityManager());
+    table = new Table(null, container);
+    table.addStyleName("striped");
+    com.vaadin.ui.Button newButton =
+        new com.vaadin.ui.Button(getResource().getString("general.add"));
+    newButton.addListener(
+        (com.vaadin.ui.Button.ClickListener)
+            (com.vaadin.ui.Button.ClickEvent event) -> {
+              final BeanItem<com.bluecubs.xinco.core.server.persistence.XincoSetting>
+                  newSettingItem =
+                      new BeanItem<>(new com.bluecubs.xinco.core.server.persistence.XincoSetting());
+              SettingEditor settingEditor = new SettingEditor(newSettingItem);
+              settingEditor.addListener(
+                  (SettingEditor.EditorSavedListener)
+                      (SettingEditor.EditorSavedEvent event1) -> {
+                        container.addEntity(newSettingItem.getBean());
+                      });
             });
-        });
-        final com.vaadin.ui.Button editButton = new com.vaadin.ui.Button(getResource().getString("general.edit"));
-        editButton.addListener((com.vaadin.ui.Button.ClickListener) (com.vaadin.ui.Button.ClickEvent event) -> {
-            if (table.getValue() != null) {
-                SettingEditor settingEditor = new SettingEditor(
-                        table.getItem(table.getValue()));
+    final com.vaadin.ui.Button editButton =
+        new com.vaadin.ui.Button(getResource().getString("general.edit"));
+    editButton.addListener(
+        (com.vaadin.ui.Button.ClickListener)
+            (com.vaadin.ui.Button.ClickEvent event) -> {
+              if (table.getValue() != null) {
+                SettingEditor settingEditor = new SettingEditor(table.getItem(table.getValue()));
                 settingEditor.center();
                 settingEditor.setModal(true);
                 getApplication().getMainWindow().addWindow(settingEditor);
-            }
-        });
-        table.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                setModificationsEnabled(event.getProperty().getValue() != null);
-            }
+              }
+            });
+    table.addListener(
+        new Property.ValueChangeListener() {
+          @Override
+          public void valueChange(Property.ValueChangeEvent event) {
+            setModificationsEnabled(event.getProperty().getValue() != null);
+          }
 
-            private void setModificationsEnabled(boolean b) {
-                editButton.setEnabled(b);
-            }
+          private void setModificationsEnabled(boolean b) {
+            editButton.setEnabled(b);
+          }
         });
-        table.setSizeFull();
-        table.setSelectable(true);
-        toolbar.addComponent(newButton);
-        toolbar.addComponent(editButton);
-        toolbar.setWidth("100%");
-        vl.addComponent(toolbar);
-        vl.addComponent(table);
-        vl.setExpandRatio(table, 1);
-        vl.setSizeFull();
-    }
+    table.setSizeFull();
+    table.setSelectable(true);
+    toolbar.addComponent(newButton);
+    toolbar.addComponent(editButton);
+    toolbar.setWidth("100%");
+    vl.addComponent(toolbar);
+    vl.addComponent(table);
+    vl.setExpandRatio(table, 1);
+    vl.setSizeFull();
+  }
 
-    private ResourceBundle getResource() {
-        return getInstance().getResource();
-    }
+  private ResourceBundle getResource() {
+    return getInstance().getResource();
+  }
 }

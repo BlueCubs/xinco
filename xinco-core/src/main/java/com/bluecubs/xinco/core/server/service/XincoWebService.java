@@ -1,33 +1,29 @@
 /**
  * Copyright 2012 blueCubs.com
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  *
- *************************************************************
- * This project supports the blueCubs vision of giving back to the community in
- * exchange for free software! More information on: http://www.bluecubs.org
- * ************************************************************
+ * <p>************************************************************ This project supports the
+ * blueCubs vision of giving back to the community in exchange for free software! More information
+ * on: http://www.bluecubs.org ************************************************************
  *
- * Name: XincoConfigSingletonServer
+ * <p>Name: XincoConfigSingletonServer
  *
- * Description: configuration class on server side
+ * <p>Description: configuration class on server side
  *
- * Original Author: Javier Ortiz Bultron: 2017
+ * <p>Original Author: Javier Ortiz Bultron: 2017
  *
- * $Author$:
- * $Date$:
+ * <p>$Author$: $Date$:
  *
- *************************************************************
+ * <p>************************************************************
  */
 package com.bluecubs.xinco.server.service;
 
@@ -40,23 +36,6 @@ import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static java.util.logging.Logger.getLogger;
 import static javax.xml.ws.soap.SOAPBinding.SOAP11HTTP_BINDING;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.logging.Logger;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedInputStream;
-import java.util.zip.CheckedOutputStream;
-
-import javax.jws.WebService;
-import javax.xml.ws.BindingType;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
@@ -75,291 +54,220 @@ import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.bluecubs.xinco.core.server.index.XincoIndexThread;
 import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.rendering.XincoRenderingThread;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.logging.Logger;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
+import java.util.zip.CheckedOutputStream;
+import javax.jws.WebService;
+import javax.xml.ws.BindingType;
 
-/**
- *
- * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
- */
-@WebService(serviceName = "Xinco", portName = "XincoPort",
-        endpointInterface = "com.bluecubs.xinco.server.service.Xinco",
-        targetNamespace = "http://service.server.xinco.bluecubs.com/",
-        wsdlLocation = "src/main/resources/wsdl/XincoWebService/Xinco.wsdl")
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+@WebService(
+    serviceName = "Xinco",
+    portName = "XincoPort",
+    endpointInterface = "com.bluecubs.xinco.server.service.Xinco",
+    targetNamespace = "http://service.server.xinco.bluecubs.com/",
+    wsdlLocation = "src/main/resources/wsdl/XincoWebService/Xinco.wsdl")
 @BindingType(SOAP11HTTP_BINDING)
-public class XincoWebService
-{
+public class XincoWebService {
 
-  private static final Logger LOG
-          = getLogger(XincoWebService.class.getName());
+  private static final Logger LOG = getLogger(XincoWebService.class.getName());
 
-  public XincoCoreDataType getXincoCoreDataType(XincoCoreDataType in0,
-          XincoCoreUser in1)
-  {
-    if (XincoCoreUserServer.validCredentials(in1.getUsername(),
-            in1.getUserpassword(), true))
-    {
+  public XincoCoreDataType getXincoCoreDataType(XincoCoreDataType in0, XincoCoreUser in1) {
+    if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)) {
       return XincoCoreDataTypeServer.getXincoCoreDataType(in0.getId());
-    }
-    else
-    {
+    } else {
       return null;
     }
   }
 
   public java.util.List<XincoAddAttribute> getXincoAddAttributes(
-          XincoCoreData in0, XincoCoreUser in1)
-  {
-    if (XincoCoreUserServer.validCredentials(in1.getUsername(),
-            in1.getUserpassword(), true))
-    {
+      XincoCoreData in0, XincoCoreUser in1) {
+    if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)) {
       return XincoAddAttributeServer.getXincoAddAttributes(in0.getId());
-    }
-    else
-    {
+    } else {
       return null;
     }
   }
 
-  public java.util.List<XincoCoreNode> getXincoCoreNodes(XincoCoreNode in0,
-          XincoCoreUser in1)
-  {
-    //dummy: not to be implemented!
+  public java.util.List<XincoCoreNode> getXincoCoreNodes(XincoCoreNode in0, XincoCoreUser in1) {
+    // dummy: not to be implemented!
     return null;
   }
 
-  public XincoCoreData getXincoCoreData(XincoCoreData in0, XincoCoreUser in1)
-  {
-    try
-    {
-      XincoCoreUserServer user = new XincoCoreUserServer(
-              in1.getUsername(), in1.getUserpassword());
+  public XincoCoreData getXincoCoreData(XincoCoreData in0, XincoCoreUser in1) {
+    try {
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
       XincoCoreDataServer data = new XincoCoreDataServer(in0.getId());
-      XincoCoreACE ace = XincoCoreACEServer.checkAccess(user,
-              (ArrayList) data.getXincoCoreAcl());
-      if (ace.isReadPermission())
-      {
+      XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, (ArrayList) data.getXincoCoreAcl());
+      if (ace.isReadPermission()) {
         return (XincoCoreData) data;
-      }
-      else
-      {
+      } else {
         return null;
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
   }
 
-  public XincoVersion getXincoServerVersion() throws XincoException
-  {
-    //return current version of server
+  public XincoVersion getXincoServerVersion() throws XincoException {
+    // return current version of server
     XincoVersion version = new XincoVersion();
-    version.setVersionHigh(XincoSettingServer.getSetting(
-            new XincoCoreUserServer(1), "version.high").getIntValue());
-    version.setVersionMid(XincoSettingServer.getSetting(
-            new XincoCoreUserServer(1), "version.mid").getIntValue());
-    version.setVersionLow(XincoSettingServer.getSetting(
-            new XincoCoreUserServer(1), "version.low").getIntValue());
-    version.setVersionPostfix(XincoSettingServer.getSetting(
-            new XincoCoreUserServer(1), "version.postfix").getStringValue());
+    version.setVersionHigh(
+        XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.high").getIntValue());
+    version.setVersionMid(
+        XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.mid").getIntValue());
+    version.setVersionLow(
+        XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue());
+    version.setVersionPostfix(
+        XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix")
+            .getStringValue());
     return version;
   }
 
-  public XincoCoreUser getCurrentXincoCoreUser(java.lang.String in0,
-          java.lang.String in1)
-  {
-    //login
-    try
-    {
+  public XincoCoreUser getCurrentXincoCoreUser(java.lang.String in0, java.lang.String in1) {
+    // login
+    try {
       XincoCoreUserServer user = new XincoCoreUserServer(in0, in1);
       return (XincoCoreUser) user;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
   }
 
-  public java.util.List<XincoCoreGroup> getAllXincoCoreGroups(
-          XincoCoreUser in0)
-  {
+  public java.util.List<XincoCoreGroup> getAllXincoCoreGroups(XincoCoreUser in0) {
     ArrayList<XincoCoreGroup> list = null;
-    try
-    {
-      //check if user exists
-      if (XincoCoreUserServer.validCredentials(in0.getUsername(),
-              in0.getUserpassword(), true))
-      {
+    try {
+      // check if user exists
+      if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword(), true)) {
         list = XincoCoreGroupServer.getXincoCoreGroups();
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
     }
     return list;
   }
 
-  public java.util.List<XincoCoreLanguageServer> getAllXincoCoreLanguages(
-          XincoCoreUser in0)
-  {
+  public java.util.List<XincoCoreLanguageServer> getAllXincoCoreLanguages(XincoCoreUser in0) {
     ArrayList<XincoCoreLanguageServer> list = null;
-    try
-    {
-      //check if user exists
-      if (XincoCoreUserServer.validCredentials(in0.getUsername(),
-              in0.getUserpassword(), true))
-      {
+    try {
+      // check if user exists
+      if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword(), true)) {
         list = XincoCoreLanguageServer.getXincoCoreLanguages();
+      } else {
+        LOG.log(
+            WARNING, "User {0} doesn't exist or provided wrong credentials.", in0.getUsername());
+        LOG.log(WARNING, "password {0}", in0.getUserpassword());
       }
-      else
-      {
-        LOG.log(WARNING,
-                "User {0} doesn't exist or provided wrong credentials.",
-                in0.getUsername());
-        LOG.log(WARNING,
-                "password {0}",
-                in0.getUserpassword());
-      }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
     }
     return list;
   }
 
-  public java.util.List<XincoCoreDataType> getAllXincoCoreDataTypes(
-          XincoCoreUser in0)
-  {
+  public java.util.List<XincoCoreDataType> getAllXincoCoreDataTypes(XincoCoreUser in0) {
     ArrayList<XincoCoreDataType> list = null;
-    try
-    {
-      //check if user exists
-      if (XincoCoreUserServer.validCredentials(in0.getUsername(),
-              in0.getUserpassword(), true))
-      {
+    try {
+      // check if user exists
+      if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword(), true)) {
         list = XincoCoreDataTypeServer.getXincoCoreDataTypes();
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
     }
     return list;
   }
 
-  public XincoCoreNode getXincoCoreNode(XincoCoreNode in0, XincoCoreUser in1)
-  {
-    try
-    {
-      XincoCoreUserServer user = new XincoCoreUserServer(
-              in1.getUsername(), in1.getUserpassword());
+  public XincoCoreNode getXincoCoreNode(XincoCoreNode in0, XincoCoreUser in1) {
+    try {
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
       XincoCoreNodeServer node = new XincoCoreNodeServer(in0.getId());
-      XincoCoreACE ace = XincoCoreACEServer.checkAccess(user,
-              (ArrayList) node.getXincoCoreAcl());
-      if (ace.isReadPermission())
-      {
+      XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, (ArrayList) node.getXincoCoreAcl());
+      if (ace.isReadPermission()) {
         boolean showChildren = false;
         // show content of TRASH to admins ONLY!
-        if (node.getId() == 2)
-        {
-          for (int i = 0; i < user.getXincoCoreGroups().size(); i++)
-          {
-            if (((XincoCoreGroup) user.getXincoCoreGroups()
-                    .get(i)).getId() == 1)
-            {
+        if (node.getId() == 2) {
+          for (int i = 0; i < user.getXincoCoreGroups().size(); i++) {
+            if (((XincoCoreGroup) user.getXincoCoreGroups().get(i)).getId() == 1) {
               showChildren = true;
               break;
             }
           }
-        }
-        else
-        {
+        } else {
           showChildren = true;
         }
-        if (showChildren)
-        {
+        if (showChildren) {
           node.fillXincoCoreNodes();
           node.fillXincoCoreData();
         }
         return (XincoCoreNode) node;
-      }
-      else
-      {
+      } else {
         return null;
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
   }
 
-  public XincoCoreData doXincoCoreDataCheckout(XincoCoreData in0,
-          XincoCoreUser in1)
-  {
+  public XincoCoreData doXincoCoreDataCheckout(XincoCoreData in0, XincoCoreUser in1) {
     in0.setStatusNumber(4);
     return setXincoCoreData(in0, in1);
   }
 
-  public XincoCoreData doXincoCoreDataCheckin(XincoCoreData in0,
-          XincoCoreUser in1)
-  {
+  public XincoCoreData doXincoCoreDataCheckin(XincoCoreData in0, XincoCoreUser in1) {
     in0.setStatusNumber(1);
     return setXincoCoreData(in0, in1);
   }
 
-  public XincoCoreData undoXincoCoreDataCheckout(XincoCoreData in0,
-          XincoCoreUser in1)
-  {
+  public XincoCoreData undoXincoCoreDataCheckout(XincoCoreData in0, XincoCoreUser in1) {
     in0.setStatusNumber(1);
     return setXincoCoreData(in0, in1);
   }
 
-  public byte[] downloadXincoCoreData(XincoCoreData in0, XincoCoreUser in1)
-  {
-    try
-    {
+  public byte[] downloadXincoCoreData(XincoCoreData in0, XincoCoreUser in1) {
+    try {
       XincoCoreDataServer data;
       XincoCoreACE ace;
       byte[] byteArray = null;
       String revision = "";
       InputStream in;
       ByteArrayOutputStream out;
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in1.getUsername(),
-                      in1.getUserpassword());
-      //load data
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+      // load data
       data = new XincoCoreDataServer(in0.getId());
-      ace = XincoCoreACEServer.checkAccess(user,
-              (ArrayList) data.getXincoCoreAcl());
-      if (ace.isReadPermission())
-      {
-        //determine requested revision if data with only one
-        //specific log object is requested
-        if ((data.getXincoCoreLogs().size() > 1)
-                && (in0.getXincoCoreLogs().size() == 1))
-        {
-          //find id of log
-          if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0))
-                  .getOpCode() == CHECKIN.ordinal() + 1))
-          {
-            revision = "-" + ((XincoCoreLog) in0.getXincoCoreLogs().get(0))
-                    .getId();
+      ace = XincoCoreACEServer.checkAccess(user, (ArrayList) data.getXincoCoreAcl());
+      if (ace.isReadPermission()) {
+        // determine requested revision if data with only one
+        // specific log object is requested
+        if ((data.getXincoCoreLogs().size() > 1) && (in0.getXincoCoreLogs().size() == 1)) {
+          // find id of log
+          if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode()
+              == CHECKIN.ordinal() + 1)) {
+            revision = "-" + ((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getId();
           }
         }
-        in = new CheckedInputStream(new FileInputStream(
-                XincoCoreDataServer.getXincoCoreDataPath(CONFIG.fileRepositoryPath,
-                        data.getId(), data.getId() + revision)), new CRC32());
+        in =
+            new CheckedInputStream(
+                new FileInputStream(
+                    XincoCoreDataServer.getXincoCoreDataPath(
+                        CONFIG.fileRepositoryPath, data.getId(), data.getId() + revision)),
+                new CRC32());
         out = new ByteArrayOutputStream();
         byte[] buf = new byte[4_096];
         int len;
-        while ((len = in.read(buf)) > 0)
-        {
+        while ((len = in.read(buf)) > 0) {
           out.write(buf, 0, len);
         }
         in.close();
@@ -367,22 +275,16 @@ public class XincoWebService
         out.close();
       }
       return byteArray;
-    }
-    catch (FileNotFoundException e)
-    {
+    } catch (FileNotFoundException e) {
       LOG.log(SEVERE, null, e);
       return null;
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       LOG.log(SEVERE, null, ex);
       return null;
     }
   }
 
-  public int uploadXincoCoreData(XincoCoreData in0, byte[] in1,
-          XincoCoreUser in2)
-  {
+  public int uploadXincoCoreData(XincoCoreData in0, byte[] in1, XincoCoreUser in2) {
     XincoCoreDataServer data = null;
     File rendition = null;
     File xincoFile = null;
@@ -390,155 +292,119 @@ public class XincoWebService
     XincoCoreDataHasDependencyServer dependency = null;
     FileInputStream fcis = null;
     FileOutputStream fcos = null;
-    try
-    {
+    try {
       XincoCoreACE ace;
       int i;
       int len;
       long totalLen;
       InputStream in;
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in2.getUsername(),
-                      in2.getUserpassword());
-      //load data
+      XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword());
+      // load data
       data = new XincoCoreDataServer(in0.getId());
-      ace = XincoCoreACEServer.checkAccess(user,
-              (ArrayList) data.getXincoCoreAcl());
-      if (ace.isWritePermission())
-      {
+      ace = XincoCoreACEServer.checkAccess(user, (ArrayList) data.getXincoCoreAcl());
+      if (ace.isWritePermission()) {
         in = new ByteArrayInputStream(in1);
-        xincoFile = new File(XincoCoreDataServer
-                .getXincoCoreDataPath(CONFIG.fileRepositoryPath, data.getId(),
-                        "" + data.getId()));
-        try (CheckedOutputStream out = new CheckedOutputStream(
-                new FileOutputStream(xincoFile), new CRC32()))
-        {
+        xincoFile =
+            new File(
+                XincoCoreDataServer.getXincoCoreDataPath(
+                    CONFIG.fileRepositoryPath, data.getId(), "" + data.getId()));
+        try (CheckedOutputStream out =
+            new CheckedOutputStream(new FileOutputStream(xincoFile), new CRC32())) {
           byte[] buf = new byte[4_096];
           totalLen = 0;
-          while ((len = in.read(buf)) > 0)
-          {
+          while ((len = in.read(buf)) > 0) {
             out.write(buf, 0, len);
             totalLen += len;
           }
           in.close();
         }
 
-        //dupicate file to preserve current revision
-        if (((XincoAddAttribute) data.getXincoAddAttributes().get(3))
-                .getAttribUnsignedint() == 1)
-        {
-          //find id of latest log
+        // dupicate file to preserve current revision
+        if (((XincoAddAttribute) data.getXincoAddAttributes().get(3)).getAttribUnsignedint() == 1) {
+          // find id of latest log
           int MaxLogId = 0;
-          for (i = 0; i < data.getXincoCoreLogs().size(); i++)
-          {
-            if ((((XincoCoreLog) data.getXincoCoreLogs().get(0))
-                    .getOpCode() == CREATION.ordinal() + 1)
-                    || (((XincoCoreLog) data.getXincoCoreLogs()
-                            .get(0)).getOpCode()
-                    == CHECKIN.ordinal() + 1))
-            {
-              MaxLogId = ((XincoCoreLog) data.getXincoCoreLogs()
-                      .get(i)).getId();
+          for (i = 0; i < data.getXincoCoreLogs().size(); i++) {
+            if ((((XincoCoreLog) data.getXincoCoreLogs().get(0)).getOpCode()
+                    == CREATION.ordinal() + 1)
+                || (((XincoCoreLog) data.getXincoCoreLogs().get(0)).getOpCode()
+                    == CHECKIN.ordinal() + 1)) {
+              MaxLogId = ((XincoCoreLog) data.getXincoCoreLogs().get(i)).getId();
             }
           }
-          if (MaxLogId > 0)
-          {
-            //copy file
-            fcis = new FileInputStream(
-                    new File(XincoCoreDataServer
-                            .getXincoCoreDataPath(CONFIG.fileRepositoryPath,
-                                    data.getId(), "" + data.getId())));
-            fcos = new FileOutputStream(new File(XincoCoreDataServer
-                    .getXincoCoreDataPath(CONFIG.fileRepositoryPath,
-                            data.getId(), data.getId() + "-" + MaxLogId)));
+          if (MaxLogId > 0) {
+            // copy file
+            fcis =
+                new FileInputStream(
+                    new File(
+                        XincoCoreDataServer.getXincoCoreDataPath(
+                            CONFIG.fileRepositoryPath, data.getId(), "" + data.getId())));
+            fcos =
+                new FileOutputStream(
+                    new File(
+                        XincoCoreDataServer.getXincoCoreDataPath(
+                            CONFIG.fileRepositoryPath,
+                            data.getId(),
+                            data.getId() + "-" + MaxLogId)));
             byte[] fcbuf = new byte[4_096];
-            while ((len = fcis.read(fcbuf)) != -1)
-            {
+            while ((len = fcis.read(fcbuf)) != -1) {
               fcos.write(fcbuf, 0, len);
             }
-          }
-          else
-          {
-            LOG.log(FINE,
-                    "Didn't find default version log. Not "
-                    + "creating copy of: {0}", in0.getDesignation());
+          } else {
+            LOG.log(
+                FINE,
+                "Didn't find default version log. Not " + "creating copy of: {0}",
+                in0.getDesignation());
           }
         }
-        try
-        {
+        try {
           XincoIndexThread xit = new XincoIndexThread(data, true);
           xit.start();
-        }
-        catch (Exception xite)
-        {
+        } catch (Exception xite) {
           LOG.log(SEVERE, null, xite);
         }
-        //Create PDF rendering of the file
-        if (!data.getAttribute(1).getAttribVarchar()
-                .toLowerCase(getDefault()).endsWith(".pdf"))
-        {
-          XincoRenderingThread xrt = new XincoRenderingThread(data,
-                  in2);
+        // Create PDF rendering of the file
+        if (!data.getAttribute(1).getAttribVarchar().toLowerCase(getDefault()).endsWith(".pdf")) {
+          XincoRenderingThread xrt = new XincoRenderingThread(data, in2);
           xrt.start();
         }
         return (int) totalLen;
-      }
-      else
-      {
+      } else {
         return 0;
       }
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       LOG.log(SEVERE, null, e);
-      //Clean up after yourself
-      if (dependency != null)
-      {
-        XincoCoreDataHasDependencyServer.
-                deleteFromDB(
-                        dependency.getXincoCoreData1().getId(),
-                        dependency.getXincoCoreData().getId(),
-                        dependency.getXincoDependencyType().getId());
+      // Clean up after yourself
+      if (dependency != null) {
+        XincoCoreDataHasDependencyServer.deleteFromDB(
+            dependency.getXincoCoreData1().getId(),
+            dependency.getXincoCoreData().getId(),
+            dependency.getXincoDependencyType().getId());
       }
-      if (rendering != null)
-      {
+      if (rendering != null) {
         XincoCoreDataServer.removeFromDB(in2.getId(), rendering.getId());
       }
-      if (data != null)
-      {
+      if (data != null) {
         data.deleteFromDB();
       }
-      if (rendition != null && rendition.exists())
-      {
+      if (rendition != null && rendition.exists()) {
         rendition.delete();
       }
-      if (xincoFile != null && xincoFile.exists())
-      {
+      if (xincoFile != null && xincoFile.exists()) {
         xincoFile.delete();
       }
       return 0;
-    }
-    finally
-    {
-      if (fcis != null)
-      {
-        try
-        {
+    } finally {
+      if (fcis != null) {
+        try {
           fcis.close();
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
           LOG.log(SEVERE, null, ex);
         }
       }
-      if (fcos != null)
-      {
-        try
-        {
+      if (fcos != null) {
+        try {
           fcos.close();
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
           LOG.log(SEVERE, null, ex);
         }
       }
@@ -546,209 +412,163 @@ public class XincoWebService
   }
 
   public java.util.List<java.lang.Object> findXincoCoreData(
-          java.lang.String in0, XincoCoreLanguage in1, XincoCoreUser in2)
-  {
+      java.lang.String in0, XincoCoreLanguage in1, XincoCoreUser in2) {
     boolean rp;
     ArrayList v = new ArrayList();
     ArrayList v2;
 
-    //check size of keyword string
-    if (in0.length() < 1)
-    {
+    // check size of keyword string
+    if (in0.length() < 1) {
       return null;
     }
 
-    //truncate % from start and end of search query
-    if (in0.startsWith("%") && in0.endsWith("%"))
-    {
+    // truncate % from start and end of search query
+    if (in0.startsWith("%") && in0.endsWith("%")) {
       in0 = in0.substring(1, in0.length() - 1);
     }
 
-    try
-    {
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in2.getUsername(),
-                      in2.getUserpassword());
-      //search on index
+    try {
+      XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword());
+      // search on index
       ArrayList tv = XincoIndexer.findXincoCoreData(in0, in1.getId());
       ArrayList tv2 = new ArrayList();
-      //check immediate permissions
-      for (int i = 0; i < tv.size(); i++)
-      {
-        XincoCoreACE ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) ((XincoCoreData) tv.get(i)).getXincoCoreAcl());
-        if (ace.isReadPermission())
-        {
+      // check immediate permissions
+      for (int i = 0; i < tv.size(); i++) {
+        XincoCoreACE ace =
+            XincoCoreACEServer.checkAccess(
+                user, (ArrayList) ((XincoCoreData) tv.get(i)).getXincoCoreAcl());
+        if (ace.isReadPermission()) {
           tv2.add(tv.get(i));
         }
       }
-      //check permissions on parents
+      // check permissions on parents
       ArrayList tvp;
-      for (int i = 0; i < tv2.size(); i++)
-      {
-        tvp = XincoCoreNodeServer.getXincoCoreNodeParents(
+      for (int i = 0; i < tv2.size(); i++) {
+        tvp =
+            XincoCoreNodeServer.getXincoCoreNodeParents(
                 ((XincoCoreData) tv2.get(i)).getXincoCoreNodeId());
         rp = true;
-        for (int j = 0; j < tvp.size(); j++)
-        {
-          XincoCoreACE ace = XincoCoreACEServer.checkAccess(user,
-                  (ArrayList) ((XincoCoreNode) tvp.get(j))
-                          .getXincoCoreAcl());
-          if (!ace.isReadPermission())
-          {
+        for (int j = 0; j < tvp.size(); j++) {
+          XincoCoreACE ace =
+              XincoCoreACEServer.checkAccess(
+                  user, (ArrayList) ((XincoCoreNode) tvp.get(j)).getXincoCoreAcl());
+          if (!ace.isReadPermission()) {
             rp = false;
             break;
           }
         }
-        //for complete read permission, add Data + Parent Nodes to result!
-        if (rp)
-        {
+        // for complete read permission, add Data + Parent Nodes to result!
+        if (rp) {
           v2 = new ArrayList();
           v2.add(tv2.get(i));
-          for (int j = tvp.size() - 1; j >= 0; j--)
-          {
+          for (int j = tvp.size() - 1; j >= 0; j--) {
             v2.add(tvp.get(j));
           }
           v.add(v2);
         }
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
     return v;
   }
 
-  public XincoCoreNode setXincoCoreNode(XincoCoreNode in0, XincoCoreUser in1)
-  {
-    try
-    {
+  public XincoCoreNode setXincoCoreNode(XincoCoreNode in0, XincoCoreUser in1) {
+    try {
       boolean insertnewnode = false;
       XincoCoreNodeServer node;
-      XincoCoreNodeServer parentNode
-              = new XincoCoreNodeServer(0, 0, 1, "", 1);
+      XincoCoreNodeServer parentNode = new XincoCoreNodeServer(0, 0, 1, "", 1);
       XincoCoreACE ace;
       XincoCoreACE parentAce = new XincoCoreACE();
       parentAce.setWritePermission(true);
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in1.getUsername(),
-                      in1.getUserpassword());
-      if (in0.getId() <= 0)
-      {
-        //insert new node
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+      if (in0.getId() <= 0) {
+        // insert new node
         insertnewnode = true;
         parentNode = new XincoCoreNodeServer(in0.getXincoCoreNodeId());
-        ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) parentNode.getXincoCoreAcl());
+        ace = XincoCoreACEServer.checkAccess(user, (ArrayList) parentNode.getXincoCoreAcl());
         node = new XincoCoreNodeServer(0, 0, 1, "", 1);
-      }
-      else
-      {
-        //update existing node
+      } else {
+        // update existing node
         node = new XincoCoreNodeServer(in0.getId());
-        //moving node requires write permission to target node
-        if (in0.getXincoCoreNodeId() != node.getXincoCoreNodeId())
-        {
+        // moving node requires write permission to target node
+        if (in0.getXincoCoreNodeId() != node.getXincoCoreNodeId()) {
           parentNode = new XincoCoreNodeServer(in0.getXincoCoreNodeId());
           parentNode.setChangerID(in1.getId());
-          parentAce = XincoCoreACEServer.checkAccess(user,
-                  (ArrayList) parentNode.getXincoCoreAcl());
+          parentAce =
+              XincoCoreACEServer.checkAccess(user, (ArrayList) parentNode.getXincoCoreAcl());
         }
-        ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) node.getXincoCoreAcl());
+        ace = XincoCoreACEServer.checkAccess(user, (ArrayList) node.getXincoCoreAcl());
       }
-      if ((ace.isWritePermission()) && (parentAce.isWritePermission()))
-      {
-        //update information
+      if ((ace.isWritePermission()) && (parentAce.isWritePermission())) {
+        // update information
         node.setXincoCoreNodeId(in0.getXincoCoreNodeId());
         node.setChangerID(in1.getId());
         node.setDesignation(in0.getDesignation());
         node.setXincoCoreLanguage(in0.getXincoCoreLanguage());
         node.setStatusNumber(in0.getStatusNumber());
         node.write2DB();
-        //insert default ACL when inserting new node
-        if (insertnewnode)
-        {
+        // insert default ACL when inserting new node
+        if (insertnewnode) {
           XincoCoreACEServer newace;
-          //owner
-          newace = new XincoCoreACEServer(0, user.getId(), 0,
-                  node.getId(), 0, true, true, true, true);
+          // owner
+          newace =
+              new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true);
           newace.write2DB();
-          //inherit all group ACEs
-          for (int i = 0; i < parentNode.getXincoCoreAcl().size();
-                  i++)
-          {
+          // inherit all group ACEs
+          for (int i = 0; i < parentNode.getXincoCoreAcl().size(); i++) {
             newace = (XincoCoreACEServer) parentNode.getXincoCoreAcl().get(i);
-            if (newace.getXincoCoreGroupId() > 0)
-            {
+            if (newace.getXincoCoreGroupId() > 0) {
               newace.setId(0);
               newace.setXincoCoreNodeId(node.getId());
               newace.write2DB();
             }
           }
-          //load new ACL
+          // load new ACL
           node.getXincoCoreAcl().clear();
-          node.getXincoCoreAcl().addAll(XincoCoreACEServer
-                  .getXincoCoreACL(node.getId(), "xincoCoreNode.id"));
+          node.getXincoCoreAcl()
+              .addAll(XincoCoreACEServer.getXincoCoreACL(node.getId(), "xincoCoreNode.id"));
         }
         return (XincoCoreNode) node;
-      }
-      else
-      {
+      } else {
         return null;
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
   }
 
-  public XincoCoreData setXincoCoreData(XincoCoreData in0, XincoCoreUser in1)
-  {
-    try
-    {
+  public XincoCoreData setXincoCoreData(XincoCoreData in0, XincoCoreUser in1) {
+    try {
       boolean insertnewdata = false;
       XincoCoreDataServer data;
-      XincoCoreNodeServer parentNode
-              = new XincoCoreNodeServer(0, 0, 1, "", 1);
+      XincoCoreNodeServer parentNode = new XincoCoreNodeServer(0, 0, 1, "", 1);
       XincoCoreACE ace;
       XincoCoreACE parentAce = new XincoCoreACE();
       parentAce.setWritePermission(true);
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in1.getUsername(),
-                      in1.getUserpassword());
-      if (in0.getId() <= 0)
-      {
-        //insert new node
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+      if (in0.getId() <= 0) {
+        // insert new node
         insertnewdata = true;
         parentNode = new XincoCoreNodeServer(in0.getXincoCoreNodeId());
-        ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) parentNode.getXincoCoreAcl());
+        ace = XincoCoreACEServer.checkAccess(user, (ArrayList) parentNode.getXincoCoreAcl());
         data = new XincoCoreDataServer(0, 0, 1, 1, "", 1);
-      }
-      else
-      {
-        //update existing data
+      } else {
+        // update existing data
         data = new XincoCoreDataServer(in0.getId());
-        //moving node requires write permission to target node
-        if (in0.getXincoCoreNodeId() != data.getXincoCoreNodeId())
-        {
-          parentNode = new XincoCoreNodeServer(
-                  in0.getXincoCoreNodeId());
+        // moving node requires write permission to target node
+        if (in0.getXincoCoreNodeId() != data.getXincoCoreNodeId()) {
+          parentNode = new XincoCoreNodeServer(in0.getXincoCoreNodeId());
           parentNode.setChangerID(in1.getId());
-          parentAce = XincoCoreACEServer.checkAccess(user,
-                  (ArrayList) parentNode.getXincoCoreAcl());
+          parentAce =
+              XincoCoreACEServer.checkAccess(user, (ArrayList) parentNode.getXincoCoreAcl());
         }
-        ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) data.getXincoCoreAcl());
+        ace = XincoCoreACEServer.checkAccess(user, (ArrayList) data.getXincoCoreAcl());
       }
-      if ((ace.isWritePermission()) && (parentAce.isWritePermission()))
-      {
-        //update information
+      if ((ace.isWritePermission()) && (parentAce.isWritePermission())) {
+        // update information
         data.setXincoCoreNodeId(in0.getXincoCoreNodeId());
         data.setChangerID(in1.getId());
         data.setDesignation(in0.getDesignation());
@@ -759,87 +579,63 @@ public class XincoWebService
         data.setStatusNumber(in0.getStatusNumber());
         data.write2DB();
 
-        //insert default ACL when inserting new node
-        if (insertnewdata)
-        {
+        // insert default ACL when inserting new node
+        if (insertnewdata) {
           XincoCoreACEServer newace;
-          //owner
-          newace = new XincoCoreACEServer(0, user.getId(), 0, 0,
-                  data.getId(), true, true, true, true);
+          // owner
+          newace =
+              new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true);
           newace.write2DB();
-          //inherit all group ACEs
-          for (int i = 0; i < parentNode.getXincoCoreAcl().size(); i++)
-          {
-            newace
-                    = (XincoCoreACEServer) parentNode
-                            .getXincoCoreAcl().get(i);
-            if (newace.getXincoCoreGroupId() > 0)
-            {
+          // inherit all group ACEs
+          for (int i = 0; i < parentNode.getXincoCoreAcl().size(); i++) {
+            newace = (XincoCoreACEServer) parentNode.getXincoCoreAcl().get(i);
+            if (newace.getXincoCoreGroupId() > 0) {
               newace.setId(0);
               newace.setXincoCoreNodeId(0);
               newace.setXincoCoreDataId(data.getId());
               newace.write2DB();
             }
           }
-          //load new ACL
+          // load new ACL
           data.getXincoCoreAcl().clear();
-          data.getXincoCoreAcl().addAll(XincoCoreACEServer
-                  .getXincoCoreACL(data.getId(),
-                          "xincoCoreData.id"));
+          data.getXincoCoreAcl()
+              .addAll(XincoCoreACEServer.getXincoCoreACL(data.getId(), "xincoCoreData.id"));
         }
         return (XincoCoreData) data;
-      }
-      else
-      {
+      } else {
         return null;
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
   }
 
-  public XincoCoreACE setXincoCoreACE(XincoCoreACE in0, XincoCoreUser in1)
-  {
-    try
-    {
+  public XincoCoreACE setXincoCoreACE(XincoCoreACE in0, XincoCoreUser in1) {
+    try {
       XincoCoreNodeServer node;
       XincoCoreDataServer data;
       XincoCoreACE ace = new XincoCoreACE();
       XincoCoreACEServer newace;
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in1.getUsername(),
-                      in1.getUserpassword());
-      if (in0.getXincoCoreNodeId() > 0)
-      {
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+      if (in0.getXincoCoreNodeId() > 0) {
         node = new XincoCoreNodeServer(in0.getXincoCoreNodeId());
         node.setChangerID(in1.getId());
-        ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) node.getXincoCoreAcl());
+        ace = XincoCoreACEServer.checkAccess(user, (ArrayList) node.getXincoCoreAcl());
       }
-      if (in0.getXincoCoreDataId() > 0)
-      {
+      if (in0.getXincoCoreDataId() > 0) {
         data = new XincoCoreDataServer(in0.getXincoCoreDataId());
         data.setChangerID(in1.getId());
-        ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) data.getXincoCoreAcl());
+        ace = XincoCoreACEServer.checkAccess(user, (ArrayList) data.getXincoCoreAcl());
       }
-      if (ace.isAdminPermission())
-      {
-        //load ACE or create new one
-        if (in0.getId() > 0)
-        {
+      if (ace.isAdminPermission()) {
+        // load ACE or create new one
+        if (in0.getId() > 0) {
           newace = new XincoCoreACEServer(in0.getId());
+        } else {
+          newace = new XincoCoreACEServer(0, 0, 0, 0, 0, false, false, false, false);
         }
-        else
-        {
-          newace
-                  = new XincoCoreACEServer(0, 0, 0, 0, 0, false,
-                          false, false, false);
-        }
-        //update ACE
+        // update ACE
         newace.setXincoCoreNodeId(in0.getXincoCoreNodeId());
         newace.setChangerID(in1.getId());
         newace.setXincoCoreDataId(in0.getXincoCoreDataId());
@@ -851,84 +647,65 @@ public class XincoWebService
         newace.setAdminPermission(in0.isAdminPermission());
         newace.write2DB();
         return (XincoCoreACE) newace;
-      }
-      else
-      {
+      } else {
         return null;
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
   }
 
-  public boolean removeXincoCoreACE(XincoCoreACE in0, XincoCoreUser in1)
-  {
-    try
-    {
+  public boolean removeXincoCoreACE(XincoCoreACE in0, XincoCoreUser in1) {
+    try {
       XincoCoreNodeServer node;
       XincoCoreDataServer data;
       XincoCoreACE ace = new XincoCoreACE();
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in1.getUsername(),
-                      in1.getUserpassword());
-      if (in0.getXincoCoreNodeId() > 0)
-      {
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+      if (in0.getXincoCoreNodeId() > 0) {
         node = new XincoCoreNodeServer(in0.getXincoCoreNodeId());
         node.setChangerID(in1.getId());
-        ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) node.getXincoCoreAcl());
+        ace = XincoCoreACEServer.checkAccess(user, (ArrayList) node.getXincoCoreAcl());
       }
-      if (in0.getXincoCoreDataId() > 0)
-      {
+      if (in0.getXincoCoreDataId() > 0) {
         data = new XincoCoreDataServer(in0.getXincoCoreDataId());
         data.setChangerID(in1.getId());
-        ace = XincoCoreACEServer.checkAccess(user,
-                (ArrayList) data.getXincoCoreAcl());
+        ace = XincoCoreACEServer.checkAccess(user, (ArrayList) data.getXincoCoreAcl());
       }
-      if (ace.isAdminPermission())
-      {
+      if (ace.isAdminPermission()) {
         XincoCoreACEServer.removeFromDB(in0, user.getId());
         return true;
-      }
-      else
-      {
+      } else {
         return false;
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return false;
     }
   }
 
-  public XincoCoreLog setXincoCoreLog(XincoCoreLog in0, XincoCoreUser in1)
-  {
-    try
-    {
+  public XincoCoreLog setXincoCoreLog(XincoCoreLog in0, XincoCoreUser in1) {
+    try {
       XincoCoreLogServer log;
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in1.getUsername(),
-                      in1.getUserpassword());
-      //load log or create new one
-      if (in0.getId() > 0)
-      {
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+      // load log or create new one
+      if (in0.getId() > 0) {
         log = new XincoCoreLogServer(in0.getId());
-      }
-      else
-      {
-        log = new XincoCoreLogServerBuilder().setXincoCoreDataId(0)
-                .setXincoCoreUserId(0).setOpCode(0)
+      } else {
+        log =
+            new XincoCoreLogServerBuilder()
+                .setXincoCoreDataId(0)
+                .setXincoCoreUserId(0)
+                .setOpCode(0)
                 .setOperationDate(null)
                 .setOperationDescription("")
-                .setVersionHigh(0).setVersionMid(0)
-                .setVersionLow(0).setVersionPostFix("")
+                .setVersionHigh(0)
+                .setVersionMid(0)
+                .setVersionLow(0)
+                .setVersionPostFix("")
                 .createXincoCoreLogServer();
       }
-      //update log
+      // update log
       log.setXincoCoreDataId(in0.getXincoCoreDataId());
       log.setChangerID(in1.getId());
       log.setXincoCoreUserId(in0.getXincoCoreUserId());
@@ -939,26 +716,20 @@ public class XincoWebService
       log.setUser(user);
       log.write2DB();
       return (XincoCoreLog) log;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
   }
 
-  public XincoCoreUser setXincoCoreUser(XincoCoreUser in0, XincoCoreUser in1)
-  {
-    try
-    {
-      XincoCoreUserServer user
-              = new XincoCoreUserServer(in1.getUsername(),
-                      in1.getUserpassword());
-      //Update audit trail
+  public XincoCoreUser setXincoCoreUser(XincoCoreUser in0, XincoCoreUser in1) {
+    try {
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+      // Update audit trail
       user.setChange(in0.isChange());
       user.setReason(in0.getReason());
       user.write2DB();
-      //update user
+      // update user
       user.setUsername(in0.getUsername());
       user.setUserpassword(in0.getUserpassword());
       user.setFirstName(in0.getFirstName());
@@ -969,60 +740,42 @@ public class XincoWebService
       user.setAttempts(0);
       user.write2DB();
       return (XincoCoreUser) user;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       return null;
     }
   }
 
-  public XincoCoreGroup setXincoCoreGroup(XincoCoreGroup in0,
-          XincoCoreUser in1)
-  {
-    //not to be implemented yet: advanced administration feature!
+  public XincoCoreGroup setXincoCoreGroup(XincoCoreGroup in0, XincoCoreUser in1) {
+    // not to be implemented yet: advanced administration feature!
     return null;
   }
 
-  public XincoCoreLanguage setXincoCoreLanguage(XincoCoreLanguage in0,
-          XincoCoreUser in1)
-  {
-    //not to be implemented yet: advanced administration feature!
+  public XincoCoreLanguage setXincoCoreLanguage(XincoCoreLanguage in0, XincoCoreUser in1) {
+    // not to be implemented yet: advanced administration feature!
     return null;
   }
 
-  public boolean checkXincoCoreUserNewPassword(java.lang.String in0,
-          XincoCoreUser in1, XincoCoreUser in2)
-  {
-    try
-    {
-      return XincoCoreUserServer.validCredentials(in1.getUsername(),
-              in1.getUserpassword(), true)
-              ? new XincoCoreUserServer(in1.getUsername(),
-                      in1.getUserpassword()).isPasswordUsable(in0) : false;
-    }
-    catch (XincoException ex)
-    {
+  public boolean checkXincoCoreUserNewPassword(
+      java.lang.String in0, XincoCoreUser in1, XincoCoreUser in2) {
+    try {
+      return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)
+          ? new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword()).isPasswordUsable(in0)
+          : false;
+    } catch (XincoException ex) {
       LOG.log(SEVERE, null, ex);
       return false;
     }
   }
 
-  public XincoSetting getXincoSetting(java.lang.String in0,
-          XincoCoreUser in1)
-  {
+  public XincoSetting getXincoSetting(java.lang.String in0, XincoCoreUser in1) {
     XincoSetting setting = null;
-    if (XincoCoreUserServer.validCredentials(in1.getUsername(),
-            in1.getUserpassword(), true))
-    {
-      try
-      {
-        setting = XincoSettingServer.getSetting(
-                new XincoCoreUserServer(in1.getUsername(),
-                        in1.getUserpassword()), in0);
-      }
-      catch (XincoException ex)
-      {
+    if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)) {
+      try {
+        setting =
+            XincoSettingServer.getSetting(
+                new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword()), in0);
+      } catch (XincoException ex) {
         LOG.log(SEVERE, null, ex);
       }
     }
@@ -1030,12 +783,10 @@ public class XincoWebService
   }
 
   public java.util.List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttribute(
-          XincoCoreDataType in0, XincoCoreUser in1)
-  {
-    return XincoCoreUserServer.validCredentials(in1.getUsername(),
-            in1.getUserpassword(), true)
-            ? XincoCoreDataTypeAttributeServer
-                    .getXincoCoreDataTypeAttributes(in0.getId()) : null;
+      XincoCoreDataType in0, XincoCoreUser in1) {
+    return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)
+        ? XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(in0.getId())
+        : null;
   }
 
   /**
@@ -1045,17 +796,13 @@ public class XincoWebService
    * @param in1
    * @return
    */
-  public java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> getRenderings(final XincoCoreData in0, final XincoCoreUser in1)
-  {
-    try
-    {
-      return XincoCoreUserServer.validCredentials(in1.getUsername(),
-              in1.getUserpassword(), true)
-              ? XincoCoreDataHasDependencyServer.getRenderings(in0.getId())
-              : new ArrayList<>();
-    }
-    catch (XincoException e)
-    {
+  public java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> getRenderings(
+      final XincoCoreData in0, final XincoCoreUser in1) {
+    try {
+      return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)
+          ? XincoCoreDataHasDependencyServer.getRenderings(in0.getId())
+          : new ArrayList<>();
+    } catch (XincoException e) {
       return new ArrayList<>();
     }
   }
@@ -1067,18 +814,13 @@ public class XincoWebService
    * @param in1
    * @return
    */
-  public Boolean isRendering(final XincoCoreData in0, final XincoCoreUser in1)
-  {
-    try
-    {
-      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(),
-              in1.getUserpassword());
+  public Boolean isRendering(final XincoCoreData in0, final XincoCoreUser in1) {
+    try {
+      XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
       return XincoCoreDataHasDependencyServer.isRendering(in0.getId());
-    }
-    catch (XincoException e)
-    {
+    } catch (XincoException e) {
       return false;
     }
   }
-  //TODO: Add a set setting method
+  // TODO: Add a set setting method
 }

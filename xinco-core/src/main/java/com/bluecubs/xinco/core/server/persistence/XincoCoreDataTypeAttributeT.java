@@ -16,13 +16,13 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoCoreDataTypeAttributeT
- * 
+ *
  * Description: Audit Trail Table
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Nov 29, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
@@ -33,137 +33,164 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
 @Table(name = "xinco_core_data_type_attribute_t")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findAll", query = "SELECT x FROM XincoCoreDataTypeAttributeT x"),
-    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByRecordId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.recordId = :recordId"),
-    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
-    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attributeId = :attributeId"),
-    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.designation = :designation"),
-    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.dataType = :dataType"),
-    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attrSize = :attrSize")})
+  @NamedQuery(
+      name = "XincoCoreDataTypeAttributeT.findAll",
+      query = "SELECT x FROM XincoCoreDataTypeAttributeT x"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeAttributeT.findByRecordId",
+      query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.recordId = :recordId"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeAttributeT.findByXincoCoreDataTypeId",
+      query =
+          "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeAttributeT.findByAttributeId",
+      query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attributeId = :attributeId"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeAttributeT.findByDesignation",
+      query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.designation = :designation"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeAttributeT.findByDataType",
+      query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.dataType = :dataType"),
+  @NamedQuery(
+      name = "XincoCoreDataTypeAttributeT.findByAttrSize",
+      query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attrSize = :attrSize")
+})
 public class XincoCoreDataTypeAttributeT implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "record_id")
-    private Integer recordId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "xinco_core_data_type_id")
-    private int xincoCoreDataTypeId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "attribute_id")
-    private int attributeId;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "designation")
-    private String designation;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "data_type")
-    private String dataType;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "attr_size")
-    private int attrSize;
+  private static final long serialVersionUID = 1L;
 
-    public XincoCoreDataTypeAttributeT() {
-    }
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "record_id")
+  private Integer recordId;
 
-    public XincoCoreDataTypeAttributeT(Integer recordId) {
-        this.recordId = recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "xinco_core_data_type_id")
+  private int xincoCoreDataTypeId;
 
-    public XincoCoreDataTypeAttributeT(Integer recordId, int xincoCoreDataTypeId, int attributeId, String designation, String dataType, int attrSize) {
-        this.recordId = recordId;
-        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
-        this.attributeId = attributeId;
-        this.designation = designation;
-        this.dataType = dataType;
-        this.attrSize = attrSize;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attribute_id")
+  private int attributeId;
 
-    public Integer getRecordId() {
-        return recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "designation")
+  private String designation;
 
-    public void setRecordId(Integer recordId) {
-        this.recordId = recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "data_type")
+  private String dataType;
 
-    public int getXincoCoreDataTypeId() {
-        return xincoCoreDataTypeId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attr_size")
+  private int attrSize;
 
-    public void setXincoCoreDataTypeId(int xincoCoreDataTypeId) {
-        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
-    }
+  public XincoCoreDataTypeAttributeT() {}
 
-    public int getAttributeId() {
-        return attributeId;
-    }
+  public XincoCoreDataTypeAttributeT(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public void setAttributeId(int attributeId) {
-        this.attributeId = attributeId;
-    }
+  public XincoCoreDataTypeAttributeT(
+      Integer recordId,
+      int xincoCoreDataTypeId,
+      int attributeId,
+      String designation,
+      String dataType,
+      int attrSize) {
+    this.recordId = recordId;
+    this.xincoCoreDataTypeId = xincoCoreDataTypeId;
+    this.attributeId = attributeId;
+    this.designation = designation;
+    this.dataType = dataType;
+    this.attrSize = attrSize;
+  }
 
-    public String getDesignation() {
-        return designation;
-    }
+  public Integer getRecordId() {
+    return recordId;
+  }
 
-    public void setDesignation(String designation) {
-        this.designation = designation;
-    }
+  public void setRecordId(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public String getDataType() {
-        return dataType;
-    }
+  public int getXincoCoreDataTypeId() {
+    return xincoCoreDataTypeId;
+  }
 
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
+  public void setXincoCoreDataTypeId(int xincoCoreDataTypeId) {
+    this.xincoCoreDataTypeId = xincoCoreDataTypeId;
+  }
 
-    public int getAttrSize() {
-        return attrSize;
-    }
+  public int getAttributeId() {
+    return attributeId;
+  }
 
-    public void setAttrSize(int attrSize) {
-        this.attrSize = attrSize;
-    }
+  public void setAttributeId(int attributeId) {
+    this.attributeId = attributeId;
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (recordId != null ? recordId.hashCode() : 0);
-        return hash;
-    }
+  public String getDesignation() {
+    return designation;
+  }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof XincoCoreDataTypeAttributeT)) {
-            return false;
-        }
-        XincoCoreDataTypeAttributeT other = (XincoCoreDataTypeAttributeT) object;
-        if ((this.recordId == null && other.recordId != null) || (this.recordId != null && !this.recordId.equals(other.recordId))) {
-            return false;
-        }
-        return true;
-    }
+  public void setDesignation(String designation) {
+    this.designation = designation;
+  }
 
-    @Override
-    public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributeT[ recordId=" + recordId + " ]";
+  public String getDataType() {
+    return dataType;
+  }
+
+  public void setDataType(String dataType) {
+    this.dataType = dataType;
+  }
+
+  public int getAttrSize() {
+    return attrSize;
+  }
+
+  public void setAttrSize(int attrSize) {
+    this.attrSize = attrSize;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (recordId != null ? recordId.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof XincoCoreDataTypeAttributeT)) {
+      return false;
     }
+    XincoCoreDataTypeAttributeT other = (XincoCoreDataTypeAttributeT) object;
+    if ((this.recordId == null && other.recordId != null)
+        || (this.recordId != null && !this.recordId.equals(other.recordId))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributeT[ recordId="
+        + recordId
+        + " ]";
+  }
 }

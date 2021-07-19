@@ -16,13 +16,13 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoCoreDataHasDependencyT
- * 
+ *
  * Description: Table entity
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Nov 29, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
@@ -32,107 +32,128 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
 @Table(name = "xinco_core_data_has_dependency_t")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreDataHasDependencyT.findAll", query = "SELECT x FROM XincoCoreDataHasDependencyT x"),
-    @NamedQuery(name = "XincoCoreDataHasDependencyT.findByRecordId", query = "SELECT x FROM XincoCoreDataHasDependencyT x WHERE x.recordId = :recordId"),
-    @NamedQuery(name = "XincoCoreDataHasDependencyT.findByXincoCoreDataParentId", query = "SELECT x FROM XincoCoreDataHasDependencyT x WHERE x.xincoCoreDataParentId = :xincoCoreDataParentId"),
-    @NamedQuery(name = "XincoCoreDataHasDependencyT.findByXincoCoreDataChildrenId", query = "SELECT x FROM XincoCoreDataHasDependencyT x WHERE x.xincoCoreDataChildrenId = :xincoCoreDataChildrenId"),
-    @NamedQuery(name = "XincoCoreDataHasDependencyT.findByDependencyTypeId", query = "SELECT x FROM XincoCoreDataHasDependencyT x WHERE x.dependencyTypeId = :dependencyTypeId")})
+  @NamedQuery(
+      name = "XincoCoreDataHasDependencyT.findAll",
+      query = "SELECT x FROM XincoCoreDataHasDependencyT x"),
+  @NamedQuery(
+      name = "XincoCoreDataHasDependencyT.findByRecordId",
+      query = "SELECT x FROM XincoCoreDataHasDependencyT x WHERE x.recordId = :recordId"),
+  @NamedQuery(
+      name = "XincoCoreDataHasDependencyT.findByXincoCoreDataParentId",
+      query =
+          "SELECT x FROM XincoCoreDataHasDependencyT x WHERE x.xincoCoreDataParentId = :xincoCoreDataParentId"),
+  @NamedQuery(
+      name = "XincoCoreDataHasDependencyT.findByXincoCoreDataChildrenId",
+      query =
+          "SELECT x FROM XincoCoreDataHasDependencyT x WHERE x.xincoCoreDataChildrenId = :xincoCoreDataChildrenId"),
+  @NamedQuery(
+      name = "XincoCoreDataHasDependencyT.findByDependencyTypeId",
+      query =
+          "SELECT x FROM XincoCoreDataHasDependencyT x WHERE x.dependencyTypeId = :dependencyTypeId")
+})
 public class XincoCoreDataHasDependencyT implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "record_id")
-    private Integer recordId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "xinco_core_data_parent_id")
-    private int xincoCoreDataParentId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "xinco_core_data_children_id")
-    private int xincoCoreDataChildrenId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "dependency_type_id")
-    private int dependencyTypeId;
+  private static final long serialVersionUID = 1L;
 
-    public XincoCoreDataHasDependencyT() {
-    }
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "record_id")
+  private Integer recordId;
 
-    public XincoCoreDataHasDependencyT(Integer recordId) {
-        this.recordId = recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "xinco_core_data_parent_id")
+  private int xincoCoreDataParentId;
 
-    public XincoCoreDataHasDependencyT(Integer recordId, int xincoCoreDataParentId, int xincoCoreDataChildrenId, int dependencyTypeId) {
-        this.recordId = recordId;
-        this.xincoCoreDataParentId = xincoCoreDataParentId;
-        this.xincoCoreDataChildrenId = xincoCoreDataChildrenId;
-        this.dependencyTypeId = dependencyTypeId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "xinco_core_data_children_id")
+  private int xincoCoreDataChildrenId;
 
-    public Integer getRecordId() {
-        return recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "dependency_type_id")
+  private int dependencyTypeId;
 
-    public void setRecordId(Integer recordId) {
-        this.recordId = recordId;
-    }
+  public XincoCoreDataHasDependencyT() {}
 
-    public int getXincoCoreDataParentId() {
-        return xincoCoreDataParentId;
-    }
+  public XincoCoreDataHasDependencyT(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public void setXincoCoreDataParentId(int xincoCoreDataParentId) {
-        this.xincoCoreDataParentId = xincoCoreDataParentId;
-    }
+  public XincoCoreDataHasDependencyT(
+      Integer recordId,
+      int xincoCoreDataParentId,
+      int xincoCoreDataChildrenId,
+      int dependencyTypeId) {
+    this.recordId = recordId;
+    this.xincoCoreDataParentId = xincoCoreDataParentId;
+    this.xincoCoreDataChildrenId = xincoCoreDataChildrenId;
+    this.dependencyTypeId = dependencyTypeId;
+  }
 
-    public int getXincoCoreDataChildrenId() {
-        return xincoCoreDataChildrenId;
-    }
+  public Integer getRecordId() {
+    return recordId;
+  }
 
-    public void setXincoCoreDataChildrenId(int xincoCoreDataChildrenId) {
-        this.xincoCoreDataChildrenId = xincoCoreDataChildrenId;
-    }
+  public void setRecordId(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public int getDependencyTypeId() {
-        return dependencyTypeId;
-    }
+  public int getXincoCoreDataParentId() {
+    return xincoCoreDataParentId;
+  }
 
-    public void setDependencyTypeId(int dependencyTypeId) {
-        this.dependencyTypeId = dependencyTypeId;
-    }
+  public void setXincoCoreDataParentId(int xincoCoreDataParentId) {
+    this.xincoCoreDataParentId = xincoCoreDataParentId;
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (recordId != null ? recordId.hashCode() : 0);
-        return hash;
-    }
+  public int getXincoCoreDataChildrenId() {
+    return xincoCoreDataChildrenId;
+  }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof XincoCoreDataHasDependencyT)) {
-            return false;
-        }
-        XincoCoreDataHasDependencyT other = (XincoCoreDataHasDependencyT) object;
-        if ((this.recordId == null && other.recordId != null) || (this.recordId != null && !this.recordId.equals(other.recordId))) {
-            return false;
-        }
-        return true;
-    }
+  public void setXincoCoreDataChildrenId(int xincoCoreDataChildrenId) {
+    this.xincoCoreDataChildrenId = xincoCoreDataChildrenId;
+  }
 
-    @Override
-    public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyT[ recordId=" + recordId + " ]";
+  public int getDependencyTypeId() {
+    return dependencyTypeId;
+  }
+
+  public void setDependencyTypeId(int dependencyTypeId) {
+    this.dependencyTypeId = dependencyTypeId;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (recordId != null ? recordId.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof XincoCoreDataHasDependencyT)) {
+      return false;
     }
+    XincoCoreDataHasDependencyT other = (XincoCoreDataHasDependencyT) object;
+    if ((this.recordId == null && other.recordId != null)
+        || (this.recordId != null && !this.recordId.equals(other.recordId))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyT[ recordId="
+        + recordId
+        + " ]";
+  }
 }

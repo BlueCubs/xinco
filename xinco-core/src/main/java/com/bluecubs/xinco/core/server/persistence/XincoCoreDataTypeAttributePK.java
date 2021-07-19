@@ -16,13 +16,13 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoCoreDataTypeAttributePK
- * 
+ *
  * Description: Audit Trail Table
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Nov 29, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
@@ -33,71 +33,72 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Embeddable
 public class XincoCoreDataTypeAttributePK implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "xinco_core_data_type_id")
-    private int xincoCoreDataTypeId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "attribute_id")
-    private int attributeId;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "xinco_core_data_type_id")
+  private int xincoCoreDataTypeId;
 
-    public XincoCoreDataTypeAttributePK() {
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attribute_id")
+  private int attributeId;
 
-    public XincoCoreDataTypeAttributePK(int xincoCoreDataTypeId, int attributeId) {
-        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
-        this.attributeId = attributeId;
-    }
+  public XincoCoreDataTypeAttributePK() {}
 
-    public int getXincoCoreDataTypeId() {
-        return xincoCoreDataTypeId;
-    }
+  public XincoCoreDataTypeAttributePK(int xincoCoreDataTypeId, int attributeId) {
+    this.xincoCoreDataTypeId = xincoCoreDataTypeId;
+    this.attributeId = attributeId;
+  }
 
-    public void setXincoCoreDataTypeId(int xincoCoreDataTypeId) {
-        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
-    }
+  public int getXincoCoreDataTypeId() {
+    return xincoCoreDataTypeId;
+  }
 
-    public int getAttributeId() {
-        return attributeId;
-    }
+  public void setXincoCoreDataTypeId(int xincoCoreDataTypeId) {
+    this.xincoCoreDataTypeId = xincoCoreDataTypeId;
+  }
 
-    public void setAttributeId(int attributeId) {
-        this.attributeId = attributeId;
-    }
+  public int getAttributeId() {
+    return attributeId;
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (int) xincoCoreDataTypeId;
-        hash += (int) attributeId;
-        return hash;
-    }
+  public void setAttributeId(int attributeId) {
+    this.attributeId = attributeId;
+  }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof XincoCoreDataTypeAttributePK)) {
-            return false;
-        }
-        XincoCoreDataTypeAttributePK other = (XincoCoreDataTypeAttributePK) object;
-        if (this.xincoCoreDataTypeId != other.xincoCoreDataTypeId) {
-            return false;
-        }
-        if (this.attributeId != other.attributeId) {
-            return false;
-        }
-        return true;
-    }
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (int) xincoCoreDataTypeId;
+    hash += (int) attributeId;
+    return hash;
+  }
 
-    @Override
-    public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK[ xincoCoreDataTypeId=" + xincoCoreDataTypeId + ", attributeId=" + attributeId + " ]";
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof XincoCoreDataTypeAttributePK)) {
+      return false;
     }
+    XincoCoreDataTypeAttributePK other = (XincoCoreDataTypeAttributePK) object;
+    if (this.xincoCoreDataTypeId != other.xincoCoreDataTypeId) {
+      return false;
+    }
+    if (this.attributeId != other.attributeId) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK[ xincoCoreDataTypeId="
+        + xincoCoreDataTypeId
+        + ", attributeId="
+        + attributeId
+        + " ]";
+  }
 }

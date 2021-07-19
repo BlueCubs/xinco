@@ -16,20 +16,21 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoIndexGenericFile
- * 
+ *
  * Description: Generic file extractor
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Jan 3, 2012
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.index.filetypes;
 
-import java.io.*;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
+
+import java.io.*;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
@@ -38,33 +39,30 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.WriteOutContentHandler;
 import org.xml.sax.SAXException;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoIndexGenericFile implements XincoIndexFileType {
 
-    @Override
-    public Reader getFileContentReader(File f) {
-        return null;
-    }
+  @Override
+  public Reader getFileContentReader(File f) {
+    return null;
+  }
 
-    @Override
-    public String getFileContentString(File f) {
-        String result;
-        try {
-            Parser parser = new AutoDetectParser();
-            Metadata metadata = new Metadata();
-            StringWriter writer = new StringWriter();
-            try (FileInputStream fis = new FileInputStream(f)) {
-                WriteOutContentHandler woch = new WriteOutContentHandler(writer);
-                parser.parse(fis, woch, metadata, new ParseContext());
-                result = writer.toString();
-            }
-        } catch (IOException | SAXException | TikaException ex) {
-            getLogger(XincoIndexGenericFile.class.getName()).log(SEVERE, null, ex);
-            result = null;
-        }
-        return result;
+  @Override
+  public String getFileContentString(File f) {
+    String result;
+    try {
+      Parser parser = new AutoDetectParser();
+      Metadata metadata = new Metadata();
+      StringWriter writer = new StringWriter();
+      try (FileInputStream fis = new FileInputStream(f)) {
+        WriteOutContentHandler woch = new WriteOutContentHandler(writer);
+        parser.parse(fis, woch, metadata, new ParseContext());
+        result = writer.toString();
+      }
+    } catch (IOException | SAXException | TikaException ex) {
+      getLogger(XincoIndexGenericFile.class.getName()).log(SEVERE, null, ex);
+      result = null;
     }
+    return result;
+  }
 }

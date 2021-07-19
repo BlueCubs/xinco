@@ -28,26 +28,24 @@
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
+
 import com.vaadin.ui.DefaultFieldFactory;
 
-/**
- *
- * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoSettingFieldFactory extends DefaultFieldFactory {
 
-    /**
-     * If name follows method naming conventions, convert the name to spaced
-     * upper case text. For example, convert "firstName" to "First Name"
-     *
-     * @param propertyId property id to use
-     * @return the formatted caption string
-     */
-    public static String createCaptionByPropertyId(Object propertyId) {
-        String name = propertyId.toString();
-        if (name.length() > 0 && "description".equals(name)) {
-            name = getInstance().getResource().getString("general.description");
-        }
-        return name;
+  /**
+   * If name follows method naming conventions, convert the name to spaced upper case text. For
+   * example, convert "firstName" to "First Name"
+   *
+   * @param propertyId property id to use
+   * @return the formatted caption string
+   */
+  public static String createCaptionByPropertyId(Object propertyId) {
+    String name = propertyId.toString();
+    if (name.length() > 0 && "description".equals(name)) {
+      name = getInstance().getResource().getString("general.description");
     }
+    return name;
+  }
 }
