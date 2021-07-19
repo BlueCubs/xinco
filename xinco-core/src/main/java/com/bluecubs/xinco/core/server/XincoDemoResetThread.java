@@ -16,13 +16,13 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoDemoResetThread
- * 
+ *
  * Description: Thread in charge of resseting the database (for demo purposes only)
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Dec 16, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server;
@@ -35,41 +35,30 @@ import static java.util.logging.Logger.getLogger;
 
 import java.util.logging.Logger;
 
-/**
- *
- * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
- */
-public class XincoDemoResetThread extends Thread
-{
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+public class XincoDemoResetThread extends Thread {
 
   public static XincoDemoResetThread instance = null;
-  public long reset_period = 86_400_000; //Daily
+  public long reset_period = 86_400_000; // Daily
   private static final Logger LOG = getLogger(XincoDemoResetThread.class.getName());
 
   @Override
-  public void run()
-  {
-    while (true)
-    {
+  public void run() {
+    while (true) {
       reset_period = getDemoResetPeriod();
-      if (reset_period > 0)
-      {
-        try
-        {
+      if (reset_period > 0) {
+        try {
           sleep(reset_period);
-        }
-        catch (InterruptedException se)
-        {
+        } catch (InterruptedException se) {
           break;
         }
-        //Check again this is a demo environment, just in case
-        if (isDemo())
-        {
+        // Check again this is a demo environment, just in case
+        if (isDemo()) {
           LOG.warning("Dropping tables...");
           nativeQuery("DROP ALL OBJECTS");
           LOG.warning("Done!");
         }
-        //Reload the database
+        // Reload the database
         LOG.warning("Reloading DB...");
         reload(true);
         LOG.warning("Done!");
@@ -77,16 +66,12 @@ public class XincoDemoResetThread extends Thread
     }
   }
 
-  public static XincoDemoResetThread getInstance()
-  {
-    if (instance == null)
-    {
+  public static XincoDemoResetThread getInstance() {
+    if (instance == null) {
       instance = new XincoDemoResetThread();
     }
     return instance;
   }
 
-  private XincoDemoResetThread()
-  {
-  }
+  private XincoDemoResetThread() {}
 }

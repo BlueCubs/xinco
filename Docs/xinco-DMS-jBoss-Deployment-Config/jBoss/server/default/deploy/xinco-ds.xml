@@ -1,45 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
 <datasources>
-   <local-tx-datasource>
-
-      <!-- The jndi name of the DataSource, it is prefixed with java:/ -->
-      <!-- Datasources are not available outside the virtual machine -->
-      <jndi-name>XincoDS</jndi-name>
-
-      <connection-url>jdbc:mysql://localhost:3306/xinco?autoReconnect=true</connection-url>
-      <!--<connection-url>jdbc:postgresql://localhost:5432/xinco</connection-url>-->
-
-      <!-- The driver class -->
-      <driver-class>com.mysql.jdbc.Driver</driver-class>
-      <!--<driver-class>org.postgresql.Driver</driver-class>-->
-
-      <!-- The factory class -->
-      <factory>org.apache.commons.dbcp.BasicDataSourceFactory</factory>
-
-      <!-- The login and password -->
-      <user-name>root</user-name>
-      <password></password>
-
-      <!-- The minimum connections in a pool/sub-pool. Pools are lazily constructed on first use -->
-      <min-pool-size>5</min-pool-size>
-
-      <!-- The maximum connections in a pool/sub-pool -->
-      <max-pool-size>20</max-pool-size>
-
-      <!-- The time before an unused connection is destroyed -->
-      <!-- NOTE: This is the check period. It will be destroyed somewhere between 1x and 2x this timeout after last use -->
-      <idle-timeout-minutes>0</idle-timeout-minutes>
-
-      <!-- Whether to check all statements are closed when the connection is returned to the pool,
+  <local-tx-datasource>
+    <!-- The jndi name of the DataSource, it is prefixed with java:/ -->
+    <!-- Datasources are not available outside the virtual machine -->
+    <jndi-name>XincoDS</jndi-name>
+    <connection-url>jdbc:mysql://localhost:3306/xinco?autoReconnect=true</connection-url>
+    <!--<connection-url>jdbc:postgresql://localhost:5432/xinco</connection-url>-->
+    <!-- The driver class -->
+    <driver-class>com.mysql.jdbc.Driver</driver-class>
+    <!--<driver-class>org.postgresql.Driver</driver-class>-->
+    <!-- The factory class -->
+    <factory>org.apache.commons.dbcp.BasicDataSourceFactory</factory>
+    <!-- The login and password -->
+    <user-name>root</user-name>
+    <password/>
+    <!-- The minimum connections in a pool/sub-pool. Pools are lazily constructed on first use -->
+    <min-pool-size>5</min-pool-size>
+    <!-- The maximum connections in a pool/sub-pool -->
+    <max-pool-size>20</max-pool-size>
+    <!-- The time before an unused connection is destroyed -->
+    <!-- NOTE: This is the check period. It will be destroyed somewhere between 1x and 2x this timeout after last use -->
+    <idle-timeout-minutes>0</idle-timeout-minutes>
+    <!-- Whether to check all statements are closed when the connection is returned to the pool,
            this is a debugging feature that should be turned off in production -->
-      <track-statements/>
-
-      <!-- Use the getConnection(user, pw) for logins
+    <track-statements/>
+    <!-- Use the getConnection(user, pw) for logins
         <application-managed-security/>
       -->
-
-   </local-tx-datasource>
-
+  </local-tx-datasource>
 </datasources>

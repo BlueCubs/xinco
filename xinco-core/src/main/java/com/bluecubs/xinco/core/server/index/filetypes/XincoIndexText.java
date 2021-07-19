@@ -1,81 +1,78 @@
 /**
  * Copyright 2005 blueCubs.com
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  *
- *************************************************************
- * This project supports the blueCubs vision of giving back to the community in
- * exchange for free software! More information on: http://www.bluecubs.org
- * ************************************************************
+ * <p>************************************************************ This project supports the
+ * blueCubs vision of giving back to the community in exchange for free software! More information
+ * on: http://www.bluecubs.org ************************************************************
  *
- * Name: XincoIndexText
+ * <p>Name: XincoIndexText
  *
- * Description: indexing text files
+ * <p>Description: indexing text files
  *
- * Original Author: Alexander Manes Date: 2005/02/05
+ * <p>Original Author: Alexander Manes Date: 2005/02/05
  *
- * Modifications:
+ * <p>Modifications:
  *
- * Who? When? What? - - -
+ * <p>Who? When? What? - - -
  *
- *************************************************************
+ * <p>************************************************************
  */
 package com.bluecubs.xinco.core.server.index.filetypes;
 
-import java.io.*;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
+
+import java.io.*;
+import java.util.logging.Logger;
 
 public class XincoIndexText implements XincoIndexFileType {
 
-    private static final Logger logger =
-            getLogger(XincoIndexText.class.getSimpleName());
+  private static final Logger logger = getLogger(XincoIndexText.class.getSimpleName());
 
-    public XincoIndexText() {
-        super();
-    }
+  public XincoIndexText() {
+    super();
+  }
 
-    @Override
-    public Reader getFileContentReader(File f) {
-        Reader reader = null;
-        FileInputStream is = null;
+  @Override
+  public Reader getFileContentReader(File f) {
+    Reader reader = null;
+    FileInputStream is = null;
+    try {
+      is = new FileInputStream(f);
+      reader = new BufferedReader(new InputStreamReader(is));
+    } catch (FileNotFoundException fe) {
+      logger.log(SEVERE, null, fe);
+      if (reader != null) {
         try {
-            is = new FileInputStream(f);
-            reader = new BufferedReader(new InputStreamReader(is));
-        } catch (FileNotFoundException fe) {
-            logger.log(SEVERE, null, fe);
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException re) {
-                    logger.log(SEVERE, null, re);
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ise) {
-                    logger.log(SEVERE, null, ise);
-                }
-            }
-            reader = null;
+          reader.close();
+        } catch (IOException re) {
+          logger.log(SEVERE, null, re);
         }
-        return reader;
+      }
+      if (is != null) {
+        try {
+          is.close();
+        } catch (IOException ise) {
+          logger.log(SEVERE, null, ise);
+        }
+      }
+      reader = null;
     }
+    return reader;
+  }
 
-    @Override
-    public String getFileContentString(File f) {
-        return null;
-    }
+  @Override
+  public String getFileContentString(File f) {
+    return null;
+  }
 }

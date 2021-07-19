@@ -1,58 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
-    <action>
-        <actionName>build</actionName>
-        <goals>
-            <goal>install</goal>
-        </goals>
-    </action>
-    <action>
-        <actionName>CUSTOM-Generate Webservice</actionName>
-        <displayName>Generate Webservice</displayName>
-        <goals>
-            <goal>jaxws:wsimport</goal>
-        </goals>
-    </action>
-    <action>
-        <actionName>CUSTOM-Get Sources and Javadoc</actionName>
-        <displayName>Get Sources and Javadoc</displayName>
-        <goals>
-            <goal>dependency:sources</goal>
-            <goal>dependency:resolve</goal>
-            <goal>-Dclassifier=javadoc</goal>
-        </goals>
-    </action>
-    <action>
-        <actionName>CUSTOM-Generate Site</actionName>
-        <displayName>Generate Site</displayName>
-        <goals>
-            <goal>clean</goal>
-            <goal>site</goal>
-            
-        </goals>
-    </action>
-    <action>
-            <actionName>CUSTOM-Prepare Release</actionName>
-            <displayName>Prepare Release</displayName>
-            <goals>
-                <goal>release:prepare</goal>
-            </goals>
-        </action>
-    <action>
-            <actionName>CUSTOM-Perform Release</actionName>
-            <displayName>Perform Release</displayName>
-            <goals>
-                <goal>release:perform</goal>
-            </goals>
-        </action>
-    <action>
-        <actionName>CUSTOM-Update Widgetset</actionName>
-        <displayName>Update Widgetset</displayName>
-        <goals>
-            <goal>clean:clean</goal>
-            <goal>gwt:clean</goal>
-            <goal>vaadin:update-widgetset</goal>
-            <goal>gwt:compile</goal>  
-        </goals>
-    </action>
+  <action>
+    <actionName>build</actionName>
+    <goals>
+      <goal>install</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-Generate Webservice</actionName>
+    <displayName>Generate Webservice</displayName>
+    <goals>
+      <goal>jaxws:wsimport</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-Get Sources and Javadoc</actionName>
+    <displayName>Get Sources and Javadoc</displayName>
+    <goals>
+      <goal>dependency:sources</goal>
+      <goal>dependency:resolve</goal>
+      <goal>-Dclassifier=javadoc</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-Generate Site</actionName>
+    <displayName>Generate Site</displayName>
+    <goals>
+      <goal>clean</goal>
+      <goal>site</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-Prepare Release</actionName>
+    <displayName>Prepare Release</displayName>
+    <goals>
+      <goal>release:prepare</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-Perform Release</actionName>
+    <displayName>Perform Release</displayName>
+    <goals>
+      <goal>release:perform</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-Update Widgetset</actionName>
+    <displayName>Update Widgetset</displayName>
+    <goals>
+      <goal>clean:clean</goal>
+      <goal>gwt:clean</goal>
+      <goal>vaadin:update-widgetset</goal>
+      <goal>gwt:compile</goal>
+    </goals>
+  </action>
 </actions>

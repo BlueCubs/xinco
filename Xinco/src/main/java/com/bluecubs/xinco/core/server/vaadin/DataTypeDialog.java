@@ -16,63 +16,58 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: DataTypeDialog
- * 
+ *
  * Description: Data Type Dialog
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Jan 26, 2012
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.vaadin;
 
-import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import static com.bluecubs.xinco.core.server.XincoCoreDataTypeServer.getXincoCoreDataTypes;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
+
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 import java.util.Iterator;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 class DataTypeDialog extends CustomComponent {
 
-    private final Select types;
+  private final Select types;
 
-    DataTypeDialog() {
-        types = new Select(getInstance().getResource().getString("window.datatype.datatype") + ":");
-        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getInstance().getResource().getString("window.datatype"));
-        panel.setContent(new VerticalLayout());
-        //Data Type selection
-        for (Iterator it = getXincoCoreDataTypes().iterator(); it.hasNext();) {
-            XincoCoreDataTypeServer type = (XincoCoreDataTypeServer) it.next();
-            String designation = type.getDesignation();
-            if (getInstance().getResource().containsKey(designation)) {
-                String value = getInstance().getResource().getString(designation);
-                types.addItem(type.getId());
-                types.setItemCaption(type.getId(), value);
-            }
-        }
-        panel.addComponent(types);
-        // Set the size as undefined at all levels
-        panel.getContent().setSizeUndefined();
-        panel.setSizeUndefined();
-        setSizeUndefined();
-        // The composition root MUST be set
-        setCompositionRoot(panel);
+  DataTypeDialog() {
+    types = new Select(getInstance().getResource().getString("window.datatype.datatype") + ":");
+    com.vaadin.ui.Panel panel =
+        new com.vaadin.ui.Panel(getInstance().getResource().getString("window.datatype"));
+    panel.setContent(new VerticalLayout());
+    // Data Type selection
+    for (Iterator it = getXincoCoreDataTypes().iterator(); it.hasNext(); ) {
+      XincoCoreDataTypeServer type = (XincoCoreDataTypeServer) it.next();
+      String designation = type.getDesignation();
+      if (getInstance().getResource().containsKey(designation)) {
+        String value = getInstance().getResource().getString(designation);
+        types.addItem(type.getId());
+        types.setItemCaption(type.getId(), value);
+      }
     }
+    panel.addComponent(types);
+    // Set the size as undefined at all levels
+    panel.getContent().setSizeUndefined();
+    panel.setSizeUndefined();
+    setSizeUndefined();
+    // The composition root MUST be set
+    setCompositionRoot(panel);
+  }
 
-    /**
-     * @return the types
-     */
-    /**
-     * @return the types
-     */
-    public Select getTypes() {
-        return types;
-    }
+  /** @return the types */
+  /** @return the types */
+  public Select getTypes() {
+    return types;
+  }
 }

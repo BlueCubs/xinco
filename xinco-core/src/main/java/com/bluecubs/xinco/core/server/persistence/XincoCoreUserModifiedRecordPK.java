@@ -16,94 +16,98 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoCoreUserModifiedRecordPK
- * 
+ *
  * Description: PK JPA class
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Nov 29, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
 
+import static javax.persistence.GenerationType.TABLE;
+
 import java.io.Serializable;
 import javax.persistence.*;
-import static javax.persistence.GenerationType.TABLE;
 import javax.validation.constraints.NotNull;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Embeddable
 public class XincoCoreUserModifiedRecordPK implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
-    @GeneratedValue(strategy = TABLE, generator = "UserModifiedRecordGen")
-    @TableGenerator(name = "UserModifiedRecordGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "xinco_core_user_modified_record",
-    allocationSize = 1,
-    initialValue = 1)
-    private int id;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "record_id")
-    private int recordId;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "id")
+  @GeneratedValue(strategy = TABLE, generator = "UserModifiedRecordGen")
+  @TableGenerator(
+      name = "UserModifiedRecordGen",
+      table = "xinco_id",
+      pkColumnName = "tablename",
+      valueColumnName = "last_id",
+      pkColumnValue = "xinco_core_user_modified_record",
+      allocationSize = 1,
+      initialValue = 1)
+  private int id;
 
-    public XincoCoreUserModifiedRecordPK() {
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "record_id")
+  private int recordId;
 
-    public XincoCoreUserModifiedRecordPK(int id, int recordId) {
-        this.id = id;
-        this.recordId = recordId;
-    }
+  public XincoCoreUserModifiedRecordPK() {}
 
-    public int getId() {
-        return id;
-    }
+  public XincoCoreUserModifiedRecordPK(int id, int recordId) {
+    this.id = id;
+    this.recordId = recordId;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public int getRecordId() {
-        return recordId;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public void setRecordId(int recordId) {
-        this.recordId = recordId;
-    }
+  public int getRecordId() {
+    return recordId;
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (int) id;
-        hash += (int) recordId;
-        return hash;
-    }
+  public void setRecordId(int recordId) {
+    this.recordId = recordId;
+  }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof XincoCoreUserModifiedRecordPK)) {
-            return false;
-        }
-        XincoCoreUserModifiedRecordPK other = (XincoCoreUserModifiedRecordPK) object;
-        if (this.id != other.id) {
-            return false;
-        }
-        if (this.recordId != other.recordId) {
-            return false;
-        }
-        return true;
-    }
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (int) id;
+    hash += (int) recordId;
+    return hash;
+  }
 
-    @Override
-    public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecordPK[ id=" + id + ", recordId=" + recordId + " ]";
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof XincoCoreUserModifiedRecordPK)) {
+      return false;
     }
+    XincoCoreUserModifiedRecordPK other = (XincoCoreUserModifiedRecordPK) object;
+    if (this.id != other.id) {
+      return false;
+    }
+    if (this.recordId != other.recordId) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecordPK[ id="
+        + id
+        + ", recordId="
+        + recordId
+        + " ]";
+  }
 }

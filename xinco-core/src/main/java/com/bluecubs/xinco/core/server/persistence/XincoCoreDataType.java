@@ -16,148 +16,160 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoCoreDataType
- * 
+ *
  * Description: Audit Trail Table
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Nov 29, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.TABLE;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.GenerationType.TABLE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
 @Table(name = "xinco_core_data_type")
 @EntityListeners(AuditedEntityListener.class)
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreDataType.findAll", query = "SELECT x FROM XincoCoreDataType x"),
-    @NamedQuery(name = "XincoCoreDataType.findById", query = "SELECT x FROM XincoCoreDataType x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoCoreDataType.findByDesignation", query = "SELECT x FROM XincoCoreDataType x WHERE x.designation = :designation"),
-    @NamedQuery(name = "XincoCoreDataType.findByDescription", query = "SELECT x FROM XincoCoreDataType x WHERE x.description = :description")})
+  @NamedQuery(name = "XincoCoreDataType.findAll", query = "SELECT x FROM XincoCoreDataType x"),
+  @NamedQuery(
+      name = "XincoCoreDataType.findById",
+      query = "SELECT x FROM XincoCoreDataType x WHERE x.id = :id"),
+  @NamedQuery(
+      name = "XincoCoreDataType.findByDesignation",
+      query = "SELECT x FROM XincoCoreDataType x WHERE x.designation = :designation"),
+  @NamedQuery(
+      name = "XincoCoreDataType.findByDescription",
+      query = "SELECT x FROM XincoCoreDataType x WHERE x.description = :description")
+})
 public class XincoCoreDataType extends XincoAuditedObject implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @GeneratedValue(strategy = TABLE, generator = "XincoCoreDataTypeGen")
-    @TableGenerator(name = "XincoCoreDataTypeGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "xinco_core_data_type",
-    allocationSize = 1,
-    initialValue = 1_000)
-    @Column(name = "id")
-    private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "designation")
-    private String designation;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "description")
-    private String description;
-    @OneToMany(cascade = ALL, mappedBy = "xincoCoreDataType")
-    private List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList;
-    @OneToMany(cascade = ALL, mappedBy = "xincoCoreDataType")
-    private List<XincoCoreData> xincoCoreDataList;
+  private static final long serialVersionUID = 1L;
 
-    public XincoCoreDataType() {
-    }
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @GeneratedValue(strategy = TABLE, generator = "XincoCoreDataTypeGen")
+  @TableGenerator(
+      name = "XincoCoreDataTypeGen",
+      table = "xinco_id",
+      pkColumnName = "tablename",
+      valueColumnName = "last_id",
+      pkColumnValue = "xinco_core_data_type",
+      allocationSize = 1,
+      initialValue = 1_000)
+  @Column(name = "id")
+  private Integer id;
 
-    public XincoCoreDataType(Integer id) {
-        this.id = id;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "designation")
+  private String designation;
 
-    public XincoCoreDataType(Integer id, String designation, String description) {
-        this.id = id;
-        this.designation = designation;
-        this.description = description;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "description")
+  private String description;
 
-    public Integer getId() {
-        return id;
-    }
+  @OneToMany(cascade = ALL, mappedBy = "xincoCoreDataType")
+  private List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @OneToMany(cascade = ALL, mappedBy = "xincoCoreDataType")
+  private List<XincoCoreData> xincoCoreDataList;
 
-    public String getDesignation() {
-        return designation;
-    }
+  public XincoCoreDataType() {}
 
-    public void setDesignation(String designation) {
-        this.designation = designation;
-    }
+  public XincoCoreDataType(Integer id) {
+    this.id = id;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public XincoCoreDataType(Integer id, String designation, String description) {
+    this.id = id;
+    this.designation = designation;
+    this.description = description;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    @XmlTransient
-    public List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttributeList() {
-        return xincoCoreDataTypeAttributeList;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setXincoCoreDataTypeAttributeList(List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList) {
-        this.xincoCoreDataTypeAttributeList = xincoCoreDataTypeAttributeList;
-    }
+  public String getDesignation() {
+    return designation;
+  }
 
-    @XmlTransient
-    public List<XincoCoreData> getXincoCoreDataList() {
-        return xincoCoreDataList;
-    }
+  public void setDesignation(String designation) {
+    this.designation = designation;
+  }
 
-    public void setXincoCoreDataList(List<XincoCoreData> xincoCoreDataList) {
-        this.xincoCoreDataList = xincoCoreDataList;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof XincoCoreDataType)) {
-            return false;
-        }
-        XincoCoreDataType other = (XincoCoreDataType) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
+  @XmlTransient
+  public List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttributeList() {
+    return xincoCoreDataTypeAttributeList;
+  }
 
-    @Override
-    public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataType[ id=" + id + " ]";
+  public void setXincoCoreDataTypeAttributeList(
+      List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList) {
+    this.xincoCoreDataTypeAttributeList = xincoCoreDataTypeAttributeList;
+  }
+
+  @XmlTransient
+  public List<XincoCoreData> getXincoCoreDataList() {
+    return xincoCoreDataList;
+  }
+
+  public void setXincoCoreDataList(List<XincoCoreData> xincoCoreDataList) {
+    this.xincoCoreDataList = xincoCoreDataList;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (id != null ? id.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof XincoCoreDataType)) {
+      return false;
     }
+    XincoCoreDataType other = (XincoCoreDataType) object;
+    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataType[ id=" + id + " ]";
+  }
 }

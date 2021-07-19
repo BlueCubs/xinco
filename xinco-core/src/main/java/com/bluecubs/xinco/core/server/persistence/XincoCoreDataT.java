@@ -16,13 +16,13 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoCoreDataT
- * 
+ *
  * Description: Audit Trail Table
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Nov 29, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
@@ -33,150 +33,176 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
 @Table(name = "xinco_core_data_t")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreDataT.findAll", query = "SELECT x FROM XincoCoreDataT x"),
-    @NamedQuery(name = "XincoCoreDataT.findByRecordId", query = "SELECT x FROM XincoCoreDataT x WHERE x.recordId = :recordId"),
-    @NamedQuery(name = "XincoCoreDataT.findById", query = "SELECT x FROM XincoCoreDataT x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoCoreDataT.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"),
-    @NamedQuery(name = "XincoCoreDataT.findByXincoCoreLanguageId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"),
-    @NamedQuery(name = "XincoCoreDataT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
-    @NamedQuery(name = "XincoCoreDataT.findByDesignation", query = "SELECT x FROM XincoCoreDataT x WHERE x.designation = :designation"),
-    @NamedQuery(name = "XincoCoreDataT.findByStatusNumber", query = "SELECT x FROM XincoCoreDataT x WHERE x.statusNumber = :statusNumber")})
+  @NamedQuery(name = "XincoCoreDataT.findAll", query = "SELECT x FROM XincoCoreDataT x"),
+  @NamedQuery(
+      name = "XincoCoreDataT.findByRecordId",
+      query = "SELECT x FROM XincoCoreDataT x WHERE x.recordId = :recordId"),
+  @NamedQuery(
+      name = "XincoCoreDataT.findById",
+      query = "SELECT x FROM XincoCoreDataT x WHERE x.id = :id"),
+  @NamedQuery(
+      name = "XincoCoreDataT.findByXincoCoreNodeId",
+      query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"),
+  @NamedQuery(
+      name = "XincoCoreDataT.findByXincoCoreLanguageId",
+      query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"),
+  @NamedQuery(
+      name = "XincoCoreDataT.findByXincoCoreDataTypeId",
+      query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+  @NamedQuery(
+      name = "XincoCoreDataT.findByDesignation",
+      query = "SELECT x FROM XincoCoreDataT x WHERE x.designation = :designation"),
+  @NamedQuery(
+      name = "XincoCoreDataT.findByStatusNumber",
+      query = "SELECT x FROM XincoCoreDataT x WHERE x.statusNumber = :statusNumber")
+})
 public class XincoCoreDataT implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "record_id")
-    private Integer recordId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
-    private int id;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "xinco_core_node_id")
-    private int xincoCoreNodeId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "xinco_core_language_id")
-    private int xincoCoreLanguageId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "xinco_core_data_type_id")
-    private int xincoCoreDataTypeId;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "designation")
-    private String designation;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "status_number")
-    private int statusNumber;
+  private static final long serialVersionUID = 1L;
 
-    public XincoCoreDataT() {
-    }
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "record_id")
+  private Integer recordId;
 
-    public XincoCoreDataT(Integer recordId) {
-        this.recordId = recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "id")
+  private int id;
 
-    public XincoCoreDataT(Integer recordId, int id, int xincoCoreNodeId, int xincoCoreLanguageId, int xincoCoreDataTypeId, String designation, int statusNumber) {
-        this.recordId = recordId;
-        this.id = id;
-        this.xincoCoreNodeId = xincoCoreNodeId;
-        this.xincoCoreLanguageId = xincoCoreLanguageId;
-        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
-        this.designation = designation;
-        this.statusNumber = statusNumber;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "xinco_core_node_id")
+  private int xincoCoreNodeId;
 
-    public Integer getRecordId() {
-        return recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "xinco_core_language_id")
+  private int xincoCoreLanguageId;
 
-    public void setRecordId(Integer recordId) {
-        this.recordId = recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "xinco_core_data_type_id")
+  private int xincoCoreDataTypeId;
 
-    public int getId() {
-        return id;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "designation")
+  private String designation;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "status_number")
+  private int statusNumber;
 
-    public int getXincoCoreNodeId() {
-        return xincoCoreNodeId;
-    }
+  public XincoCoreDataT() {}
 
-    public void setXincoCoreNodeId(int xincoCoreNodeId) {
-        this.xincoCoreNodeId = xincoCoreNodeId;
-    }
+  public XincoCoreDataT(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public int getXincoCoreLanguageId() {
-        return xincoCoreLanguageId;
-    }
+  public XincoCoreDataT(
+      Integer recordId,
+      int id,
+      int xincoCoreNodeId,
+      int xincoCoreLanguageId,
+      int xincoCoreDataTypeId,
+      String designation,
+      int statusNumber) {
+    this.recordId = recordId;
+    this.id = id;
+    this.xincoCoreNodeId = xincoCoreNodeId;
+    this.xincoCoreLanguageId = xincoCoreLanguageId;
+    this.xincoCoreDataTypeId = xincoCoreDataTypeId;
+    this.designation = designation;
+    this.statusNumber = statusNumber;
+  }
 
-    public void setXincoCoreLanguageId(int xincoCoreLanguageId) {
-        this.xincoCoreLanguageId = xincoCoreLanguageId;
-    }
+  public Integer getRecordId() {
+    return recordId;
+  }
 
-    public int getXincoCoreDataTypeId() {
-        return xincoCoreDataTypeId;
-    }
+  public void setRecordId(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public void setXincoCoreDataTypeId(int xincoCoreDataTypeId) {
-        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public String getDesignation() {
-        return designation;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public void setDesignation(String designation) {
-        this.designation = designation;
-    }
+  public int getXincoCoreNodeId() {
+    return xincoCoreNodeId;
+  }
 
-    public int getStatusNumber() {
-        return statusNumber;
-    }
+  public void setXincoCoreNodeId(int xincoCoreNodeId) {
+    this.xincoCoreNodeId = xincoCoreNodeId;
+  }
 
-    public void setStatusNumber(int statusNumber) {
-        this.statusNumber = statusNumber;
-    }
+  public int getXincoCoreLanguageId() {
+    return xincoCoreLanguageId;
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (recordId != null ? recordId.hashCode() : 0);
-        return hash;
-    }
+  public void setXincoCoreLanguageId(int xincoCoreLanguageId) {
+    this.xincoCoreLanguageId = xincoCoreLanguageId;
+  }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof XincoCoreDataT)) {
-            return false;
-        }
-        XincoCoreDataT other = (XincoCoreDataT) object;
-        if ((this.recordId == null && other.recordId != null) || (this.recordId != null && !this.recordId.equals(other.recordId))) {
-            return false;
-        }
-        return true;
-    }
+  public int getXincoCoreDataTypeId() {
+    return xincoCoreDataTypeId;
+  }
 
-    @Override
-    public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataT[ recordId=" + recordId + " ]";
+  public void setXincoCoreDataTypeId(int xincoCoreDataTypeId) {
+    this.xincoCoreDataTypeId = xincoCoreDataTypeId;
+  }
+
+  public String getDesignation() {
+    return designation;
+  }
+
+  public void setDesignation(String designation) {
+    this.designation = designation;
+  }
+
+  public int getStatusNumber() {
+    return statusNumber;
+  }
+
+  public void setStatusNumber(int statusNumber) {
+    this.statusNumber = statusNumber;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (recordId != null ? recordId.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof XincoCoreDataT)) {
+      return false;
     }
+    XincoCoreDataT other = (XincoCoreDataT) object;
+    if ((this.recordId == null && other.recordId != null)
+        || (this.recordId != null && !this.recordId.equals(other.recordId))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataT[ recordId=" + recordId + " ]";
+  }
 }

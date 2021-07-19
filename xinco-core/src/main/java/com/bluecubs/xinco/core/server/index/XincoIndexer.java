@@ -1,35 +1,31 @@
 /**
  * Copyright 2012 blueCubs.com
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  *
- *************************************************************
- * This project supports the blueCubs vision of giving back to the community in
- * exchange for free software! More information on: http://www.bluecubs.org
- * ************************************************************
+ * <p>************************************************************ This project supports the
+ * blueCubs vision of giving back to the community in exchange for free software! More information
+ * on: http://www.bluecubs.org ************************************************************
  *
- * Name: XincoIndexer
+ * <p>Name: XincoIndexer
  *
- * Description: handle document indexing
+ * <p>Description: handle document indexing
  *
- * Original Author: Alexander Manes Date: 2004/10/31
+ * <p>Original Author: Alexander Manes Date: 2004/10/31
  *
- * Modifications:
+ * <p>Modifications:
  *
- * $Author$
- * $Date$
+ * <p>$Author$ $Date$
  *
- *************************************************************
+ * <p>************************************************************
  */
 package com.bluecubs.xinco.core.server.index;
 
@@ -45,12 +41,13 @@ import static org.apache.lucene.search.TopScoreDocCollector.create;
 import static org.apache.lucene.store.FSDirectory.open;
 import static org.apache.lucene.util.Version.LUCENE_34;
 
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.server.service.XincoCoreData;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -66,48 +63,31 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.util.Version;
 
-import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.server.service.XincoCoreData;
+/** This class handles document indexing for Xinco. Edit configuration values in database */
+public class XincoIndexer {
 
-/**
- * This class handles document indexing for Xinco. Edit configuration values in
- * database
- */
-public class XincoIndexer
-{
-
-  private static final Logger LOG
-          = getLogger(XincoIndexer.class.getSimpleName());
+  private static final Logger LOG = getLogger(XincoIndexer.class.getSimpleName());
   private static final Version VERSION = LUCENE_34;
 
-  public static synchronized boolean indexXincoCoreData(XincoCoreData d,
-          boolean index_content)
-  {
+  public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content) {
     IndexWriter writer = null;
-    try
-    {
-      //check if document exists in index and delete
+    try {
+      // check if document exists in index and delete
       removeXincoCoreData(d);
-      //add document to index
-      writer = new IndexWriter(
+      // add document to index
+      writer =
+          new IndexWriter(
               open(new File(CONFIG.fileIndexPath)),
-              new IndexWriterConfig(VERSION,
-                      new StandardAnalyzer(VERSION)));
+              new IndexWriterConfig(VERSION, new StandardAnalyzer(VERSION)));
       writer.addDocument(getXincoDocument(d, index_content));
-      //writer.optimize();
+      // writer.optimize();
       writer.close();
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       LOG.log(SEVERE, null, e);
-      if (writer != null)
-      {
-        try
-        {
+      if (writer != null) {
+        try {
           writer.close();
-        }
-        catch (IOException we)
-        {
+        } catch (IOException we) {
           LOG.log(SEVERE, null, we);
         }
       }
@@ -116,47 +96,34 @@ public class XincoIndexer
     return true;
   }
 
-  public static synchronized boolean removeXincoCoreData(XincoCoreData d)
-  {
+  public static synchronized boolean removeXincoCoreData(XincoCoreData d) {
     IndexReader reader = null;
     IndexWriter writer = null;
     File indexDirectory = new File(CONFIG.fileIndexPath);
-    if (indexDirectory.exists())
-    {
-      //check if document exists in index and delete
-      try
-      {
+    if (indexDirectory.exists()) {
+      // check if document exists in index and delete
+      try {
         reader = open(open(new File(CONFIG.fileIndexPath)));
-        writer = new IndexWriter(
+        writer =
+            new IndexWriter(
                 open(new File(CONFIG.fileIndexPath)),
-                new IndexWriterConfig(VERSION,
-                        new StandardAnalyzer(VERSION)));
+                new IndexWriterConfig(VERSION, new StandardAnalyzer(VERSION)));
         writer.deleteDocuments(new Term("id", "" + d.getId()));
         reader.close();
         writer.close();
-      }
-      catch (IOException re)
-      {
+      } catch (IOException re) {
         LOG.log(SEVERE, null, re);
-        if (reader != null)
-        {
-          try
-          {
+        if (reader != null) {
+          try {
             reader.close();
-          }
-          catch (IOException re2)
-          {
+          } catch (IOException re2) {
             LOG.log(SEVERE, null, re2);
           }
         }
-        if (writer != null)
-        {
-          try
-          {
+        if (writer != null) {
+          try {
             writer.close();
-          }
-          catch (IOException re2)
-          {
+          } catch (IOException re2) {
             LOG.log(SEVERE, null, re2);
           }
         }
@@ -166,39 +133,26 @@ public class XincoIndexer
     return true;
   }
 
-  public static synchronized boolean optimizeIndex()
-  {
+  public static synchronized boolean optimizeIndex() {
     IndexWriter writer = null;
     boolean result = false;
-    try
-    {
-      //optimize index
-      writer = new IndexWriter(
+    try {
+      // optimize index
+      writer =
+          new IndexWriter(
               open(new File(CONFIG.fileIndexPath)),
-              new IndexWriterConfig(VERSION,
-                      new StandardAnalyzer(VERSION)));
+              new IndexWriterConfig(VERSION, new StandardAnalyzer(VERSION)));
       writer.close();
       result = true;
-    }
-    catch (FileNotFoundException e)
-    {
-      LOG.log(INFO, "No index found at: {0}. Nothing to index.",
-              CONFIG.fileIndexPath);
-    }
-    catch (IOException e)
-    {
+    } catch (FileNotFoundException e) {
+      LOG.log(INFO, "No index found at: {0}. Nothing to index.", CONFIG.fileIndexPath);
+    } catch (IOException e) {
       LOG.log(SEVERE, null, e);
-    }
-    finally
-    {
-      if (writer != null)
-      {
-        try
-        {
+    } finally {
+      if (writer != null) {
+        try {
           writer.close();
-        }
-        catch (IOException we)
-        {
+        } catch (IOException we) {
           LOG.log(SEVERE, null, we);
         }
       }
@@ -206,26 +160,21 @@ public class XincoIndexer
     return result;
   }
 
-  public static synchronized ArrayList findXincoCoreData(String queryString,
-          int l)
-  {
+  public static synchronized ArrayList findXincoCoreData(String queryString, int l) {
     int i;
     ArrayList<XincoCoreData> v = new ArrayList<>();
     IndexSearcher searcher = null;
     IndexReader reader = null;
-    try
-    {
+    try {
       reader = open(open(new File(CONFIG.fileIndexPath)));
       searcher = new IndexSearcher(reader);
       Analyzer analyzer = new StandardAnalyzer(VERSION);
 
-      //add language to query
-      if (l != 0)
-      {
+      // add language to query
+      if (l != 0) {
         queryString = queryString + " AND language:" + l;
       }
-      QueryParser parser = new QueryParser(VERSION, "designation",
-              analyzer);
+      QueryParser parser = new QueryParser(VERSION, "designation", analyzer);
 
       Query query = parser.parse(queryString);
 
@@ -233,48 +182,33 @@ public class XincoIndexer
       searcher.search(query, collector);
       ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-      for (i = 0; i < hits.length; i++)
-      {
-        try
-        {
+      for (i = 0; i < hits.length; i++) {
+        try {
           Document doc = searcher.doc(hits[i].doc);
           v.add(new XincoCoreDataServer(parseInt(doc.get("id"))));
-        }
-        catch (IOException | NumberFormatException xcde)
-        {
+        } catch (IOException | NumberFormatException xcde) {
           // don't add non-existing data
           LOG.log(WARNING, null, xcde);
         }
-        if (i >= CONFIG.getMaxSearchResult())
-        {
+        if (i >= CONFIG.getMaxSearchResult()) {
           break;
         }
       }
       searcher.close();
 
-    }
-    catch (IOException | ParseException e)
-    {
+    } catch (IOException | ParseException e) {
       LOG.log(SEVERE, null, e);
-      if (reader != null)
-      {
-        try
-        {
+      if (reader != null) {
+        try {
           reader.close();
-        }
-        catch (IOException re2)
-        {
+        } catch (IOException re2) {
           LOG.log(SEVERE, null, re2);
         }
       }
-      if (searcher != null)
-      {
-        try
-        {
+      if (searcher != null) {
+        try {
           searcher.close();
-        }
-        catch (IOException se)
-        {
+        } catch (IOException se) {
           LOG.log(SEVERE, null, se);
         }
       }
@@ -283,8 +217,6 @@ public class XincoIndexer
     return v;
   }
 
-  //private constructor to avoid instance generation with new-operator!
-  private XincoIndexer()
-  {
-  }
+  // private constructor to avoid instance generation with new-operator!
+  private XincoIndexer() {}
 }

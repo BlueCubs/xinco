@@ -16,199 +16,234 @@
  * This project supports the blueCubs vision of giving back to the community in
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
- * 
+ *
  * Name: XincoAddAttributeT
- * 
+ *
  * Description: Table entity
- * 
+ *
  * Original Author: Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com Date: Nov 29, 2011
- * 
+ *
  * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
 
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
-import static javax.persistence.TemporalType.TIMESTAMP;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Javier A. Ortiz Bultron  javier.ortiz.78@gmail.com
- */
+/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
 @Table(name = "xinco_add_attribute_t")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoAddAttributeT.findAll", query = "SELECT x FROM XincoAddAttributeT x"),
-    @NamedQuery(name = "XincoAddAttributeT.findByRecordId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.recordId = :recordId"),
-    @NamedQuery(name = "XincoAddAttributeT.findByXincoCoreDataId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.xincoCoreDataId = :xincoCoreDataId"),
-    @NamedQuery(name = "XincoAddAttributeT.findByAttributeId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attributeId = :attributeId"),
-    @NamedQuery(name = "XincoAddAttributeT.findByAttribInt", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribInt = :attribInt"),
-    @NamedQuery(name = "XincoAddAttributeT.findByAttribUnsignedint", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribUnsignedint = :attribUnsignedint"),
-    @NamedQuery(name = "XincoAddAttributeT.findByAttribDouble", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribDouble = :attribDouble"),
-    @NamedQuery(name = "XincoAddAttributeT.findByAttribVarchar", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribVarchar = :attribVarchar"),
-    @NamedQuery(name = "XincoAddAttributeT.findByAttribDatetime", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribDatetime = :attribDatetime")})
+  @NamedQuery(name = "XincoAddAttributeT.findAll", query = "SELECT x FROM XincoAddAttributeT x"),
+  @NamedQuery(
+      name = "XincoAddAttributeT.findByRecordId",
+      query = "SELECT x FROM XincoAddAttributeT x WHERE x.recordId = :recordId"),
+  @NamedQuery(
+      name = "XincoAddAttributeT.findByXincoCoreDataId",
+      query = "SELECT x FROM XincoAddAttributeT x WHERE x.xincoCoreDataId = :xincoCoreDataId"),
+  @NamedQuery(
+      name = "XincoAddAttributeT.findByAttributeId",
+      query = "SELECT x FROM XincoAddAttributeT x WHERE x.attributeId = :attributeId"),
+  @NamedQuery(
+      name = "XincoAddAttributeT.findByAttribInt",
+      query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribInt = :attribInt"),
+  @NamedQuery(
+      name = "XincoAddAttributeT.findByAttribUnsignedint",
+      query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribUnsignedint = :attribUnsignedint"),
+  @NamedQuery(
+      name = "XincoAddAttributeT.findByAttribDouble",
+      query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribDouble = :attribDouble"),
+  @NamedQuery(
+      name = "XincoAddAttributeT.findByAttribVarchar",
+      query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribVarchar = :attribVarchar"),
+  @NamedQuery(
+      name = "XincoAddAttributeT.findByAttribDatetime",
+      query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribDatetime = :attribDatetime")
+})
 public class XincoAddAttributeT implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "record_id")
-    private Integer recordId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "xinco_core_data_id")
-    private int xincoCoreDataId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "attribute_id")
-    private int attributeId;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "attrib_int")
-    private int attribInt;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "attrib_unsignedint")
-    private long attribUnsignedint;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "attrib_double")
-    private double attribDouble;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "attrib_varchar")
-    private String attribVarchar;
-    @Basic(optional = false)
-    @NotNull
-    @Lob
-    @Size(min = 1, max = 65_535)
-    @Column(name = "attrib_text")
-    private String attribText;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "attrib_datetime")
-    @Temporal(TIMESTAMP)
-    private Date attribDatetime;
+  private static final long serialVersionUID = 1L;
 
-    public XincoAddAttributeT() {
-    }
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "record_id")
+  private Integer recordId;
 
-    public XincoAddAttributeT(Integer recordId) {
-        this.recordId = recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "xinco_core_data_id")
+  private int xincoCoreDataId;
 
-    public XincoAddAttributeT(Integer recordId, int xincoCoreDataId, int attributeId, int attribInt, long attribUnsignedint, double attribDouble, String attribVarchar, String attribText, Date attribDatetime) {
-        this.recordId = recordId;
-        this.xincoCoreDataId = xincoCoreDataId;
-        this.attributeId = attributeId;
-        this.attribInt = attribInt;
-        this.attribUnsignedint = attribUnsignedint;
-        this.attribDouble = attribDouble;
-        this.attribVarchar = attribVarchar;
-        this.attribText = attribText;
-        this.attribDatetime = attribDatetime;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attribute_id")
+  private int attributeId;
 
-    public Integer getRecordId() {
-        return recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attrib_int")
+  private int attribInt;
 
-    public void setRecordId(Integer recordId) {
-        this.recordId = recordId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attrib_unsignedint")
+  private long attribUnsignedint;
 
-    public int getXincoCoreDataId() {
-        return xincoCoreDataId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attrib_double")
+  private double attribDouble;
 
-    public void setXincoCoreDataId(int xincoCoreDataId) {
-        this.xincoCoreDataId = xincoCoreDataId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "attrib_varchar")
+  private String attribVarchar;
 
-    public int getAttributeId() {
-        return attributeId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Lob
+  @Size(min = 1, max = 65_535)
+  @Column(name = "attrib_text")
+  private String attribText;
 
-    public void setAttributeId(int attributeId) {
-        this.attributeId = attributeId;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attrib_datetime")
+  @Temporal(TIMESTAMP)
+  private Date attribDatetime;
 
-    public int getAttribInt() {
-        return attribInt;
-    }
+  public XincoAddAttributeT() {}
 
-    public void setAttribInt(int attribInt) {
-        this.attribInt = attribInt;
-    }
+  public XincoAddAttributeT(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public long getAttribUnsignedint() {
-        return attribUnsignedint;
-    }
+  public XincoAddAttributeT(
+      Integer recordId,
+      int xincoCoreDataId,
+      int attributeId,
+      int attribInt,
+      long attribUnsignedint,
+      double attribDouble,
+      String attribVarchar,
+      String attribText,
+      Date attribDatetime) {
+    this.recordId = recordId;
+    this.xincoCoreDataId = xincoCoreDataId;
+    this.attributeId = attributeId;
+    this.attribInt = attribInt;
+    this.attribUnsignedint = attribUnsignedint;
+    this.attribDouble = attribDouble;
+    this.attribVarchar = attribVarchar;
+    this.attribText = attribText;
+    this.attribDatetime = attribDatetime;
+  }
 
-    public void setAttribUnsignedint(long attribUnsignedint) {
-        this.attribUnsignedint = attribUnsignedint;
-    }
+  public Integer getRecordId() {
+    return recordId;
+  }
 
-    public double getAttribDouble() {
-        return attribDouble;
-    }
+  public void setRecordId(Integer recordId) {
+    this.recordId = recordId;
+  }
 
-    public void setAttribDouble(double attribDouble) {
-        this.attribDouble = attribDouble;
-    }
+  public int getXincoCoreDataId() {
+    return xincoCoreDataId;
+  }
 
-    public String getAttribVarchar() {
-        return attribVarchar;
-    }
+  public void setXincoCoreDataId(int xincoCoreDataId) {
+    this.xincoCoreDataId = xincoCoreDataId;
+  }
 
-    public void setAttribVarchar(String attribVarchar) {
-        this.attribVarchar = attribVarchar;
-    }
+  public int getAttributeId() {
+    return attributeId;
+  }
 
-    public String getAttribText() {
-        return attribText;
-    }
+  public void setAttributeId(int attributeId) {
+    this.attributeId = attributeId;
+  }
 
-    public void setAttribText(String attribText) {
-        this.attribText = attribText;
-    }
+  public int getAttribInt() {
+    return attribInt;
+  }
 
-    public Date getAttribDatetime() {
-        return attribDatetime;
-    }
+  public void setAttribInt(int attribInt) {
+    this.attribInt = attribInt;
+  }
 
-    public void setAttribDatetime(Date attribDatetime) {
-        this.attribDatetime = attribDatetime;
-    }
+  public long getAttribUnsignedint() {
+    return attribUnsignedint;
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (recordId != null ? recordId.hashCode() : 0);
-        return hash;
-    }
+  public void setAttribUnsignedint(long attribUnsignedint) {
+    this.attribUnsignedint = attribUnsignedint;
+  }
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof XincoAddAttributeT)) {
-            return false;
-        }
-        XincoAddAttributeT other = (XincoAddAttributeT) object;
-        if ((this.recordId == null && other.recordId != null) || (this.recordId != null && !this.recordId.equals(other.recordId))) {
-            return false;
-        }
-        return true;
-    }
+  public double getAttribDouble() {
+    return attribDouble;
+  }
 
-    @Override
-    public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoAddAttributeT[ recordId=" + recordId + " ]";
+  public void setAttribDouble(double attribDouble) {
+    this.attribDouble = attribDouble;
+  }
+
+  public String getAttribVarchar() {
+    return attribVarchar;
+  }
+
+  public void setAttribVarchar(String attribVarchar) {
+    this.attribVarchar = attribVarchar;
+  }
+
+  public String getAttribText() {
+    return attribText;
+  }
+
+  public void setAttribText(String attribText) {
+    this.attribText = attribText;
+  }
+
+  public Date getAttribDatetime() {
+    return attribDatetime;
+  }
+
+  public void setAttribDatetime(Date attribDatetime) {
+    this.attribDatetime = attribDatetime;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (recordId != null ? recordId.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof XincoAddAttributeT)) {
+      return false;
     }
+    XincoAddAttributeT other = (XincoAddAttributeT) object;
+    if ((this.recordId == null && other.recordId != null)
+        || (this.recordId != null && !this.recordId.equals(other.recordId))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "com.bluecubs.xinco.core.server.persistence.XincoAddAttributeT[ recordId="
+        + recordId
+        + " ]";
+  }
 }
