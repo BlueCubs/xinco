@@ -682,7 +682,7 @@
         <dependency>
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-core</artifactId>
-            <version>4.4.0</version>
+            <version>4.4.3</version>
         </dependency>
         <!--Vaadin plugins-->
         <dependency>
