@@ -21,9 +21,17 @@
 
     <inherits name="org.vaadin.easyuploads.EasyuploadsWidgetset" />
 
-    <inherits name="org.vaadin.risto.stepper.widgetset.StepperWidgetset" />
+    
 
     <inherits name="org.vaadin.hene.expandingtextarea.widgetset.ExpandingtextareaWidgetset" />
 
     <inherits name="de.essendi.vaadin.ui.component.numberfield.widgetset.NumberFieldWidgetset" />
+
+    
+
+    
+
+    
+
+    <inherits name="org.vaadin.risto.stepper.widgetset.StepperWidgetset" />
 </module>

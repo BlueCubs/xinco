@@ -65,11 +65,11 @@ import org.jodconverter.office.OfficeManager;
  */
 public class XincoRenderingThread extends Thread {
 
-    private XincoCoreData original;
+    private final XincoCoreData original;
     private XincoCoreDataServer rendering = null;
     private XincoCoreDataHasDependencyServer dependency = null;
     private final XincoCoreUser user;
-    private XincoWebService service = new XincoWebService();
+    private final XincoWebService service = new XincoWebService();
     private File rendition;
     private File xincoFile;
     private static int port;
@@ -155,9 +155,7 @@ public class XincoRenderingThread extends Thread {
                 }
                 XincoCoreDataServer render
                         = new XincoCoreDataServer(rendering.getId());
-                if (render != null) {
                     render.deleteFromDB();
-                }
             }
         }
     }
