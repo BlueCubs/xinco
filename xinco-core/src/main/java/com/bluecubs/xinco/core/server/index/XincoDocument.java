@@ -67,12 +67,12 @@ public class XincoDocument {
     doc = new Document();
 
     // add XincoCoreData information
-    doc.add(new Field("id", (new Integer(d.getId())).toString(), YES, NOT_ANALYZED));
+    doc.add(new Field("id", (Integer.valueOf(d.getId())).toString(), YES, NOT_ANALYZED));
     doc.add(new Field("designation", d.getDesignation(), YES, ANALYZED));
     doc.add(
         new Field(
             "language",
-            (new Integer(d.getXincoCoreLanguage().getId())).toString(),
+            (Integer.valueOf(d.getXincoCoreLanguage().getId())).toString(),
             YES,
             NOT_ANALYZED));
 
