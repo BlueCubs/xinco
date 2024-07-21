@@ -5,3 +5,7 @@ Xinco/nbproject/
 **/.idea
 
 *.iml
+
+XincoExplorer/nbproject/private/
+
+XincoWebApp/nbproject/private/

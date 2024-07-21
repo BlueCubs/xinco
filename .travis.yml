@@ -6,7 +6,7 @@ group: edge
 addons:
   apt:
     packages:
-    - oracle-java8-installer
+    - oracle-java17-installer
     
 dist: trusty
 jdk:
