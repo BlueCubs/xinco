@@ -6,12 +6,12 @@ group: edge
 addons:
   apt:
     packages:
-    - oracle-java8-installer
+    - oracle-java17-installer
     
 dist: trusty
 jdk:
-- oraclejdk8
-- openjdk8
+- oraclejdk17
+- openjdk17
 
 before_script: cd Xinco
 script: git submodule update --init --recursive

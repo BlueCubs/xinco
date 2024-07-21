@@ -21,7 +21,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_state_transitions_to_xinco_state")

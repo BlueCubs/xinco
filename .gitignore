@@ -1,2 +1,13 @@
 
-Xinco/target/
+**/target/
+Xinco/nbproject/
+/XincoWorkflow
+**/.idea
+
+*.iml
+
+XincoExplorer/nbproject/private/
+
+XincoWebApp/nbproject/private/
+
+nb-configuration.xml

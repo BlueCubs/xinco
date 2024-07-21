@@ -6,45 +6,45 @@ import com.vaadin.ui.ProgressIndicator;
 /**
  * Based on code from Teemu PÃ¶ntelin / Vaadin Ltd
  *
- * @author Javier A. Ortiz Bultronjavier.ortiz.78@gmail.com
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
-public class WizardProgressBar extends ProgressIndicator implements
-        WizardProgressListener {
+public final class WizardProgressBar extends ProgressIndicator implements WizardProgressListener {
 
-    private final XincoWizard wizard;
+  private static final long serialVersionUID = 4019670885155445960L;
 
-    public WizardProgressBar(XincoWizard wizard) {
-        super(new Float(0.0));
-        setIndeterminate(false);
-        setPollingInterval(500);
-        this.wizard = wizard;
-        setSizeFull();
-    }
+  private final XincoWizard wizard;
 
-    private void recalculateProgress() {
-        setValue(new Float(wizard.getProgress() + 1)
-                / new Float(wizard.getSteps().size()));
-        requestRepaint();
-    }
+  public WizardProgressBar(XincoWizard wizard) {
+    super(0.0f);
+    setIndeterminate(false);
+    setPollingInterval(500);
+    this.wizard = wizard;
+    setSizeFull();
+  }
 
-    @Override
-    public void activeStepChanged(WizardStepActivationEvent event) {
-        setCaption(event.getActivatedStep().getCaption());
-        recalculateProgress();
-    }
+  private void recalculateProgress() {
+    setValue(Float.valueOf(wizard.getProgress() + 1) / Float.valueOf(wizard.getSteps().size()));
+    requestRepaint();
+  }
 
-    @Override
-    public void stepSetChanged(WizardStepSetChangedEvent event) {
-        recalculateProgress();
-    }
+  @Override
+  public void activeStepChanged(WizardStepActivationEvent event) {
+    setCaption(event.getActivatedStep().getCaption());
+    recalculateProgress();
+  }
 
-    @Override
-    public void wizardCompleted(WizardCompletedEvent event) {
-        recalculateProgress();
-    }
+  @Override
+  public void stepSetChanged(WizardStepSetChangedEvent event) {
+    recalculateProgress();
+  }
 
-    @Override
-    public void wizardCancelled(WizardCancelledEvent event) {
-        // NOP, no need to react to cancellation
-    }
+  @Override
+  public void wizardCompleted(WizardCompletedEvent event) {
+    recalculateProgress();
+  }
+
+  @Override
+  public void wizardCancelled(WizardCancelledEvent event) {
+    // NOP, no need to react to cancellation
+  }
 }
