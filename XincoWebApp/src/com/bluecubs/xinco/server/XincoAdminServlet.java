@@ -163,35 +163,35 @@ public class XincoAdminServlet extends HttpServlet {
         //check login status
         if (session.getAttribute("XincoAdminServlet.status") == null) {
             status = 0;
-            session.setAttribute("XincoAdminServlet.status", new Integer(status));
+            session.setAttribute("XincoAdminServlet.status", status);
             current_location = "MainLogin";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.login");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
             current_user_selection = 0;
-            session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
+            session.setAttribute("XincoAdminServlet.current_user_selection", current_user_selection);
             current_group_selection = 0;
-            session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
+            session.setAttribute("XincoAdminServlet.current_group_selection", current_group_selection);
             current_datatype_selection = 0;
-            session.setAttribute("XincoAdminServlet.current_datatype_selection", new Integer(current_datatype_selection));
+            session.setAttribute("XincoAdminServlet.current_datatype_selection", current_datatype_selection);
         } else {
-            status = ((Integer) session.getAttribute("XincoAdminServlet.status")).intValue();
+            status = ((Integer) session.getAttribute("XincoAdminServlet.status"));
             current_location = ((String) session.getAttribute("XincoAdminServlet.current_location"));
             current_location_desc = ((String) session.getAttribute("XincoAdminServlet.current_location_desc"));
-            current_user_selection = ((Integer) session.getAttribute("XincoAdminServlet.current_user_selection")).intValue();
-            current_group_selection = ((Integer) session.getAttribute("XincoAdminServlet.current_group_selection")).intValue();
-            current_datatype_selection = ((Integer) session.getAttribute("XincoAdminServlet.current_datatype_selection")).intValue();
+            current_user_selection = ((Integer) session.getAttribute("XincoAdminServlet.current_user_selection"));
+            current_group_selection = ((Integer) session.getAttribute("XincoAdminServlet.current_group_selection"));
+            current_datatype_selection = ((Integer) session.getAttribute("XincoAdminServlet.current_datatype_selection"));
             if (status == 0) {
                 current_location = "MainLogin";
                 session.setAttribute("XincoAdminServlet.current_location", current_location);
                 current_location_desc = rb.getString("message.location.desc.login");
                 session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
                 current_user_selection = 0;
-                session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
+                session.setAttribute("XincoAdminServlet.current_user_selection", current_user_selection);
                 current_group_selection = 0;
-                session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
+                session.setAttribute("XincoAdminServlet.current_group_selection", current_group_selection);
                 current_datatype_selection = 0;
-                session.setAttribute("XincoAdminServlet.current_datatype_selection", new Integer(current_datatype_selection));
+                session.setAttribute("XincoAdminServlet.current_datatype_selection", current_datatype_selection);
             }
         }
 
@@ -250,14 +250,14 @@ public class XincoAdminServlet extends HttpServlet {
                     throw new XincoException(rb.getString("password.login.notAdminGroup"));
                 }
                 current_user_selection = temp_user.getId();
-                session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
+                session.setAttribute("XincoAdminServlet.current_user_selection", current_user_selection);
                 status = 1;
                 //Check for password aging
                 if (temp_user.getStatus_number() == 3) {
                     status = 2;
                 }
                 //-----------------------------------------------------------------------------------
-                session.setAttribute("XincoAdminServlet.status", new Integer(status));
+                session.setAttribute("XincoAdminServlet.status", status);
                 current_location = "MainMenu";
                 session.setAttribute("XincoAdminServlet.current_location", current_location);
                 current_location_desc = rb.getString("message.location.desc.mainmenu");
@@ -266,7 +266,7 @@ public class XincoAdminServlet extends HttpServlet {
                 e.printStackTrace();
                 error_message = "[" + global_error_message + " | " + e.toString() + "]";
                 status = 0;
-                session.setAttribute("XincoAdminServlet.status", new Integer(status));
+                session.setAttribute("XincoAdminServlet.status", status);
             }
         }
         //switch to overview
@@ -462,7 +462,7 @@ public class XincoAdminServlet extends HttpServlet {
         //switch to group modification
         if (request.getParameter("DialogAdminGroupsSelect") != null) {
             current_group_selection = Integer.parseInt(request.getParameter("DialogAdminGroupsSelect"));
-            session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
+            session.setAttribute("XincoAdminServlet.current_group_selection", current_group_selection);
             current_location = "GroupAdminSingle";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.specificgroupadmin");
@@ -483,9 +483,9 @@ public class XincoAdminServlet extends HttpServlet {
             //main admin always is admin and everyone is a regular user
             if (!(((current_group_selection == 1) && (Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) == 1)) || (current_group_selection == 2))) {
                 try {
-                    Statement stmt = dbm.con.createStatement();
-                    stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
-                    stmt.close();
+                  try (Statement stmt = dbm.con.createStatement()) {
+                    stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.valueOf(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
+                  }
                     dbm.con.commit();
                 } catch (Exception e) {
                     try {
@@ -500,9 +500,9 @@ public class XincoAdminServlet extends HttpServlet {
         //add user to group
         if (request.getParameter("DialogEditGroupAddUser") != null) {
             try {
-                Statement stmt = dbm.con.createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + Integer.parseInt(request.getParameter("DialogEditGroupAddUser")) + ", " + current_group_selection + ", " + "1)");
-                stmt.close();
+              try (Statement stmt = dbm.con.createStatement()) {
+                stmt.executeUpdate("INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + Integer.valueOf(request.getParameter("DialogEditGroupAddUser")) + ", " + current_group_selection + ", " + "1)");
+              }
                 dbm.con.commit();
             } catch (Exception e) {
                 try {
@@ -559,7 +559,7 @@ public class XincoAdminServlet extends HttpServlet {
         //switch to attributes modification
         if (request.getParameter("DialogAdminDataTypeSelect") != null) {
             current_datatype_selection = Integer.parseInt(request.getParameter("DialogAdminDataTypeSelect"));
-            session.setAttribute("XincoAdminServlet.current_datatype_selection", new Integer(current_datatype_selection));
+            session.setAttribute("XincoAdminServlet.current_datatype_selection", Integer.valueOf(current_datatype_selection));
             current_location = "AttributesAdminSingle";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.specificattributeadmin");
@@ -593,10 +593,10 @@ public class XincoAdminServlet extends HttpServlet {
             try {
                 session.removeAttribute("XincoAdminServlet.user");
                 status = 0;
-                session.setAttribute("XincoAdminServlet.status", new Integer(status));
+                session.setAttribute("XincoAdminServlet.status", status);
             } catch (Exception e) {
                 status = 0;
-                session.setAttribute("XincoAdminServlet.status", new Integer(status));
+                session.setAttribute("XincoAdminServlet.status", status);
             }
         }
         //Password changed due to aging
@@ -683,826 +683,821 @@ public class XincoAdminServlet extends HttpServlet {
 
         out.println("");
 
-        //if not logged in
-        if (status == 0) {
+      //if not logged in
+      switch (status) {
+        case 0 -> {
+          //show welcome message
+          out.println("<br><img src='resources/images/blueCubs.gif' border=\"0\"/>");
+          out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
+          if (error_message.compareTo("") != 0) {
+            out.println("<center>" + error_message + "</center>");
+          }
+          //show login dialog
+          out.println("<form action=\"XincoAdmin\" method=\"post\">");
+          out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+          out.println("<tr>");
+          out.println("<td class=\"text\">" + rb.getString("general.user") + ":</td>");
+          out.println("<td class=\"text\"><input type=\"text\" name=\"DialogLoginUsername\" size=\"40\"/></td>");
+          out.println("</tr>");
+          out.println("<tr>");
+          out.println("<td class=\"text\">" + rb.getString("general.password") + ":</td>");
+          out.println("<td class=\"text\"><input type=\"password\" name=\"DialogLoginPassword\" size=\"40\"/></td>");
+          out.println("</tr>");
+          out.println("<tr>");
+          out.println("<td class=\"text\">&nbsp;</td>");
+          out.println("<td class=\"text\"><input type=\"submit\" name=\"DialogLoginSubmit\" value=\"" + rb.getString("general.login") + "\"/>"
+              + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></td>");
+          out.println("</tr>");
+          out.println("</table>");
+          out.println("</form>");
+        }
+        case 2 -> {
+          //Password must be changed
+          out.println("<br><img src='resources/images/blueCubs.gif' border=\"0\"/>");
+          out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
+          out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
+          out.println(rb.getString("password.aged") + "<br><br>"
+              + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
+          out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value="
+              + request.getParameter("DialogLoginUsername") + "/>");
+          out.println("</form>");
+        }
+        default -> {
+          //show main menu
+          out.println("<br>");
+          out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+          out.println("<tr>");
+          out.println("<td class=\"text\" rowspan=\"3\"><img src='resources/images/blueCubsSmall.gif' border=\"0\"/></td>");
+          out.println("<td class=\"bigtext\" colspan=\"5\">XincoAdmin</td>");
+          out.println("</tr>");
+          out.println("<tr>");
+          out.println("<td class=\"text\" colspan=\"5\">" + rb.getString("general.location") + ": " + current_location_desc + "</td>");
+          out.println("</tr>");
+          out.println("<tr>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainOverview=Overview&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.overview") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminUsers=AdminUsers&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.userAdmin") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminGroups=AdminGroups&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.groupAdmin") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEditUserProfile=EditProfile&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.userProfile") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminLanguages=AdminLanguages&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.language") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminAttributes=AdminAttributes&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.attribute") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEmptyTrash=EmptyTrash&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.trash") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainRebuildIndex=RebuildIndex&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.index") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuAudit=AuditMenu&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("general.audit.menu") + "</a></td>");
+          out.println("<td class=\"text\">|</td>");
+          out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainLogout=Logout&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("general.logout") + "</a></td>");
+          out.println("</tr>");
+          out.println("</table>");
+          out.println("<br><br>");
+          if (current_location.compareTo("MainMenu") == 0) {
 
-            //show welcome message
-            out.println("<br><img src='resources/images/blueCubs.gif' border=\"0\"/>");
-            out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
-            if (error_message.compareTo("") != 0) {
-                out.println("<center>" + error_message + "</center>");
-            }
-            //show login dialog
+            //show overview
+            out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("message.admin.overview") + "</td>");
+            out.println("<td class=\"text\">" + rb.getString("message.admin.overview.message") + "</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("message.admin.userAdmin") + "</td>");
+            out.println("<td class=\"text\">" + rb.getString("message.admin.userAdmin.message") + "</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("message.admin.groupAdmin") + "</td>");
+            out.println("<td class=\"text\">" + rb.getString("message.admin.groupAdmin.message") + "</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("message.admin.userProfile") + "</td>");
+            out.println("<td class=\"text\">" + rb.getString("message.admin.userProfile.message") + "</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("message.admin.language") + "</td>");
+            out.println("<td class=\"text\">" + rb.getString("message.admin.language.message") + "</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("message.admin.attribute") + "</td>");
+            out.println("<td class=\"text\">" + rb.getString("message.admin.attribute.message") + "</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("message.admin.trash") + "</td>");
+            out.println("<td class=\"text\">" + rb.getString("message.admin.trash.message") + "</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("message.admin.index") + "</td>");
+            out.println("<td class=\"text\">" + rb.getString("message.admin.index.message") + "</td>");
+            out.println("</tr>");
+            out.println("</table>");
+
+          }
+          if (current_location.compareTo("UserAdmin") == 0) {
+
+            //show new user dialog
             out.println("<form action=\"XincoAdmin\" method=\"post\">");
             out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
             out.println("<tr>");
-            out.println("<td class=\"text\">" + rb.getString("general.user") + ":</td>");
-            out.println("<td class=\"text\"><input type=\"text\" name=\"DialogLoginUsername\" size=\"40\"/></td>");
+            out.println("<td class=\"text\">" + rb.getString("general.username") + ":</td>");
+            out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewUserUsername\" size=\"40\"/></td>");
             out.println("</tr>");
             out.println("<tr>");
             out.println("<td class=\"text\">" + rb.getString("general.password") + ":</td>");
-            out.println("<td class=\"text\"><input type=\"password\" name=\"DialogLoginPassword\" size=\"40\"/></td>");
+            out.println("<td class=\"text\"><input type=\"password\" name=\"DialogNewUserPassword\" size=\"40\"/></td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"text\">" + rb.getString("general.firstname") + ":</td>");
+            out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewUserFirstname\" size=\"40\"/></td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"text\">" + rb.getString("general.lastname") + ":</td>");
+            out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewUserLastname\" size=\"40\"/></td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"text\">" + rb.getString("general.email") + ":</td>");
+            out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewUserEmail\" size=\"40\"/></td>");
             out.println("</tr>");
             out.println("<tr>");
             out.println("<td class=\"text\">&nbsp;</td>");
-            out.println("<td class=\"text\"><input type=\"submit\" name=\"DialogLoginSubmit\" value=\"" + rb.getString("general.login") + "\"/>"
-                    + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></td>");
+            out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewUserSubmit\" value=\""
+                + rb.getString("general.add.user") + "\"/></td>");
             out.println("</tr>");
             out.println("</table>");
             out.println("</form>");
-        } else if (status == 2) {
-            //Password must be changed
-            out.println("<br><img src='resources/images/blueCubs.gif' border=\"0\"/>");
-            out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
-            out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
-            out.println(rb.getString("password.aged") + "<br><br>"
-                    + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
-            out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value="
-                    + request.getParameter("DialogLoginUsername") + "/>");
+
+            //show user list
+            out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+            if (error_message.compareTo("") != 0) {
+              out.println("<tr>");
+              out.println("<td class=\"text\" colspan=\"6\">" + error_message + "</td>");
+              out.println("</tr>");
+            }
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.username") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.firstname") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.lastname") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.email") + ":</td>");
+            out.println("<td class=\"bigtext\">&nbsp;</td>");
+            out.println("</tr>");
+
+            Vector allusers = XincoCoreUserServer.getXincoCoreUsers(dbm);
+            for (i = 0; i < allusers.size(); i++) {
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getId() + "</td>");
+              out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getUsername() + "</td>");
+              out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
+              out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
+              out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
+              if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 1) {
+                out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsersLock="
+                    + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                    + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.lock")
+                    + "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW="
+                    + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                    + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.password.reset") + "*]</a></td>");
+              }
+              if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 2) {
+                out.println("<td class=\"text\"><b>" + rb.getString("general.status.locked") + "</b> <a href=\"XincoAdmin?DialogAdminUsersUnlock="
+                    + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                    + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.unlock")
+                    + "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW="
+                    + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                    + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.password.reset") + "*]</a></td>");
+              }
+              out.println("</tr>");
+            }
+
+            out.println("<tr>");
+            out.println("<td colspan=\"6\" class=\"text\">&nbsp;</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td colspan=\"6\" class=\"text\">* " + rb.getString("general.password.note") + "</td>");
+            out.println("</tr>");
+            out.println("</table>");
+
+          }
+          if (current_location.compareTo("GroupAdmin") == 0) {
+
+            //show new group dialog
+            out.println("<form action=\"XincoAdmin\" method=\"post\">");
+            out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+            out.println("<tr>");
+            out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
+            out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewGroupName\" size=\"40\"/></td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"text\">&nbsp;</td>");
+            out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewGroupSubmit\" value=\""
+                + rb.getString("general.add.group") + "\"/></td>");
+            out.println("</tr>");
+            out.println("</table>");
             out.println("</form>");
-        } else {
-            //show main menu
-            out.println("<br>");
+
+            //show group list
             out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
             out.println("<tr>");
-            out.println("<td class=\"text\" rowspan=\"3\"><img src='resources/images/blueCubsSmall.gif' border=\"0\"/></td>");
-            out.println("<td class=\"bigtext\" colspan=\"5\">XincoAdmin</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.name") + ":</td>");
+            out.println("<td class=\"bigtext\">&nbsp;</td>");
+            out.println("</tr>");
+
+            Vector allgroups = XincoCoreGroupServer.getXincoCoreGroups(dbm);
+            for (i = 0; i < allgroups.size(); i++) {
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() + "</td>");
+              String label = ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation();
+              try {
+                label = rb.getString(label);
+              } catch (java.util.MissingResourceException e) {
+                //Nothing to translate
+              }
+              out.println("<td class=\"text\">" + label + "</td>");
+              out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect="
+                  + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId()
+                  + "&list=" + request.getParameter("list") + "\" class=\"link\">["
+                  + rb.getString("general.edit") + "]</a></td>");
+              out.println("</tr>");
+            }
+            out.println("</table>");
+          }
+          if (current_location.compareTo("GroupAdminSingle") == 0) {
+
+            //show group modification dialog
+            try {
+              temp_group = new XincoCoreGroupServer(current_group_selection, dbm);
+              out.println("<form action=\"XincoAdmin\" method=\"post\">");
+              out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
+              String designation = temp_group.getDesignation();
+              try {
+                designation = rb.getString(temp_group.getDesignation());
+              } catch (java.util.MissingResourceException e) {
+                //Nothing to translate
+              }
+              out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + designation + "\"/></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">&nbsp;</td>");
+              out.println("<td class=\"text\"><input type='hidden' name='list' value='"
+                  + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\""
+                  + current_group_selection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\""
+                  + rb.getString("general.save") + "!\"/></td>");
+              out.println("</tr>");
+              out.println("</table>");
+              out.println("</form>");
+            } catch (Exception e) {
+            }
+
+            //show user list
+            Vector allusers = XincoCoreUserServer.getXincoCoreUsers(dbm);
+            boolean member_of_group = false;
+
+            out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+
+            if (error_message.compareTo("") != 0) {
+              out.println("<tr>");
+              out.println("<td class=\"text\" colspan=\"6\">" + error_message + "</td>");
+              out.println("</tr>");
+            }
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\" colspan=\"6\">" + rb.getString("general.group.member") + ":</td>");
             out.println("</tr>");
             out.println("<tr>");
-            out.println("<td class=\"text\" colspan=\"5\">" + rb.getString("general.location") + ": " + current_location_desc + "</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.username") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.firstname") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.lastname") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.email") + ":</td>");
+            out.println("<td class=\"bigtext\">&nbsp;</td>");
+            out.println("</tr>");
+            for (i = 0; i < allusers.size(); i++) {
+              member_of_group = false;
+              for (j = 0; j < ((XincoCoreUserServer) allusers.elementAt(i)).getXinco_core_groups().size(); j++) {
+                if (((XincoCoreGroupServer) ((XincoCoreUserServer) allusers.elementAt(i)).getXinco_core_groups().elementAt(j)).getId() == current_group_selection) {
+                  member_of_group = true;
+                  break;
+                }
+              }
+              if (member_of_group) {
+                out.println("<tr>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getId() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getUsername() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
+                out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupRemoveUser="
+                    + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                    + "&list=" + request.getParameter("list")
+                    + "\" class=\"link\">[" + rb.getString("general.group.removeuser") + "]</a></td>");
+                out.println("</tr>");
+              }
+            }
+
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\" colspan=\"6\">&nbsp;</td>");
             out.println("</tr>");
             out.println("<tr>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainOverview=Overview&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.overview") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminUsers=AdminUsers&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.userAdmin") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminGroups=AdminGroups&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.groupAdmin") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEditUserProfile=EditProfile&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.userProfile") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminLanguages=AdminLanguages&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.language") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminAttributes=AdminAttributes&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.attribute") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEmptyTrash=EmptyTrash&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.trash") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainRebuildIndex=RebuildIndex&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.admin.index") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuAudit=AuditMenu&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("general.audit.menu") + "</a></td>");
-            out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainLogout=Logout&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("general.logout") + "</a></td>");
+            out.println("<td class=\"bigtext\" colspan=\"6\">" + rb.getString("general.group.notmember") + ":</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.username") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.firstname") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.lastname") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.email") + ":</td>");
+            out.println("<td class=\"bigtext\">&nbsp;</td>");
+            out.println("</tr>");
+            for (i = 0; i < allusers.size(); i++) {
+              member_of_group = false;
+              for (j = 0; j < ((XincoCoreUserServer) allusers.elementAt(i)).getXinco_core_groups().size(); j++) {
+                if (((XincoCoreGroupServer) ((XincoCoreUserServer) allusers.elementAt(i)).getXinco_core_groups().elementAt(j)).getId() == current_group_selection) {
+                  member_of_group = true;
+                  break;
+                }
+              }
+              if (!member_of_group) {
+                out.println("<tr>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getId() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getUsername() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
+                out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupAddUser="
+                    + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                    + "&list=" + request.getParameter("list")
+                    + "\" class=\"link\">[" + rb.getString("general.group.adduser") + "]</a></td>");
+                out.println("</tr>");
+              }
+            }
+
+            out.println("</table>");
+
+          }
+          if (current_location.compareTo("UserProfileEdit") == 0) {
+
+            //show user profile modification dialog
+            try {
+              temp_user = new XincoCoreUserServer(current_user_selection, dbm);
+              out.println("<form action=\"XincoAdmin\" method=\"post\">");
+              out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.username") + ":</td>");
+              out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileUsername\" value=\"" + temp_user.getUsername() + "\" size=\"40\"/></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.password") + ":</td>");
+              out.println("<td class=\"text\"><input type=\"password\" name=\"DialogEditUserProfilePassword\" value=\"" + temp_user.getUserpassword() + "\" size=\"40\"/></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.firstname") + ":</td>");
+              out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileFirstname\" value=\"" + temp_user.getFirstname() + "\" size=\"40\"/></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.lastname") + ":</td>");
+              out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileLastname\" value=\"" + temp_user.getName() + "\" size=\"40\"/></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.email") + ":</td>");
+              out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileEmail\" value=\"" + temp_user.getEmail() + "\" size=\"40\"/></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">&nbsp;</td>");
+              out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditUserProfileID\" value=\""
+                  + current_user_selection + "\"/><input type=\"submit\" name=\"DialogEditUserProfileSubmit\" value=\"" + rb.getString("general.save") + "!\"/></td>");
+              out.println("</tr>");
+              out.println("</table>");
+              out.println("</form>");
+            } catch (Exception e) {
+            }
+
+          }
+          if (current_location.compareTo("LanguageAdmin") == 0) {
+
+            //show new language dialog
+            out.println("<form action=\"XincoAdmin\" method=\"post\">");
+            out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+            out.println("<tr>");
+            out.println("<td class=\"text\">" + rb.getString("general.designation") + ":</td>");
+            out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewLanguageDesignation\" size=\"40\"/></td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"text\">" + rb.getString("general.sign") + ":</td>");
+            out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewLanguageSign\" size=\"5\"/></td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td class=\"text\">&nbsp;</td>");
+            out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewLanguageSubmit\" value=\""
+                + rb.getString("general.add.language") + "\"/></td>");
             out.println("</tr>");
             out.println("</table>");
-            out.println("<br><br>");
+            out.println("</form>");
 
-            if (current_location.compareTo("MainMenu") == 0) {
-
-                //show overview
-                out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("message.admin.overview") + "</td>");
-                out.println("<td class=\"text\">" + rb.getString("message.admin.overview.message") + "</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("message.admin.userAdmin") + "</td>");
-                out.println("<td class=\"text\">" + rb.getString("message.admin.userAdmin.message") + "</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("message.admin.groupAdmin") + "</td>");
-                out.println("<td class=\"text\">" + rb.getString("message.admin.groupAdmin.message") + "</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("message.admin.userProfile") + "</td>");
-                out.println("<td class=\"text\">" + rb.getString("message.admin.userProfile.message") + "</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("message.admin.language") + "</td>");
-                out.println("<td class=\"text\">" + rb.getString("message.admin.language.message") + "</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("message.admin.attribute") + "</td>");
-                out.println("<td class=\"text\">" + rb.getString("message.admin.attribute.message") + "</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("message.admin.trash") + "</td>");
-                out.println("<td class=\"text\">" + rb.getString("message.admin.trash.message") + "</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("message.admin.index") + "</td>");
-                out.println("<td class=\"text\">" + rb.getString("message.admin.index.message") + "</td>");
-                out.println("</tr>");
-                out.println("</table>");
-
+            //show language list
+            out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+            if (error_message.compareTo("") != 0) {
+              out.println("<tr>");
+              out.println("<td class=\"text\" colspan=\"4\">" + error_message + "</td>");
+              out.println("</tr>");
             }
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.sign") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.designation") + ":</td>");
+            out.println("<td class=\"bigtext\">&nbsp;</td>");
+            out.println("</tr>");
 
-            if (current_location.compareTo("UserAdmin") == 0) {
-
-                //show new user dialog
-                out.println("<form action=\"XincoAdmin\" method=\"post\">");
-                out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-                out.println("<tr>");
-                out.println("<td class=\"text\">" + rb.getString("general.username") + ":</td>");
-                out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewUserUsername\" size=\"40\"/></td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"text\">" + rb.getString("general.password") + ":</td>");
-                out.println("<td class=\"text\"><input type=\"password\" name=\"DialogNewUserPassword\" size=\"40\"/></td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"text\">" + rb.getString("general.firstname") + ":</td>");
-                out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewUserFirstname\" size=\"40\"/></td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"text\">" + rb.getString("general.lastname") + ":</td>");
-                out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewUserLastname\" size=\"40\"/></td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"text\">" + rb.getString("general.email") + ":</td>");
-                out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewUserEmail\" size=\"40\"/></td>");
-                out.println("</tr>");
-                out.println("<tr>");
+            Vector alllanguages = XincoCoreLanguageServer.getXincoCoreLanguages(dbm);
+            boolean is_used = true;
+            for (i = 0; i < alllanguages.size(); i++) {
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getId() + "</td>");
+              out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getSign() + "</td>");
+              out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getDesignation() + "</td>");
+              is_used = XincoCoreLanguageServer.isLanguageUsed((XincoCoreLanguageServer) alllanguages.elementAt(i), dbm);
+              if (!is_used) {
+                out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminLanguagesDelete="
+                    + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getId()
+                    + "&list=" + request.getParameter("list")
+                    + "\" class=\"link\">[" + rb.getString("general.delete") + "]</a></td>");
+              } else {
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewUserSubmit\" value=\""
-                        + rb.getString("general.add.user") + "\"/></td>");
-                out.println("</tr>");
-                out.println("</table>");
-                out.println("</form>");
+              }
+              out.println("</tr>");
+            }
+            out.println("<tr>");
+            out.println("<td colspan=\"4\" class=\"text\">&nbsp;</td>");
+            out.println("</tr>");
+            out.println("<tr>");
+            out.println("<td colspan=\"4\" class=\"text\">"
+                + rb.getString("error.language.delete.referenced") + "</td>");
+            out.println("</tr>");
+            out.println("</table>");
+          }
+          if (current_location.compareTo("AttributesAdmin") == 0) {
+            //show group list
+            out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+            out.println("<tr>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.designation") + ":</td>");
+            out.println("<td class=\"bigtext\">" + rb.getString("general.description") + ":</td>");
+            out.println("<td class=\"bigtext\">&nbsp;</td>");
+            out.println("</tr>");
 
-                //show user list
-                out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-                if (error_message.compareTo("") != 0) {
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"6\">" + error_message + "</td>");
-                    out.println("</tr>");
-                }
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.username") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.firstname") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.lastname") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.email") + ":</td>");
-                out.println("<td class=\"bigtext\">&nbsp;</td>");
-                out.println("</tr>");
-
-                Vector allusers = XincoCoreUserServer.getXincoCoreUsers(dbm);
-                for (i = 0; i < allusers.size(); i++) {
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getUsername() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
-                    if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 1) {
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsersLock="
-                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
-                                + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.lock")
-                                + "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW="
-                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
-                                + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.password.reset") + "*]</a></td>");
-                    }
-                    if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 2) {
-                        out.println("<td class=\"text\"><b>" + rb.getString("general.status.locked") + "</b> <a href=\"XincoAdmin?DialogAdminUsersUnlock="
-                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
-                                + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.unlock")
-                                + "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW="
-                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
-                                + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.password.reset") + "*]</a></td>");
-                    }
-                    out.println("</tr>");
-                }
-
-                out.println("<tr>");
-                out.println("<td colspan=\"6\" class=\"text\">&nbsp;</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td colspan=\"6\" class=\"text\">* " + rb.getString("general.password.note") + "</td>");
-                out.println("</tr>");
-                out.println("</table>");
-
+            Vector alldatatypes = XincoCoreDataTypeServer.getXincoCoreDataTypes(dbm);
+            for (i = 0; i < alldatatypes.size(); i++) {
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId() + "</td>");
+              out.println("<td class=\"text\">" + (rb.containsKey(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation())?
+                  rb.getString(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation()):
+                  ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation())+ "</td>");
+              out.println("<td class=\"text\">" + (rb.containsKey(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription())?
+                  rb.getString(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription()):
+                  ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription()) + "</td>");
+              out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminDataTypeSelect="
+                  + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId()
+                  + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.edit") + "]</a></td>");
+              out.println("</tr>");
+            }
+            out.println("</table>");
+          }
+          if (current_location.compareTo("AttributesAdminSingle") == 0) {
+            //show add attribute dialog
+            try {
+              out.println("<form action=\"XincoAdmin\" method=\"post\">");
+              out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.position") + ":</td>");
+              out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewAttributeAttributeId\" size=\"5\" value=\"1\"/></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.designation") + ":</td>");
+              out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewAttributeDesignation\" size=\"40\" value=\"\"/></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.datatype") + ":</td>");
+              out.println("<td class=\"text\"><select name=\"DialogNewAttributeDataType\" size=\"1\"><option value=\"int\">int (Integer)</option><option value=\"unsignedint\">unsignedint (Unsigned Integer)</option><option value=\"double\">double (Floating Point Number)</option><option value=\"varchar\">varchar (String)</option><option value=\"text\">text (Text)</option><option value=\"datetime\">datetime (Date + Time)</option></select></td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("general.size") + ":</td>");
+              out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewAttributeSize\" size=\"5\" value=\"0\"/> " + rb.getString("message.admin.attribute.req4string") + "</td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\">&nbsp;</td>");
+              out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogNewAttributeDataTypeID\" value=\""
+                  + current_datatype_selection + "\"/><input type=\"submit\" name=\"DialogNewAttributeSubmit\" value=\""
+                  + rb.getString("general.add.attribute") + "\"/></td>");
+              out.println("</tr>");
+              out.println("</table>");
+              out.println("</form>");
+              out.flush();
+            } catch (Exception e) {
             }
 
-            if (current_location.compareTo("GroupAdmin") == 0) {
+            //show attributes list
+            try {
+              XincoCoreDataTypeServer temp_datatype = new XincoCoreDataTypeServer(current_datatype_selection, dbm);
 
-                //show new group dialog
-                out.println("<form action=\"XincoAdmin\" method=\"post\">");
-                out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-                out.println("<tr>");
-                out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
-                out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewGroupName\" size=\"40\"/></td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewGroupSubmit\" value=\""
-                        + rb.getString("general.add.group") + "\"/></td>");
-                out.println("</tr>");
-                out.println("</table>");
-                out.println("</form>");
+              out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
 
-                //show group list
-                out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+              if (error_message.compareTo("") != 0) {
                 out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.name") + ":</td>");
-                out.println("<td class=\"bigtext\">&nbsp;</td>");
+                out.println("<td class=\"text\" colspan=\"5\">" + error_message + "</td>");
                 out.println("</tr>");
-
-                Vector allgroups = XincoCoreGroupServer.getXincoCoreGroups(dbm);
-                for (i = 0; i < allgroups.size(); i++) {
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() + "</td>");
-                    String label = ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation();
-                    try {
-                        label = rb.getString(label);
-                    } catch (java.util.MissingResourceException e) {
-                        //Nothing to translate
-                    }
-                    out.println("<td class=\"text\">" + label + "</td>");
-                    out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect="
-                            + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId()
-                            + "&list=" + request.getParameter("list") + "\" class=\"link\">["
-                            + rb.getString("general.edit") + "]</a></td>");
-                    out.println("</tr>");
+              }
+              out.println("<tr>");
+              out.println("<td class=\"bigtext\" colspan=\"5\">" + rb.getString("general.attribute.ofthistype") + ":</td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"bigtext\">" + rb.getString("general.position") + ":</td>");
+              out.println("<td class=\"bigtext\">" + rb.getString("general.designation") + ":</td>");
+              out.println("<td class=\"bigtext\">" + rb.getString("general.position") + ":</td>");
+              out.println("<td class=\"bigtext\">" + rb.getString("general.size") + ":</td>");
+              out.println("<td class=\"bigtext\">&nbsp;</td>");
+              out.println("</tr>");
+              for (i = 0; i < temp_datatype.getXinco_core_data_type_attributes().size(); i++) {
+                out.println("<tr>");
+                out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getDesignation() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getData_type() + "</td>");
+                out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getSize() + "</td>");
+                if (((current_datatype_selection == 1) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 8)) || ((current_datatype_selection == 2) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 1)) || ((current_datatype_selection == 3) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 1))) {
+                  out.println("<td class=\"text\">&nbsp;</td>");
+                } else {
+                  out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditAttributesRemoveAttributeId="
+                      + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id()
+                      + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.delete") + "*]</a></td>");
                 }
-                out.println("</table>");
+                out.println("</tr>");
+              }
+              out.println("<tr>");
+              out.println("<td class=\"text\" colspan=\"5\">&nbsp;</td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\" colspan=\"5\">" + rb.getString("message.warning.attribute.remove") + "</td>");
+              out.println("</tr>");
+              out.println("</table>");
+            } catch (Exception e) {
             }
+          }
+          if (current_location.compareTo("AuditTable") == 0) {
+            try {
+              out.write("\n");
+              out.write("\n");
+              out.write("\n");
+              out.write("\n");
+              out.write("\n");
+              out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
+              out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
+              out.write("\n");
+              out.write("<html>\n");
+              out.write("<head>\n");
+              out.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
+              out.write("<title>");
+              out.println(rb.getString("general.audit.results").replaceAll("%i",
+                  request.getParameter("id")).replaceAll("%t",
+                      request.getParameter("table")));
+              out.write("</title>\n");
+              out.write("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
+              out.write("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
+              out.write("</head>\n");
+              out.write("<body>\n");
+              out.write("<center>");
 
-            if (current_location.compareTo("GroupAdminSingle") == 0) {
+              ResultSet rs;
+              String column = "id";
+              if (request.getParameter("table").equals("xinco_add_attribute")) {
+                column = "xinco_core_data_id";
+              }
+              if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
+                column = "xinco_core_data_type_id";
+              }
+              rs = dbm.con.createStatement().executeQuery("select * from " + request.getParameter("table")
+                  + "_t a, (select concat(concat(a.firstname , ' ' ), a.name) as \""
+                  + rb.getString("general.user") + "\" , b.mod_time as \"" + rb.getString("general.audit.modtime")
+                  + "\" ,b.mod_reason as \"" + rb.getString("general.reason") + "\" ,b.record_id "
+                      + "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id "
+                      + ") b where b.record_id =a.record_id and a." + column
+                  + " = '" + request.getParameter("id") + "' order by a.record_id desc");
+              dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs),
+                  "<center>" + rb.getString("general.audit.results").replaceAll("%i",
+                      request.getParameter("id")).replaceAll("%t",
+                          request.getParameter("table")) + "<br>", -1, false, -1);
 
-                //show group modification dialog
-                try {
-                    temp_group = new XincoCoreGroupServer(current_group_selection, dbm);
-                    out.println("<form action=\"XincoAdmin\" method=\"post\">");
-                    out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
-                    String designation = temp_group.getDesignation();
-                    try {
-                        designation = rb.getString(temp_group.getDesignation());
-                    } catch (java.util.MissingResourceException e) {
-                        //Nothing to translate
-                    }
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + designation + "\"/></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='"
-                            + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\""
-                            + current_group_selection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\""
-                            + rb.getString("general.save") + "!\"/></td>");
-                    out.println("</tr>");
-                    out.println("</table>");
-                    out.println("</form>");
-                } catch (Exception e) {
-                }
-
-                //show user list
-                Vector allusers = XincoCoreUserServer.getXincoCoreUsers(dbm);
-                boolean member_of_group = false;
-
-                out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-
-                if (error_message.compareTo("") != 0) {
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"6\">" + error_message + "</td>");
-                    out.println("</tr>");
-                }
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\" colspan=\"6\">" + rb.getString("general.group.member") + ":</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.username") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.firstname") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.lastname") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.email") + ":</td>");
-                out.println("<td class=\"bigtext\">&nbsp;</td>");
-                out.println("</tr>");
-                for (i = 0; i < allusers.size(); i++) {
-                    member_of_group = false;
-                    for (j = 0; j < ((XincoCoreUserServer) allusers.elementAt(i)).getXinco_core_groups().size(); j++) {
-                        if (((XincoCoreGroupServer) ((XincoCoreUserServer) allusers.elementAt(i)).getXinco_core_groups().elementAt(j)).getId() == current_group_selection) {
-                            member_of_group = true;
-                            break;
-                        }
-                    }
-                    if (member_of_group) {
-                        out.println("<tr>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getId() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getUsername() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupRemoveUser="
-                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
-                                + "&list=" + request.getParameter("list")
-                                + "\" class=\"link\">[" + rb.getString("general.group.removeuser") + "]</a></td>");
-                        out.println("</tr>");
-                    }
-                }
-
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\" colspan=\"6\">&nbsp;</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\" colspan=\"6\">" + rb.getString("general.group.notmember") + ":</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.username") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.firstname") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.lastname") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.email") + ":</td>");
-                out.println("<td class=\"bigtext\">&nbsp;</td>");
-                out.println("</tr>");
-                for (i = 0; i < allusers.size(); i++) {
-                    member_of_group = false;
-                    for (j = 0; j < ((XincoCoreUserServer) allusers.elementAt(i)).getXinco_core_groups().size(); j++) {
-                        if (((XincoCoreGroupServer) ((XincoCoreUserServer) allusers.elementAt(i)).getXinco_core_groups().elementAt(j)).getId() == current_group_selection) {
-                            member_of_group = true;
-                            break;
-                        }
-                    }
-                    if (!member_of_group) {
-                        out.println("<tr>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getId() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getUsername() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupAddUser="
-                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
-                                + "&list=" + request.getParameter("list")
-                                + "\" class=\"link\">[" + rb.getString("general.group.adduser") + "]</a></td>");
-                        out.println("</tr>");
-                    }
-                }
-
-                out.println("</table>");
-
+              out.write("\n");
+              out.write("        </center>\n");
+              out.write("    </body>\n");
+              out.write("</html>\n");
+            } catch (Exception e) {
+              global_error_message = global_error_message + e.toString();
+              e.printStackTrace();
             }
+          }
+          if (current_location.compareTo("AuditQuery") == 0) {
+            try {
+              out.write("\n");
+              out.write("\n");
+              out.write(" \n");
+              out.write(" \n");
+              out.write("\n");
+              out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
+              out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
+              out.write("\n");
+              out.write("<html>\n");
+              out.write("    <head>\n");
+              out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
+              out.write("        <title>");
+              out.println(rb.getString("general.audit.select.searchparameters"));
+              out.write("</title>\n");
+              out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
+              out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
+              out.write("    </head>\n");
+              out.write("    <body>\n");
+              out.write("        <center>");
+              out.write("            <h1>");
+              out.println(rb.getString("general.audit.select.record") + request.getParameter("table"));
+              out.write("</h1>\n");
+              out.write("            ");
 
-            if (current_location.compareTo("UserProfileEdit") == 0) {
+              ResultSet rs;
+              String column = "id";
+              if (request.getParameter("table").equals("xinco_add_attribute")) {
+                column = "xinco_core_data_id";
+              }
+              if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
+                column = "xinco_core_data_type_id";
+              }
+              rs = dbm.con.createStatement().executeQuery("select distinct * from " + request.getParameter("table")
+                  + " where " + column + " in (select distinct " + column + " from " + request.getParameter("table") + "_t)");
+              dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs), "", -1, false, -1);
+              out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
+              rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from "
+                  + request.getParameter("table") + "_t order by "+column);
+              out.println("Select record id: ");
+              out.println("<select name='id'>");
+              while (rs.next()) {
+                out.println("<option >" + rs.getString(1) + "</option>");
+              }
+              out.println("</select>");
+              out.println("<br><br><input type='submit' value='" + rb.getString("menu.view") + "' />"
+                  + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value=" + request.getParameter("table") + " /></form>");
 
-                //show user profile modification dialog
-                try {
-                    temp_user = new XincoCoreUserServer(current_user_selection, dbm);
-                    out.println("<form action=\"XincoAdmin\" method=\"post\">");
-                    out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.username") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileUsername\" value=\"" + temp_user.getUsername() + "\" size=\"40\"/></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.password") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"password\" name=\"DialogEditUserProfilePassword\" value=\"" + temp_user.getUserpassword() + "\" size=\"40\"/></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.firstname") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileFirstname\" value=\"" + temp_user.getFirstname() + "\" size=\"40\"/></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.lastname") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileLastname\" value=\"" + temp_user.getName() + "\" size=\"40\"/></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.email") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileEmail\" value=\"" + temp_user.getEmail() + "\" size=\"40\"/></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditUserProfileID\" value=\""
-                            + current_user_selection + "\"/><input type=\"submit\" name=\"DialogEditUserProfileSubmit\" value=\"" + rb.getString("general.save") + "!\"/></td>");
-                    out.println("</tr>");
-                    out.println("</table>");
-                    out.println("</form>");
-                } catch (Exception e) {
-                }
-
+              out.write("\n");
+              out.write("        </center>\n");
+              out.write("    </body>\n");
+              out.write("</html>\n");
+            } catch (Exception e) {
+              global_error_message = global_error_message + e.toString();
+              e.printStackTrace();
             }
+          }
+          if (current_location.compareTo("AuditMenu") == 0) {
+            try {
+              out.write("\n");
+              out.write("\n");
+              out.write(" \n");
+              out.write(" \n");
+              out.write("\n");
+              out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
+              out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
+              out.write("\n");
+              out.write("<html>\n");
+              out.write("    <head>\n");
+              out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
+              out.write("        <title>");
+              out.println(rb.getString("message.warning.attribute.remove"));
+              out.write("</title>\n");
+              out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
+              out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
+              out.write("    </head>\n");
+              out.write("    <body>\n");
+              out.write("        \n");
+              out.write("        <center><h1>");
+              out.write("        ");
 
-            if (current_location.compareTo("LanguageAdmin") == 0) {
+              ResultSet rs;
+              DatabaseMetaData meta = dbm.con.getMetaData();
+              String[] types = {
+                "TABLE"
+              };
+              rs = meta.getTables(null, null, null, types);
+              out.println("<center><table border='0'><tbody><thead><tr><th>"
+                  + rb.getString("general.table") + "</th><th>"
+                  + rb.getString("general.audit.action") + "</th></tr>");
+              while (rs.next()) {
+                if (!rs.getString("TABLE_NAME").endsWith("_t")
+                    && !rs.getString("TABLE_NAME").equals("xinco_id")
+                    && !rs.getString("TABLE_NAME").equals("xinco_core_log")
+                    && !rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record")
+                    && rs.getString("TABLE_NAME").startsWith("xinco")
+                    && !rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group")) {
+                  out.println("<form action='XincoAdmin?MenuAudit=AuditQuery' method='POST'>");
+                  out.println("<tr><td>" + rs.getString("TABLE_NAME") + "</td><td><center><input type='submit' value='"
+                      + rb.getString("general.continue") + "'/></center></td></tr>"
+                          + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value='" + rs.getString("TABLE_NAME") + "' /></form>");
+                }
+              }
+              out.println("</tbody></table></center>");
 
-                //show new language dialog
-                out.println("<form action=\"XincoAdmin\" method=\"post\">");
-                out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
+              out.write("\n");
+              out.write("    </body>\n");
+              out.write("</html>\n");
+            } catch (Exception e) {
+              global_error_message = global_error_message + e.toString();
+              e.printStackTrace();
+            }
+          }
+          if (current_location.compareTo("RebuildIndex") == 0) {
+            //rebuild index and list status
+            try {
+              out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
+              out.println("<tr>");
+              out.println("<td class=\"bigtext\" colspan=\"2\">" + rb.getString("message.index.rebuild") + ":</td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\" colspan=\"2\">" + rb.getString("message.warning.index.rebuild") + "</td>");
+              out.println("</tr>");
+              out.println("<tr>");
+              out.println("<td class=\"text\" colspan=\"2\">&nbsp;</td>");
+              out.println("</tr>");
+
+              //delete existing index
+              File indexDirectory = null;
+              File indexDirectoryFile = null;
+              String[] indexDirectoryFileList = null;
+              boolean index_directory_deleted = false;
+              indexDirectory = new File(dbm.config.FileIndexPath);
+              if (indexDirectory.exists()) {
+                indexDirectoryFileList = indexDirectory.list();
+                for (i = 0; i < indexDirectoryFileList.length; i++) {
+                  indexDirectoryFile = new File(dbm.config.FileIndexPath + indexDirectoryFileList[i]);
+                  indexDirectoryFile.delete();
+                }
+                index_directory_deleted = indexDirectory.delete();
                 out.println("<tr>");
-                out.println("<td class=\"text\">" + rb.getString("general.designation") + ":</td>");
-                out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewLanguageDesignation\" size=\"40\"/></td>");
+                out.println("<td class=\"text\"><b>" + rb.getString("message.index.delete") + "</b></td>");
+                if (index_directory_deleted) {
+                  out.println("<td class=\"text\">" + rb.getString("general.ok") + "!</td>");
+                } else {
+                  out.println("<td class=\"text\">" + rb.getString("general.fail") + "</td>");
+                }
                 out.println("</tr>");
+              }
+              out.println("<tr>");
+              out.println("<td class=\"text\">&nbsp;</td>");
+              out.println("<td class=\"text\">&nbsp;</td>");
+              out.println("</tr>");
+
+              //select all data
+              out.println("<tr>");
+              out.println("<td class=\"text\"><b>"
+                  + rb.getString("message.data.sort.designation") + "</b></td>");
+              out.println("<td class=\"text\"><b>"
+                  + rb.getString("message.indexing.status") + "</b></td>");
+              out.println("</tr>");
+              XincoCoreDataServer xdata_temp = null;
+              boolean index_result = false;
+              Statement stmt = dbm.con.createStatement();
+              ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
+              while (rs.next()) {
+                xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
+                index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, dbm);
                 out.println("<tr>");
-                out.println("<td class=\"text\">" + rb.getString("general.sign") + ":</td>");
-                out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewLanguageSign\" size=\"5\"/></td>");
+                out.println("<td class=\"text\">" + xdata_temp.getDesignation() + "</td>");
+                if (index_result) {
+                  out.println("<td class=\"text\">" + rb.getString("general.ok") + "!</td>");
+                } else {
+                  out.println("<td class=\"text\">" + rb.getString("general.fail") + "</td>");
+                }
                 out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewLanguageSubmit\" value=\""
-                        + rb.getString("general.add.language") + "\"/></td>");
-                out.println("</tr>");
-                out.println("</table>");
-                out.println("</form>");
+                out.flush();
+              }
+              stmt.close();
 
-                //show language list
-                out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-                if (error_message.compareTo("") != 0) {
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"4\">" + error_message + "</td>");
-                    out.println("</tr>");
-                }
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.sign") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.designation") + ":</td>");
-                out.println("<td class=\"bigtext\">&nbsp;</td>");
-                out.println("</tr>");
+              //optimize index
+              index_result = XincoIndexer.optimizeIndex(dbm);
+              out.println("<tr>");
+              out.println("<td class=\"text\">" + rb.getString("message.index.optimize") + "</td>");
+              if (index_result) {
+                out.println("<td class=\"text\">" + rb.getString("general.ok") + "!</td>");
+              } else {
+                out.println("<td class=\"text\">" + rb.getString("general.fail") + "</td>");
+              }
+              out.println("</tr>");
+              out.flush();
 
-                Vector alllanguages = XincoCoreLanguageServer.getXincoCoreLanguages(dbm);
-                boolean is_used = true;
-                for (i = 0; i < alllanguages.size(); i++) {
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getSign() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getDesignation() + "</td>");
-                    is_used = XincoCoreLanguageServer.isLanguageUsed((XincoCoreLanguageServer) alllanguages.elementAt(i), dbm);
-                    if (!is_used) {
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminLanguagesDelete="
-                                + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getId()
-                                + "&list=" + request.getParameter("list")
-                                + "\" class=\"link\">[" + rb.getString("general.delete") + "]</a></td>");
-                    } else {
-                        out.println("<td class=\"text\">&nbsp;</td>");
-                    }
-                    out.println("</tr>");
-                }
-                out.println("<tr>");
-                out.println("<td colspan=\"4\" class=\"text\">&nbsp;</td>");
-                out.println("</tr>");
-                out.println("<tr>");
-                out.println("<td colspan=\"4\" class=\"text\">"
-                        + rb.getString("error.language.delete.referenced") + "</td>");
-                out.println("</tr>");
-                out.println("</table>");
+              out.println("</table>");
+
+            } catch (Exception e) {
+              out.println("</table>");
             }
-            if (current_location.compareTo("AttributesAdmin") == 0) {
-                //show group list
-                out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-                out.println("<tr>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.id") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.designation") + ":</td>");
-                out.println("<td class=\"bigtext\">" + rb.getString("general.description") + ":</td>");
-                out.println("<td class=\"bigtext\">&nbsp;</td>");
-                out.println("</tr>");
-
-                Vector alldatatypes = XincoCoreDataTypeServer.getXincoCoreDataTypes(dbm);
-                for (i = 0; i < alldatatypes.size(); i++) {
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + (rb.containsKey(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation())?
-                        rb.getString(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation()):
-                        ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation())+ "</td>");
-                    out.println("<td class=\"text\">" + (rb.containsKey(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription())?
-                        rb.getString(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription()):
-                        ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription()) + "</td>");
-                    out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminDataTypeSelect="
-                            + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId()
-                            + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.edit") + "]</a></td>");
-                    out.println("</tr>");
-                }
-                out.println("</table>");
-            }
-
-            if (current_location.compareTo("AttributesAdminSingle") == 0) {
-                //show add attribute dialog
-                try {
-                    out.println("<form action=\"XincoAdmin\" method=\"post\">");
-                    out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.position") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewAttributeAttributeId\" size=\"5\" value=\"1\"/></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.designation") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewAttributeDesignation\" size=\"40\" value=\"\"/></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.datatype") + ":</td>");
-                    out.println("<td class=\"text\"><select name=\"DialogNewAttributeDataType\" size=\"1\"><option value=\"int\">int (Integer)</option><option value=\"unsignedint\">unsignedint (Unsigned Integer)</option><option value=\"double\">double (Floating Point Number)</option><option value=\"varchar\">varchar (String)</option><option value=\"text\">text (Text)</option><option value=\"datetime\">datetime (Date + Time)</option></select></td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("general.size") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewAttributeSize\" size=\"5\" value=\"0\"/> " + rb.getString("message.admin.attribute.req4string") + "</td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogNewAttributeDataTypeID\" value=\""
-                            + current_datatype_selection + "\"/><input type=\"submit\" name=\"DialogNewAttributeSubmit\" value=\""
-                            + rb.getString("general.add.attribute") + "\"/></td>");
-                    out.println("</tr>");
-                    out.println("</table>");
-                    out.println("</form>");
-                    out.flush();
-                } catch (Exception e) {
-                }
-
-                //show attributes list
-                try {
-                    XincoCoreDataTypeServer temp_datatype = new XincoCoreDataTypeServer(current_datatype_selection, dbm);
-
-                    out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-
-                    if (error_message.compareTo("") != 0) {
-                        out.println("<tr>");
-                        out.println("<td class=\"text\" colspan=\"5\">" + error_message + "</td>");
-                        out.println("</tr>");
-                    }
-                    out.println("<tr>");
-                    out.println("<td class=\"bigtext\" colspan=\"5\">" + rb.getString("general.attribute.ofthistype") + ":</td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"bigtext\">" + rb.getString("general.position") + ":</td>");
-                    out.println("<td class=\"bigtext\">" + rb.getString("general.designation") + ":</td>");
-                    out.println("<td class=\"bigtext\">" + rb.getString("general.position") + ":</td>");
-                    out.println("<td class=\"bigtext\">" + rb.getString("general.size") + ":</td>");
-                    out.println("<td class=\"bigtext\">&nbsp;</td>");
-                    out.println("</tr>");
-                    for (i = 0; i < temp_datatype.getXinco_core_data_type_attributes().size(); i++) {
-                        out.println("<tr>");
-                        out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getDesignation() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getData_type() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getSize() + "</td>");
-                        if (((current_datatype_selection == 1) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 8)) || ((current_datatype_selection == 2) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 1)) || ((current_datatype_selection == 3) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 1))) {
-                            out.println("<td class=\"text\">&nbsp;</td>");
-                        } else {
-                            out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditAttributesRemoveAttributeId="
-                                    + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id()
-                                    + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.delete") + "*]</a></td>");
-                        }
-                        out.println("</tr>");
-                    }
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"5\">&nbsp;</td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"5\">" + rb.getString("message.warning.attribute.remove") + "</td>");
-                    out.println("</tr>");
-                    out.println("</table>");
-                } catch (Exception e) {
-                }
-            }
-            if (current_location.compareTo("AuditTable") == 0) {
-                try {
-                    out.write("\n");
-                    out.write("\n");
-                    out.write("\n");
-                    out.write("\n");
-                    out.write("\n");
-                    out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
-                    out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
-                    out.write("\n");
-                    out.write("<html>\n");
-                    out.write("<head>\n");
-                    out.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
-                    out.write("<title>");
-                    out.println(rb.getString("general.audit.results").replaceAll("%i",
-                            request.getParameter("id")).replaceAll("%t",
-                            request.getParameter("table")));
-                    out.write("</title>\n");
-                    out.write("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
-                    out.write("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
-                    out.write("</head>\n");
-                    out.write("<body>\n");
-                    out.write("<center>");
-
-                    ResultSet rs;
-                    String column = "id";
-                    if (request.getParameter("table").equals("xinco_add_attribute")) {
-                        column = "xinco_core_data_id";
-                    }
-                    if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
-                        column = "xinco_core_data_type_id";
-                    }
-                    rs = dbm.con.createStatement().executeQuery("select * from " + request.getParameter("table")
-                            + "_t a, (select concat(concat(a.firstname , ' ' ), a.name) as \""
-                            + rb.getString("general.user") + "\" , b.mod_time as \"" + rb.getString("general.audit.modtime")
-                            + "\" ,b.mod_reason as \"" + rb.getString("general.reason") + "\" ,b.record_id "
-                            + "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id "
-                            + ") b where b.record_id =a.record_id and a." + column
-                            + " = '" + request.getParameter("id") + "' order by a.record_id desc");
-                    dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs),
-                            "<center>" + rb.getString("general.audit.results").replaceAll("%i",
-                            request.getParameter("id")).replaceAll("%t",
-                            request.getParameter("table")) + "<br>", -1, false, -1);
-
-                    out.write("\n");
-                    out.write("        </center>\n");
-                    out.write("    </body>\n");
-                    out.write("</html>\n");
-                } catch (Exception e) {
-                    global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
-                }
-            }
-            if (current_location.compareTo("AuditQuery") == 0) {
-                try {
-                    out.write("\n");
-                    out.write("\n");
-                    out.write(" \n");
-                    out.write(" \n");
-                    out.write("\n");
-                    out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
-                    out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
-                    out.write("\n");
-                    out.write("<html>\n");
-                    out.write("    <head>\n");
-                    out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
-                    out.write("        <title>");
-                    out.println(rb.getString("general.audit.select.searchparameters"));
-                    out.write("</title>\n");
-                    out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
-                    out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
-                    out.write("    </head>\n");
-                    out.write("    <body>\n");
-                    out.write("        <center>");
-                    out.write("            <h1>");
-                    out.println(rb.getString("general.audit.select.record") + request.getParameter("table"));
-                    out.write("</h1>\n");
-                    out.write("            ");
-
-                    ResultSet rs;
-                    String column = "id";
-                    if (request.getParameter("table").equals("xinco_add_attribute")) {
-                        column = "xinco_core_data_id";
-                    }
-                    if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
-                        column = "xinco_core_data_type_id";
-                    }
-                    rs = dbm.con.createStatement().executeQuery("select distinct * from " + request.getParameter("table")
-                            + " where " + column + " in (select distinct " + column + " from " + request.getParameter("table") + "_t)");
-                    dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs), "", -1, false, -1);
-                    rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from " + request.getParameter("table") + "_t");
-                    out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
-                    rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from "
-                            + request.getParameter("table") + "_t order by "+column);
-                    out.println("Select record id: ");
-                    out.println("<select name='id'>");
-                    while (rs.next()) {
-                        out.println("<option >" + rs.getString(1) + "</option>");
-                    }
-                    out.println("</select>");
-                    out.println("<br><br><input type='submit' value='" + rb.getString("menu.view") + "' />"
-                            + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value=" + request.getParameter("table") + " /></form>");
-
-                    out.write("\n");
-                    out.write("        </center>\n");
-                    out.write("    </body>\n");
-                    out.write("</html>\n");
-                } catch (Exception e) {
-                    global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
-                }
-            }
-            if (current_location.compareTo("AuditMenu") == 0) {
-                try {
-                    out.write("\n");
-                    out.write("\n");
-                    out.write(" \n");
-                    out.write(" \n");
-                    out.write("\n");
-                    out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
-                    out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
-                    out.write("\n");
-                    out.write("<html>\n");
-                    out.write("    <head>\n");
-                    out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
-                    out.write("        <title>");
-                    out.println(rb.getString("message.warning.attribute.remove"));
-                    out.write("</title>\n");
-                    out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
-                    out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
-                    out.write("    </head>\n");
-                    out.write("    <body>\n");
-                    out.write("        \n");
-                    out.write("        <center><h1>");
-                    out.write("        ");
-
-                    ResultSet rs;
-                    DatabaseMetaData meta = dbm.con.getMetaData();
-                    String[] types = {
-                        "TABLE"
-                    };
-                    rs = meta.getTables(null, null, null, types);
-                    out.println("<center><table border='0'><tbody><thead><tr><th>"
-                            + rb.getString("general.table") + "</th><th>"
-                            + rb.getString("general.audit.action") + "</th></tr>");
-                    while (rs.next()) {
-                        if (!rs.getString("TABLE_NAME").endsWith("_t")
-                                && !rs.getString("TABLE_NAME").equals("xinco_id")
-                                && !rs.getString("TABLE_NAME").equals("xinco_core_log")
-                                && !rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record")
-                                && rs.getString("TABLE_NAME").startsWith("xinco")
-                                && !rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group")) {
-                            out.println("<form action='XincoAdmin?MenuAudit=AuditQuery' method='POST'>");
-                            out.println("<tr><td>" + rs.getString("TABLE_NAME") + "</td><td><center><input type='submit' value='"
-                                    + rb.getString("general.continue") + "'/></center></td></tr>"
-                                    + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value='" + rs.getString("TABLE_NAME") + "' /></form>");
-                        }
-                    }
-                    out.println("</tbody></table></center>");
-
-                    out.write("\n");
-                    out.write("    </body>\n");
-                    out.write("</html>\n");
-                } catch (Exception e) {
-                    global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
-                }
-            }
-            if (current_location.compareTo("RebuildIndex") == 0) {
-                //rebuild index and list status
-                try {
-                    out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-                    out.println("<tr>");
-                    out.println("<td class=\"bigtext\" colspan=\"2\">" + rb.getString("message.index.rebuild") + ":</td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\">" + rb.getString("message.warning.index.rebuild") + "</td>");
-                    out.println("</tr>");
-                    out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\">&nbsp;</td>");
-                    out.println("</tr>");
-
-                    //delete existing index
-                    File indexDirectory = null;
-                    File indexDirectoryFile = null;
-                    String[] indexDirectoryFileList = null;
-                    boolean index_directory_deleted = false;
-                    indexDirectory = new File(dbm.config.FileIndexPath);
-                    if (indexDirectory.exists()) {
-                        indexDirectoryFileList = indexDirectory.list();
-                        for (i = 0; i < indexDirectoryFileList.length; i++) {
-                            indexDirectoryFile = new File(dbm.config.FileIndexPath + indexDirectoryFileList[i]);
-                            indexDirectoryFile.delete();
-                        }
-                        index_directory_deleted = indexDirectory.delete();
-                        out.println("<tr>");
-                        out.println("<td class=\"text\"><b>" + rb.getString("message.index.delete") + "</b></td>");
-                        if (index_directory_deleted) {
-                            out.println("<td class=\"text\">" + rb.getString("general.ok") + "!</td>");
-                        } else {
-                            out.println("<td class=\"text\">" + rb.getString("general.fail") + "</td>");
-                        }
-                        out.println("</tr>");
-                    }
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("</tr>");
-
-                    //select all data
-                    out.println("<tr>");
-                    out.println("<td class=\"text\"><b>"
-                            + rb.getString("message.data.sort.designation") + "</b></td>");
-                    out.println("<td class=\"text\"><b>"
-                            + rb.getString("message.indexing.status") + "</b></td>");
-                    out.println("</tr>");
-                    XincoCoreDataServer xdata_temp = null;
-                    boolean index_result = false;
-                    Statement stmt = dbm.con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
-                    while (rs.next()) {
-                        xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
-                        index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, dbm);
-                        out.println("<tr>");
-                        out.println("<td class=\"text\">" + xdata_temp.getDesignation() + "</td>");
-                        if (index_result) {
-                            out.println("<td class=\"text\">" + rb.getString("general.ok") + "!</td>");
-                        } else {
-                            out.println("<td class=\"text\">" + rb.getString("general.fail") + "</td>");
-                        }
-                        out.println("</tr>");
-                        out.flush();
-                    }
-                    stmt.close();
-
-                    //optimize index
-                    index_result = XincoIndexer.optimizeIndex(dbm);
-                    out.println("<tr>");
-                    out.println("<td class=\"text\">" + rb.getString("message.index.optimize") + "</td>");
-                    if (index_result) {
-                        out.println("<td class=\"text\">" + rb.getString("general.ok") + "!</td>");
-                    } else {
-                        out.println("<td class=\"text\">" + rb.getString("general.fail") + "</td>");
-                    }
-                    out.println("</tr>");
-                    out.flush();
-
-                    out.println("</table>");
-
-                } catch (Exception e) {
-                    out.println("</table>");
-                }
-            }
+          }
         }
+      }
 
         //show footer
         out.println("<br><br><br>");

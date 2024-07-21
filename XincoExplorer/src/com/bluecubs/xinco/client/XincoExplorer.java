@@ -486,8 +486,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         xincoClientVersion.setVersion_low(Integer.parseInt(settings.getString("version.low")));
         xincoClientVersion.setVersion_postfix(settings.getString("version.postfix"));
         switchPLAF((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()));
-        this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue() - 100,
-                (new Double(getToolkit().getScreenSize().getHeight())).intValue() - 75);
+        this.setBounds(0, 0, (Double.valueOf(getToolkit().getScreenSize().getWidth())).intValue() - 100,
+                (Double.valueOf(getToolkit().getScreenSize().getHeight())).intValue() - 75);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setName("XincoExplorer");
         this.setTitle(xerb.getString("general.clienttitle") + " - "
@@ -1605,7 +1605,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      *
      * @param node XincoCoreNode
      * @param folder File
-     * @throws java.lang.Exception 
+     * @throws java.lang.Exception
      */
     @SuppressWarnings("unchecked")
     public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
@@ -1823,7 +1823,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      *
      * @param node XincoCoreNode
      * @param folder File
-     * @throws java.lang.Exception 
+     * @throws java.lang.Exception
      */
     @SuppressWarnings("unchecked")
     public void downloadContentOfNode(XincoCoreNode node, File folder) throws Exception {

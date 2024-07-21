@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *************************************************************
  */
 package com.bluecubs.xinco.tools;
@@ -117,8 +117,6 @@ public class XincoCrypter {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -142,8 +140,6 @@ public class XincoCrypter {
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
             e.printStackTrace();
         }
         return null;

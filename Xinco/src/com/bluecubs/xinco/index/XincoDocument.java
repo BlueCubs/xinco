@@ -21,13 +21,13 @@
  *
  * Name:            XincoDocument
  *
- * Description:     convert XincoCoreData to Lucene Documents 
+ * Description:     convert XincoCoreData to Lucene Documents
  *
  * Original Author: Alexander Manes
  * Date:            2004/10/31
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -51,24 +51,22 @@ import com.bluecubs.xinco.index.filetypes.*;
 public class XincoDocument {
 
 	public static Document getXincoDocument(XincoCoreData d, boolean index_content, XincoDBManager dbm) throws java.io.FileNotFoundException {
-	 
-		int i, j, l;
-		int i2, j2;
-		short k, k2; 
+
+		int i, l;
 		FileInputStream is = null;
 		Document doc = null;
 		Document temp_doc = null;
 		int file_type = 0;
 		int file_ext_index = 0;
 		String file_ext = "";
-		
+
 		doc = new Document();
-		
+
 		//add XincoCoreData information
-		doc.add(new Field("id", (new Integer(d.getId())).toString(), true, true, false));
+		doc.add(new Field("id", (Integer.valueOf(d.getId())).toString(), true, true, false));
 		doc.add(Field.Text("designation", d.getDesignation()));
-		doc.add(new Field("language", (new Integer(d.getXinco_core_language().getId())).toString(), true, true, false));
-		
+		doc.add(new Field("language", (Integer.valueOf(d.getXinco_core_language().getId())).toString(), true, true, false));
+
 		//add content of file
 		if (index_content) {
 			if ((d.getXinco_core_data_type().getId() == 1) && (d.getStatus_number() != XincoDataStatus.ARCHIVED.ordinal() + 1)) { //process non-archived file
@@ -128,10 +126,10 @@ public class XincoDocument {
 					} catch (Exception ie) {
 					}
 				}
-				
+
 			}
 		}
-		
+
 		//add attributes
 		for (i=0;i<d.getXinco_add_attributes().size();i++) {
 			if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("int") == 0) {
@@ -153,7 +151,7 @@ public class XincoDocument {
 				doc.add(Field.Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_datetime()));
 			}
 		}
-		
+
 		return doc;
 	}
 

@@ -67,7 +67,7 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author Javier A. ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public final class XincoJTree extends JTree {
 
@@ -77,7 +77,7 @@ public final class XincoJTree extends JTree {
     private Insets autoscrollInsets = new Insets(20, 20, 20, 20); // insets
 
     /** Creates a new instance of XincoJTree
-     * @param explorer 
+     * @param explorer
      */
     public XincoJTree(XincoExplorer explorer) {
         setExplorer(explorer);
