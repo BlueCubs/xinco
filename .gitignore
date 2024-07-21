@@ -22,3 +22,15 @@ XincoLibs/.DS_Store
 .DS_Store
 
 XincoExplorer/nbproject/private/
+
+Xinco/ant/
+
+XincoExplorer/ant/
+
+XincoWebApp/ant/
+
+XincoWebApp/target/
+
+XincoExplorer/target/
+
+Xinco/target/
