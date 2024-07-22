@@ -19,9 +19,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>4.0.1</version>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.1.0</version>
         <scope>provided</scope>
       </dependency>
     </dependencies>
@@ -174,12 +174,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <source>17</source>
-          <!-- JDK source compatibility -->
-          <target>17</target>
-          <!-- JDK target compatibility -->
-          <release>17</release>
           <!-- Ensures no APIs are used that are not available in JDK 17 -->
+          <release>17</release>
         </configuration>
       </plugin>
       <plugin>
@@ -329,7 +325,7 @@
       <plugin>
         <groupId>com.rudikershaw.gitbuildhook</groupId>
         <artifactId>git-build-hook-maven-plugin</artifactId>
-        <version>3.4.1</version>
+        <version>3.5.0</version>
         <configuration>
           <installHooks>
             <pre-commit>${project.build.directory}/test-classes/hooks/pre-commit</pre-commit>

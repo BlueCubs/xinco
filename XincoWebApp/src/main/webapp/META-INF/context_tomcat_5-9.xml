@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- #################### xinco DMS Configuration for Tomcat >=5.5 ####################-->
 <Context docBase="xinco" path="/xinco" reloadable="true">
-  <Loader jakartaConverter="TOMCAT"/>
   <!-- #################### PLEASE CONFIGURE #############################-->
   <!-- ### Params: username, password, url, driverClassName            ###-->
   <!-- ###################################################################-->
@@ -13,7 +12,7 @@
   <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
   <!-- ### driverClassName: org.postgresql.Driver                      ###-->
   <!-- ###################################################################-->
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" factory="org.apache.commons.dbcp2.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"/>
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"/>
   <!-- #################### ################ ####################-->
   <ResourceParams name="jdbc/XincoDB">
     <parameter>
@@ -22,17 +21,17 @@
     </parameter>
   </ResourceParams>
   <!-- #################### PLEASE CONFIGURE ####################-->
-  <!-- Full Path where Xinco saves files:                        -->
+  <!-- Full Path where xinco saves files:                        -->
   <Environment name="xinco/FileRepositoryPath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\"/>
-  <!-- Full Path where Xinco saves its search index:             -->
+  <!-- Full Path where xinco saves its search index:             -->
   <Environment name="xinco/FileIndexPath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\index\"/>
   <!-- Full Path where xinco saves archives:                     -->
   <Environment name="xinco/FileArchivePath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\archive\"/>
-  <!-- Time frame for repeating running the archiver (milliseconds): -->
+  <!-- Time frame for repeatingly running the archiver (milliseconds): -->
   <Environment name="xinco/FileArchivePeriod" override="false" type="java.lang.Long" value="14400000"/>
-  <!-- Time frame for repeating running the index optimizer (milliseconds): -->
+  <!-- Time frame for repeatingly running the index optimizer (milliseconds): -->
   <Environment name="xinco/FileIndexOptimizerPeriod" override="false" type="java.lang.Long" value="14400000"/>
-  <!-- Setting for allowing links go outside of Xinco: -->
+  <!-- Setting for allowing links outside of Xinco: -->
   <Environment name="setting.allowoutsidelinks" override="false" type="java.lang.String" value="True"/>
   <!-- Setting for content list in XincoPublisher (in order to force browsing): -->
   <Environment name="setting.allowpublisherlist" override="false" type="java.lang.String" value="True"/>
@@ -40,7 +39,7 @@
   <Environment name="setting.guesslanguage" override="false" type="java.lang.String" value="False"/>
   <!-- #################### ################ ####################-->
   <!-- ################# Optional Configuration #################-->
-  <!-- File Extensions of Documents to be indexed with a special Indexer: (separate with ;) -->
+  <!-- File Extensions of Documents to be indexed with a special Indexer: (seperate with ;) -->
   <Environment name="xinco/FileIndexerCount" override="false" type="java.lang.Integer" value="5"/>
   <Environment name="xinco/FileIndexer_1_Class" override="false" type="java.lang.String" value="com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF"/>
   <Environment name="xinco/FileIndexer_1_Ext" override="false" type="java.lang.String" value="pdf"/>

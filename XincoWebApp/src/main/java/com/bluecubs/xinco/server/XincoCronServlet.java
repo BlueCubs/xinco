@@ -78,12 +78,10 @@ public class XincoCronServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws javax.servlet.ServletException
    * @throws java.io.IOException
    */
   protected synchronized void processRequest(
-      HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
       db = new XincoDBManager();
     } catch (Exception e) {
@@ -93,19 +91,13 @@ public class XincoCronServlet extends HttpServlet {
       String list = request.getParameter("list");
       String[] locales;
       locales = list.split("_");
-      switch (locales.length) {
-        case 1:
-          loc = new Locale(locales[0]);
-          break;
-        case 2:
-          loc = new Locale(locales[0], locales[1]);
-          break;
-        case 3:
-          loc = new Locale(locales[0], locales[1], locales[2]);
-          break;
-        default:
-          loc = Locale.getDefault();
-      }
+      loc =
+          switch (locales.length) {
+            case 1 -> new Locale(locales[0]);
+            case 2 -> new Locale(locales[0], locales[1]);
+            case 3 -> new Locale(locales[0], locales[1], locales[2]);
+            default -> Locale.getDefault();
+          };
     } catch (Exception e) {
       loc = Locale.getDefault();
     }
@@ -260,12 +252,11 @@ public class XincoCronServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
    * @throws java.io.IOException
    */
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     processRequest(request, response);
   }
 
@@ -274,22 +265,21 @@ public class XincoCronServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
    * @throws java.io.IOException
    */
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     processRequest(request, response);
   }
 
   /**
    * Returns a short description of the servlet.
    *
-   * @return
+   * @return Servlet info.
    */
   @Override
   public String getServletInfo() {
-    return "Servlet of xinco";
+    return "Servlet of Xinco";
   }
 }

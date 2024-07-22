@@ -96,31 +96,23 @@ public class XincoAdminServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws javax.servlet.ServletException
    * @throws java.io.IOException
    */
   @SuppressWarnings("unchecked")
   protected synchronized void processRequest(
-      HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      HttpServletRequest request, HttpServletResponse response) throws IOException {
     Locale loc = null;
     try {
       String list = request.getParameter("list");
       String[] locales;
       locales = list.split("_");
-      switch (locales.length) {
-        case 1:
-          loc = new Locale(locales[0]);
-          break;
-        case 2:
-          loc = new Locale(locales[0], locales[1]);
-          break;
-        case 3:
-          loc = new Locale(locales[0], locales[1], locales[2]);
-          break;
-        default:
-          loc = Locale.getDefault();
-      }
+      loc =
+          switch (locales.length) {
+            case 1 -> new Locale(locales[0]);
+            case 2 -> new Locale(locales[0], locales[1]);
+            case 3 -> new Locale(locales[0], locales[1], locales[2]);
+            default -> Locale.getDefault();
+          };
     } catch (Exception e) {
       loc = Locale.getDefault();
     }
@@ -152,7 +144,7 @@ public class XincoAdminServlet extends HttpServlet {
       dbm.setLoc(loc);
     } catch (Exception e) {
       global_error_message =
-          "" + e.toString() + rb.getString("error.configurationfile.incorrect.deployment");
+          e.toString() + rb.getString("error.configurationfile.incorrect.deployment");
       out.println(global_error_message);
       return;
     }

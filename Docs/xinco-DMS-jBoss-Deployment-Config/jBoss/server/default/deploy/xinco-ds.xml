@@ -10,7 +10,7 @@
     <driver-class>com.mysql.jdbc.Driver</driver-class>
     <!--<driver-class>org.postgresql.Driver</driver-class>-->
     <!-- The factory class -->
-    <factory>org.apache.commons.dbcp.BasicDataSourceFactory</factory>
+    <factory>org.apache.commons.dbcp2.BasicDataSourceFactory</factory>
     <!-- The login and password -->
     <user-name>root</user-name>
     <password/>
