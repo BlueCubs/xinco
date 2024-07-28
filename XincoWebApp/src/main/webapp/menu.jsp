@@ -71,7 +71,7 @@
                 File dir = new File(getServletContext().getRealPath("/client/"));
                 String[] list = dir.list(new ExtensionFilter(".xinco"));
 
-                if (list.length != 0) {
+                if (list !=null && list.length != 0) {
                     for (int i = 0; i < list.length; i++) {
                         new File(dir.getAbsolutePath(), list[i]).delete();
                     }
