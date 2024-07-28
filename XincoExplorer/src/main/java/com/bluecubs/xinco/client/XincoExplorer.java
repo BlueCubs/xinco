@@ -68,7 +68,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.service.XincoServiceLocator;
 import com.bluecubs.xinco.service.XincoSoapBindingStub;
-import java.awt.Desktop;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -84,6 +84,7 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -230,7 +231,10 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   public XincoExplorer() {
     super();
     try {
-      setIconImage((new ImageIcon(XincoExplorer.class.getResource("blueCubsIcon.gif"))).getImage());
+      setIconImage(
+          (new ImageIcon(
+                  Objects.requireNonNull(XincoExplorer.class.getResource("blueCubsIcon.gif"))))
+              .getImage());
     } catch (Exception icone) {
       Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, icone);
     }
@@ -352,8 +356,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     // load locales
     dlm = (DefaultListModel) jListDialogLocale.getModel();
     dlm.removeAllElements();
-    selection = -1;
-    alt_selection = 0;
     lrb =
         ResourceBundle.getBundle(
             "com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
@@ -921,12 +923,10 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleWindows() {
     if (jRadioButtonMenuItemViewStyleWindows == null) {
       jRadioButtonMenuItemViewStyleWindows = new javax.swing.JRadioButtonMenuItem();
-      if (((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()))
-          .equals("com.sun.java.swing.plaf.windows.WindowsLookAndFeel")) {
-        jRadioButtonMenuItemViewStyleWindows.setSelected(true);
-      } else {
-        jRadioButtonMenuItemViewStyleWindows.setSelected(false);
-      }
+      jRadioButtonMenuItemViewStyleWindows.setSelected(
+          xincoClientConfig
+              .get(ConfigElement.LAF.ordinal())
+              .equals("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"));
       jRadioButtonMenuItemViewStyleWindows.setText(xerb.getString("menu.view.windows"));
       jRadioButtonMenuItemViewStyleWindows.addItemListener(
           new java.awt.event.ItemListener() {
@@ -3807,7 +3807,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
    * @return Icon
    */
   public Icon getXincoIcon() {
-    return new javax.swing.ImageIcon(XincoExplorer.class.getResource("blueCubsIcon16x16.GIF"));
+    return new javax.swing.ImageIcon(
+        Objects.requireNonNull(XincoExplorer.class.getResource("blueCubsIcon16x16.GIF")));
   }
 
   /** Refresh JTree */
