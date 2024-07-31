@@ -39,7 +39,7 @@
 
   !insertmacro MUI_PAGE_WELCOME
   !define MUI_PAGE_CUSTOMFUNCTION_SHOW licpageshow
-  !insertmacro MUI_PAGE_LICENSE "License.txt"
+  !insertmacro MUI_PAGE_LICENSE "..\installer\License.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
 
@@ -72,15 +72,15 @@
 ;--------------------------------
 ;Installer Sections
 
-Section "${PROJECT_NAME}" MyApp
+Section "${PROJECT_NAME}"
 
   SetOutPath "$INSTDIR"
 
   ;ADD YOUR OWN FILES HERE...
   File /r ..\..\..\..\target\getdown-stub\*.*
-  File blueCubsIcon.ico
-  File xincobanner.gif
-  File Readme.txt
+  File ..\installer\blueCubsIcon.ico
+  File ..\installer\xincobanner.gif
+  File ..\installer\Readme.txt
 
   ;Store installation folder
   WriteRegStr HKCU "Software\${PROJECT_NAME}" "" $INSTDIR

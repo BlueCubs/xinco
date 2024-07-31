@@ -81,7 +81,7 @@
               <executable>magick</executable>
               <arguments>
                 <argument>${project.basedir}/src/main/resources/com/bluecubs/xinco/client/blueCubsIcon.gif</argument>
-                <argument>${project.basedir}/src/main/resources/nsis/blueCubsIcon.ico</argument>
+                <argument>${project.basedir}/src/main/resources/installer/blueCubsIcon.ico</argument>
               </arguments>
             </configuration>
           </execution>

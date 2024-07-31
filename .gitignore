@@ -38,3 +38,5 @@ Xinco/target/
 .idea/
 
 target/
+
+XincoExplorer/src/main/resources/installer/blueCubsIcon.ico
