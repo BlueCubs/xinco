@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- #################### xinco DMS Configuration for Tomcat >=5.5 ####################-->
 <Context docBase="xinco" path="/xinco" reloadable="true">
-  <Loader jakartaConverter="TOMCAT"/>
   <!-- #################### PLEASE CONFIGURE #############################-->
   <!-- ### Params: username, password, url, driverClassName            ###-->
   <!-- ###################################################################-->
   <!-- ### MySQL:                                                      ###-->
   <!-- ### url: jdbc:mysql://localhost:3306/xinco?autoReconnect=true   ###-->
-  <!-- ### driverClassName: com.mysql.jdbc.Driver                      ###-->
+  <!-- ### driverClassName: com.mysql.cj.jdbc.Driver                   ###-->
   <!-- ###################################################################-->
   <!-- ### PostgreSQL:                                                 ###-->
   <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
   <!-- ### driverClassName: org.postgresql.Driver                      ###-->
   <!-- ###################################################################-->
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" factory="org.apache.commons.dbcp2.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"/>
+  <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" factory="org.apache.commons.dbcp2.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"/>
   <!-- #################### ################ ####################-->
   <ResourceParams name="jdbc/XincoDB">
     <parameter>
@@ -23,11 +22,11 @@
   </ResourceParams>
   <!-- #################### PLEASE CONFIGURE ####################-->
   <!-- Full Path where Xinco saves files:                        -->
-  <Environment name="xinco/FileRepositoryPath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\"/>
+  <Environment name="xinco/FileRepositoryPath" override="false" type="java.lang.String" value="${file.separator}Xinco${file.separator}file_repository${file.separator}"/>
   <!-- Full Path where Xinco saves its search index:             -->
-  <Environment name="xinco/FileIndexPath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\index\"/>
+  <Environment name="xinco/FileIndexPath" override="false" type="java.lang.String" value="${file.separator}Xinco${file.separator}file_repository${file.separator}index${file.separator}"/>
   <!-- Full Path where xinco saves archives:                     -->
-  <Environment name="xinco/FileArchivePath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\archive\"/>
+  <Environment name="xinco/FileArchivePath" override="false" type="java.lang.String" value="${file.separator}Xinco${file.separator}file_repository${file.separator}archive${file.separator}"/>
   <!-- Time frame for repeating running the archiver (milliseconds): -->
   <Environment name="xinco/FileArchivePeriod" override="false" type="java.lang.Long" value="14400000"/>
   <!-- Time frame for repeating running the index optimizer (milliseconds): -->

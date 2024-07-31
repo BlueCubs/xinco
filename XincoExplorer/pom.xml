@@ -8,9 +8,10 @@
   </parent>
   <artifactId>xinco-explorer</artifactId>
   <packaging>jar</packaging>
-  <name>Xinco Explorer</name>
+  <name>XincoExplorer</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <main.class>com.bluecubs.xinco.client.XincoExplorer</main.class>
   </properties>
   <dependencies>
     <dependency>
@@ -29,12 +30,132 @@
       <artifactId>commons-discovery</artifactId>
       <version>0.5</version>
     </dependency>
+    <dependency>
+      <groupId>io.github.rockfireredmoon</groupId>
+      <artifactId>getdown-maven-plugin</artifactId>
+      <version>0.9.1</version>
+    </dependency>
   </dependencies>
   <build>
+    <finalName>xinco-explorer</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>io.github.rockfireredmoon</groupId>
+          <artifactId>getdown-maven-plugin</artifactId>
+          <version>0.9.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.4.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.digitalmediaserver</groupId>
+          <artifactId>nsis-maven-plugin</artifactId>
+          <version>1.0.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>convert-gif-to-ico</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <executable>magick</executable>
+              <arguments>
+                <argument>${project.basedir}/src/main/resources/com/bluecubs/xinco/client/blueCubsIcon.gif</argument>
+                <argument>${project.basedir}/src/main/resources/nsis/blueCubsIcon.ico</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>${main.class}</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.github.rockfireredmoon</groupId>
+        <artifactId>getdown-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>updates</goal>
+              <goal>stub</goal>
+              <goal>applet</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <!-- This is the minimum required configuration, see below for more -->
+              <appbase>http://myserver.com/myapp/getdown</appbase>
+              <mainClass>${main.class}</mainClass>
+              <libPath>lib</libPath>
+              <outputJarVersions>false</outputJarVersions>
+              <verbose>true</verbose>
+              <ui>
+                <name>${project.name}</name>
+                <icons>
+                  <icon>${basedir}/src/main/resources/com/bluecubs/xinco/client/blueCubsIcon.gif</icon>
+                </icons>
+                <!--<progressImage>${basedir}/src/main/images/progress.png</progressImage>
+                <backgroundImage>${basedir}/src/main/images/splash.png</backgroundImage>-->
+                <progress>80, 244, 196, 11</progress>
+                <progressText>FFFFFF</progressText>
+                <statusText>FFFFFF</statusText>
+                <status>20, 170, 316, 64</status>
+                <textShadow>111111</textShadow>
+              </ui>
+              <java>
+                <minVersion>17</minVersion>
+              </java>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.digitalmediaserver</groupId>
+        <artifactId>nsis-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate-headerfile</goal>
+              <goal>make</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <!--Default Value: C:/Program Files/NSIS/makensis.exe-->
+              <!-- <makensisBin>C:\Program Files\NSIS\makensis.exe</makensisBin> -->
+              <!--The name of the installer-->
+              <outputFile>${project.name}-installer.exe</outputFile>
+              <!--Configures the NSIS installer. See NSIS documentation.-->
+              <scriptFile>${basedir}/src/main/resources/nsis/installationConfiguration.nsi</scriptFile>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

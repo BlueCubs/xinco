@@ -61,7 +61,7 @@
             out.println("<br><span class='bigtext'>" + rb.getString("message.admin.main.description") + "</span><br><br>");
             out.println("<table border='0' cellspacing='10' cellpadding='0'>");
             out.println("<tr>");
-            File jnlp = null;
+            File getdown = null;
             File backup = null;
             String protocol = "http://";
             String url = request.getRequestURL().toString();
@@ -77,14 +77,14 @@
                     }
                 }
                 try {
-                    jnlp = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp"));
-                    backup = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp.bak"));
+                    getdown = new File(getServletContext().getRealPath("/client/getdown/getdown.txt"));
+                    backup = new File(getServletContext().getRealPath("/client/getdown/getdown.txt.bak"));
                     backup.createNewFile();
-                    if (jnlp.exists()) {
+                    if (getdown.exists()) {
                         FileChannel source = null;
                         FileChannel destination = null;
                         try {
-                            source = new FileInputStream(jnlp).getChannel();
+                            source = new FileInputStream(getdown).getChannel();
                             destination = new FileOutputStream(backup).getChannel();
                             destination.transferFrom(source, 0, source.size());
                         } finally {
@@ -99,7 +99,7 @@
                             StringBuilder contents = new StringBuilder();
                             //use buffering, reading one line at a time
                             //FileReader always assumes default encoding is OK!
-                            BufferedReader input = new BufferedReader(new FileReader(jnlp));
+                            BufferedReader input = new BufferedReader(new FileReader(getdown));
                             try {
                                 String line = null; //not declared within while loop
                             /*
@@ -109,7 +109,7 @@
                                  * it returns an empty String if two newlines appear in a row.
                                  */
                                 while ((line = input.readLine()) != null) {
-                                    if (line.contains("codebase") && !line.startsWith("<!")) {
+                                    if (line.contains("appbase")) {
                                         String start = line.substring(0,
                                                 line.indexOf(protocol) + protocol.length());
                                         String end = null;
@@ -119,8 +119,8 @@
                                     contents.append(line);
                                     contents.append(System.getProperty("line.separator"));
                                 }
-                                //use buffering to update jnlp
-                                Writer output = new BufferedWriter(new FileWriter(jnlp));
+                                //use buffering to update getdown file
+                                Writer output = new BufferedWriter(new FileWriter(getdown));
                                 try {
                                     //FileWriter always assumes default encoding is OK!
                                     output.write(contents.toString());
@@ -135,7 +135,7 @@
                         } catch (IOException ex) {
                             try {
                                 source = new FileInputStream(backup).getChannel();
-                                destination = new FileOutputStream(jnlp).getChannel();
+                                destination = new FileOutputStream(getdown).getChannel();
                                 destination.transferFrom(source, 0, source.size());
                                 backup.delete();
                             } finally {
@@ -148,14 +148,40 @@
                             }
                         }
                     } else {
-                        throw new XincoException("Missing XincoExplorer.jnlp!");
+                        throw new XincoException("Missing getdown.txt!");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            out.println("<td class='text'><a href='client/XincoExplorer.jnlp' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
+            out.println("</tr>");
+            String osName = System.getProperty("os.name").toLowerCase();
+            if (osName.contains("windows")) {
+                osName = "Windows";
+            } else if (osName.contains("linux")) {
+                osName = "Linux";
+            } else if (osName.contains("mac")) {
+                osName = "Mac OS";
+            } else {
+                osName = "Unknown";
+            }
+            switch(osName){
+                case "Windows":
+                    out.println("<td class='text'><a href='client/installer/windows/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
+                    break;
+                case "Linux":
+                    out.println("<td class='text'><a href='client/installer/linux/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
+                    break;
+                case "Mac OS":
+                    out.println("<td class='text'><a href='client/installer/mac/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
+                    break;
+                default:
+                    out.println("<td class='text'><a href='client/installer/windows/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
+            }
             out.println("<td class='text'>" + rb.getString("message.admin.main.webstart") + "</td>");
+            out.println("<tr>");
+            out.println("Operating System: " + osName);
+            out.println("</tr>");
             out.println("</tr>");
             out.println("<tr>");
             out.println("<td class='text'>" + rb.getString("message.admin.main.endpoint.label") + "</td>");

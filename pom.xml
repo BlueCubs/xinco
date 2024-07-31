@@ -7,6 +7,18 @@
   <packaging>pom</packaging>
   <name>Xinco Parent</name>
   <url>http://maven.apache.org</url>
+  <licenses>
+    <license>
+      <name>GNU General Public License version 2.0 (GPLv2)</name>
+      <url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>Apache License V2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <modules>
     <module>Xinco</module>
     <module>XincoExplorer</module>
@@ -44,6 +56,11 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.16.2</version>
+        </plugin>
+        <plugin>
           <groupId>com.rudikershaw.gitbuildhook</groupId>
           <artifactId>git-build-hook-maven-plugin</artifactId>
           <version>3.5.0</version>
@@ -73,11 +90,6 @@
             </additionalOptions>
             <excludePackageNames>*.service</excludePackageNames>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>versions-maven-plugin</artifactId>
-          <version>2.17.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -180,6 +192,13 @@
     </pluginManagement>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <configuration>
+          <allowMajorUpdates>false</allowMajorUpdates>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -202,8 +221,8 @@
                 <include>.gitignore</include>
               </includes>
               <!-- define the steps to apply to those files -->
-              <trimTrailingWhitespace/>
-              <endWithNewline/>
+              <trimTrailingWhitespace></trimTrailingWhitespace>
+              <endWithNewline></endWithNewline>
               <indent>
                 <tabs>true</tabs>
                 <spacesPerTab>4</spacesPerTab>
@@ -213,23 +232,23 @@
           <!-- define a language-specific format -->
           <java>
             <!-- no need to specify files, inferred automatically, but you can if you want -->
-            <cleanthat/>
+            <cleanthat></cleanthat>
             <!-- apply a specific flavor of google-java-format and reflow long strings -->
             <googleJavaFormat>
               <version>1.22.0</version>
               <style>GOOGLE</style>
               <reflowLongStrings>true</reflowLongStrings>
             </googleJavaFormat>
-            <importOrder/>
-            <removeUnusedImports/>
-            <formatAnnotations/>
+            <importOrder></importOrder>
+            <removeUnusedImports></removeUnusedImports>
+            <formatAnnotations></formatAnnotations>
           </java>
           <groovy>
             <!-- These are the defaults, you can override if you want -->
             <includes>
               <include>**/*.groovy</include>
             </includes>
-            <importOrder/>
+            <importOrder></importOrder>
           </groovy>
           <pom>
             <!-- These are the defaults, you can override if you want -->
@@ -255,13 +274,13 @@
               <!-- Should schema locations be indented -->
               <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
               <!-- Sort order of elements: https://github.com/Ekryd/sortpom/wiki/PredefinedSortOrderProfiles-->
-              <sortOrderFile/>
+              <sortOrderFile></sortOrderFile>
               <!-- Custom sort order of elements: https://raw.githubusercontent.com/Ekryd/sortpom/master/sorter/src/main/resources/custom_1.xml -->
-              <sortDependencies/>
+              <sortDependencies></sortDependencies>
               <!-- Sort dependencies: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
-              <sortDependencyExclusions/>
+              <sortDependencyExclusions></sortDependencyExclusions>
               <!-- Sort dependency exclusions: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
-              <sortPlugins/>
+              <sortPlugins></sortPlugins>
               <!-- Sort plugins: https://github.com/Ekryd/sortpom/wiki/SortPlugins -->
               <sortProperties>false</sortProperties>
               <!-- Sort properties -->
@@ -282,7 +301,7 @@
               <!-- You have to set the target manually -->
               <include>**/*.json</include>
             </includes>
-            <jackson/>
+            <jackson></jackson>
           </json>
         </configuration>
         <executions>
@@ -309,23 +328,6 @@
                   <version>3.3.9</version>
                 </requireMavenVersion>
               </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>au.com.acegi</groupId>
-        <artifactId>xml-format-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>xml-format</id>
-            <goals>
-              <goal>xml-format</goal>
-            </goals>
-            <configuration>
-              <!-- configure your formatting preferences here (see link below) -->
-              <indentSize>2</indentSize>
-              <excludes>**/*/rebel.xml</excludes>
             </configuration>
           </execution>
         </executions>
