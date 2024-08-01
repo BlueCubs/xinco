@@ -1,24 +1,28 @@
-<%@page import="com.bluecubs.xinco.server.ExtensionFilter"%>
-<%@page import="java.io.FilenameFilter"%>
-<%@page import="java.io.FileOutputStream"%>
-<%@page import="java.io.FileInputStream"%>
-<%@page import="java.nio.channels.FileChannel"%>
-<%@page import="com.bluecubs.xinco.core.XincoException"%>
-<%@page import="java.io.Writer"%>
-<%@page import="java.io.FileWriter"%>
-<%@page import="java.io.BufferedWriter"%>
-<%@page import="java.io.IOException"%>
-<%@page import="java.io.FileReader"%>
 <%@page import="java.io.BufferedReader"%>
+<%@page import="java.io.BufferedWriter"%>
+<%@page import="java.io.File"%>
+<%@page import="java.io.FileInputStream"%>
+<%@page import="java.io.FileOutputStream"%>
+<%@page import="java.io.FileReader"%>
+<%@page import="java.io.FileWriter"%>
+<%@page import="java.io.FilenameFilter"%>
+<%@page import="java.io.IOException"%>
 <%@page import="java.io.InputStream"%>
+<%@page import="java.io.Writer"%>
 <%@page import="java.net.URISyntaxException"%>
 <%@page import="java.net.URL"%>
-<%@page import="java.io.File"%>
-<%@page contentType="text/html"%>
-<%@page pageEncoding="UTF-8"%>
-<%@page import="java.util.ResourceBundle"%>
+<%@page import="java.nio.channels.FileChannel"%>
+<%@page import="java.nio.file.Files"%>
+<%@page import="java.nio.file.Path"%>
+<%@page import="java.nio.file.Paths"%>
 <%@page import="java.util.Locale"%>
+<%@page import="java.util.ResourceBundle"%>
+<%@page import="java.util.zip.ZipEntry"%>
+<%@page import="java.util.zip.ZipOutputStream"%>
+<%@page import="com.bluecubs.xinco.core.XincoException"%>
 <%@page import="com.bluecubs.xinco.core.server.XincoDBManager"%>
+<%@page import="com.bluecubs.xinco.server.ExtensionFilter"%>
+<%@page import="com.bluecubs.xinco.tools.ZipUtil"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
@@ -62,6 +66,7 @@
             out.println("<table border='0' cellspacing='10' cellpadding='0'>");
             out.println("<tr>");
             File getdown = null;
+            File getdownInstaller = null;
             File backup = null;
             String protocol = "http://";
             String url = request.getRequestURL().toString();
@@ -79,7 +84,9 @@
                 try {
                     getdown = new File(getServletContext().getRealPath("/client/getdown/getdown.txt"));
                     backup = new File(getServletContext().getRealPath("/client/getdown/getdown.txt.bak"));
+                    getdownInstaller = new File(getServletContext().getRealPath("/client/installer/getdown/getdown.txt"));
                     backup.createNewFile();
+                    // Update getdown file.
                     if (getdown.exists()) {
                         FileChannel source = null;
                         FileChannel destination = null;
@@ -102,7 +109,7 @@
                             BufferedReader input = new BufferedReader(new FileReader(getdown));
                             try {
                                 String line = null; //not declared within while loop
-                            /*
+                                /*
                                  * readLine is a bit quirky :
                                  * it returns the content of a line MINUS the newline.
                                  * it returns null only for the END of the stream.
@@ -127,6 +134,30 @@
                                 } finally {
                                     output.close();
                                 }
+
+                                // Process the second file
+                                    BufferedReader input2 = new BufferedReader(new FileReader(getdownInstaller));
+                                    try {
+                                        String line2 = null;
+                                        StringBuilder contents2 = new StringBuilder();
+                                        while ((line2 = input2.readLine()) != null) {
+                                            if (line2.contains("appbase")) {
+                                                String start2 = line2.substring(0, line2.indexOf(protocol) + protocol.length());
+                                                String end2 = line2.substring(line2.indexOf("/xinco"));
+                                                line2 = start2 + url + end2;
+                                            }
+                                            contents2.append(line2);
+                                            contents2.append(System.getProperty("line.separator"));
+                                        }
+                                        Writer output2 = new BufferedWriter(new FileWriter(getdownInstaller));
+                                        try {
+                                            output2.write(contents2.toString());
+                                        } finally {
+                                            output2.close();
+                                        }
+                                    } finally {
+                                        input2.close();
+                                    }
                             } finally {
                                 input.close();
                                 backup.delete();
@@ -155,6 +186,21 @@
                 }
             }
             out.println("</tr>");
+            try{
+                File zipFile = new File(getServletContext().getRealPath("/client/installer/zip/installer.zip"));
+                if (!zipFile.exists()) {
+                    // Call the method to zip the folder
+                    String sourceFolderPath = application.getRealPath("/client/installer/getdown");
+                    String zipFilePath = application.getRealPath("/client/installer/zip/XincoExplorer.zip");
+                    try {
+                        ZipUtil.zipFolder(sourceFolderPath, zipFilePath);
+                    } catch (IOException e) {
+                        throw new XincoException("Failed to zip folder: " + sourceFolderPath, e);
+                    }
+                }
+            } catch(Exception e){
+                e.printStackTrace();
+            }
             String osName = System.getProperty("os.name").toLowerCase();
             if (osName.contains("windows")) {
                 osName = "Windows";
@@ -170,18 +216,13 @@
                     out.println("<td class='text'><a href='client/installer/windows/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
                     break;
                 case "Linux":
-                    out.println("<td class='text'><a href='client/installer/linux/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
-                    break;
+                    //Fall through
                 case "Mac OS":
-                    out.println("<td class='text'><a href='client/installer/mac/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
-                    break;
+                //Fall through
                 default:
-                    out.println("<td class='text'><a href='client/installer/windows/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
+                    out.println("<td class='text'><a href='client/installer/zip/XincoExplorer.zip' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
             }
             out.println("<td class='text'>" + rb.getString("message.admin.main.webstart") + "</td>");
-            out.println("<tr>");
-            out.println("Operating System: " + osName);
-            out.println("</tr>");
             out.println("</tr>");
             out.println("<tr>");
             out.println("<td class='text'>" + rb.getString("message.admin.main.endpoint.label") + "</td>");

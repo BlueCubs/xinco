@@ -36,6 +36,12 @@
       <version>0.9.1</version>
     </dependency>
   </dependencies>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>ej-technologies</id>
+      <url>https://maven.ej-technologies.com/repository</url>
+    </pluginRepository>
+  </pluginRepositories>
   <build>
     <finalName>xinco-explorer</finalName>
     <pluginManagement>
@@ -59,6 +65,11 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <groupId>com.install4j</groupId>
+          <artifactId>install4j-maven</artifactId>
+          <version>10.0.8</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -111,7 +122,7 @@
             <phase>package</phase>
             <configuration>
               <!-- This is the minimum required configuration, see below for more -->
-              <appbase>http://myserver.com/myapp/getdown</appbase>
+              <appbase>http://localhost:8080/xinco/client/getdown</appbase>
               <mainClass>${main.class}</mainClass>
               <libPath>lib</libPath>
               <outputJarVersions>false</outputJarVersions>
@@ -157,6 +168,23 @@
           </execution>
         </executions>
       </plugin>
+      <!--<plugin>
+        <groupId>com.install4j</groupId>
+        <artifactId>install4j-maven</artifactId>
+        <executions>
+          <execution>
+            <id>compile-installers</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <installDir>/Applications/install4j.app</installDir>
+              <projectFile>${project.basedir}/src/main/resources/install4j/XincoExplorer.install4j</projectFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>-->
     </plugins>
   </build>
 </project>

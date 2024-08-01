@@ -129,6 +129,13 @@
               </includes>
             </resource>
             <resource>
+              <directory>${basedir}/../XincoExplorer/target/getdown-stub</directory>
+              <targetPath>client/installer/getdown</targetPath>
+              <includes>
+                <include>**/*</include>
+              </includes>
+            </resource>
+            <resource>
               <directory>${basedir}/../XincoExplorer/target</directory>
               <targetPath>client/installer/windows</targetPath>
               <includes>

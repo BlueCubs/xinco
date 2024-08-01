@@ -43,6 +43,11 @@ public class XincoException extends Exception {
     xinco_message = s;
   }
 
+  public XincoException(String s, Throwable cause) {
+    super(s, cause);
+    xinco_message = s;
+  }
+
   public String toString() {
     return xinco_message;
   }
