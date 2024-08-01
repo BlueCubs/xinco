@@ -201,27 +201,7 @@
             } catch(Exception e){
                 e.printStackTrace();
             }
-            String osName = System.getProperty("os.name").toLowerCase();
-            if (osName.contains("windows")) {
-                osName = "Windows";
-            } else if (osName.contains("linux")) {
-                osName = "Linux";
-            } else if (osName.contains("mac")) {
-                osName = "Mac OS";
-            } else {
-                osName = "Unknown";
-            }
-            switch(osName){
-                case "Windows":
-                    out.println("<td class='text'><a href='client/installer/windows/XincoExplorer-installer.exe' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
-                    break;
-                case "Linux":
-                    //Fall through
-                case "Mac OS":
-                //Fall through
-                default:
-                    out.println("<td class='text'><a href='client/installer/zip/XincoExplorer.zip' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
-            }
+            out.println("<td class='text'><a href='client/installer/zip/XincoExplorer.zip' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
             out.println("<td class='text'>" + rb.getString("message.admin.main.webstart") + "</td>");
             out.println("</tr>");
             out.println("<tr>");

@@ -57,19 +57,9 @@
           <version>3.4.2</version>
         </plugin>
         <plugin>
-          <groupId>org.digitalmediaserver</groupId>
-          <artifactId>nsis-maven-plugin</artifactId>
-          <version>1.0.6</version>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>3.3.0</version>
-        </plugin>
-        <plugin>
-          <groupId>com.install4j</groupId>
-          <artifactId>install4j-maven</artifactId>
-          <version>10.0.8</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -147,44 +137,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.digitalmediaserver</groupId>
-        <artifactId>nsis-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate-headerfile</goal>
-              <goal>make</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <!--Default Value: C:/Program Files/NSIS/makensis.exe-->
-              <!-- <makensisBin>C:\Program Files\NSIS\makensis.exe</makensisBin> -->
-              <!--The name of the installer-->
-              <outputFile>${project.name}-installer.exe</outputFile>
-              <!--Configures the NSIS installer. See NSIS documentation.-->
-              <scriptFile>${basedir}/src/main/resources/nsis/installationConfiguration.nsi</scriptFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!--<plugin>
-        <groupId>com.install4j</groupId>
-        <artifactId>install4j-maven</artifactId>
-        <executions>
-          <execution>
-            <id>compile-installers</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <installDir>/Applications/install4j.app</installDir>
-              <projectFile>${project.basedir}/src/main/resources/install4j/XincoExplorer.install4j</projectFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>-->
     </plugins>
   </build>
 </project>
