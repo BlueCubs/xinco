@@ -69,26 +69,6 @@
         <artifactId>spotless-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>convert-gif-to-ico</id>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <phase>generate-resources</phase>
-            <configuration>
-              <executable>magick</executable>
-              <arguments>
-                <argument>${project.basedir}/src/main/resources/com/bluecubs/xinco/client/blueCubsIcon.gif</argument>
-                <argument>${project.basedir}/src/main/resources/installer/blueCubsIcon.ico</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
