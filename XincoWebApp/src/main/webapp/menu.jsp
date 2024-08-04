@@ -71,9 +71,10 @@
             String protocol = "http://";
             String url = request.getRequestURL().toString();
             url = url.substring(url.indexOf(protocol) + protocol.length(), url.indexOf("/xinco/menu.jsp"));
-            File last = new File(getServletContext().getRealPath("/client/" + url + ".xinco"));
+            ServletContext servletContext = getServletConfig().getServletContext();
+            File last = new File(servletContext.getRealPath("/client/" + url + ".xinco"));
             if (!last.exists()) {
-                File dir = new File(getServletContext().getRealPath("/client/"));
+                File dir = new File(servletContext.getRealPath("/client/"));
                 String[] list = dir.list(new ExtensionFilter(".xinco"));
 
                 if (list !=null && list.length != 0) {
@@ -82,9 +83,9 @@
                     }
                 }
                 try {
-                    getdown = new File(getServletContext().getRealPath("/client/getdown/getdown.txt"));
-                    backup = new File(getServletContext().getRealPath("/client/getdown/getdown.txt.bak"));
-                    getdownInstaller = new File(getServletContext().getRealPath("/client/installer/getdown/getdown.txt"));
+                    getdown = new File(servletContext.getRealPath("/client/getdown/getdown.txt"));
+                    backup = new File(servletContext.getRealPath("/client/getdown/getdown.txt.bak"));
+                    getdownInstaller = new File(servletContext.getRealPath("/client/installer/getdown/getdown.txt"));
                     backup.createNewFile();
                     // Update getdown file.
                     if (getdown.exists()) {
@@ -187,7 +188,7 @@
             }
             out.println("</tr>");
             try{
-                File zipFile = new File(getServletContext().getRealPath("/client/installer/zip/installer.zip"));
+                File zipFile = new File(servletContext.getRealPath("/client/installer/zip/installer.zip"));
                 if (!zipFile.exists()) {
                     // Call the method to zip the folder
                     String sourceFolderPath = application.getRealPath("/client/installer/getdown");
