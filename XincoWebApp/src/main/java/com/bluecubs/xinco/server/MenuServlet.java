@@ -4,7 +4,6 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.tools.ZipUtil;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class MenuServlet extends HttpServlet {
   private ResourceBundle rb;
+  private String realPath;
 
   /**
    * Initializes the servlet.
@@ -35,6 +35,7 @@ public class MenuServlet extends HttpServlet {
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
+    realPath = config.getServletContext().getRealPath("/");
   }
 
   /** Destroys the servlet. */
@@ -46,12 +47,11 @@ public class MenuServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws java.io.IOException
+   * @throws Exception
    */
-  @SuppressWarnings("unchecked")
   protected synchronized void processRequest(
       HttpServletRequest request, HttpServletResponse response) throws Exception {
-    Locale loc = null;
+    Locale loc;
     XincoDBManager db = new XincoDBManager();
     try {
       String list = request.getParameter("list");
@@ -68,7 +68,6 @@ public class MenuServlet extends HttpServlet {
       loc = Locale.getDefault();
     }
     rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-    loc = rb.getLocale();
     // start output
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
@@ -95,16 +94,15 @@ public class MenuServlet extends HttpServlet {
             + "</span><br><br>");
     out.println("<table border='0' cellspacing='10' cellpadding='0'>");
     out.println("<tr>");
-    File getdown = null;
-    File getdownInstaller = null;
-    File backup = null;
+    File getdown;
+    File getdownInstaller;
+    File backup;
     String protocol = "http://";
     String url = request.getRequestURL().toString();
     url = url.substring(url.indexOf(protocol) + protocol.length(), url.indexOf("/XincoMenu"));
-    ServletContext servletContext = getServletConfig().getServletContext();
-    File last = new File(servletContext.getRealPath("/client/" + url + ".xinco"));
+    File last = new File(realPath + "/client/" + url + ".xinco");
     if (!last.exists()) {
-      File dir = new File(servletContext.getRealPath("/client/"));
+      File dir = new File(realPath + "/client/");
       String[] list = dir.list(new ExtensionFilter(".xinco"));
 
       if (list != null) {
@@ -113,10 +111,9 @@ public class MenuServlet extends HttpServlet {
         }
       }
       try {
-        getdown = new File(servletContext.getRealPath("/client/getdown/getdown.txt"));
-        backup = new File(servletContext.getRealPath("/client/getdown/getdown.txt.bak"));
-        getdownInstaller =
-            new File(servletContext.getRealPath("/client/installer/getdown/getdown.txt"));
+        getdown = new File(realPath + "/client/getdown/getdown.txt");
+        backup = new File(realPath + "/client/getdown/getdown.txt.bak");
+        getdownInstaller = new File(realPath + "/client/installer/getdown/getdown.txt");
         backup.createNewFile();
         // Update getdown file.
         if (getdown.exists()) {
@@ -209,11 +206,11 @@ public class MenuServlet extends HttpServlet {
     }
     out.println("</tr>");
     try {
-      File zipFile = new File(servletContext.getRealPath("/client/installer/zip/installer.zip"));
+      File zipFile = new File(realPath + "/client/installer/zip/installer.zip");
       if (!zipFile.exists()) {
         // Call the method to zip the folder
-        String sourceFolderPath = servletContext.getRealPath("/client/installer/getdown");
-        String zipFilePath = servletContext.getRealPath("/client/installer/zip/XincoExplorer.zip");
+        String sourceFolderPath = realPath + "/client/installer/getdown";
+        String zipFilePath = realPath + "/client/installer/zip/XincoExplorer.zip";
         try {
           ZipUtil.zipFolder(sourceFolderPath, zipFilePath);
         } catch (IOException e) {
@@ -315,12 +312,9 @@ public class MenuServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
-   * @throws java.io.IOException
    */
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) {
     try {
       processRequest(request, response);
     } catch (Exception e) {
@@ -333,12 +327,9 @@ public class MenuServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
-   * @throws java.io.IOException
    */
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
     try {
       processRequest(request, response);
     } catch (Exception e) {

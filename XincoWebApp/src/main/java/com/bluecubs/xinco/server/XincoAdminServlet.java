@@ -2043,12 +2043,11 @@ public class XincoAdminServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
    * @throws java.io.IOException
    */
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     processRequest(request, response);
   }
 
