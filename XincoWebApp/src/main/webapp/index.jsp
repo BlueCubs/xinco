@@ -28,7 +28,7 @@
                 <br><span class="bigtext">xinco DMS - the Core of Information and Document Management</span>
                 <br><br>
 
-                <form name='language' action='menu.jsp'>
+                <form name='language' action='XincoMenu'>
 
                     <table border='0'>
                         <tbody>

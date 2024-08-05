@@ -227,7 +227,7 @@ public class XincoCronServlet extends HttpServlet {
                 : "blueCubs.com and xinco.org"));
     out.println("</tr>");
     out.println(
-        "</table><tr><form action='menu.jsp'><input type='submit' value='"
+        "</table><tr><form action='XincoMenu'><input type='submit' value='"
             + lrb.getString("message.admin.main.backtomain")
             + "' />"
             + "<input type='hidden' name='list' value='"

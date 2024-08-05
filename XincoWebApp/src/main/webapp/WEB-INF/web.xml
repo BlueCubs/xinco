@@ -19,6 +19,10 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
   <servlet>
+    <servlet-name>MenuServlet</servlet-name>
+    <servlet-class>com.bluecubs.xinco.server.MenuServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>XincoAdminServlet</servlet-name>
     <servlet-class>com.bluecubs.xinco.server.XincoAdminServlet</servlet-class>
   </servlet>
@@ -43,6 +47,10 @@
   <servlet-mapping>
     <servlet-name>XincoAdminServlet</servlet-name>
     <url-pattern>/XincoAdmin</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>MenuServlet</servlet-name>
+    <url-pattern>/XincoMenu</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>XincoPublisherServlet</servlet-name>
