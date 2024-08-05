@@ -55,7 +55,7 @@ public class XincoDBManager {
 
   public XincoDBManager() throws Exception {
     lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-    // load compiled configuartion
+    // load compiled configuration
     config = XincoConfigSingletonServer.getInstance();
     DataSource datasource = (DataSource) (new InitialContext()).lookup(config.JNDIDB);
     con = datasource.getConnection();
