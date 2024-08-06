@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+  <action>
+    <actionName>CUSTOM-Run Embedded</actionName>
+    <displayName>Run Embedded</displayName>
+    <goals>
+      <goal>org.codehaus.cargo:cargo-maven3-plugin:run</goal>
+    </goals>
+  </action>
+</actions>
