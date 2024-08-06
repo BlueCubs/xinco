@@ -3,11 +3,6 @@ package com.bluecubs.xinco.server;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.tools.ZipUtil;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,6 +16,11 @@ import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class MenuServlet extends HttpServlet {
   private ResourceBundle rb;
@@ -30,7 +30,7 @@ public class MenuServlet extends HttpServlet {
    * Initializes the servlet.
    *
    * @param config
-   * @throws jakarta.servlet.ServletException
+   * @throws javax.servlet.ServletException
    */
   @Override
   public void init(ServletConfig config) throws ServletException {

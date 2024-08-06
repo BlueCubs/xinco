@@ -27,14 +27,21 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit.version>4.13.2</junit.version>
+    <jakarta.servelet.api.version>4.0.4</jakarta.servelet.api.version>
+    <jakarta.servelet.web.api.version>8.0.0</jakarta.servelet.web.api.version>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>jakarta.servlet</groupId>
         <artifactId>jakarta.servlet-api</artifactId>
-        <version>6.1.0</version>
+        <version>${jakarta.servelet.api.version}}</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -42,7 +49,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

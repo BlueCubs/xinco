@@ -33,13 +33,13 @@ import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import org.apache.axis.encoding.Base64;
 
 public class XincoPublisherServlet extends HttpServlet {
@@ -52,7 +52,7 @@ public class XincoPublisherServlet extends HttpServlet {
    * Initializes the servlet.
    *
    * @param config
-   * @throws jakarta.servlet.ServletException
+   * @throws javax.servlet.ServletException
    */
   @Override
   public void init(ServletConfig config) throws ServletException {
@@ -68,7 +68,7 @@ public class XincoPublisherServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
+   * @throws javax.servlet.ServletException
    * @throws java.io.IOException
    */
   protected synchronized void processRequest(
@@ -622,7 +622,7 @@ public class XincoPublisherServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
+   * @throws javax.servlet.ServletException
    * @throws java.io.IOException
    */
   @Override
@@ -636,7 +636,7 @@ public class XincoPublisherServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
+   * @throws javax.servlet.ServletException
    * @throws java.io.IOException
    */
   @Override

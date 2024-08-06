@@ -1,12 +1,12 @@
 package com.bluecubs.xinco.server;
 
 import com.bluecubs.xinco.tools.LocalizationTool;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.StringTokenizer;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Extracts information from browser

@@ -100,13 +100,13 @@ public class XincoDBManager {
   /**
    * Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out
    *
-   * @param rs
-   * @param out
-   * @param header
-   * @param title
-   * @param columnAsLink
-   * @param details
-   * @param linkType
+   * @param rs Result set
+   * @param out Output stream
+   * @param header Header
+   * @param title Title
+   * @param columnAsLink Column as link
+   * @param details Details
+   * @param linkType Link type
    */
   public void drawTable(
       ResultSet rs,
@@ -176,8 +176,8 @@ public class XincoDBManager {
    * Returns the column names of the query in an HTML table format for use as header for a table
    * produced by the drawTable method.
    *
-   * @param rs
-   * @return
+   * @param rs Result set
+   * @return Column names in a comma-delimited string.
    */
   public StringTokenizer getColumnNamesList(ResultSet rs) {
     String list = "";
@@ -201,8 +201,8 @@ public class XincoDBManager {
    * Returns the column names of the query in an HTML table format for use as header for a table
    * produced by the drawTable method.
    *
-   * @param rs
-   * @return
+   * @param rs Result set
+   * @return Column names in HTML table format
    */
   public String getColumnNames(ResultSet rs) {
     String header = "";
@@ -222,7 +222,7 @@ public class XincoDBManager {
   }
 
   /*Replace a string with contents of resource bundle is applicable
-   *Used to transform db contents to human readable form.
+   *Used to transform db contents to human-readable form.
    */
   private String canReplace(String s) {
     if (s == null) {
@@ -239,13 +239,12 @@ public class XincoDBManager {
   public void setLoc(Locale loc) {
     this.loc = loc;
     if (loc == null) {
-      loc = Locale.getDefault();
-    } else {
-      try {
-        lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      this.loc = Locale.getDefault();
+    }
+    try {
+      lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", this.loc);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 }

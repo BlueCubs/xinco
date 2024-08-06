@@ -32,15 +32,15 @@ package com.bluecubs.xinco.server;
 import com.bluecubs.xinco.archive.XincoArchiveThread;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.index.XincoIndexOptimizeThread;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class XincoCronServlet extends HttpServlet {
 
@@ -55,7 +55,7 @@ public class XincoCronServlet extends HttpServlet {
    * Initializes the servlet.
    *
    * @param config
-   * @throws jakarta.servlet.ServletException
+   * @throws javax.servlet.ServletException
    */
   @Override
   public void init(ServletConfig config) throws ServletException {

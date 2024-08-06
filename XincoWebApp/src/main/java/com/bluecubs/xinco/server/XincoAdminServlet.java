@@ -53,12 +53,6 @@ import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.index.XincoIndexer;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -69,6 +63,12 @@ import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class XincoAdminServlet extends HttpServlet {
 
@@ -80,7 +80,7 @@ public class XincoAdminServlet extends HttpServlet {
    * Initializes the servlet.
    *
    * @param config
-   * @throws jakarta.servlet.ServletException
+   * @throws javax.servlet.ServletException
    */
   @Override
   public void init(ServletConfig config) throws ServletException {
@@ -2056,7 +2056,7 @@ public class XincoAdminServlet extends HttpServlet {
    *
    * @param request servlet request
    * @param response servlet response
-   * @throws jakarta.servlet.ServletException
+   * @throws javax.servlet.ServletException
    * @throws java.io.IOException
    */
   @Override
