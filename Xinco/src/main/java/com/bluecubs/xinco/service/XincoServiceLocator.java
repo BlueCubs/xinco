@@ -83,7 +83,7 @@ public class XincoServiceLocator extends org.apache.axis.client.Service
     }
     throw new javax.xml.rpc.ServiceException(
         "There is no stub implementation for the interface:  "
-            + (serviceEndpointInterface == null ? "null" : serviceEndpointInterface.getName()));
+            + serviceEndpointInterface.getName());
   }
 
   /**

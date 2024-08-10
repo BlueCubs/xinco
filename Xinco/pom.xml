@@ -212,28 +212,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-codegen-plugin</artifactId>
-        <version>3.6.3</version>
-        <executions>
-          <execution>
-            <id>generate-sources</id>
-            <goals>
-              <goal>wsdl2java</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
-              <wsdlOptions>
-                <wsdlOption>
-                  <wsdl>${basedir}/src/main/resources/wsdl/XincoWebService/Xinco.wsdl</wsdl>
-                </wsdlOption>
-              </wsdlOptions>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.3.1</version>
