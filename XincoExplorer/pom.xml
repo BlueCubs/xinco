@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.bluecubs.xinco</groupId>
     <artifactId>xinco-parent</artifactId>
-    <version>2.1.0-RC3-SNAPSHOT</version>
+    <version>2.1.0-RC4-SNAPSHOT</version>
   </parent>
   <artifactId>xinco-explorer</artifactId>
   <packaging>jar</packaging>
@@ -34,6 +34,11 @@
       <groupId>io.github.rockfireredmoon</groupId>
       <artifactId>getdown-maven-plugin</artifactId>
       <version>0.9.1</version>
+    </dependency>
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <version>1.6.3</version>
     </dependency>
   </dependencies>
   <pluginRepositories>
