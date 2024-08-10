@@ -1138,9 +1138,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         i < ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size();
         i++) {
       dlm.addElement(
-          ((XincoClientConnectionProfile)
-                  ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal()))
-                      .get(i))
+          ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal()))
+              .get(i)
               .toString());
     }
     // establish connection and login
@@ -2803,16 +2802,16 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jLabelInternalFrameInformationText.setText(
                 xerb.getString("datawizard.filedownloadinfo"));
             try {
-              Message m = null;
-              MessageContext mc = null;
-              AttachmentPart ap = null;
+              Message m;
+              MessageContext mc;
+              AttachmentPart ap;
               Call call = (Call) xincoClientSession.getXincoService().createCall();
               call.setTargetEndpointAddress(new URL(xincoClientSession.getServiceEndpoint()));
               call.setOperationName(new QName("urn:Xinco", "downloadXincoCoreData"));
               Object[] objp = new Object[2];
-              objp[0] = (XincoCoreData) newnode.getUserObject();
+              objp[0] = newnode.getUserObject();
               objp[1] = xincoClientSession.getUser();
-              // tell server to send file as attachment
+              // Tell server to send file as attachment
               // (keep backward compatibility to earlier versions)
               ap = new AttachmentPart();
               ap.setContent("SAAJ", "text/string");
