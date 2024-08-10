@@ -99,7 +99,7 @@ public class MenuServlet extends HttpServlet {
     File backup;
     String protocol = "http://";
     String url = request.getRequestURL().toString();
-    url = url.substring(url.indexOf(protocol) + protocol.length(), url.indexOf("/XincoMenu"));
+    url = url.substring(url.indexOf(protocol) + protocol.length(), url.indexOf("/xinco"));
     File last = new File(realPath + "/client/" + url + ".xinco");
     if (!last.exists()) {
       File dir = new File(realPath + "/client/");
@@ -135,8 +135,7 @@ public class MenuServlet extends HttpServlet {
             StringBuilder contents = new StringBuilder();
             // use buffering, reading one line at a time
             // FileReader always assumes default encoding is OK!
-            BufferedReader input = new BufferedReader(new FileReader(getdown));
-            try {
+            try (BufferedReader input = new BufferedReader(new FileReader(getdown))) {
               String line = null; // not declared within while loop
               /*
                * readLine is a bit quirky :
@@ -147,8 +146,7 @@ public class MenuServlet extends HttpServlet {
               while ((line = input.readLine()) != null) {
                 if (line.contains("appbase")) {
                   String start = line.substring(0, line.indexOf(protocol) + protocol.length());
-                  String end = null;
-                  end = line.substring(line.indexOf("/xinco"));
+                  String end = line.substring(line.indexOf("/xinco"));
                   line = start + url + end;
                 }
                 contents.append(line);
@@ -178,7 +176,6 @@ public class MenuServlet extends HttpServlet {
                 }
               }
             } finally {
-              input.close();
               backup.delete();
               last.createNewFile();
             }
