@@ -57,7 +57,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the attrib_datetime value for this XincoAddAttribute.
-     * 
+     *
      * @return attrib_datetime
      */
     public java.util.Calendar getAttrib_datetime() {
@@ -67,7 +67,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the attrib_datetime value for this XincoAddAttribute.
-     * 
+     *
      * @param attrib_datetime
      */
     public void setAttrib_datetime(java.util.Calendar attrib_datetime) {
@@ -77,7 +77,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the attrib_double value for this XincoAddAttribute.
-     * 
+     *
      * @return attrib_double
      */
     public double getAttrib_double() {
@@ -87,7 +87,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the attrib_double value for this XincoAddAttribute.
-     * 
+     *
      * @param attrib_double
      */
     public void setAttrib_double(double attrib_double) {
@@ -97,7 +97,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the attrib_int value for this XincoAddAttribute.
-     * 
+     *
      * @return attrib_int
      */
     public int getAttrib_int() {
@@ -107,7 +107,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the attrib_int value for this XincoAddAttribute.
-     * 
+     *
      * @param attrib_int
      */
     public void setAttrib_int(int attrib_int) {
@@ -117,7 +117,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the attrib_text value for this XincoAddAttribute.
-     * 
+     *
      * @return attrib_text
      */
     public java.lang.String getAttrib_text() {
@@ -127,7 +127,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the attrib_text value for this XincoAddAttribute.
-     * 
+     *
      * @param attrib_text
      */
     public void setAttrib_text(java.lang.String attrib_text) {
@@ -137,7 +137,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the attrib_unsignedint value for this XincoAddAttribute.
-     * 
+     *
      * @return attrib_unsignedint
      */
     public long getAttrib_unsignedint() {
@@ -147,7 +147,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the attrib_unsignedint value for this XincoAddAttribute.
-     * 
+     *
      * @param attrib_unsignedint
      */
     public void setAttrib_unsignedint(long attrib_unsignedint) {
@@ -157,7 +157,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the attrib_varchar value for this XincoAddAttribute.
-     * 
+     *
      * @return attrib_varchar
      */
     public java.lang.String getAttrib_varchar() {
@@ -167,7 +167,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the attrib_varchar value for this XincoAddAttribute.
-     * 
+     *
      * @param attrib_varchar
      */
     public void setAttrib_varchar(java.lang.String attrib_varchar) {
@@ -177,7 +177,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the attribute_id value for this XincoAddAttribute.
-     * 
+     *
      * @return attribute_id
      */
     public int getAttribute_id() {
@@ -187,7 +187,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the attribute_id value for this XincoAddAttribute.
-     * 
+     *
      * @param attribute_id
      */
     public void setAttribute_id(int attribute_id) {
@@ -197,7 +197,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the xinco_core_data_id value for this XincoAddAttribute.
-     * 
+     *
      * @return xinco_core_data_id
      */
     public int getXinco_core_data_id() {
@@ -207,7 +207,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the xinco_core_data_id value for this XincoAddAttribute.
-     * 
+     *
      * @param xinco_core_data_id
      */
     public void setXinco_core_data_id(int xinco_core_data_id) {
@@ -217,7 +217,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the changerID value for this XincoAddAttribute.
-     * 
+     *
      * @return changerID
      */
     public int getChangerID() {
@@ -227,7 +227,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the changerID value for this XincoAddAttribute.
-     * 
+     *
      * @param changerID
      */
     public void setChangerID(int changerID) {
@@ -237,7 +237,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Gets the change value for this XincoAddAttribute.
-     * 
+     *
      * @return change
      */
     public boolean isChange() {
@@ -247,7 +247,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     /**
      * Sets the change value for this XincoAddAttribute.
-     * 
+     *
      * @param change
      */
     public void setChange(boolean change) {
@@ -255,6 +255,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
     }
 
     private java.lang.Object __equalsCalc = null;
+    @Override
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoAddAttribute)) return false;
         XincoAddAttribute other = (XincoAddAttribute) obj;
@@ -265,17 +266,17 @@ public class XincoAddAttribute  implements java.io.Serializable {
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true && 
-            ((this.attrib_datetime==null && other.getAttrib_datetime()==null) || 
+        _equals = true &&
+            ((this.attrib_datetime==null && other.getAttrib_datetime()==null) ||
              (this.attrib_datetime!=null &&
               this.attrib_datetime.equals(other.getAttrib_datetime()))) &&
             this.attrib_double == other.getAttrib_double() &&
             this.attrib_int == other.getAttrib_int() &&
-            ((this.attrib_text==null && other.getAttrib_text()==null) || 
+            ((this.attrib_text==null && other.getAttrib_text()==null) ||
              (this.attrib_text!=null &&
               this.attrib_text.equals(other.getAttrib_text()))) &&
             this.attrib_unsignedint == other.getAttrib_unsignedint() &&
-            ((this.attrib_varchar==null && other.getAttrib_varchar()==null) || 
+            ((this.attrib_varchar==null && other.getAttrib_varchar()==null) ||
              (this.attrib_varchar!=null &&
               this.attrib_varchar.equals(other.getAttrib_varchar()))) &&
             this.attribute_id == other.getAttribute_id() &&
@@ -287,6 +288,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+    @Override
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -296,12 +298,12 @@ public class XincoAddAttribute  implements java.io.Serializable {
         if (getAttrib_datetime() != null) {
             _hashCode += getAttrib_datetime().hashCode();
         }
-        _hashCode += new Double(getAttrib_double()).hashCode();
+        _hashCode += Double.valueOf(getAttrib_double()).hashCode();
         _hashCode += getAttrib_int();
         if (getAttrib_text() != null) {
             _hashCode += getAttrib_text().hashCode();
         }
-        _hashCode += new Long(getAttrib_unsignedint()).hashCode();
+        _hashCode += Long.valueOf(getAttrib_unsignedint()).hashCode();
         if (getAttrib_varchar() != null) {
             _hashCode += getAttrib_varchar().hashCode();
         }
@@ -314,7 +316,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
     }
 
     // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
+    private final static org.apache.axis.description.TypeDesc typeDesc =
         new org.apache.axis.description.TypeDesc(XincoAddAttribute.class, true);
 
     static {
@@ -392,10 +394,10 @@ public class XincoAddAttribute  implements java.io.Serializable {
      * Get Custom Serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
+           java.lang.String mechType,
+           java.lang.Class _javaType,
            javax.xml.namespace.QName _xmlType) {
-        return 
+        return
           new  org.apache.axis.encoding.ser.BeanSerializer(
             _javaType, _xmlType, typeDesc);
     }
@@ -404,10 +406,10 @@ public class XincoAddAttribute  implements java.io.Serializable {
      * Get Custom Deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
+           java.lang.String mechType,
+           java.lang.Class _javaType,
            javax.xml.namespace.QName _xmlType) {
-        return 
+        return
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }

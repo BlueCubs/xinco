@@ -1,0 +1,11 @@
+CREATE OR REPLACE FUNCTION concat(text, text) RETURNS text AS
+'SELECT $1 || $2'
+LANGUAGE 'sql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION adddate(date, integer) RETURNS date AS
+'SELECT $1 + $2'
+LANGUAGE 'sql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION subdate(date, integer) RETURNS date AS
+'SELECT $1 - $2'
+LANGUAGE 'sql' VOLATILE;

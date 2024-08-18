@@ -163,17 +163,17 @@ public class XincoAdminServlet extends HttpServlet {
         //check login status
         if (session.getAttribute("XincoAdminServlet.status") == null) {
             status = 0;
-            session.setAttribute("XincoAdminServlet.status", new Integer(status));
+            session.setAttribute("XincoAdminServlet.status", Integer.valueOf(status));
             current_location = "MainLogin";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.login");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
             current_user_selection = 0;
-            session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
+            session.setAttribute("XincoAdminServlet.current_user_selection", Integer.valueOf(current_user_selection));
             current_group_selection = 0;
-            session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
+            session.setAttribute("XincoAdminServlet.current_group_selection", Integer.valueOf(current_group_selection));
             current_datatype_selection = 0;
-            session.setAttribute("XincoAdminServlet.current_datatype_selection", new Integer(current_datatype_selection));
+            session.setAttribute("XincoAdminServlet.current_datatype_selection", Integer.valueOf(current_datatype_selection));
         } else {
             status = ((Integer) session.getAttribute("XincoAdminServlet.status")).intValue();
             current_location = ((String) session.getAttribute("XincoAdminServlet.current_location"));
@@ -187,11 +187,11 @@ public class XincoAdminServlet extends HttpServlet {
                 current_location_desc = rb.getString("message.location.desc.login");
                 session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
                 current_user_selection = 0;
-                session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
+                session.setAttribute("XincoAdminServlet.current_user_selection", Integer.valueOf(current_user_selection));
                 current_group_selection = 0;
-                session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
+                session.setAttribute("XincoAdminServlet.current_group_selection", Integer.valueOf(current_group_selection));
                 current_datatype_selection = 0;
-                session.setAttribute("XincoAdminServlet.current_datatype_selection", new Integer(current_datatype_selection));
+                session.setAttribute("XincoAdminServlet.current_datatype_selection", Integer.valueOf(current_datatype_selection));
             }
         }
 
@@ -250,14 +250,14 @@ public class XincoAdminServlet extends HttpServlet {
                     throw new XincoException(rb.getString("password.login.notAdminGroup"));
                 }
                 current_user_selection = temp_user.getId();
-                session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
+                session.setAttribute("XincoAdminServlet.current_user_selection", Integer.valueOf(current_user_selection));
                 status = 1;
                 //Check for password aging
                 if (temp_user.getStatus_number() == 3) {
                     status = 2;
                 }
                 //-----------------------------------------------------------------------------------
-                session.setAttribute("XincoAdminServlet.status", new Integer(status));
+                session.setAttribute("XincoAdminServlet.status", Integer.valueOf(status));
                 current_location = "MainMenu";
                 session.setAttribute("XincoAdminServlet.current_location", current_location);
                 current_location_desc = rb.getString("message.location.desc.mainmenu");
@@ -266,7 +266,7 @@ public class XincoAdminServlet extends HttpServlet {
                 e.printStackTrace();
                 error_message = "[" + global_error_message + " | " + e.toString() + "]";
                 status = 0;
-                session.setAttribute("XincoAdminServlet.status", new Integer(status));
+                session.setAttribute("XincoAdminServlet.status", Integer.valueOf(status));
             }
         }
         //switch to overview
@@ -462,7 +462,7 @@ public class XincoAdminServlet extends HttpServlet {
         //switch to group modification
         if (request.getParameter("DialogAdminGroupsSelect") != null) {
             current_group_selection = Integer.parseInt(request.getParameter("DialogAdminGroupsSelect"));
-            session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
+            session.setAttribute("XincoAdminServlet.current_group_selection", Integer.valueOf(current_group_selection));
             current_location = "GroupAdminSingle";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.specificgroupadmin");
@@ -559,7 +559,7 @@ public class XincoAdminServlet extends HttpServlet {
         //switch to attributes modification
         if (request.getParameter("DialogAdminDataTypeSelect") != null) {
             current_datatype_selection = Integer.parseInt(request.getParameter("DialogAdminDataTypeSelect"));
-            session.setAttribute("XincoAdminServlet.current_datatype_selection", new Integer(current_datatype_selection));
+            session.setAttribute("XincoAdminServlet.current_datatype_selection", Integer.valueOf(current_datatype_selection));
             current_location = "AttributesAdminSingle";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.specificattributeadmin");
@@ -593,10 +593,10 @@ public class XincoAdminServlet extends HttpServlet {
             try {
                 session.removeAttribute("XincoAdminServlet.user");
                 status = 0;
-                session.setAttribute("XincoAdminServlet.status", new Integer(status));
+                session.setAttribute("XincoAdminServlet.status", Integer.valueOf(status));
             } catch (Exception e) {
                 status = 0;
-                session.setAttribute("XincoAdminServlet.status", new Integer(status));
+                session.setAttribute("XincoAdminServlet.status", Integer.valueOf(status));
             }
         }
         //Password changed due to aging
