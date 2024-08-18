@@ -9,7 +9,7 @@
 <undeployment
     xmlns="http://xml.apache.org/axis/wsdd/">
 
-  <!-- Services from XincoService WSDL service -->
+  <!-- Services from Xinco WSDL service -->
 
-  <service name="Xinco"/>
+  <service name="XincoPort"/>
 </undeployment>

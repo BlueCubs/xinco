@@ -290,13 +290,13 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       XincoCoreACE ace;
       byte[] byte_array = null;
       String revision = "";
-      long total_len = 0;
-      boolean useSAAJ = false;
-      MessageContext mc = null;
-      Message m = null;
-      AttachmentPart ap = null;
-      InputStream in = null;
-      ByteArrayOutputStream out = null;
+      long total_len;
+      boolean useSAAJ;
+      MessageContext mc;
+      Message m;
+      AttachmentPart ap;
+      InputStream in;
+      ByteArrayOutputStream out;
       XincoCoreUserServer user =
           new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
       // load data
@@ -319,11 +319,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         // decide whether to read from SOAP attachments or byte array
         mc = MessageContext.getCurrentContext();
         m = mc.getRequestMessage();
-        if (m.getAttachments().hasNext()) {
-          useSAAJ = true;
-        } else {
-          useSAAJ = false;
-        }
+        useSAAJ = m.getAttachments().hasNext();
         in =
             new CheckedInputStream(
                 new FileInputStream(
@@ -381,29 +377,24 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       XincoDBManager dbm = new XincoDBManager();
       XincoCoreDataServer data;
       XincoCoreACE ace;
-      int i = 0;
-      int len = 0;
-      long total_len = 0;
-      boolean useSAAJ = false;
-      MessageContext mc = null;
-      Message m = null;
-      AttachmentPart ap = null;
-      InputStream in = null;
+      int i;
+      int len;
+      long total_len;
+      boolean useSAAJ;
+      MessageContext mc;
+      Message m;
+      AttachmentPart ap;
+      InputStream in;
       XincoCoreUserServer user =
           new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword(), dbm);
       // load data
       data = new XincoCoreDataServer(in0.getId(), dbm);
       ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
       if (ace.isWrite_permission()) {
-
         // decide whether to read from SOAP attachments or byte array
         mc = MessageContext.getCurrentContext();
         m = mc.getCurrentMessage();
-        if (m.getAttachments().hasNext()) {
-          useSAAJ = true;
-        } else {
-          useSAAJ = false;
-        }
+        useSAAJ = m.getAttachments().hasNext();
         if (useSAAJ) {
           ap = (AttachmentPart) m.getAttachments().next();
           in = (InputStream) ap.getContent();
@@ -417,7 +408,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                         dbm.config.FileRepositoryPath, data.getId(), "" + data.getId())),
                 new CRC32());
         byte[] buf = new byte[4096];
-        len = 0;
         total_len = 0;
         while ((len = in.read(buf)) > 0) {
           out.write(buf, 0, len);
@@ -435,21 +425,21 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
          */
         out.close();
 
-        // dupicate file to preserve current revision
+        // duplicate file to preserve current revision
         if (((XincoAddAttribute) data.getXinco_add_attributes().elementAt(3))
                 .getAttrib_unsignedint()
             == 1) {
           // find id of latest log
-          int MaxLogId = 0;
+          int maxLogId = 0;
           for (i = 0; i < data.getXinco_core_logs().size(); i++) {
-            if ((((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getId() > MaxLogId)
+            if ((((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getId() > maxLogId)
                 && ((((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getOp_code() == 1)
                     || (((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getOp_code()
                         == 5))) {
-              MaxLogId = ((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getId();
+              maxLogId = ((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getId();
             }
           }
-          if (MaxLogId > 0) {
+          if (maxLogId > 0) {
             // copy file
             FileInputStream fcis =
                 new FileInputStream(
@@ -458,13 +448,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                             dbm.config.FileRepositoryPath, data.getId(), "" + data.getId())));
             FileOutputStream fcos =
                 new FileOutputStream(
-                    new File(
-                        XincoCoreDataServer.getXincoCoreDataPath(
-                            dbm.config.FileRepositoryPath,
-                            data.getId(),
-                            data.getId() + "-" + MaxLogId)));
-            byte[] fcbuf = new byte[4096];
-            len = 0;
+                    XincoCoreDataServer.getXincoCoreDataPath(
+                        dbm.config.FileRepositoryPath,
+                        data.getId(),
+                        data.getId() + "-" + maxLogId));
+            byte[] fcbuf = new byte[4_096];
             while ((len = fcis.read(fcbuf)) != -1) {
               fcos.write(fcbuf, 0, len);
             }

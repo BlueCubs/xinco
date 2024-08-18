@@ -21,7 +21,7 @@ public class XincoServiceLocator extends org.apache.axis.client.Service
   }
 
   // Use to get a proxy class for Xinco
-  private java.lang.String Xinco_address = "http://localhost:8084/xinco/services/Xinco";
+  private java.lang.String Xinco_address = "http://localhost:8080/xinco/services/Xinco";
 
   public java.lang.String getXincoAddress() {
     return Xinco_address;

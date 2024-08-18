@@ -37,9 +37,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoServerVersion"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getXincoServerVersion") == null) {
-      _myOperations.put("getXincoServerVersion", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("getXincoServerVersion", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getXincoServerVersion")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -68,9 +66,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getCurrentXincoCoreUser"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getCurrentXincoCoreUser") == null) {
-      _myOperations.put("getCurrentXincoCoreUser", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("getCurrentXincoCoreUser", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getCurrentXincoCoreUser")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -91,9 +87,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getAllXincoCoreGroups"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getAllXincoCoreGroups") == null) {
-      _myOperations.put("getAllXincoCoreGroups", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("getAllXincoCoreGroups", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getAllXincoCoreGroups")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -114,9 +108,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getAllXincoCoreLanguages"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getAllXincoCoreLanguages") == null) {
-      _myOperations.put("getAllXincoCoreLanguages", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("getAllXincoCoreLanguages", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getAllXincoCoreLanguages")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -137,9 +129,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getAllXincoCoreDataTypes"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getAllXincoCoreDataTypes") == null) {
-      _myOperations.put("getAllXincoCoreDataTypes", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("getAllXincoCoreDataTypes", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getAllXincoCoreDataTypes")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -168,9 +158,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoCoreNode"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getXincoCoreNode") == null) {
-      _myOperations.put("getXincoCoreNode", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("getXincoCoreNode", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getXincoCoreNode")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -199,9 +187,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoCoreData"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getXincoCoreData") == null) {
-      _myOperations.put("getXincoCoreData", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("getXincoCoreData", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getXincoCoreData")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -230,9 +216,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "doXincoCoreDataCheckout"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("doXincoCoreDataCheckout") == null) {
-      _myOperations.put("doXincoCoreDataCheckout", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("doXincoCoreDataCheckout", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("doXincoCoreDataCheckout")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -261,9 +245,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "undoXincoCoreDataCheckout"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("undoXincoCoreDataCheckout") == null) {
-      _myOperations.put("undoXincoCoreDataCheckout", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("undoXincoCoreDataCheckout", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("undoXincoCoreDataCheckout")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -292,9 +274,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "doXincoCoreDataCheckin"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("doXincoCoreDataCheckin") == null) {
-      _myOperations.put("doXincoCoreDataCheckin", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("doXincoCoreDataCheckin", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("doXincoCoreDataCheckin")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -323,9 +303,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "downloadXincoCoreData"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("downloadXincoCoreData") == null) {
-      _myOperations.put("downloadXincoCoreData", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("downloadXincoCoreData", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("downloadXincoCoreData")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -361,9 +339,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "uploadXincoCoreData"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("uploadXincoCoreData") == null) {
-      _myOperations.put("uploadXincoCoreData", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("uploadXincoCoreData", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("uploadXincoCoreData")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -398,9 +374,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "findXincoCoreNodes"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("findXincoCoreNodes") == null) {
-      _myOperations.put("findXincoCoreNodes", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("findXincoCoreNodes", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("findXincoCoreNodes")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -435,9 +409,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "findXincoCoreData"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("findXincoCoreData") == null) {
-      _myOperations.put("findXincoCoreData", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("findXincoCoreData", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("findXincoCoreData")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -466,9 +438,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreNode"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("setXincoCoreNode") == null) {
-      _myOperations.put("setXincoCoreNode", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("setXincoCoreNode", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("setXincoCoreNode")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -497,9 +467,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreData"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("setXincoCoreData") == null) {
-      _myOperations.put("setXincoCoreData", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("setXincoCoreData", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("setXincoCoreData")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -526,9 +494,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreACE"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("setXincoCoreACE") == null) {
-      _myOperations.put("setXincoCoreACE", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("setXincoCoreACE", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("setXincoCoreACE")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -557,9 +523,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "removeXincoCoreACE"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("removeXincoCoreACE") == null) {
-      _myOperations.put("removeXincoCoreACE", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("removeXincoCoreACE", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("removeXincoCoreACE")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -586,9 +550,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreLog"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("setXincoCoreLog") == null) {
-      _myOperations.put("setXincoCoreLog", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("setXincoCoreLog", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("setXincoCoreLog")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -617,9 +579,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreUser"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("setXincoCoreUser") == null) {
-      _myOperations.put("setXincoCoreUser", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("setXincoCoreUser", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("setXincoCoreUser")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -648,9 +608,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreGroup"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("setXincoCoreGroup") == null) {
-      _myOperations.put("setXincoCoreGroup", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("setXincoCoreGroup", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("setXincoCoreGroup")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -679,9 +637,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreLanguage"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("setXincoCoreLanguage") == null) {
-      _myOperations.put("setXincoCoreLanguage", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("setXincoCoreLanguage", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("setXincoCoreLanguage")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -713,9 +669,8 @@ public class XincoSoapBindingSkeleton
         new javax.xml.namespace.QName("urn:Xinco", "getXincoCoreDataTypeAttribute"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getXincoCoreDataTypeAttribute") == null) {
-      _myOperations.put("getXincoCoreDataTypeAttribute", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent(
+        "getXincoCoreDataTypeAttribute", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getXincoCoreDataTypeAttribute")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -744,9 +699,7 @@ public class XincoSoapBindingSkeleton
     _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoAddAttribute"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("getXincoAddAttribute") == null) {
-      _myOperations.put("getXincoAddAttribute", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent("getXincoAddAttribute", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("getXincoAddAttribute")).add(_oper);
     _params =
         new org.apache.axis.description.ParameterDesc[] {
@@ -783,9 +736,8 @@ public class XincoSoapBindingSkeleton
         new javax.xml.namespace.QName("urn:Xinco", "checkXincoCoreUserNewPassword"));
     _oper.setSoapAction("");
     _myOperationsList.add(_oper);
-    if (_myOperations.get("checkXincoCoreUserNewPassword") == null) {
-      _myOperations.put("checkXincoCoreUserNewPassword", new java.util.ArrayList());
-    }
+    _myOperations.computeIfAbsent(
+        "checkXincoCoreUserNewPassword", k -> new java.util.ArrayList<>());
     ((java.util.List) _myOperations.get("checkXincoCoreUserNewPassword")).add(_oper);
   }
 
@@ -805,68 +757,58 @@ public class XincoSoapBindingSkeleton
 
   public com.bluecubs.xinco.core.XincoCoreUser getCurrentXincoCoreUser(
       java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreUser ret = impl.getCurrentXincoCoreUser(in0, in1);
-    return ret;
+    return impl.getCurrentXincoCoreUser(in0, in1);
   }
 
   public java.util.Vector getAllXincoCoreGroups(com.bluecubs.xinco.core.XincoCoreUser in0)
       throws java.rmi.RemoteException {
-    java.util.Vector ret = impl.getAllXincoCoreGroups(in0);
-    return ret;
+    return impl.getAllXincoCoreGroups(in0);
   }
 
   public java.util.Vector getAllXincoCoreLanguages(com.bluecubs.xinco.core.XincoCoreUser in0)
       throws java.rmi.RemoteException {
-    java.util.Vector ret = impl.getAllXincoCoreLanguages(in0);
-    return ret;
+    return impl.getAllXincoCoreLanguages(in0);
   }
 
   public java.util.Vector getAllXincoCoreDataTypes(com.bluecubs.xinco.core.XincoCoreUser in0)
       throws java.rmi.RemoteException {
-    java.util.Vector ret = impl.getAllXincoCoreDataTypes(in0);
-    return ret;
+    return impl.getAllXincoCoreDataTypes(in0);
   }
 
   public com.bluecubs.xinco.core.XincoCoreNode getXincoCoreNode(
       com.bluecubs.xinco.core.XincoCoreNode in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreNode ret = impl.getXincoCoreNode(in0, in1);
-    return ret;
+    return impl.getXincoCoreNode(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreData getXincoCoreData(
       com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreData ret = impl.getXincoCoreData(in0, in1);
-    return ret;
+    return impl.getXincoCoreData(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreData doXincoCoreDataCheckout(
       com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreData ret = impl.doXincoCoreDataCheckout(in0, in1);
-    return ret;
+    return impl.doXincoCoreDataCheckout(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreData undoXincoCoreDataCheckout(
       com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreData ret = impl.undoXincoCoreDataCheckout(in0, in1);
-    return ret;
+    return impl.undoXincoCoreDataCheckout(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreData doXincoCoreDataCheckin(
       com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreData ret = impl.doXincoCoreDataCheckin(in0, in1);
-    return ret;
+    return impl.doXincoCoreDataCheckin(in0, in1);
   }
 
   public byte[] downloadXincoCoreData(
       com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    byte[] ret = impl.downloadXincoCoreData(in0, in1);
-    return ret;
+    return impl.downloadXincoCoreData(in0, in1);
   }
 
   public int uploadXincoCoreData(
@@ -874,8 +816,7 @@ public class XincoSoapBindingSkeleton
       byte[] in1,
       com.bluecubs.xinco.core.XincoCoreUser in2)
       throws java.rmi.RemoteException {
-    int ret = impl.uploadXincoCoreData(in0, in1, in2);
-    return ret;
+    return impl.uploadXincoCoreData(in0, in1, in2);
   }
 
   public java.util.Vector findXincoCoreNodes(
@@ -883,8 +824,7 @@ public class XincoSoapBindingSkeleton
       com.bluecubs.xinco.core.XincoCoreLanguage in1,
       com.bluecubs.xinco.core.XincoCoreUser in2)
       throws java.rmi.RemoteException {
-    java.util.Vector ret = impl.findXincoCoreNodes(in0, in1, in2);
-    return ret;
+    return impl.findXincoCoreNodes(in0, in1, in2);
   }
 
   public java.util.Vector findXincoCoreData(
@@ -892,80 +832,68 @@ public class XincoSoapBindingSkeleton
       com.bluecubs.xinco.core.XincoCoreLanguage in1,
       com.bluecubs.xinco.core.XincoCoreUser in2)
       throws java.rmi.RemoteException {
-    java.util.Vector ret = impl.findXincoCoreData(in0, in1, in2);
-    return ret;
+    return impl.findXincoCoreData(in0, in1, in2);
   }
 
   public com.bluecubs.xinco.core.XincoCoreNode setXincoCoreNode(
       com.bluecubs.xinco.core.XincoCoreNode in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreNode ret = impl.setXincoCoreNode(in0, in1);
-    return ret;
+    return impl.setXincoCoreNode(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreData setXincoCoreData(
       com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreData ret = impl.setXincoCoreData(in0, in1);
-    return ret;
+    return impl.setXincoCoreData(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreACE setXincoCoreACE(
       com.bluecubs.xinco.core.XincoCoreACE in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreACE ret = impl.setXincoCoreACE(in0, in1);
-    return ret;
+    return impl.setXincoCoreACE(in0, in1);
   }
 
   public boolean removeXincoCoreACE(
       com.bluecubs.xinco.core.XincoCoreACE in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    boolean ret = impl.removeXincoCoreACE(in0, in1);
-    return ret;
+    return impl.removeXincoCoreACE(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreLog setXincoCoreLog(
       com.bluecubs.xinco.core.XincoCoreLog in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreLog ret = impl.setXincoCoreLog(in0, in1);
-    return ret;
+    return impl.setXincoCoreLog(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreUser setXincoCoreUser(
       com.bluecubs.xinco.core.XincoCoreUser in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreUser ret = impl.setXincoCoreUser(in0, in1);
-    return ret;
+    return impl.setXincoCoreUser(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreGroup setXincoCoreGroup(
       com.bluecubs.xinco.core.XincoCoreGroup in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreGroup ret = impl.setXincoCoreGroup(in0, in1);
-    return ret;
+    return impl.setXincoCoreGroup(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreLanguage setXincoCoreLanguage(
       com.bluecubs.xinco.core.XincoCoreLanguage in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreLanguage ret = impl.setXincoCoreLanguage(in0, in1);
-    return ret;
+    return impl.setXincoCoreLanguage(in0, in1);
   }
 
   public com.bluecubs.xinco.core.XincoCoreDataTypeAttribute getXincoCoreDataTypeAttribute(
       com.bluecubs.xinco.core.XincoCoreDataTypeAttribute in0,
       com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.core.XincoCoreDataTypeAttribute ret =
-        impl.getXincoCoreDataTypeAttribute(in0, in1);
-    return ret;
+    return impl.getXincoCoreDataTypeAttribute(in0, in1);
   }
 
   public com.bluecubs.xinco.add.XincoAddAttribute getXincoAddAttribute(
       com.bluecubs.xinco.add.XincoAddAttribute in0, com.bluecubs.xinco.core.XincoCoreUser in1)
       throws java.rmi.RemoteException {
-    com.bluecubs.xinco.add.XincoAddAttribute ret = impl.getXincoAddAttribute(in0, in1);
-    return ret;
+    return impl.getXincoAddAttribute(in0, in1);
   }
 
   public boolean checkXincoCoreUserNewPassword(
@@ -973,7 +901,6 @@ public class XincoSoapBindingSkeleton
       com.bluecubs.xinco.core.XincoCoreUser in1,
       com.bluecubs.xinco.core.XincoCoreUser in2)
       throws java.rmi.RemoteException {
-    boolean ret = impl.checkXincoCoreUserNewPassword(in0, in1, in2);
-    return ret;
+    return impl.checkXincoCoreUserNewPassword(in0, in1, in2);
   }
 }

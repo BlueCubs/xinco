@@ -12,7 +12,7 @@
   <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
   <!-- ### driverClassName: org.postgresql.Driver                      ###-->
   <!-- ###################################################################-->
-  <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" factory="org.apache.commons.dbcp2.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"/>
+  <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" factory="org.apache.commons.dbcp2.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="xinco"/>
   <!-- #################### ################ ####################-->
   <ResourceParams name="jdbc/XincoDB">
     <parameter>

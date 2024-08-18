@@ -27,9 +27,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit.version>4.13.2</junit.version>
+    <spotless.version>2.43.0</spotless.version>
     <jakarta.servelet.api.version>4.0.4</jakarta.servelet.api.version>
     <jakarta.servelet.web.api.version>8.0.0</jakarta.servelet.web.api.version>
-    <wsdl4j.version>1.5.3</wsdl4j.version>
+    <wsdl4j.version>1.5.1</wsdl4j.version>
+    <axis.version>1.4</axis.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -195,9 +197,28 @@
           <artifactId>spotless-maven-plugin</artifactId>
           <version>2.43.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>analyze</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
@@ -336,22 +357,6 @@
                 </requireMavenVersion>
               </rules>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.rudikershaw.gitbuildhook</groupId>
-        <artifactId>git-build-hook-maven-plugin</artifactId>
-        <configuration>
-          <installHooks>
-            <pre-commit>${project.build.directory}/test-classes/hooks/pre-commit</pre-commit>
-          </installHooks>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>install</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>

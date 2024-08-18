@@ -741,7 +741,6 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
     ((org.apache.axis.client.Service) super.service).setTypeMappingVersion("1.2");
     java.lang.Class cls;
     javax.xml.namespace.QName qName;
-    javax.xml.namespace.QName qName2;
     java.lang.Class beansf = org.apache.axis.encoding.ser.BeanSerializerFactory.class;
     java.lang.Class beandf = org.apache.axis.encoding.ser.BeanDeserializerFactory.class;
     java.lang.Class enumsf = org.apache.axis.encoding.ser.EnumSerializerFactory.class;
@@ -906,23 +905,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {});
+    Object _resp = _call.invoke(new Object[] {});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoVersion) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoVersion)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoVersion.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoVersion) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoVersion)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoVersion.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -940,23 +935,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreUser) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreUser)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreUser.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreUser) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreUser)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreUser.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -974,22 +965,18 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+    Object _resp = _call.invoke(new Object[] {in0});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (java.util.Vector) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (java.util.Vector)
-              org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (java.util.Vector) _resp;
+      } catch (Exception _exception) {
+        return (java.util.Vector)
+            org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1007,22 +994,18 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+    Object _resp = _call.invoke(new Object[] {in0});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (java.util.Vector) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (java.util.Vector)
-              org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (java.util.Vector) _resp;
+      } catch (Exception _exception) {
+        return (java.util.Vector)
+            org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1040,22 +1023,18 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+    Object _resp = _call.invoke(new Object[] {in0});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (java.util.Vector) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (java.util.Vector)
-              org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (java.util.Vector) _resp;
+      } catch (Exception _exception) {
+        return (java.util.Vector)
+            org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1074,23 +1053,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreNode) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreNode)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreNode.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreNode) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreNode)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreNode.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1109,23 +1084,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreData) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreData)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreData.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreData) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreData)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreData.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1144,23 +1115,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreData) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreData)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreData.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreData) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreData)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreData.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1179,23 +1146,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreData) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreData)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreData.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreData) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreData)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreData.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1214,23 +1177,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreData) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreData)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreData.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreData) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreData)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreData.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1249,21 +1208,17 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (byte[]) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (byte[]) org.apache.axis.utils.JavaUtils.convert(_resp, byte[].class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (byte[]) _resp;
+      } catch (Exception _exception) {
+        return (byte[]) org.apache.axis.utils.JavaUtils.convert(_resp, byte[].class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1284,22 +1239,17 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+    Object _resp = _call.invoke(new Object[] {in0, in1, in2});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return ((java.lang.Integer) _resp).intValue();
-        } catch (java.lang.Exception _exception) {
-          return ((java.lang.Integer) org.apache.axis.utils.JavaUtils.convert(_resp, int.class))
-              .intValue();
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return ((Integer) _resp).intValue();
+      } catch (Exception _exception) {
+        return ((Integer) org.apache.axis.utils.JavaUtils.convert(_resp, int.class)).intValue();
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1320,22 +1270,18 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+    Object _resp = _call.invoke(new Object[] {in0, in1, in2});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (java.util.Vector) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (java.util.Vector)
-              org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (java.util.Vector) _resp;
+      } catch (Exception _exception) {
+        return (java.util.Vector)
+            org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1356,22 +1302,18 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+    Object _resp = _call.invoke(new Object[] {in0, in1, in2});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (java.util.Vector) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (java.util.Vector)
-              org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (java.util.Vector) _resp;
+      } catch (Exception _exception) {
+        return (java.util.Vector)
+            org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1390,23 +1332,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreNode) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreNode)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreNode.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreNode) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreNode)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreNode.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1425,23 +1363,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreData) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreData)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreData.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreData) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreData)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreData.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1460,23 +1394,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreACE) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreACE)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreACE.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreACE) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreACE)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreACE.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1495,22 +1425,17 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return ((java.lang.Boolean) _resp).booleanValue();
-        } catch (java.lang.Exception _exception) {
-          return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class))
-              .booleanValue();
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (Boolean) _resp;
+      } catch (Exception _exception) {
+        return (Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1529,23 +1454,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreLog) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreLog)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreLog.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreLog) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreLog)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreLog.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1564,23 +1485,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreUser) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreUser)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreUser.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreUser) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreUser)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreUser.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1599,23 +1516,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreGroup) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreGroup)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreGroup.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreGroup) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreGroup)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreGroup.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1634,23 +1547,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreLanguage) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreLanguage)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreLanguage.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreLanguage) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreLanguage)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreLanguage.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1671,23 +1580,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.core.XincoCoreDataTypeAttribute) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.core.XincoCoreDataTypeAttribute)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.core.XincoCoreDataTypeAttribute.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.core.XincoCoreDataTypeAttribute) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.core.XincoCoreDataTypeAttribute)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.core.XincoCoreDataTypeAttribute.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1706,23 +1611,19 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+    Object _resp = _call.invoke(new Object[] {in0, in1});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return (com.bluecubs.xinco.add.XincoAddAttribute) _resp;
-        } catch (java.lang.Exception _exception) {
-          return (com.bluecubs.xinco.add.XincoAddAttribute)
-              org.apache.axis.utils.JavaUtils.convert(
-                  _resp, com.bluecubs.xinco.add.XincoAddAttribute.class);
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (com.bluecubs.xinco.add.XincoAddAttribute) _resp;
+      } catch (Exception _exception) {
+        return (com.bluecubs.xinco.add.XincoAddAttribute)
+            org.apache.axis.utils.JavaUtils.convert(
+                _resp, com.bluecubs.xinco.add.XincoAddAttribute.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 
@@ -1744,22 +1645,17 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub
 
     setRequestHeaders(_call);
     setAttachments(_call);
-    try {
-      java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+    Object _resp = _call.invoke(new Object[] {in0, in1, in2});
 
-      if (_resp instanceof java.rmi.RemoteException) {
-        throw (java.rmi.RemoteException) _resp;
-      } else {
-        extractAttachments(_call);
-        try {
-          return ((java.lang.Boolean) _resp).booleanValue();
-        } catch (java.lang.Exception _exception) {
-          return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class))
-              .booleanValue();
-        }
+    if (_resp instanceof java.rmi.RemoteException) {
+      throw (java.rmi.RemoteException) _resp;
+    } else {
+      extractAttachments(_call);
+      try {
+        return (Boolean) _resp;
+      } catch (Exception _exception) {
+        return (Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class);
       }
-    } catch (org.apache.axis.AxisFault axisFaultException) {
-      throw axisFaultException;
     }
   }
 }

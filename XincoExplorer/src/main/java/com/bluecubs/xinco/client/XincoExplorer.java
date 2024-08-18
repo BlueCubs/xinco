@@ -896,112 +896,15 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     if (jMenuView == null) {
       jMenuView = new javax.swing.JMenu();
       bgwindowstyle = new ButtonGroup();
-      jMenuView.add(getJRadioButtonMenuItemViewStyleWindows());
       jMenuView.add(getJRadioButtonMenuItemViewStyleJava());
       jMenuView.add(getJRadioButtonMenuItemViewStyleMotif());
-      jMenuView.add(getJRadioButtonMenuItemViewStyleNapkin());
-      jMenuView.add(getJRadioButtonMenuItemViewStyleSubstance());
-      jMenuView.add(getJRadioButtonMenuItemViewStyleLiquid());
       jMenuView.add(getJRadioButtonMenuItemViewStyleJTatoo());
       bgwindowstyle.add(jMenuView.getItem(0));
       bgwindowstyle.add(jMenuView.getItem(1));
       bgwindowstyle.add(jMenuView.getItem(2));
-      bgwindowstyle.add(jMenuView.getItem(3));
-      bgwindowstyle.add(jMenuView.getItem(4));
-      bgwindowstyle.add(jMenuView.getItem(5));
-      bgwindowstyle.add(jMenuView.getItem(6));
       jMenuView.setText(xerb.getString("menu.view"));
     }
     return jMenuView;
-  }
-
-  /**
-   * This method initializes jRadioButtonMenuItemViewStyleWindows
-   *
-   * @return javax.swing.JRadioButtonMenuItem
-   */
-  private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleWindows() {
-    if (jRadioButtonMenuItemViewStyleWindows == null) {
-      jRadioButtonMenuItemViewStyleWindows = new javax.swing.JRadioButtonMenuItem();
-      jRadioButtonMenuItemViewStyleWindows.setSelected(
-          xincoClientConfig
-              .get(ConfigElement.LAF.ordinal())
-              .equals("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"));
-      jRadioButtonMenuItemViewStyleWindows.setText(xerb.getString("menu.view.windows"));
-      jRadioButtonMenuItemViewStyleWindows.addItemListener(
-          new java.awt.event.ItemListener() {
-
-            @SuppressWarnings("unchecked")
-            public void itemStateChanged(java.awt.event.ItemEvent e) {
-              switchPLAF("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-              xincoClientConfig.add(
-                  ConfigElement.LAF.ordinal(),
-                  "com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-              saveConfig();
-            }
-          });
-    }
-    return jRadioButtonMenuItemViewStyleWindows;
-  }
-
-  /**
-   * This method initializes jRadioButtonMenuItemViewStyleNapkin
-   *
-   * @return javax.swing.JRadioButtonMenuItem
-   */
-  private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleNapkin() {
-    if (jRadioButtonMenuItemViewStyleNapkin == null) {
-      jRadioButtonMenuItemViewStyleNapkin = new javax.swing.JRadioButtonMenuItem();
-      if (((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()))
-          .equals("net.sourceforge.napkinlaf.NapkinLookAndFeel")) {
-        jRadioButtonMenuItemViewStyleNapkin.setSelected(true);
-      } else {
-        jRadioButtonMenuItemViewStyleNapkin.setSelected(false);
-      }
-      jRadioButtonMenuItemViewStyleNapkin.setText(xerb.getString("menu.view.napkin"));
-      jRadioButtonMenuItemViewStyleNapkin.addItemListener(
-          new java.awt.event.ItemListener() {
-
-            @SuppressWarnings("unchecked")
-            public void itemStateChanged(java.awt.event.ItemEvent e) {
-              switchPLAF("net.sourceforge.napkinlaf.NapkinLookAndFeel");
-              xincoClientConfig.add(
-                  ConfigElement.LAF.ordinal(), "net.sourceforge.napkinlaf.NapkinLookAndFeel");
-              saveConfig();
-            }
-          });
-    }
-    return jRadioButtonMenuItemViewStyleNapkin;
-  }
-
-  /**
-   * This method initializes jRadioButtonMenuItemViewStyleLiquid
-   *
-   * @return javax.swing.JRadioButtonMenuItem
-   */
-  private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleLiquid() {
-    if (jRadioButtonMenuItemViewStyleLiquid == null) {
-      jRadioButtonMenuItemViewStyleLiquid = new javax.swing.JRadioButtonMenuItem();
-      if (((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()))
-          .equals("com.birosoft.liquid.LiquidLookAndFeel")) {
-        jRadioButtonMenuItemViewStyleLiquid.setSelected(true);
-      } else {
-        jRadioButtonMenuItemViewStyleLiquid.setSelected(false);
-      }
-      jRadioButtonMenuItemViewStyleLiquid.setText(xerb.getString("menu.view.liquid"));
-      jRadioButtonMenuItemViewStyleLiquid.addItemListener(
-          new java.awt.event.ItemListener() {
-
-            @SuppressWarnings("unchecked")
-            public void itemStateChanged(java.awt.event.ItemEvent e) {
-              switchPLAF("com.birosoft.liquid.LiquidLookAndFeel");
-              xincoClientConfig.add(
-                  ConfigElement.LAF.ordinal(), "com.birosoft.liquid.LiquidLookAndFeel");
-              saveConfig();
-            }
-          });
-    }
-    return jRadioButtonMenuItemViewStyleLiquid;
   }
 
   /**
@@ -1012,12 +915,10 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleJTatoo() {
     if (jRadioButtonMenuItemViewStyleJTatoo == null) {
       jRadioButtonMenuItemViewStyleJTatoo = new javax.swing.JRadioButtonMenuItem();
-      if (((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()))
-          .equals("com.jtattoo.plaf.smart.SmartLookAndFeel")) {
-        jRadioButtonMenuItemViewStyleJTatoo.setSelected(true);
-      } else {
-        jRadioButtonMenuItemViewStyleJTatoo.setSelected(false);
-      }
+      jRadioButtonMenuItemViewStyleJTatoo.setSelected(
+          xincoClientConfig
+              .get(ConfigElement.LAF.ordinal())
+              .equals("com.jtattoo.plaf.smart.SmartLookAndFeel"));
       jRadioButtonMenuItemViewStyleJTatoo.setText(xerb.getString("menu.view.jtatoo"));
       jRadioButtonMenuItemViewStyleJTatoo.addItemListener(
           new java.awt.event.ItemListener() {
@@ -1035,36 +936,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   }
 
   /**
-   * This method initializes jRadioButtonMenuItemViewStyleNapkin
-   *
-   * @return javax.swing.JRadioButtonMenuItem
-   */
-  private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleSubstance() {
-    if (jRadioButtonMenuItemViewStyleSubstance == null) {
-      jRadioButtonMenuItemViewStyleSubstance = new javax.swing.JRadioButtonMenuItem();
-      if (((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()))
-          .equals("org.jvnet.substance.SubstanceLookAndFeel")) {
-        jRadioButtonMenuItemViewStyleSubstance.setSelected(true);
-      } else {
-        jRadioButtonMenuItemViewStyleSubstance.setSelected(false);
-      }
-      jRadioButtonMenuItemViewStyleSubstance.setText(xerb.getString("menu.view.substance"));
-      jRadioButtonMenuItemViewStyleSubstance.addItemListener(
-          new java.awt.event.ItemListener() {
-
-            @SuppressWarnings("unchecked")
-            public void itemStateChanged(java.awt.event.ItemEvent e) {
-              switchPLAF("org.jvnet.substance.SubstanceLookAndFeel");
-              xincoClientConfig.add(
-                  ConfigElement.LAF.ordinal(), "org.jvnet.substance.SubstanceLookAndFeel");
-              saveConfig();
-            }
-          });
-    }
-    return jRadioButtonMenuItemViewStyleSubstance;
-  }
-
-  /**
    * This method initializes jRadioButtonMenuItemViewStyleJava
    *
    * @return javax.swing.JRadioButtonMenuItem
@@ -1072,12 +943,10 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleJava() {
     if (jRadioButtonMenuItemViewStyleJava == null) {
       jRadioButtonMenuItemViewStyleJava = new javax.swing.JRadioButtonMenuItem();
-      if (((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()))
-          .equals("javax.swing.plaf.metal.MetalLookAndFeel")) {
-        jRadioButtonMenuItemViewStyleJava.setSelected(true);
-      } else {
-        jRadioButtonMenuItemViewStyleJava.setSelected(false);
-      }
+      jRadioButtonMenuItemViewStyleJava.setSelected(
+          xincoClientConfig
+              .get(ConfigElement.LAF.ordinal())
+              .equals("javax.swing.plaf.metal.MetalLookAndFeel"));
       jRadioButtonMenuItemViewStyleJava.setText(xerb.getString("menu.view.java"));
       jRadioButtonMenuItemViewStyleJava.addItemListener(
           new java.awt.event.ItemListener() {
@@ -1102,12 +971,10 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleMotif() {
     if (jRadioButtonMenuItemViewStyleMotif == null) {
       jRadioButtonMenuItemViewStyleMotif = new javax.swing.JRadioButtonMenuItem();
-      if (((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()))
-          .equals("com.sun.java.swing.plaf.motif.MotifLookAndFeel")) {
-        jRadioButtonMenuItemViewStyleMotif.setSelected(true);
-      } else {
-        jRadioButtonMenuItemViewStyleMotif.setSelected(false);
-      }
+      jRadioButtonMenuItemViewStyleMotif.setSelected(
+          xincoClientConfig
+              .get(ConfigElement.LAF.ordinal())
+              .equals("com.sun.java.swing.plaf.motif.MotifLookAndFeel"));
       jRadioButtonMenuItemViewStyleMotif.setText(xerb.getString("menu.view.motif"));
       jRadioButtonMenuItemViewStyleMotif.addItemListener(
           new java.awt.event.ItemListener() {
@@ -1138,8 +1005,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         i < ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size();
         i++) {
       dlm.addElement(
-          ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal()))
-              .get(i)
+          ((XincoClientConnectionProfile)
+                  ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal()))
+                      .get(i))
               .toString());
     }
     // establish connection and login
@@ -1497,11 +1365,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     return jInternalFrameInformation;
   }
 
-  /**
-   * This method switches the plugable look and feel
-   *
-   * @return void
-   */
+  /** This method switches the plugable look and feel */
   private void switchPLAF(String plafString) {
     try {
       // set LAF
@@ -1989,23 +1853,14 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
         // invoke web service (update data / upload file / add log)
         // load file
-        long total_len = 0;
-        boolean useSAAJ = false;
-
-        if (((xincoClientSession.getServerVersion().getVersion_high() == 1)
-                && (xincoClientSession.getServerVersion().getVersion_mid() >= 9))
-            || (xincoClientSession.getServerVersion().getVersion_high() > 1)) {
-          useSAAJ = true;
-        } else {
-          useSAAJ = false;
-        }
+        long total_len;
         CheckedInputStream cin = null;
         ByteArrayOutputStream out = null;
 
         byte_array = null;
         try {
           cin = new CheckedInputStream(new FileInputStream(folder_list[i]), new CRC32());
-          if (useSAAJ) {
+          if (useSAAJ()) {
             total_len = folder_list[i].length();
           } else {
             out = new ByteArrayOutputStream();
@@ -2036,7 +1891,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
           ((XincoAddAttribute)
                   ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().get(4))
               .setAttrib_unsignedint(0);
-          if (!useSAAJ) {
+          if (!useSAAJ()) {
             cin.close();
           }
         } catch (Exception fe) {
@@ -2059,12 +1914,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         // save log to server
         newlog =
             xincoClientSession.getXinco().setXincoCoreLog(newlog, xincoClientSession.getUser());
-        if (newlog == null) {}
         // attach file to SOAP message
-        if (useSAAJ) {
-          AttachmentPart ap = null;
-
-          ap = new AttachmentPart();
+        if (useSAAJ()) {
+          AttachmentPart ap = new AttachmentPart();
           ap.setContent(cin, "unknown/unknown");
           ((XincoSoapBindingStub) xincoClientSession.getXinco()).addAttachment(ap);
         }
@@ -2082,7 +1934,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         }
         ((XincoSoapBindingStub) xincoClientSession.getXinco()).clearAttachments();
         cin.close();
-        // update treemodel
+        // update tree model
         xincoClientSession.getXincoClientRepository().treemodel.reload(newnode);
         xincoClientSession.getXincoClientRepository().treemodel.nodeChanged(newnode);
         // select parent of new node
@@ -2123,7 +1975,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
           throw new XincoException(xerb.getString("window.folder.updatefailed"));
         }
         newnode.setUserObject(xnode);
-        // update treemodel
+        // update tree model
         xincoClientSession.getXincoClientRepository().treemodel.reload(newnode);
         xincoClientSession.getXincoClientRepository().treemodel.nodeChanged(newnode);
         // start recursion
@@ -2258,7 +2110,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   /**
    * This method leads through data adding/editing
    *
-   * @param w_type
+   * @param w_type Wizard Type
    */
   @SuppressWarnings("unchecked")
   public void doDataWizard(final int w_type) {
@@ -2386,7 +2238,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
           if ((wizard_type == 1) || (wizard_type == 3)) {
 
             // step 2: edit add attributes
-            // for files -> show filechooser
+            // for files -> show file chooser
             // file = 1
             if ((wizard_type == 1)
                 && (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId()
@@ -2608,17 +2460,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
           }
 
           // invoke web service (update data / (upload file) / add log)
-          // load file (new / checkin)
+          // load file (new / check in)
           long total_len = 0;
-          boolean useSAAJ = false;
-          if (((xincoClientSession.getServerVersion().getVersion_high() == 1)
-                  && (xincoClientSession.getServerVersion().getVersion_mid() >= 9))
-              || (xincoClientSession.getServerVersion().getVersion_high() > 1)) {
-            useSAAJ = true;
-          } else {
-            useSAAJ = false;
-          }
-          ByteArrayOutputStream out = null;
+          ByteArrayOutputStream out;
           // file = 1
           if (((wizard_type == 1) || (wizard_type == 6))
               && (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId()
@@ -2630,13 +2474,12 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
               jLabelInternalFrameInformationText.setText(
                   xerb.getString("datawizard.fileuploadinfo"));
               in = new CheckedInputStream(new FileInputStream(current_fullpath), new CRC32());
-              if (useSAAJ) {
+              if (useSAAJ()) {
                 total_len = (new File(current_fullpath)).length();
               } else {
                 out = new ByteArrayOutputStream();
-                byte[] buf = new byte[4096];
-                int len = 0;
-                total_len = 0;
+                byte[] buf = new byte[4_096];
+                int len;
                 while ((len = in.read(buf)) > 0) {
                   out.write(buf, 0, len);
                   total_len = total_len + len;
@@ -2654,7 +2497,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
               ((XincoAddAttribute)
                       ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().get(2))
                   .setAttrib_varchar("" + ((CheckedInputStream) in).getChecksum().getValue());
-              if (!useSAAJ) {
+              if (!useSAAJ()) {
                 in.close();
               }
             } catch (Exception e) {
@@ -2721,15 +2564,14 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
               ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
             }
           }
-          // upload file (new / checkin)
+          // upload file (new / check in)
           // file = 1
           if (((wizard_type == 1) || (wizard_type == 6))
               && (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId()
                   == 1)) {
             // attach file to SOAP message
-            if (useSAAJ) {
-              AttachmentPart ap = null;
-              ap = new AttachmentPart();
+            if (useSAAJ()) {
+              AttachmentPart ap = new AttachmentPart();
               ap.setContent(in, "unknown/unknown");
               ((XincoSoapBindingStub) xincoClientSession.getXinco()).addAttachment(ap);
             }
@@ -2811,7 +2653,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
               Object[] objp = new Object[2];
               objp[0] = newnode.getUserObject();
               objp[1] = xincoClientSession.getUser();
-              // Tell server to send file as attachment
+              // tell server to send file as attachment
               // (keep backward compatibility to earlier versions)
               ap = new AttachmentPart();
               ap.setContent("SAAJ", "text/string");
@@ -3939,7 +3781,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   /**
    * @return boolean
    */
-  protected boolean isLock() {
+  private boolean isLock() {
     return lock;
   }
 
@@ -3972,9 +3814,16 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
   }
 
   /**
-   * @param previous_fullpath
+   * @param previous_fullPath Path to set.
    */
-  public void setPreviousFullpath(String previous_fullpath) {
-    this.previous_fullpath = previous_fullpath;
+  public void setPreviousFullPath(String previous_fullPath) {
+    this.previous_fullpath = previous_fullPath;
+  }
+
+  private boolean useSAAJ() {
+    return false;
+    //    ((xincoClientSession.getServerVersion().getVersion_high() == 1)
+    //            && (xincoClientSession.getServerVersion().getVersion_mid() >= 9))
+    //        || (xincoClientSession.getServerVersion().getVersion_high() > 1);
   }
 }

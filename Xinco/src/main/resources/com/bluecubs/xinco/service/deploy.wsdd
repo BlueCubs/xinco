@@ -10,106 +10,651 @@
     xmlns="http://xml.apache.org/axis/wsdd/"
     xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
 
-  <!-- Services from XincoService WSDL service -->
+  <!-- Services from Xinco WSDL service -->
 
-  <service name="Xinco" provider="java:RPC" style="rpc" use="encoded">
-      <parameter name="wsdlTargetNamespace" value="urn:Xinco"/>
-      <parameter name="wsdlServiceElement" value="XincoService"/>
-      <parameter name="schemaUnqualified" value="http://add.xinco.bluecubs.com,http://core.xinco.bluecubs.com,http://xml.apache.org/xml-soap"/>
-      <parameter name="wsdlServicePort" value="Xinco"/>
-      <parameter name="className" value="com.bluecubs.xinco.service.XincoSoapBindingSkeleton"/>
+  <service name="XincoPort" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://service.server.xinco.bluecubs.com/"/>
+      <parameter name="wsdlServiceElement" value="Xinco"/>
+      <parameter name="schemaUnqualified" value="http://service.server.xinco.bluecubs.com/"/>
+      <parameter name="wsdlServicePort" value="XincoPort"/>
+      <parameter name="className" value="com.bluecubs.xinco.server.service.XincoPortBindingImpl"/>
       <parameter name="wsdlPortType" value="Xinco"/>
-      <parameter name="typeMappingVersion" value="1.2"/>
-      <parameter name="allowedMethods" value="*"/>
-      <parameter name="scope" value="Session"/>
+      <parameter name="typeMappingVersion" value="1.1"/>
+      <operation name="getXincoCoreDataType" qname="operNS:getXincoCoreDataType" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreDataType" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreDataType" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getXincoAddAttributes" qname="operNS:getXincoAddAttributes" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoAddAttribute" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreData" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getXincoCoreNodes" qname="operNS:getXincoCoreNodes" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreNode" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreNode" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getXincoCoreData" qname="operNS:getXincoCoreData" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreData" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreData" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getXincoServerVersion" qname="operNS:getXincoServerVersion" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoVersion" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+      </operation>
+      <operation name="getCurrentXincoCoreUser" qname="operNS:getCurrentXincoCoreUser" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreUser" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="in1" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getAllXincoCoreGroups" qname="operNS:getAllXincoCoreGroups" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreGroup" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getAllXincoCoreLanguages" qname="operNS:getAllXincoCoreLanguages" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreLanguage" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getAllXincoCoreDataTypes" qname="operNS:getAllXincoCoreDataTypes" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreDataType" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getXincoCoreNode" qname="operNS:getXincoCoreNode" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreNode" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreNode" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="doXincoCoreDataCheckout" qname="operNS:doXincoCoreDataCheckout" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreData" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreData" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="doXincoCoreDataCheckin" qname="operNS:doXincoCoreDataCheckin" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreData" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreData" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="undoXincoCoreDataCheckout" qname="operNS:undoXincoCoreDataCheckout" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreData" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreData" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="downloadXincoCoreData" qname="operNS:downloadXincoCoreData" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:base64Binary" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreData" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="uploadXincoCoreData" qname="operNS:uploadXincoCoreData" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreData" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:base64Binary" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="in2" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="findXincoCoreData" qname="operNS:findXincoCoreData" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:anyType" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="in0" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="in1" type="tns:xincoCoreLanguage" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in2" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="setXincoCoreNode" qname="operNS:setXincoCoreNode" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreNode" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreNode" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="setXincoCoreData" qname="operNS:setXincoCoreData" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreData" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreData" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="setXincoCoreACE" qname="operNS:setXincoCoreACE" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreACE" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreACE" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="removeXincoCoreACE" qname="operNS:removeXincoCoreACE" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreACE" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="setXincoCoreLog" qname="operNS:setXincoCoreLog" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreLog" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreLog" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="setXincoCoreUser" qname="operNS:setXincoCoreUser" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreUser" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="setXincoCoreGroup" qname="operNS:setXincoCoreGroup" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreGroup" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreGroup" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="setXincoCoreLanguage" qname="operNS:setXincoCoreLanguage" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreLanguage" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreLanguage" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="checkXincoCoreUserNewPassword" qname="operNS:checkXincoCoreUserNewPassword" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="in0" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in2" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getXincoSetting" qname="operNS:getXincoSetting" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoSetting" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <operation name="getXincoCoreDataTypeAttribute" qname="operNS:getXincoCoreDataTypeAttribute" xmlns:operNS="http://service.server.xinco.bluecubs.com/" returnQName="return" returnType="rtns:xincoCoreDataTypeAttribute" xmlns:rtns="http://service.server.xinco.bluecubs.com/" soapAction="" >
+        <parameter qname="in0" type="tns:xincoCoreDataType" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+        <parameter qname="in1" type="tns:xincoCoreUser" xmlns:tns="http://service.server.xinco.bluecubs.com/"/>
+      </operation>
+      <parameter name="allowedMethods" value="getCurrentXincoCoreUser setXincoCoreData uploadXincoCoreData setXincoCoreLog getXincoCoreNode setXincoCoreACE getAllXincoCoreDataTypes doXincoCoreDataCheckout getXincoServerVersion getAllXincoCoreGroups setXincoCoreLanguage downloadXincoCoreData getAllXincoCoreLanguages getXincoAddAttributes getXincoCoreDataTypeAttribute getXincoCoreData getXincoCoreDataType setXincoCoreUser getXincoCoreNodes undoXincoCoreDataCheckout checkXincoCoreUserNewPassword doXincoCoreDataCheckin removeXincoCoreACE setXincoCoreGroup getXincoSetting setXincoCoreNode findXincoCoreData"/>
 
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreDataType"
-        type="java:com.bluecubs.xinco.core.XincoCoreDataType"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:removeXincoCoreACE"
+        type="java:com.bluecubs.xinco.server.service.RemoveXincoCoreACE"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoVersion"
-        type="java:com.bluecubs.xinco.core.XincoVersion"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreGroup"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreGroup"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreLanguage"
-        type="java:com.bluecubs.xinco.core.XincoCoreLanguage"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:checkXincoCoreUserNewPasswordResponse"
+        type="java:com.bluecubs.xinco.server.service.CheckXincoCoreUserNewPasswordResponse"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://add.xinco.bluecubs.com"
-        qname="ns:XincoAddAttribute"
-        type="java:com.bluecubs.xinco.add.XincoAddAttribute"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:doXincoCoreDataCheckin"
+        type="java:com.bluecubs.xinco.server.service.DoXincoCoreDataCheckin"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreUser"
-        type="java:com.bluecubs.xinco.core.XincoCoreUser"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreNode"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreNode"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreData"
-        type="java:com.bluecubs.xinco.core.XincoCoreData"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:doXincoCoreDataCheckinResponse"
+        type="java:com.bluecubs.xinco.server.service.DoXincoCoreDataCheckinResponse"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreDataTypeAttribute"
-        type="java:com.bluecubs.xinco.core.XincoCoreDataTypeAttribute"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getAllXincoCoreDataTypesResponse"
+        type="java:com.bluecubs.xinco.server.service.GetAllXincoCoreDataTypesResponse"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreACE"
-        type="java:com.bluecubs.xinco.core.XincoCoreACE"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:findXincoCoreData"
+        type="java:com.bluecubs.xinco.server.service.FindXincoCoreData"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreLog"
-        type="java:com.bluecubs.xinco.core.XincoCoreLog"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoSettingResponse"
+        type="java:com.bluecubs.xinco.server.service.GetXincoSettingResponse"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreGroup"
-        type="java:com.bluecubs.xinco.core.XincoCoreGroup"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoAddAttributesResponse"
+        type="java:com.bluecubs.xinco.server.service.GetXincoAddAttributesResponse"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreNode"
-        type="java:com.bluecubs.xinco.core.XincoCoreNode"
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreNode"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreNode"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreDataTypeAttribute"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreDataTypeAttribute"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreNodeResponse"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreNodeResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoVersion"
+        type="java:com.bluecubs.xinco.server.service.XincoVersion"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreLogResponse"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreLogResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getAllXincoCoreGroupsResponse"
+        type="java:com.bluecubs.xinco.server.service.GetAllXincoCoreGroupsResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreNodes"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreNodes"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:undoXincoCoreDataCheckout"
+        type="java:com.bluecubs.xinco.server.service.UndoXincoCoreDataCheckout"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreDataType"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreDataType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreDataTypeResponse"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreDataTypeResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoServerVersion"
+        type="java:com.bluecubs.xinco.server.service.GetXincoServerVersion"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreDataResponse"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreDataResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoServerVersionResponse"
+        type="java:com.bluecubs.xinco.server.service.GetXincoServerVersionResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:undoXincoCoreDataCheckoutResponse"
+        type="java:com.bluecubs.xinco.server.service.UndoXincoCoreDataCheckoutResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getAllXincoCoreGroups"
+        type="java:com.bluecubs.xinco.server.service.GetAllXincoCoreGroups"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:removeXincoCoreACEResponse"
+        type="java:com.bluecubs.xinco.server.service.RemoveXincoCoreACEResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:downloadXincoCoreDataResponse"
+        type="java:com.bluecubs.xinco.server.service.DownloadXincoCoreDataResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoSetting"
+        type="java:com.bluecubs.xinco.server.service.XincoSetting"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getCurrentXincoCoreUserResponse"
+        type="java:com.bluecubs.xinco.server.service.GetCurrentXincoCoreUserResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreLanguage"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreLanguage"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoAddAttributes"
+        type="java:com.bluecubs.xinco.server.service.GetXincoAddAttributes"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:downloadXincoCoreData"
+        type="java:com.bluecubs.xinco.server.service.DownloadXincoCoreData"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getCurrentXincoCoreUser"
+        type="java:com.bluecubs.xinco.server.service.GetCurrentXincoCoreUser"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreACE"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreACE"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreNodesResponse"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreNodesResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreDataType"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreDataType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreNode"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreNode"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreLanguageResponse"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreLanguageResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreLog"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreLog"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreUserResponse"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreUserResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreDataResponse"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreDataResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreGroup"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreGroup"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:doXincoCoreDataCheckout"
+        type="java:com.bluecubs.xinco.server.service.DoXincoCoreDataCheckout"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getAllXincoCoreDataTypes"
+        type="java:com.bluecubs.xinco.server.service.GetAllXincoCoreDataTypes"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreNodeResponse"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreNodeResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:checkXincoCoreUserNewPassword"
+        type="java:com.bluecubs.xinco.server.service.CheckXincoCoreUserNewPassword"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:findXincoCoreDataResponse"
+        type="java:com.bluecubs.xinco.server.service.FindXincoCoreDataResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoSetting"
+        type="java:com.bluecubs.xinco.server.service.GetXincoSetting"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreGroupResponse"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreGroupResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:doXincoCoreDataCheckoutResponse"
+        type="java:com.bluecubs.xinco.server.service.DoXincoCoreDataCheckoutResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreDataTypeAttribute"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreData"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreData"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:uploadXincoCoreDataResponse"
+        type="java:com.bluecubs.xinco.server.service.UploadXincoCoreDataResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreUser"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreUser"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreACEResponse"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreACEResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getXincoCoreDataTypeAttributeResponse"
+        type="java:com.bluecubs.xinco.server.service.GetXincoCoreDataTypeAttributeResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreUser"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreUser"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreLanguage"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreLanguage"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getAllXincoCoreLanguages"
+        type="java:com.bluecubs.xinco.server.service.GetAllXincoCoreLanguages"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreData"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreData"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreLog"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreLog"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:getAllXincoCoreLanguagesResponse"
+        type="java:com.bluecubs.xinco.server.service.GetAllXincoCoreLanguagesResponse"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:setXincoCoreACE"
+        type="java:com.bluecubs.xinco.server.service.SetXincoCoreACE"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:uploadXincoCoreData"
+        type="java:com.bluecubs.xinco.server.service.UploadXincoCoreData"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoCoreData"
+        type="java:com.bluecubs.xinco.server.service.XincoCoreData"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://service.server.xinco.bluecubs.com/"
+        qname="ns:xincoAddAttribute"
+        type="java:com.bluecubs.xinco.server.service.XincoAddAttribute"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
       />
   </service>
 </deployment>

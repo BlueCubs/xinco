@@ -203,11 +203,11 @@ public class MenuServlet extends HttpServlet {
     }
     out.println("</tr>");
     try {
-      File zipFile = new File(realPath + "/client/installer/zip/installer.zip");
+      String zipFilePath = realPath + "/client/installer/zip/XincoExplorer.zip";
+      File zipFile = new File(zipFilePath);
       if (!zipFile.exists()) {
         // Call the method to zip the folder
         String sourceFolderPath = realPath + "/client/installer/getdown";
-        String zipFilePath = realPath + "/client/installer/zip/XincoExplorer.zip";
         try {
           ZipUtil.zipFolder(sourceFolderPath, zipFilePath);
         } catch (IOException e) {
