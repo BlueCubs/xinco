@@ -14,6 +14,18 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
+                    <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.Lius-1.0.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.PDFBox-0.6.7a.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
                     <file>${file.reference.activation.jar-1}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -50,10 +62,6 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.Lius-1.0.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.log4j-1.2.15.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -75,10 +83,6 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.mail.jar-1}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.PDFBox-0.6.7a.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
@@ -109,86 +113,10 @@
                     <file>${file.reference.xmlParserAPIs.jar-1}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library dirs="200">
-                    <file>${reference.XincoExplorer.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
             </web-module-libraries>
             <web-module-additional-libraries>
                 <library dirs="200">
-                    <file>${file.reference.XincoExplorer.jnlp-2}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.blueCubsIcon.gif-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${reference.Xinco.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.activation.jar-2}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.axis.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.commons-discovery-0.2.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.commons-logging-1.0.4.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jaxrpc.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.liquidlnf.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.mail.jar-2}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.saaj.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.napkinlaf-1.2.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.substance.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.swing-layout-1.0.3.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.wsdl4j-1.5.1.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.xercesImpl.jar-4}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.xmlParserAPIs.jar-2}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${reference.XincoExplorer.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.JTattoo.jar}</file>
+                    <file>${file.reference.XincoExplorer-signed}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>

@@ -3,80 +3,90 @@
 <!-- some examples of how to customize the build. -->
 <!-- (If you delete it and reopen the project it will be recreated.) -->
 <project name="XincoExplorer" default="default" basedir=".">
-    <description>Builds, tests, and runs the project XincoExplorer.</description>
-    <import file="nbproject/build-impl.xml"/>
-    <property file="build.ant.properties"/>
-    <!--
+	<description>Builds, tests, and runs the project XincoExplorer.</description>
+	<import file="nbproject/build-impl.xml"/>
+	<property file="build.ant.properties"/>
+	<!--
 
-    There exist several targets which are by default empty and which can be 
-    used for execution of your tasks. These targets are usually executed 
-    before and after some main targets. They are: 
+	There exist several targets which are by default empty and which can be 
+	used for execution of your tasks. These targets are usually executed 
+	before and after some main targets. They are: 
 
-      -pre-init:                 called before initialization of project properties
-      -post-init:                called after initialization of project properties
-      -pre-compile:              called before javac compilation
-      -post-compile:             called after javac compilation
-      -pre-compile-single:       called before javac compilation of single file
-      -post-compile-single:      called after javac compilation of single file
-      -pre-compile-test:         called before javac compilation of JUnit tests
-      -post-compile-test:        called after javac compilation of JUnit tests
-      -pre-compile-test-single:  called before javac compilation of single JUnit test
-      -post-compile-test-single: called after javac compilation of single JUunit test
-      -pre-jar:                  called before JAR building
-      -post-jar:                 called after JAR building
-      -post-clean:               called after cleaning build products
+		-pre-init:                 called before initialization of project properties
+		-post-init:                called after initialization of project properties
+		-pre-compile:              called before javac compilation
+		-post-compile:             called after javac compilation
+		-pre-compile-single:       called before javac compilation of single file
+		-post-compile-single:      called after javac compilation of single file
+		-pre-compile-test:         called before javac compilation of JUnit tests
+		-post-compile-test:        called after javac compilation of JUnit tests
+		-pre-compile-test-single:  called before javac compilation of single JUnit test
+		-post-compile-test-single: called after javac compilation of single JUunit test
+		-pre-jar:                  called before JAR building
+		-post-jar:                 called after JAR building
+		-post-clean:               called after cleaning build products
 
-    (Targets beginning with '-' are not intended to be called on their own.)
+	(Targets beginning with '-' are not intended to be called on their own.)
 
-    Example of inserting an obfuscator after compilation could look like this:
+	Example of inserting an obfuscator after compilation could look like this:
 
-        <target name="-post-compile">
-            <obfuscate>
-                <fileset dir="${build.classes.dir}"/>
-            </obfuscate>
-        </target>
+			<target name="-post-compile">
+					<obfuscate>
+							<fileset dir="${build.classes.dir}"/>
+					</obfuscate>
+			</target>
 
-    For list of available properties check the imported 
-    nbproject/build-impl.xml file. 
+	For list of available properties check the imported 
+	nbproject/build-impl.xml file. 
 
 
-    Another way to customize the build is by overriding existing main targets.
-    The targets of interest are: 
+	Another way to customize the build is by overriding existing main targets.
+	The targets of interest are: 
 
-      -init-macrodef-javac:     defines macro for javac compilation
-      -init-macrodef-junit:     defines macro for junit execution
-      -init-macrodef-debug:     defines macro for class debugging
-      -init-macrodef-java:      defines macro for class execution
-      -do-jar-with-manifest:    JAR building (if you are using a manifest)
-      -do-jar-without-manifest: JAR building (if you are not using a manifest)
-      run:                      execution of project 
-      -javadoc-build:           Javadoc generation
-      test-report:              JUnit report generation
+		-init-macrodef-javac:     defines macro for javac compilation
+		-init-macrodef-junit:     defines macro for junit execution
+		-init-macrodef-debug:     defines macro for class debugging
+		-init-macrodef-java:      defines macro for class execution
+		-do-jar-with-manifest:    JAR building (if you are using a manifest)
+		-do-jar-without-manifest: JAR building (if you are not using a manifest)
+		run:                      execution of project 
+		-javadoc-build:           Javadoc generation
+		test-report:              JUnit report generation
 
-    An example of overriding the target for project execution could look like this:
+	An example of overriding the target for project execution could look like this:
 
-        <target name="run" depends="XincoExplorer-impl.jar">
-            <exec dir="bin" executable="launcher.exe">
-                <arg file="${dist.jar}"/>
-            </exec>
-        </target>
+			<target name="run" depends="XincoExplorer-impl.jar">
+					<exec dir="bin" executable="launcher.exe">
+							<arg file="${dist.jar}"/>
+					</exec>
+			</target>
 
-    Notice that the overridden target depends on the jar target and not only on 
-    the compile target as the regular run target does. Again, for a list of available 
-    properties which you can use, check the target you are overriding in the
-    nbproject/build-impl.xml file. 
+	Notice that the overridden target depends on the jar target and not only on 
+	the compile target as the regular run target does. Again, for a list of available 
+	properties which you can use, check the target you are overriding in the
+	nbproject/build-impl.xml file. 
 
-    -->
-    <target name="-post-jar">
-        <antcall target="create jnlp"/>
-    </target>
+	-->
+	<target name="-post-jar">
+		<antcall target="create jnlp"/>
+		<mkdir dir="signed"/>
+		<mkdir dir="signed/lib"/>
+		<signjar alias="xinco" keystore="xinco.keystore"
+						 storepass="${keystore.password}"
+						 lazy="true"
+						 destDir="signed">
+			<path>
+				<fileset dir="dist" includes="**/*.jar"/>
+			</path>
+		</signjar>
+	</target>
 
-    <target name="-check-for-master.jnlp">
-        <available file="XincoExplorerMaster.jnlp" property="master.jnlp.exists"/>
-    </target>
+	<target name="-check-for-master.jnlp">
+		<available file="XincoExplorerMaster.jnlp" property="master.jnlp.exists"/>
+	</target>
     
-    <target name="jnlp-init-generate-master" depends="-check-for-master.jnlp" unless="master.jnlp.exists">
-        <echo file="XincoExplorerMaster.jnlp"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+	<target name="jnlp-init-generate-master" depends="-check-for-master.jnlp" unless="master.jnlp.exists">
+		<echo file="XincoExplorerMaster.jnlp"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!--
 ###############################################################################
 #
@@ -112,35 +122,35 @@
   <application-desc main-class="com.bluecubs.xinco.client.XincoExplorer"/>
 </jnlp>
 ]]>
-        </echo>
-    </target>
-    <target name="create jnlp" depends="jnlp-init-generate-master">
-        <echo file="resources.xml"><![CDATA[
+		</echo>
+	</target>
+	<target name="create jnlp" depends="jnlp-init-generate-master">
+		<echo file="resources.xml"><![CDATA[
     <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5.0+" java-vm-args="-Xmx512m"/>
     <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6.0+" java-vm-args="-Xmx512m"/>
     <!-- required libraries, ALL SIGNED -->
     <jar download="eager" href="XincoExplorer.jar" main="true"/>
     <jar href="Xinco.jar"/>]]>
-        </echo>
-        <path id="build.classpath">
-            <fileset dir="${lib}">
-                <include name="*.jar" />
-            </fileset>
-        </path>
-        <!-- convert classpath to a flat list/string for use in manifest task -->
-        <pathconvert property="mf.classpath" pathsep="&quot;/&gt;&#13;&#10;&lt;jar href=&quot;">
-            <path refid="build.classpath" />
-            <flattenmapper />
-        </pathconvert>
-        <echo file="resources.xml" append="true">&lt;jar href=&quot;${mf.classpath}&quot;/&gt;</echo>
-        <loadfile property="jnlp.resources" srcfile="resources.xml"/>
-        <copy file="XincoExplorerMaster.jnlp" tofile="${jnlp.dest.dir}/XincoExplorer.jnlp" overwrite="true">
-            <filterchain>
-                <replacestring from="&lt;!--$${jnlp.resources}--&gt;" to="${jnlp.resources}"/>
-                <replacestring from="$${jnlp.resources}" to="${jnlp.resources}"/>
-            </filterchain>
-        </copy>
-        <delete file="resources.xml"/>
-    </target>
+		</echo>
+		<path id="build.classpath">
+			<fileset dir="${lib}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<!-- convert classpath to a flat list/string for use in manifest task -->
+		<pathconvert property="mf.classpath" pathsep="&quot;/&gt;&#13;&#10;&lt;jar href=&quot;">
+			<path refid="build.classpath" />
+			<flattenmapper />
+		</pathconvert>
+		<echo file="resources.xml" append="true">&lt;jar href=&quot;${mf.classpath}&quot;/&gt;</echo>
+		<loadfile property="jnlp.resources" srcfile="resources.xml"/>
+		<copy file="XincoExplorerMaster.jnlp" tofile="${jnlp.dest.dir}/XincoExplorer.jnlp" overwrite="true">
+			<filterchain>
+				<replacestring from="&lt;!--$${jnlp.resources}--&gt;" to="${jnlp.resources}"/>
+				<replacestring from="$${jnlp.resources}" to="${jnlp.resources}"/>
+			</filterchain>
+		</copy>
+		<delete file="resources.xml"/>
+	</target>
 </project>
 

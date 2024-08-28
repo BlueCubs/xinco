@@ -936,8 +936,6 @@ exists or setup the property manually. For example like this:
             <arg value="-die1"/>
             <arg value="-schemas ${jspc.schemas}"/>
             <arg value="-dtds ${jspc.dtds}"/>
-            <arg value="-compilerSourceVM ${javac.source}"/>
-            <arg value="-compilerTargetVM ${javac.target}"/>
             <arg value="-javaEncoding ${source.encoding}"/>
             <arg value="-sysClasspath ${libs.jsp-compilation-syscp.classpath}"/>
             <classpath path="${java.home}/../lib/tools.jar:${libs.jsp-compiler.classpath}:${libs.jsp-compilation.classpath}"/>
@@ -1013,9 +1011,6 @@ exists or setup the property manually. For example like this:
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
         <copyfiles files="${reference.Xinco.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${reference.XincoExplorer.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.Lius-1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.PDFBox-0.6.7a.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.activation.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.axis-ant.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.axis.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
@@ -1025,12 +1020,14 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.commons-logging-1.0.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.commons-pool-1.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.jaxrpc.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.Lius-1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.log4j-1.2.15.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.lucene-1.4-final.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.lucene-core-2.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.lucene-demos-1.4-final.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.lucene-demos-2.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.mail.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.PDFBox-0.6.7a.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.poi-2.5.1-final-20040804.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.saaj.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.servlet-api.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
@@ -1038,15 +1035,31 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.wsdl4j-1.5.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.xercesImpl.jar-3}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.XincoExplorer-signed}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.activation.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.axis.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.commons-logging-1.0.4.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.jaxrpc.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.liquidlnf.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.mail.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.saaj.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.napkinlaf-1.2.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.substance.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.swing-layout-1.0.3.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.wsdl4j-1.5.1.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.xercesImpl.jar-4}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.xmlParserAPIs.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
         <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.Lius-1.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.PDFBox-0.6.7a.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.axis-ant.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.axis.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
@@ -1056,12 +1069,14 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.commons-logging-1.0.4.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.commons-pool-1.2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.jaxrpc.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.Lius-1.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.log4j-1.2.15.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.lucene-1.4-final.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.lucene-core-2.2.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.lucene-demos-1.4-final.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.lucene-demos-2.2.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.mail.jar-1}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.PDFBox-0.6.7a.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.poi-2.5.1-final-20040804.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.saaj.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.servlet-api.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
@@ -1069,7 +1084,26 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.wsdl4j-1.5.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.xercesImpl.jar-3}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.XincoExplorer-signed}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.activation.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.axis.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.commons-logging-1.0.4.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.jaxrpc.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.liquidlnf.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.mail.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.saaj.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.napkinlaf-1.2.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.substance.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.swing-layout-1.0.3.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.wsdl4j-1.5.1.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.xercesImpl.jar-4}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.xmlParserAPIs.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="-clean-webinf-lib">
         <delete dir="${build.web.dir}/WEB-INF/lib"/>
