@@ -1514,7 +1514,7 @@ public class XincoAdminServlet extends HttpServlet {
                 //Security bug
                 (dbm.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
-        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"
+        out.println("</table><tr><form action='menu'><input type='submit' value='"
                 + rb.getString("message.admin.main.backtomain") + "' />"
                 + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>"
                 + "<tr><FORM><INPUT TYPE='button' VALUE='" + rb.getString("message.admin.main.back")

@@ -53,13 +53,13 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\r\n");
       out.write("\r\n");
 
-            BrowserDataExtractor extractor = new BrowserDataExtractor(request, session);
-            XincoDBManager db = new XincoDBManager();
-            if (db.config.isGuessLanguage()
-                    && !extractor.getLanguage().isEmpty()
-                    && extractor.isLanguageSupported(extractor.getLanguage())) {
-                pageContext.forward("menu.jsp?list=" + extractor.getLanguage());
-            }
+    BrowserDataExtractor extractor = new BrowserDataExtractor(request, session);
+    XincoDBManager db = new XincoDBManager();
+    if (db.config.isGuessLanguage()
+            && !extractor.getLanguage().isEmpty()
+            && extractor.isLanguageSupported(extractor.getLanguage())) {
+        pageContext.forward("menu?list=" + extractor.getLanguage());
+    }
 
       out.write("\r\n");
       out.write("\r\n");
@@ -71,57 +71,57 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        <link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'>\r\n");
       out.write("    </head>\r\n");
       out.write("    <body>\r\n");
-      out.write("        <center>\r\n");
-      out.write("            <span class=\"text\"><br><img src=\"resources/images/blueCubs.gif\" border=\"0\" alt=\"Blue Cubs\"/>\r\n");
-      out.write("                <br><span class=\"bigtext\">xinco DMS - the Core of Information and Document Management</span>\r\n");
-      out.write("                <br><br>\r\n");
+      out.write("    <center>\r\n");
+      out.write("        <span class=\"text\"><br><img src=\"resources/images/blueCubs.gif\" border=\"0\" alt=\"Blue Cubs\"/>\r\n");
+      out.write("            <br><span class=\"bigtext\">xinco DMS - the Core of Information and Document Management</span>\r\n");
+      out.write("            <br><br>\r\n");
       out.write("\r\n");
-      out.write("                <form name='language' action='menu.jsp'>\r\n");
+      out.write("            <form name='language' action='menu'>\r\n");
       out.write("\r\n");
-      out.write("                    <table border='0'>\r\n");
-      out.write("                        <tbody>\r\n");
-      out.write("                            <tr>\r\n");
-      out.write("                                <td class=\"text\">Please choose a language:&nbsp;</td>\r\n");
-      out.write("                                <td class=\"text\">\r\n");
-      out.write("                                    ");
+      out.write("                <table border='0'>\r\n");
+      out.write("                    <tbody>\r\n");
+      out.write("                        <tr>\r\n");
+      out.write("                            <td class=\"text\">Please choose a language:&nbsp;</td>\r\n");
+      out.write("                            <td class=\"text\">\r\n");
+      out.write("                                ");
 
-                                                int i = 0;
-                                                ResourceBundle lrb = null;
-                                                String[] locales;
-                                                String text = "";
-                                                //load locales
-                                                lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
-                                                locales = lrb.getString("AvailableLocales").split(",");
-                                                out.println("<select name='list'>");
-                                                for (i = 0; i < locales.length; i++) {
-                                                    out.println("<option value='" + locales[i] + "'>" + lrb.getString("Locale." + locales[i]) + "</option>");
-                                                }
-                                                out.println("</select>&nbsp;");
-                                    
+                                    int i = 0;
+                                    ResourceBundle lrb = null;
+                                    String[] locales;
+                                    String text = "";
+                                    //load locales
+                                    lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
+                                    locales = lrb.getString("AvailableLocales").split(",");
+                                    out.println("<select name='list'>");
+                                    for (i = 0; i < locales.length; i++) {
+                                        out.println("<option value='" + locales[i] + "'>" + lrb.getString("Locale." + locales[i]) + "</option>");
+                                    }
+                                    out.println("</select>&nbsp;");
+                                
       out.write("\r\n");
-      out.write("                                </td>\r\n");
-      out.write("                                <td class=\"text\">\r\n");
-      out.write("                                    <input type='submit' value='Submit' />\r\n");
-      out.write("                                </td>\r\n");
-      out.write("                            </tr>\r\n");
-      out.write("                    </table>\r\n");
+      out.write("                            </td>\r\n");
+      out.write("                            <td class=\"text\">\r\n");
+      out.write("                                <input type='submit' value='Submit' />\r\n");
+      out.write("                            </td>\r\n");
+      out.write("                        </tr>\r\n");
+      out.write("                </table>\r\n");
       out.write("\r\n");
-      out.write("                </form>\r\n");
+      out.write("            </form>\r\n");
       out.write("\r\n");
-      out.write("                <br>\r\n");
-      out.write("                <span class=\"text\" style=\"font-size: 10px;\">\r\n");
-      out.write("                    ");
+      out.write("            <br>\r\n");
+      out.write("            <span class=\"text\" style=\"font-size: 10px;\">\r\n");
+      out.write("                ");
 
-                                //load settings
-                                ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
-                                out.println("[Version " + settings.getString("version.high") + "." + settings.getString("version.mid") + "." + settings.getString("version.low") + (settings.getString("version.postfix").isEmpty() ? "" : " " + settings.getString("version.postfix")) + "]");
-                    
-      out.write("\r\n");
-      out.write("                </span>\r\n");
+                    //load settings
+                    ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+                    out.println("[Version " + settings.getString("version.high") + "." + settings.getString("version.mid") + "." + settings.getString("version.low") + (settings.getString("version.postfix").isEmpty() ? "" : " " + settings.getString("version.postfix")) + "]");
+                
       out.write("\r\n");
       out.write("            </span>\r\n");
-      out.write("        </center>\r\n");
-      out.write("    </body>\r\n");
+      out.write("\r\n");
+      out.write("        </span>\r\n");
+      out.write("    </center>\r\n");
+      out.write("</body>\r\n");
       out.write("</html>\r\n");
     } catch (Throwable t) {
       if (!(t instanceof SkipPageException)){
