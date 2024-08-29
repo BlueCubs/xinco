@@ -74,7 +74,7 @@ public class XincoMenuServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        servletContext = config.getServletContext().getRealPath("");
+        servletContext = config.getServletContext().getRealPath(".");
     }
 
     /**
@@ -146,12 +146,12 @@ public class XincoMenuServlet extends HttpServlet {
                 String[] list = dir.list(new ExtensionFilter(".xinco"));
 
                 if (list.length != 0) {
-                    for (int i = 0; i < list.length; i++) {
-                        new File(dir.getAbsolutePath(), list[i]).delete();
-                    }
+                  for (String list1 : list) {
+                    new File(dir.getAbsolutePath(), list1).delete();
+                  }
                 }
                 try {
-                    jnlp = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp"));
+                    jnlp = new File(servletContext + "/client/XincoExplorer.jnlp");
                     backup = new File(servletContext + "/client/XincoExplorer.jnlp.bak");
                     backup.createNewFile();
                     if (jnlp.exists()) {
