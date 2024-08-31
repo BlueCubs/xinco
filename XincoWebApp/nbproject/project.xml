@@ -164,10 +164,6 @@
                     <path-in-war>client</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.org-netbeans-modules-javawebstart-anttasks.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.saaj.jar-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>

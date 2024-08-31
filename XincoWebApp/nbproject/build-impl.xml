@@ -1050,7 +1050,6 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.liquidlnf.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.mail.jar-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.napkinlaf-1.2.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.org-netbeans-modules-javawebstart-anttasks.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.saaj.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.substance.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.swing-layout-1.0.3.jar}" todir="${build.web.dir}/client"/>
@@ -1099,7 +1098,6 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.liquidlnf.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.mail.jar-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.napkinlaf-1.2.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.org-netbeans-modules-javawebstart-anttasks.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.saaj.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.substance.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.swing-layout-1.0.3.jar}" todir="${build.web.dir}/client"/>
