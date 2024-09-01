@@ -148,6 +148,8 @@
 			</fileset>
 		</signjar>
 	</target>
+	
+	<target name="-pre-run-deploy" depends="unsign_client_libraries, sign_client_libraries"/>
 
 	<target name="release" description="Create the release packages of Xinco" depends="dist, unsign_client_libraries, sign_client_libraries">
 		<trim input="xinco-DMS-${version_high}.${version_mid}.${version_low} ${version_postfix}" property="dist.name" />

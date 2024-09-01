@@ -1039,9 +1039,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.xercesImpl.jar-3}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.XincoExplorer.jnlp}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.Xinco.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.activation.jar-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.axis.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
@@ -1087,9 +1085,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.xercesImpl.jar-3}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.XincoExplorer.jnlp}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.Xinco.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.activation.jar-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.axis.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
