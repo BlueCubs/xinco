@@ -1054,6 +1054,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.wsdl4j-1.5.1.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.xercesImpl.jar-4}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
@@ -1100,6 +1101,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.wsdl4j-1.5.1.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.xercesImpl.jar-4}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="-clean-webinf-lib">
         <delete dir="${build.web.dir}/WEB-INF/lib"/>

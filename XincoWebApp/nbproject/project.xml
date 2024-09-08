@@ -179,6 +179,10 @@
                     <file>${file.reference.xmlParserAPIs.jar-2}</file>
                     <path-in-war>client</path-in-war>
                 </library>
+                <library dirs="200">
+                    <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
             </web-module-additional-libraries>
             <source-roots>
                 <root id="src.DB.dir"/>
