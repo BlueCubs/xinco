@@ -11,3 +11,4 @@
 /XincoWebApp/.blueCubsKeystore
 /XincoWebApp/build
 *.jar
+/XincoWebApp/build
