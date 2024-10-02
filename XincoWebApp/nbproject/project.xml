@@ -120,15 +120,7 @@
                     <path-in-war>client</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.XincoExplorer.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.JTattoo.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.Xinco.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library dirs="200">
@@ -164,10 +156,6 @@
                     <path-in-war>client</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.org-netbeans-modules-javawebstart-anttasks.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.saaj.jar-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
@@ -189,6 +177,14 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.xmlParserAPIs.jar-2}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${reference.Xinco.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>

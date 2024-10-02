@@ -67,36 +67,8 @@
     properties which you can use, check the target you are overriding in the
     nbproject/build-impl.xml file. 
 
-    -->
-    <target name="should-sign">
-        <condition property="keystore.password.set" else="false">
-            <isset property="keystore.password"/>
-        </condition>
-        <mkdir dir="signed"/>
-        <mkdir dir="signed/lib"/>
-    </target>
-    
-    <target name="do-sign" if="${keystore.password.set}">
-        <echo message="Signing Client"/>
-        <signjar alias="xinco" keystore="xinco.keystore"
-                 storepass="${keystore.password}"
-                 lazy="true"
-                 destDir="signed">
-            <path>
-                <fileset dir="dist" includes="**/*.jar"/>
-            </path>
-        </signjar>
-    </target>
-    
-    <target name="dont-sign" unless="keystore.password.set">
-        <copy todir="signed" >  
-            <fileset dir="dir">  
-                <include name="dir/**"/>
-            </fileset>
-        </copy>
-    </target>
-        
-    <target name="-post-jar" depends="should-sign,do-sign,dont-sign">
+    -->      
+    <target name="-post-jar">
         <antcall target="create jnlp"/>
     </target>
 
