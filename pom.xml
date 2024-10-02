@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.bluecubs.xinco</groupId>
+  <artifactId>xinco-parent</artifactId>
+  <version>2.1.0-RC4-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Xinco Parent</name>
+  <url>http://maven.apache.org</url>
+  <licenses>
+    <license>
+      <name>GNU General Public License version 2.0 (GPLv2)</name>
+      <url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>Apache License V2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <modules>
+    <module>Xinco</module>
+    <module>XincoExplorer</module>
+    <module>XincoWebApp</module>
+  </modules>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>4.13.2</junit.version>
+    <spotless.version>2.43.0</spotless.version>
+    <jakarta.servelet.api.version>4.0.4</jakarta.servelet.api.version>
+    <jakarta.servelet.web.api.version>8.0.0</jakarta.servelet.web.api.version>
+    <wsdl4j.version>1.5.1</wsdl4j.version>
+    <axis.version>1.4</axis.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>${jakarta.servelet.api.version}}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </repository>
+  </repositories>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.16.2</version>
+        </plugin>
+        <plugin>
+          <groupId>com.rudikershaw.gitbuildhook</groupId>
+          <artifactId>git-build-hook-maven-plugin</artifactId>
+          <version>3.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.4.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.7.0</version>
+          <configuration>
+            <additionalOptions>
+              <additionalOption>-Xdoclint:none</additionalOption>
+            </additionalOptions>
+            <excludePackageNames>*.service</excludePackageNames>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jxr-plugin</artifactId>
+          <version>3.4.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.4.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>3.23.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>3.0.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.4.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>native2ascii-maven-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <!-- Version 2.1.0-1 works at least with Vaadin 6.5 -->
+          <version>2.10.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.mortbay.jetty</groupId>
+          <artifactId>maven-jetty-plugin</artifactId>
+          <version>6.1.26</version>
+        </plugin>
+        <!-- Plugin to generate JAXB classes and webservice interface -->
+        <plugin>
+          <groupId>org.jvnet.jax-ws-commons</groupId>
+          <artifactId>jaxws-maven-plugin</artifactId>
+          <version>2.3</version>
+          <configuration>
+            <!-- Needed with JAXP 1.5 -->
+            <vmArgs>
+              <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+            </vmArgs>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.12.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>au.com.acegi</groupId>
+          <artifactId>xml-format-maven-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>2.43.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>analyze</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <configuration>
+          <allowMajorUpdates>false</allowMajorUpdates>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- Ensures no APIs are used that are not available in JDK 17 -->
+          <release>17</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <configuration>
+          <!-- optional: limit format enforcement to just the files changed by this feature branch -->
+          <ratchetFrom>origin/master</ratchetFrom>
+          <formats>
+            <!-- you can define as many formats as you want, each is independent -->
+            <format>
+              <!-- define the files to apply to -->
+              <includes>
+                <include>*.md</include>
+                <include>.gitignore</include>
+              </includes>
+              <!-- define the steps to apply to those files -->
+              <trimTrailingWhitespace></trimTrailingWhitespace>
+              <endWithNewline></endWithNewline>
+              <indent>
+                <tabs>true</tabs>
+                <spacesPerTab>4</spacesPerTab>
+              </indent>
+            </format>
+          </formats>
+          <!-- define a language-specific format -->
+          <java>
+            <!-- no need to specify files, inferred automatically, but you can if you want -->
+            <cleanthat></cleanthat>
+            <!-- apply a specific flavor of google-java-format and reflow long strings -->
+            <googleJavaFormat>
+              <version>1.22.0</version>
+              <style>GOOGLE</style>
+              <reflowLongStrings>true</reflowLongStrings>
+            </googleJavaFormat>
+            <importOrder></importOrder>
+            <removeUnusedImports></removeUnusedImports>
+            <formatAnnotations></formatAnnotations>
+          </java>
+          <groovy>
+            <!-- These are the defaults, you can override if you want -->
+            <includes>
+              <include>**/*.groovy</include>
+            </includes>
+            <importOrder></importOrder>
+          </groovy>
+          <pom>
+            <!-- These are the defaults, you can override if you want -->
+            <includes>
+              <include>pom.xml</include>
+            </includes>
+            <sortPom>
+              <encoding>UTF-8</encoding>
+              <!-- The encoding of the pom files -->
+              <lineSeparator>${line.separator}</lineSeparator>
+              <!-- line separator to use -->
+              <expandEmptyElements>true</expandEmptyElements>
+              <!-- Should empty elements be expanded-->
+              <spaceBeforeCloseEmptyElement>false</spaceBeforeCloseEmptyElement>
+              <!-- Should a space be added inside self-closing elements-->
+              <keepBlankLines>true</keepBlankLines>
+              <!-- Keep empty lines -->
+              <nrOfIndentSpace>2</nrOfIndentSpace>
+              <!-- Indentation -->
+              <indentBlankLines>false</indentBlankLines>
+              <!-- Should empty lines be indented -->
+              <indentSchemaLocation>false</indentSchemaLocation>
+              <!-- Should schema locations be indented -->
+              <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
+              <!-- Sort order of elements: https://github.com/Ekryd/sortpom/wiki/PredefinedSortOrderProfiles-->
+              <sortOrderFile></sortOrderFile>
+              <!-- Custom sort order of elements: https://raw.githubusercontent.com/Ekryd/sortpom/master/sorter/src/main/resources/custom_1.xml -->
+              <sortDependencies></sortDependencies>
+              <!-- Sort dependencies: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
+              <sortDependencyExclusions></sortDependencyExclusions>
+              <!-- Sort dependency exclusions: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
+              <sortPlugins></sortPlugins>
+              <!-- Sort plugins: https://github.com/Ekryd/sortpom/wiki/SortPlugins -->
+              <sortProperties>false</sortProperties>
+              <!-- Sort properties -->
+              <sortModules>false</sortModules>
+              <!-- Sort modules -->
+              <sortExecutions>false</sortExecutions>
+              <!-- Sort plugin executions -->
+            </sortPom>
+          </pom>
+          <markdown>
+            <includes>
+              <!-- You have to set the target manually -->
+              <include>**/*.md</include>
+            </includes>
+          </markdown>
+          <json>
+            <includes>
+              <!-- You have to set the target manually -->
+              <include>**/*.json</include>
+            </includes>
+            <jackson></jackson>
+          </json>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.3.9</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
