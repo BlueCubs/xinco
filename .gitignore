@@ -8,3 +8,5 @@
 /XincoWebApp/dist/
 /XincoExplorer/signed/
 /XincoWebApp/build
+.DS_Store
+Docs/.DS_Store
