@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *************************************************************
  */
 package com.bluecubs.xinco.tools;
@@ -97,7 +97,7 @@ public class XincoCrypter {
     }
 
     /**
-     * Encript string
+     * Encrypt string
      * @param str
      * @return String
      */
@@ -111,13 +111,7 @@ public class XincoCrypter {
 
             // Encode bytes to base64 to get a string
             return Base64.encode(enc);
-        } catch (javax.crypto.BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
+        } catch (javax.crypto.BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return null;
@@ -137,13 +131,7 @@ public class XincoCrypter {
             byte[] utf8 = dcipher.doFinal(dec);
             // Decode using utf-8
             return new String(utf8, "UTF8");
-        } catch (javax.crypto.BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
+        } catch (javax.crypto.BadPaddingException | IllegalBlockSizeException | java.io.IOException e) {
             e.printStackTrace();
         }
         return null;
