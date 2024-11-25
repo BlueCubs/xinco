@@ -83,15 +83,7 @@ public class XincoCrypter {
             // Create the ciphers
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
-        } catch (java.security.InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (java.security.spec.InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (javax.crypto.NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (java.security.NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (java.security.InvalidKeyException e) {
+        } catch (java.security.InvalidAlgorithmParameterException | java.security.spec.InvalidKeySpecException | javax.crypto.NoSuchPaddingException | java.security.NoSuchAlgorithmException | java.security.InvalidKeyException e) {
             e.printStackTrace();
         }
     }

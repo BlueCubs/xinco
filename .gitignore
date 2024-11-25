@@ -7,10 +7,8 @@
 /XincoWebApp/nbproject/private/
 /XincoWebApp/dist/
 /XincoExplorer/signed/
-/XincoWebApp/build
+/XincoWebApp/build/
 /XincoWebApp/.blueCubsKeystore
-/XincoWebApp/build
-*.jar
 /XincoWebApp/build
 .DS_Store
 Docs/.DS_Store
