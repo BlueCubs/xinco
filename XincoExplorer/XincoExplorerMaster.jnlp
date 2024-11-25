@@ -7,31 +7,31 @@
 # JNLP File for XincoExplorer
 #
 ###############################################################################
- -->
+-->
 <!-- ### IMPORTANT: Change codebase to where your client will be deployed to!                         ### -->
 <!-- ###            e.g. http://your_domain:8080/xinco/client or http://192.168.0.1:8080/xinco/client ### -->
 
 <jnlp codebase="http://localhost:8080/xinco/client" href="XincoExplorer.jnlp" spec="0.2 1.0">
-  <information>
-    <title>XincoExplorer</title>
-    <vendor>blueCubs.com</vendor>
-    <homepage href="http://www.xinco.org"/>
-    <description>XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
-    <description kind="short">XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
-    <icon href="blueCubsIcon.gif"/>
-    <offline-allowed/>
-    <shortcut online="true">
-    </shortcut>
-  </information>
-  <resources locale="" os="">
-<!-- The following line will be replaced with an automatically generated list of resources: -->
-<!--${jnlp.resources}-->
-  </resources>
-  <security>
-    <!-- all permissions required on Client-Computer -->
-    <all-permissions/>
-  </security>
-  <application-desc main-class="com.bluecubs.xinco.client.XincoExplorer"/>
+    <information>
+        <title>XincoExplorer</title>
+        <vendor>blueCubs.com</vendor>
+        <homepage href="http://www.xinco.org"/>
+        <description>XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
+        <description kind="short">XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
+        <icon href="blueCubsIcon.gif"/>
+        <offline-allowed/>
+        <shortcut online="true">
+        </shortcut>
+    </information>
+    <resources locale="" os="">
+        <!-- The following line will be replaced with an automatically generated list of resources: -->
+        <!--${jnlp.resources}-->
+    </resources>
+    <security>
+        <!-- all permissions required on Client-Computer -->
+        <all-permissions/>
+    </security>
+    <application-desc main-class="com.bluecubs.xinco.client.XincoExplorer"/>
 </jnlp>
 
         

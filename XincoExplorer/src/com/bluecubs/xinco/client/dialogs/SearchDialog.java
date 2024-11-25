@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * SearchDialog.java
@@ -158,8 +158,8 @@ public class SearchDialog extends AbstractDialog {
         });
         languageList.setSelectedIndex(selection);
         languageList.ensureIndexIsVisible(languageList.getSelectedIndex());
-        setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue() - 100,
-                (new Double(getToolkit().getScreenSize().getHeight())).intValue() - 75);
+        setBounds(0, 0, (Double.valueOf(getToolkit().getScreenSize().getWidth())).intValue() - 100,
+                (Double.valueOf(getToolkit().getScreenSize().getHeight())).intValue() - 75);
     }
 
     public void clearResults() {

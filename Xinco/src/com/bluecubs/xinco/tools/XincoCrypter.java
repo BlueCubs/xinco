@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *************************************************************
  */
 package com.bluecubs.xinco.tools;
@@ -83,21 +83,13 @@ public class XincoCrypter {
             // Create the ciphers
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
-        } catch (java.security.InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (java.security.spec.InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (javax.crypto.NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (java.security.NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (java.security.InvalidKeyException e) {
+        } catch (java.security.InvalidAlgorithmParameterException | java.security.spec.InvalidKeySpecException | javax.crypto.NoSuchPaddingException | java.security.NoSuchAlgorithmException | java.security.InvalidKeyException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Encript string
+     * Encrypt string
      * @param str
      * @return String
      */
@@ -111,13 +103,7 @@ public class XincoCrypter {
 
             // Encode bytes to base64 to get a string
             return Base64.encode(enc);
-        } catch (javax.crypto.BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
+        } catch (javax.crypto.BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return null;
@@ -137,13 +123,7 @@ public class XincoCrypter {
             byte[] utf8 = dcipher.doFinal(dec);
             // Decode using utf-8
             return new String(utf8, "UTF8");
-        } catch (javax.crypto.BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
+        } catch (javax.crypto.BadPaddingException | IllegalBlockSizeException | java.io.IOException e) {
             e.printStackTrace();
         }
         return null;

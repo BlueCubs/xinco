@@ -209,7 +209,7 @@ public class XincoCronServlet extends HttpServlet {
                 //Security bug
                 (db.config.isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
-        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" +
+        out.println("</table><tr><form action='menu'><input type='submit' value='" +
                 lrb.getString("message.admin.main.backtomain") + "' />" +
                 "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>" +
                 "<tr><FORM><INPUT TYPE='button' VALUE='" + lrb.getString("message.admin.main.back") +

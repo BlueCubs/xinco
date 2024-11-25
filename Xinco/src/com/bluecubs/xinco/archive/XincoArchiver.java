@@ -21,13 +21,13 @@
  *
  * Name:            XincoArchiver
  *
- * Description:     handle document archiving 
+ * Description:     handle document archiving
  *
  * Original Author: Alexander Manes
  * Date:            2005/01/16
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -95,19 +95,19 @@ public class XincoArchiver {
         //copy file + revisions
         //build file list
         OrgFileNames.add("" + xdata_temp.getId());
-        OrgFileIDs.add(new Integer(xdata_temp.getId()));
+        OrgFileIDs.add(xdata_temp.getId());
         for (i = 0; i < xdata_temp.getXinco_core_logs().size(); i++) {
             xlog_temp = ((XincoCoreLogServer) xdata_temp.getXinco_core_logs().elementAt(i));
             if ((xlog_temp.getOp_code() == 1) || (xlog_temp.getOp_code() == 5)) {
                 OrgFileNames.add("" + xdata_temp.getId() + "-" + xlog_temp.getId());
-                OrgFileIDs.add(new Integer(xdata_temp.getId()));
+                OrgFileIDs.add(xdata_temp.getId());
             }
         }
         //copy + delete files
         for (k = 0; k < OrgFileNames.size(); k++) {
             FileName = ((String) OrgFileNames.elementAt(k)) + "_" + ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
-            if ((new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).exists()) {
-                fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k)))));
+            if ((new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, ((Integer) OrgFileIDs.elementAt(k)), ((String) OrgFileNames.elementAt(k))))).exists()) {
+                fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, ((Integer) OrgFileIDs.elementAt(k)), ((String) OrgFileNames.elementAt(k)))));
                 fcos = new FileOutputStream(new File(ArchiveBaseDir + ArchiveFileDir + System.getProperty("file.separator") + FileName));
                 fcbuf = new byte[4096];
                 len = 0;
@@ -117,14 +117,14 @@ public class XincoArchiver {
                 fcis.close();
                 fcos.close();
                 //delete
-                (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).delete();
+                (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, ((Integer) OrgFileIDs.elementAt(k)), ((String) OrgFileNames.elementAt(k))))).delete();
             }
         }
         //update data + log
         xdata_temp.setStatus_number(3);
         ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(7)).setAttrib_text("[" + ArchiveName + "]" + ArchiveFileDir.replace('\\', '/') + "/" + FileName);
         xdata_temp.write2DB(DBM);
-        if (xdata_temp.getXinco_core_logs().size() > 0) {
+        if (!xdata_temp.getXinco_core_logs().isEmpty()) {
             xlog_temp = ((XincoCoreLogServer) xdata_temp.getXinco_core_logs().elementAt(xdata_temp.getXinco_core_logs().size() - 1));
             if (xlog_temp != null) {
                 xlog_temp.setId(0);

@@ -1,0 +1,14 @@
+/Xinco/nbproject/private/
+/Xinco/build/
+/Xinco/dist/
+/XincoExplorer/nbproject/private/
+/XincoExplorer/build/
+/XincoExplorer/dist/
+/XincoWebApp/nbproject/private/
+/XincoWebApp/dist/
+/XincoExplorer/signed/
+/XincoWebApp/build/
+/XincoWebApp/.blueCubsKeystore
+/XincoWebApp/build
+.DS_Store
+Docs/.DS_Store

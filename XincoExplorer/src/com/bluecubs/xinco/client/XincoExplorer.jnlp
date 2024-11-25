@@ -31,7 +31,7 @@
     <!-- required libraries, ALL SIGNED -->
     <jar download="eager" href="XincoExplorer.jar" main="true"/>
     <jar href="Xinco.jar"/>
-        <jar href="JTattoo.jar"/>
+		<jar href="JTattoo.jar"/>
 <jar href="activation.jar"/>
 <jar href="axis.jar"/>
 <jar href="commons-discovery-0.2.jar"/>
