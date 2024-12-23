@@ -148,10 +148,12 @@ public class SearchDialog extends AbstractDialog {
 
             Vector strings = list;
 
+            @Override
             public int getSize() {
                 return strings.size();
             }
 
+            @Override
             public Object getElementAt(int i) {
                 return strings.get(i);
             }

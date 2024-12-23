@@ -79,10 +79,12 @@ import lius.index.application.VCardIndexer;
  */
 public class XincoIndexVcard extends VCardIndexer implements XincoIndexFileType{
 
+    @Override
     public Reader getFileContentReader(File f) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public String getFileContentString(File f) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

@@ -104,6 +104,7 @@ public final class XincoJTree extends JTree {
                 getExplorer().resetTimer();
             }
 
+            @Override
             public void mousePressed(MouseEvent event) {
                 getExplorer().resetTimer();
                 //Change selection even with right click
@@ -116,10 +117,12 @@ public final class XincoJTree extends JTree {
                 }
             }
 
+            @Override
             public void mouseClicked(MouseEvent event) {
                 getExplorer().resetTimer();
             }
 
+            @Override
             public void mouseReleased(MouseEvent event) {
                 getExplorer().resetTimer();
                 if (event.isPopupTrigger()) {

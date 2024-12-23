@@ -27,7 +27,7 @@
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -39,7 +39,7 @@ package com.bluecubs.xinco.core;
 public class XincoException extends Exception {
 
 	String xinco_message = "";
-	
+
 	public XincoException() {
 		super();
 		xinco_message = "";
@@ -49,9 +49,9 @@ public class XincoException extends Exception {
 		super(s);
 		xinco_message = s;
 	}
-	
+
+  @Override
 	public String toString() {
 		return xinco_message;
 	}
-
 }

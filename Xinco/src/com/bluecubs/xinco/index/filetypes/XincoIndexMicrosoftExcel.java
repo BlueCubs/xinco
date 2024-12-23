@@ -52,10 +52,12 @@ public class XincoIndexMicrosoftExcel implements XincoIndexFileType {
 		super();
 	}
 
+  @Override
 	public Reader getFileContentReader(File f) {
 		return null;
 	}
 
+  @Override
 	public String getFileContentString(File f) {
 		int i,j,j2,k;
 		short k2;

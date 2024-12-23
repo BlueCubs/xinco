@@ -33,9 +33,9 @@
  *                                    write2DB, XincoCoreUserServer, XincoCoreUserServer (x 2), getXincoCoreUsers
  * Javier A. Ortiz 11/06/2006         Moved the logic of locking an account due to login attempts from the XincoAdminServlet
  * Alexander Manes 11/12/2006         Moved the new user features to core class
- * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice 
+ * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice
  *                                    the attempts in the DB when wrong password was used
- * Javier A. Ortiz 01/08/2010         
+ * Javier A. Ortiz 01/08/2010
  *************************************************************
  */
 package com.bluecubs.xinco.core.server;
@@ -76,13 +76,13 @@ public class XincoCoreUserServer extends XincoCoreUser {
     private void fillXincoCoreGroups(XincoDBManager DBM) throws XincoException {
         setXinco_core_groups(new Vector());
         try {
-            Statement stmt = DBM.con.createStatement();
+          try (Statement stmt = DBM.con.createStatement()) {
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId());
             while (rs.next()) {
-                getXinco_core_groups().addElement(new XincoCoreGroupServer(rs.getInt("xinco_core_group_id"), DBM));
+              getXinco_core_groups().addElement(new XincoCoreGroupServer(rs.getInt("xinco_core_group_id"), DBM));
             }
-            stmt.close();
-        } catch (Exception e) {
+          }
+        } catch (XincoException | SQLException e) {
             getXinco_core_groups().removeAllElements();
             throw new XincoException();
         }

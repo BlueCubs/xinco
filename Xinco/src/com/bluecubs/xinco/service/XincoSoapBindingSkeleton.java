@@ -363,150 +363,175 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     public XincoSoapBindingSkeleton(com.bluecubs.xinco.service.Xinco impl) {
         this.impl = impl;
     }
+    @Override
     public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoVersion ret = impl.getXincoServerVersion();
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreUser getCurrentXincoCoreUser(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreUser ret = impl.getCurrentXincoCoreUser(in0, in1);
         return ret;
     }
 
+    @Override
     public java.util.Vector getAllXincoCoreGroups(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException
     {
         java.util.Vector ret = impl.getAllXincoCoreGroups(in0);
         return ret;
     }
 
+    @Override
     public java.util.Vector getAllXincoCoreLanguages(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException
     {
         java.util.Vector ret = impl.getAllXincoCoreLanguages(in0);
         return ret;
     }
 
+    @Override
     public java.util.Vector getAllXincoCoreDataTypes(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException
     {
         java.util.Vector ret = impl.getAllXincoCoreDataTypes(in0);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreNode getXincoCoreNode(com.bluecubs.xinco.core.XincoCoreNode in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreNode ret = impl.getXincoCoreNode(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreData getXincoCoreData(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreData ret = impl.getXincoCoreData(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreData doXincoCoreDataCheckout(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreData ret = impl.doXincoCoreDataCheckout(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreData undoXincoCoreDataCheckout(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreData ret = impl.undoXincoCoreDataCheckout(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreData doXincoCoreDataCheckin(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreData ret = impl.doXincoCoreDataCheckin(in0, in1);
         return ret;
     }
 
+    @Override
     public byte[] downloadXincoCoreData(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         byte[] ret = impl.downloadXincoCoreData(in0, in1);
         return ret;
     }
 
+    @Override
     public int uploadXincoCoreData(com.bluecubs.xinco.core.XincoCoreData in0, byte[] in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException
     {
         int ret = impl.uploadXincoCoreData(in0, in1, in2);
         return ret;
     }
 
+    @Override
     public java.util.Vector findXincoCoreNodes(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreLanguage in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException
     {
         java.util.Vector ret = impl.findXincoCoreNodes(in0, in1, in2);
         return ret;
     }
 
+    @Override
     public java.util.Vector findXincoCoreData(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreLanguage in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException
     {
         java.util.Vector ret = impl.findXincoCoreData(in0, in1, in2);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreNode setXincoCoreNode(com.bluecubs.xinco.core.XincoCoreNode in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreNode ret = impl.setXincoCoreNode(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreData setXincoCoreData(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreData ret = impl.setXincoCoreData(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreACE setXincoCoreACE(com.bluecubs.xinco.core.XincoCoreACE in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreACE ret = impl.setXincoCoreACE(in0, in1);
         return ret;
     }
 
+    @Override
     public boolean removeXincoCoreACE(com.bluecubs.xinco.core.XincoCoreACE in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         boolean ret = impl.removeXincoCoreACE(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreLog setXincoCoreLog(com.bluecubs.xinco.core.XincoCoreLog in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreLog ret = impl.setXincoCoreLog(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreUser setXincoCoreUser(com.bluecubs.xinco.core.XincoCoreUser in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreUser ret = impl.setXincoCoreUser(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreGroup setXincoCoreGroup(com.bluecubs.xinco.core.XincoCoreGroup in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreGroup ret = impl.setXincoCoreGroup(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreLanguage setXincoCoreLanguage(com.bluecubs.xinco.core.XincoCoreLanguage in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreLanguage ret = impl.setXincoCoreLanguage(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.core.XincoCoreDataTypeAttribute getXincoCoreDataTypeAttribute(com.bluecubs.xinco.core.XincoCoreDataTypeAttribute in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreDataTypeAttribute ret = impl.getXincoCoreDataTypeAttribute(in0, in1);
         return ret;
     }
 
+    @Override
     public com.bluecubs.xinco.add.XincoAddAttribute getXincoAddAttribute(com.bluecubs.xinco.add.XincoAddAttribute in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.add.XincoAddAttribute ret = impl.getXincoAddAttribute(in0, in1);
         return ret;
     }
 
+    @Override
     public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreUser in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException
     {
         boolean ret = impl.checkXincoCoreUserNewPassword(in0, in1, in2);

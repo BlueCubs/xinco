@@ -48,6 +48,7 @@ public class XincoIndexHTML implements XincoIndexFileType {
         super();
     }
     
+    @Override
     public Reader getFileContentReader(File f) {
         try {
             fis = new FileInputStream(f);
@@ -64,6 +65,7 @@ public class XincoIndexHTML implements XincoIndexFileType {
         return reader;
     }
     
+    @Override
     public String getFileContentString(File f) {
         return null;
     }

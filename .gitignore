@@ -12,3 +12,7 @@
 /XincoWebApp/build
 .DS_Store
 Docs/.DS_Store
+
+.idea/
+
+*.class

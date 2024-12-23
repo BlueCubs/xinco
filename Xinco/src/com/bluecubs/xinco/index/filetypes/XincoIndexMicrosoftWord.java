@@ -47,10 +47,12 @@ public class XincoIndexMicrosoftWord implements XincoIndexFileType {
 		super();
 	}
 
+  @Override
 	public Reader getFileContentReader(File f) {
 		return null;
 	}
 
+  @Override
 	public String getFileContentString(File f) {
 		String word_string = null;
 		FileInputStream is =null;

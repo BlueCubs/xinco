@@ -24,6 +24,7 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
     // Use to get a proxy class for Xinco
     private java.lang.String Xinco_address = "http://localhost:8084/xinco/services/Xinco";
 
+    @Override
     public java.lang.String getXincoAddress() {
         return Xinco_address;
     }
@@ -39,6 +40,7 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
         XincoWSDDServiceName = name;
     }
 
+    @Override
     public com.bluecubs.xinco.service.Xinco getXinco() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
@@ -50,6 +52,7 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
         return getXinco(endpoint);
     }
 
+    @Override
     public com.bluecubs.xinco.service.Xinco getXinco(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
             com.bluecubs.xinco.service.XincoSoapBindingStub _stub = new com.bluecubs.xinco.service.XincoSoapBindingStub(portAddress, this);
@@ -70,6 +73,7 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
      * If this service has no port for the given interface,
      * then ServiceException is thrown.
      */
+    @Override
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
             if (com.bluecubs.xinco.service.Xinco.class.isAssignableFrom(serviceEndpointInterface)) {
@@ -89,6 +93,7 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
      * If this service has no port for the given interface,
      * then ServiceException is thrown.
      */
+    @Override
     public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         if (portName == null) {
             return getPort(serviceEndpointInterface);
@@ -104,12 +109,14 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
         }
     }
 
+    @Override
     public javax.xml.namespace.QName getServiceName() {
         return new javax.xml.namespace.QName("urn:Xinco", "XincoService");
     }
 
     private java.util.HashSet ports = null;
 
+    @Override
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();

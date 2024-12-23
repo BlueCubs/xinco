@@ -94,6 +94,7 @@ public final class ConnectionDialog extends AbstractDialog {
         this.profileList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         this.profileList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
 
+            @Override
             public void valueChanged(javax.swing.event.ListSelectionEvent e) {
                 int sel;
                 sel = profileList.getSelectedIndex();
