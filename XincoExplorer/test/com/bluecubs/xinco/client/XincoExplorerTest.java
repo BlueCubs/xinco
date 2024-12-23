@@ -69,7 +69,7 @@ public class XincoExplorerTest extends TestCase {
         //add locale
         xincoClientConfig.addElement(Locale.getDefault());
         //add version
-        xincoClientConfig.addElement(XincoExplorer.ConfigFileVersion + 1);
+        xincoClientConfig.addElement(XincoExplorer.CONFIG_FILE_VERSION + 1);
         try {
             java.io.FileOutputStream fout =
                     new java.io.FileOutputStream(System.getProperty("user.home")
