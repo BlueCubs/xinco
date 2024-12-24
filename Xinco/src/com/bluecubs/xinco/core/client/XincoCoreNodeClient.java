@@ -27,25 +27,24 @@
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreNodeClient extends XincoCoreNode {
-    
-	public XincoCoreNodeClient() throws XincoException {
-	}
-	
+
+  public XincoCoreNodeClient() throws XincoException {
+  }
+
   @Override
-	public String toString() {
-		return this.getDesignation();
-	}
-    
+  public String toString() {
+    return this.getDesignation();
+  }
+
 }

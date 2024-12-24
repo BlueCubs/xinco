@@ -21,13 +21,13 @@
  *
  * Name:            XincoIndexer
  *
- * Description:     handle document indexing 
+ * Description:     handle document indexing
  *
  * Original Author: Alexander Manes
  * Date:            2004/10/31
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -35,145 +35,147 @@
  */
 package com.bluecubs.xinco.index;
 
-import java.util.Vector;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.*;
-import org.apache.lucene.search.*;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.analysis.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
+import java.io.IOException;
+import java.util.Vector;
+import org.apache.lucene.analysis.*;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.*;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.*;
 
 /**
- * This class handles document indexing for xinco.
- * Edit configuration values in context.xml
+ * This class handles document indexing for xinco. Edit configuration values in
+ * context.xml
  */
 public class XincoIndexer {
 
-    public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
+  public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
 
-        IndexWriter writer = null;
+    IndexWriter writer = null;
 
+    try {
+
+      //check if document exists in index and delete
+      XincoIndexer.removeXincoCoreData(d, dbm);
+
+      //add document to index
+      try {
+        writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
+      } catch (IOException ie) {
+        writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), true);
+      }
+      writer.addDocument(XincoDocument.getXincoDocument(d, index_content, dbm));
+      //writer.optimize();
+      writer.close();
+
+    } catch (IOException e) {
+      if (writer != null) {
         try {
-
-            //check if document exists in index and delete
-            XincoIndexer.removeXincoCoreData(d, dbm);
-
-            //add document to index
-            try {
-                writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
-            } catch (Exception ie) {
-                writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), true);
-            }
-            writer.addDocument(XincoDocument.getXincoDocument(d, index_content, dbm));
-            //writer.optimize();
-            writer.close();
-
-        } catch (Exception e) {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (Exception we) {
-                }
-            }
-            return false;
+          writer.close();
+        } catch (IOException we) {
         }
-
-        return true;
+      }
+      return false;
     }
 
-    public static synchronized boolean removeXincoCoreData(XincoCoreData d, XincoDBManager dbm) {
+    return true;
+  }
 
-        IndexReader reader = null;
+  public static synchronized boolean removeXincoCoreData(XincoCoreData d, XincoDBManager dbm) {
 
-        //check if document exists in index and delete
+    IndexReader reader = null;
+
+    //check if document exists in index and delete
+    try {
+      reader = IndexReader.open(dbm.config.FileIndexPath);
+      reader.delete(new Term("id", "" + d.getId()));
+      reader.close();
+    } catch (IOException re) {
+      if (reader != null) {
         try {
-            reader = IndexReader.open(dbm.config.FileIndexPath);
-            reader.delete(new Term("id", "" + d.getId()));
-            reader.close();
-        } catch (Exception re) {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (Exception re2) {
-                }
-            }
-            return false;
+          reader.close();
+        } catch (IOException re2) {
         }
-
-        return true;
+      }
+      return false;
     }
 
-    public static synchronized boolean optimizeIndex(XincoDBManager dbm) {
+    return true;
+  }
 
-        IndexWriter writer = null;
+  public static synchronized boolean optimizeIndex(XincoDBManager dbm) {
 
+    IndexWriter writer = null;
+
+    try {
+
+      //optimize index
+      writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
+      writer.optimize();
+      writer.close();
+
+    } catch (IOException e) {
+      if (writer != null) {
         try {
-
-            //optimize index
-            writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
-            writer.optimize();
-            writer.close();
-
-        } catch (Exception e) {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (Exception we) {
-                }
-            }
-            return false;
+          writer.close();
+        } catch (IOException we) {
         }
-
-        return true;
+      }
+      return false;
     }
 
-    public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager dbm) {
+    return true;
+  }
 
-        int i = 0;
-        Vector v = new Vector();
-        Searcher searcher = null;
+  public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager dbm) {
 
+    int i;
+    Vector v = new Vector();
+    Searcher searcher = null;
+
+    try {
+
+      searcher = new IndexSearcher(dbm.config.FileIndexPath);
+      Analyzer analyzer = new StandardAnalyzer();
+
+      //add language to query
+      if (l != 0) {
+        s = s + " AND language:" + l;
+      }
+      Query query = QueryParser.parse(s, "designation", analyzer);
+
+      Hits hits = searcher.search(query);
+
+      for (i = 0; i < hits.length(); i++) {
         try {
-
-            searcher = new IndexSearcher(dbm.config.FileIndexPath);
-            Analyzer analyzer = new StandardAnalyzer();
-
-            //add language to query
-            if (l != 0) {
-                s = s + " AND language:" + l;
-            }
-            Query query = QueryParser.parse(s, "designation", analyzer);
-
-            Hits hits = searcher.search(query);
-
-            for (i = 0; i < hits.length(); i++) {
-                try {
-                    v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), dbm));
-                } catch (Exception xcde) {
-                // don't add non-existing data
-                }
-                if (i >= dbm.config.MaxSearchResult) {
-                    break;
-                }
-            }
-
-            searcher.close();
-
-        } catch (Exception e) {
-            if (searcher != null) {
-                try {
-                    searcher.close();
-                } catch (Exception se) {
-                }
-            }
-            return null;
+          v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), dbm));
+        } catch (XincoException | IOException | NumberFormatException xcde) {
+          // don't add non-existing data
         }
+        if (i >= dbm.config.MaxSearchResult) {
+          break;
+        }
+      }
 
-        return v;
+      searcher.close();
+
+    } catch (IOException | ParseException e) {
+      if (searcher != null) {
+        try {
+          searcher.close();
+        } catch (IOException se) {
+        }
+      }
+      return null;
     }
 
-    //private constructor to avoid instance generation with new-operator!
-    private XincoIndexer() {
-    }
+    return v;
+  }
+
+  //private constructor to avoid instance generation with new-operator!
+  private XincoIndexer() {
+  }
 }

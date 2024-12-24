@@ -35,18 +35,17 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoException;
-
-import java.util.Vector;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 
 public class XincoCoreDataServer extends XincoCoreData {
 

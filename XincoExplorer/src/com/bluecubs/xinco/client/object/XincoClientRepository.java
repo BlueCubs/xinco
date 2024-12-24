@@ -36,10 +36,9 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import javax.swing.tree.*;
-
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.service.*;
+import javax.swing.tree.*;
 
 /**
  * XincoClientRepository

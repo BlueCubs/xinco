@@ -40,8 +40,6 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import java.util.Vector;
-
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.tools.DateTool;
 import com.bluecubs.xinco.tools.MD5;
@@ -53,8 +51,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
-
-//Status list (in DB)
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;

@@ -38,8 +38,8 @@
  */
 package com.bluecubs.xinco.client.object.thread;
 
-import com.bluecubs.xinco.client.object.*;
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.*;
 
 /**
  *
@@ -47,51 +47,55 @@ import com.bluecubs.xinco.client.XincoExplorer;
  */
 public class XincoProgressBarThread extends Thread {
 
-    private XincoExplorer explorer;
-    private XincoProgressBar progressBar;
-    private boolean initialized=false;
+  private final XincoExplorer explorer;
+  private XincoProgressBar progressBar;
+  private boolean initialized = false;
 
-    @Override
-    public void run() {
-        progressBar = new XincoProgressBar(explorer);
-        progressBar.pack();
-        progressBar.setVisible(true);
-        setInitialized(true);
-    }
+  @Override
+  public void run() {
+    progressBar = new XincoProgressBar(explorer);
+    progressBar.pack();
+    progressBar.setVisible(true);
+    setInitialized(true);
+  }
 
-    /** Creates a new instance of XincoProgressBarThread */
-    public XincoProgressBarThread(XincoExplorer e) {
-        this.explorer = e;
-    }
+  /**
+   * Creates a new instance of XincoProgressBarThread
+   *
+   * @param e
+   */
+  public XincoProgressBarThread(XincoExplorer e) {
+    this.explorer = e;
+  }
 
-    public void hide() {
-        progressBar.setVisible(false);
-    }
+  public void hide() {
+    progressBar.setVisible(false);
+  }
 
-    public void show() {
-        progressBar.setVisible(true);
-        progressBar.repaint();
-    }
+  public void show() {
+    progressBar.setVisible(true);
+    progressBar.repaint();
+  }
 
-    public void setTitle(String t) {
-        progressBar.setTitle(t);
-    }
+  public void setTitle(String t) {
+    progressBar.setTitle(t);
+  }
 
-    public boolean isVisible() {
-        return progressBar.isVisible();
-    }
+  public boolean isVisible() {
+    return progressBar.isVisible();
+  }
 
-    /**
-     * @return the initialized
-     */
-    public boolean isInitialized() {
-        return initialized;
-    }
+  /**
+   * @return the initialized
+   */
+  public boolean isInitialized() {
+    return initialized;
+  }
 
-    /**
-     * @param initialized the initialized to set
-     */
-    public void setInitialized(boolean initialized) {
-        this.initialized = initialized;
-    }
+  /**
+   * @param initialized the initialized to set
+   */
+  public void setInitialized(boolean initialized) {
+    this.initialized = initialized;
+  }
 }

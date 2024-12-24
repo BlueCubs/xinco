@@ -9,21 +9,17 @@ import java.util.ResourceBundle;
  */
 public class LocalizationTool {
 
-    //TODO: Manage changing locale from webpage
-    //static HashMap<String, String> localeFlagMap = new HashMap<String, String>();
-    static ResourceBundle lrb = ResourceBundle.getBundle(
-            "com.bluecubs.xinco.messages.XincoMessagesLocale",
-            Locale.getDefault());
+  //TODO: Manage changing locale from webpage
+  //static HashMap<String, String> localeFlagMap = new HashMap<String, String>();
+  static ResourceBundle lrb = ResourceBundle.getBundle(
+      "com.bluecubs.xinco.messages.XincoMessagesLocale",
+      Locale.getDefault());
 
-    static public String[] getLocales() {
-        return lrb.getString("AvailableLocales").split(",");
-    }
+  static public String[] getLocales() {
+    return lrb.getString("AvailableLocales").split(",");
+  }
 
-    static public String getLocaleCode(String loc) {
-        return lrb.getString("Locale." + loc);
-    }
-
-//    static public String getPathToFlag(String loc) {
-//
-//    }
+  static public String getLocaleCode(String loc) {
+    return lrb.getString("Locale." + loc);
+  }
 }

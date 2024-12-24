@@ -36,11 +36,10 @@
 
 package com.bluecubs.xinco.core.server;
 
-import java.sql.*;
-import java.util.Vector;
-
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.index.*;
+import java.sql.*;
+import java.util.Vector;
 
 public class XincoCoreNodeServer extends XincoCoreNode {
     

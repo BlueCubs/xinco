@@ -21,31 +21,30 @@
  *
  * Name:            XincoCoreDataClient
  *
- * Description:     data object 
+ * Description:     data object
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreDataClient extends XincoCoreData {
 
-	public XincoCoreDataClient() throws XincoException {
-	}
+  public XincoCoreDataClient() throws XincoException {
+  }
 
   @Override
-	public String toString() {
-		return this.getDesignation();
-	}
-    
+  public String toString() {
+    return this.getDesignation();
+  }
+
 }

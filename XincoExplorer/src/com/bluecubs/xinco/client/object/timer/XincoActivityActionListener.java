@@ -47,24 +47,24 @@ import java.util.logging.Logger;
  */
 public class XincoActivityActionListener implements ActionListener {
 
-    private XincoExplorer explorer = null;
-    private XincoActivityTimer xat = null;
+  private XincoExplorer explorer = null;
 
-    /** Creates a new instance of XincoActivityActionListener
-     * @param e
-     * @param xat 
-     */
-    public XincoActivityActionListener(XincoExplorer e, XincoActivityTimer xat) {
-        this.explorer = e;
-        this.xat = xat;
-    }
+  /**
+   * Creates a new instance of XincoActivityActionListener
+   *
+   * @param e
+   * @param xat
+   */
+  public XincoActivityActionListener(XincoExplorer e, XincoActivityTimer xat) {
+    this.explorer = e;
+  }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        try {
-            this.explorer.setLock(true);
-        } catch (Throwable ex) {
-            Logger.getLogger(XincoActivityActionListener.class.getName()).log(Level.SEVERE, null, ex);
-        }
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    try {
+      this.explorer.setLock(true);
+    } catch (Throwable ex) {
+      Logger.getLogger(XincoActivityActionListener.class.getName()).log(Level.SEVERE, null, ex);
     }
+  }
 }

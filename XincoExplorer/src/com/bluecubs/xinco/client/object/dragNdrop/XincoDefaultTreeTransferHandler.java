@@ -48,53 +48,50 @@ import javax.swing.tree.TreePath;
  */
 public class XincoDefaultTreeTransferHandler extends XincoAbstractTreeTransferHandler {
 
-    public XincoDefaultTreeTransferHandler(XincoJTree tree, int action) {
-        super(tree, action, true);
-    }
+  public XincoDefaultTreeTransferHandler(XincoJTree tree, int action) {
+    super(tree, action, true);
+  }
 
-    @Override
-    public boolean canPerformAction(XincoJTree target, DefaultMutableTreeNode draggedNode, int action, Point location) {
-        TreePath pathTarget = target.getPathForLocation(location.x, location.y);
-        if (pathTarget == null) {
-            target.setSelectionPath(null);
-            return (false);
-        }
-        target.setSelectionPath(pathTarget);
-        if (action == DnDConstants.ACTION_COPY) {
-            return true;
-        } else if (action == DnDConstants.ACTION_MOVE) {
-            DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) pathTarget.getLastPathComponent();
-            if (draggedNode.isRoot() || parentNode == draggedNode.getParent() ||
-                    draggedNode.isNodeDescendant(parentNode) ||
-                    parentNode.getUserObject().getClass() == XincoCoreData.class) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return false;
-        }
+  @Override
+  public boolean canPerformAction(XincoJTree target, DefaultMutableTreeNode draggedNode, int action, Point location) {
+    TreePath pathTarget = target.getPathForLocation(location.x, location.y);
+    if (pathTarget == null) {
+      target.setSelectionPath(null);
+      return (false);
     }
+    target.setSelectionPath(pathTarget);
+    switch (action) {
+      case DnDConstants.ACTION_COPY:
+        return true;
+      case DnDConstants.ACTION_MOVE:
+        DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) pathTarget.getLastPathComponent();
+        return !(draggedNode.isRoot() || parentNode == draggedNode.getParent()
+            || draggedNode.isNodeDescendant(parentNode)
+            || parentNode.getUserObject().getClass() == XincoCoreData.class);
 
-    @Override
-    public boolean executeDrop(XincoJTree target, DefaultMutableTreeNode draggedNode, DefaultMutableTreeNode newParentNode, int action) {
-        if (action == DnDConstants.ACTION_COPY) {
-            DefaultMutableTreeNode newNode = XincoJTree.makeDeepCopy(draggedNode);
-            ((DefaultTreeModel) target.getModel()).insertNodeInto(newNode, newParentNode, newParentNode.getChildCount());
-            TreePath treePath = new TreePath(newNode.getPath());
-            target.scrollPathToVisible(treePath);
-            target.setSelectionPath(treePath);
-            return (true);
-        }
-        if (action == DnDConstants.ACTION_MOVE) {
-            draggedNode.removeFromParent();
-            ((DefaultTreeModel) target.getModel()).insertNodeInto(draggedNode, newParentNode, newParentNode.getChildCount());
-            TreePath treePath = new TreePath(draggedNode.getPath());
-            target.scrollPathToVisible(treePath);
-            target.setSelectionPath(treePath);
-            return (true);
-        }
-        return (false);
+      default:
+        return false;
     }
+  }
+
+  @Override
+  public boolean executeDrop(XincoJTree target, DefaultMutableTreeNode draggedNode, DefaultMutableTreeNode newParentNode, int action) {
+    if (action == DnDConstants.ACTION_COPY) {
+      DefaultMutableTreeNode newNode = XincoJTree.makeDeepCopy(draggedNode);
+      ((DefaultTreeModel) target.getModel()).insertNodeInto(newNode, newParentNode, newParentNode.getChildCount());
+      TreePath treePath = new TreePath(newNode.getPath());
+      target.scrollPathToVisible(treePath);
+      target.setSelectionPath(treePath);
+      return (true);
+    }
+    if (action == DnDConstants.ACTION_MOVE) {
+      draggedNode.removeFromParent();
+      ((DefaultTreeModel) target.getModel()).insertNodeInto(draggedNode, newParentNode, newParentNode.getChildCount());
+      TreePath treePath = new TreePath(draggedNode.getPath());
+      target.scrollPathToVisible(treePath);
+      target.setSelectionPath(treePath);
+      return (true);
+    }
+    return (false);
+  }
 }
-

@@ -383,7 +383,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         }
         try (CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, data.getId(), "" + data.getId())), new CRC32())) {
           byte[] buf = new byte[4_096];
-          len = 0;
           totalLen = 0;
           while ((len = in.read(buf)) > 0) {
             out.write(buf, 0, len);
@@ -391,8 +390,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
           }
           in.close();
           //check correctness of data
-          //if ((((XincoAddAttribute)data.getXinco_add_attributes().elementAt(1)).getAttrib_unsignedint() != totalLen) || (((XincoAddAttribute)data.getXinco_add_attributes().elementAt(2)).getAttrib_varchar().compareTo("" + out.getChecksum().getValue()) == 0)) {
-          if (((XincoAddAttribute) data.getXinco_add_attributes().elementAt(1)).getAttrib_unsignedint() != totalLen) {
+          if ((((XincoAddAttribute) data.getXinco_add_attributes().elementAt(1)).getAttrib_unsignedint() != totalLen) || (((XincoAddAttribute) data.getXinco_add_attributes().elementAt(2)).getAttrib_varchar().compareTo("" + out.getChecksum().getValue()) == 0)) {
+            //if (((XincoAddAttribute) data.getXinco_add_attributes().elementAt(1)).getAttrib_unsignedint() != totalLen) {
             out.close();
             dbm.con.close();
             return 0;

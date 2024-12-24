@@ -35,10 +35,9 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import java.util.Vector;
-import java.sql.*;
-
 import com.bluecubs.xinco.core.*;
+import java.sql.*;
+import java.util.Vector;
 
 public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
 

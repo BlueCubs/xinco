@@ -45,88 +45,90 @@ import java.util.Vector;
 
 /**
  *
- * @author  Javier A. Ortiz
+ * @author Javier A. Ortiz
  */
 public class AddAttributeText extends AbstractDialog {
 
-    private XincoExplorer explorer;
-    private boolean viewOnly = false;
+  private final XincoExplorer explorer;
+  private boolean viewOnly = false;
 
-    /** Creates new form AddAttributeText
-     * @param parent
-     * @param modal 
-     * @param viewOnly 
-     * @param explorer
-     */
-    public AddAttributeText(java.awt.Frame parent, boolean modal, boolean viewOnly,
-            XincoExplorer explorer) {
-        super(parent, modal);
-        setViewOnly(viewOnly);
-        this.explorer = explorer;
-        initComponents();
-        setTitle(explorer.getResourceBundle().getString("window.addattributestext") +
-                ": " + this.explorer.getSelectedNodeDesignation());
-        save.setText(explorer.getResourceBundle().getString("general.save") + "!");
-        cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
-        setBounds(200, 200, 600, 540);
-        setResizable(false);
-        text.setEditable(!isViewOnly());
-        //processing independent of creation
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.OPEN.ordinal() + 1) {
-            save.setEnabled(!isViewOnly());
-        } else {
-            save.setEnabled(false);
+  /**
+   * Creates new form AddAttributeText
+   *
+   * @param parent
+   * @param modal
+   * @param viewOnly
+   * @param explorer
+   */
+  public AddAttributeText(java.awt.Frame parent, boolean modal, boolean viewOnly,
+      XincoExplorer explorer) {
+    super(parent, modal);
+    setViewOnly(viewOnly);
+    this.explorer = explorer;
+    initComponents();
+    setTitle(explorer.getResourceBundle().getString("window.addattributestext")
+        + ": " + this.explorer.getSelectedNodeDesignation());
+    save.setText(explorer.getResourceBundle().getString("general.save") + "!");
+    cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
+    setBounds(200, 200, 600, 540);
+    setResizable(false);
+    text.setEditable(!isViewOnly());
+    //processing independent of creation
+    if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.OPEN.ordinal() + 1) {
+      save.setEnabled(!isViewOnly());
+    } else {
+      save.setEnabled(false);
+    }
+    addTextArea(text, "");
+  }
+
+  /**
+   *
+   * @return boolean
+   */
+  private boolean isViewOnly() {
+    return viewOnly;
+  }
+
+  /**
+   *
+   * @param viewOnly
+   */
+  public void setViewOnly(boolean viewOnly) {
+    this.viewOnly = viewOnly;
+  }
+
+  @Override
+  public void setToDefaults() {
+    super.setToDefaults();
+    XincoMutableTreeNode node = explorer.getSession().getCurrentTreeNodeSelection();
+    Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
+    if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != XincoDataStatus.LOCKED.ordinal() + 1) {
+      save.setEnabled(!isViewOnly());
+    } else {
+      save.setEnabled(false);
+    }
+    text.setEditable(!isViewOnly());
+    if (isViewOnly()) {
+      String temp = "";
+      for (int i = 0; i < attr.size(); i++) {
+        if (((XincoAddAttribute) attr.get(i)).getAttribute_id() == 1) {
+          temp += ((XincoAddAttribute) attr.get(i)).getAttrib_text();
         }
-        addTextArea(text,"");
+        text.setText(temp);
+        save.setEnabled(false);
+      }
+    } else {
+      text.setText(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
     }
+    jScrollPane1.setLocation(0, 0);
+  }
 
-    /**
-     * 
-     * @return boolean
-     */
-    private boolean isViewOnly() {
-        return viewOnly;
-    }
-
-    /**
-     * 
-     * @param viewOnly
-     */
-    public void setViewOnly(boolean viewOnly) {
-        this.viewOnly = viewOnly;
-    }
-
-    @Override
-    public void setToDefaults() {
-        super.setToDefaults();
-        XincoMutableTreeNode node = explorer.getSession().getCurrentTreeNodeSelection();
-        Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != XincoDataStatus.LOCKED.ordinal() + 1) {
-            save.setEnabled(!isViewOnly());
-        } else {
-            save.setEnabled(false);
-        }
-        text.setEditable(!isViewOnly());
-        if (isViewOnly()) {
-            String temp = "";
-            for (int i = 0; i < attr.size(); i++) {
-                if (((XincoAddAttribute) attr.get(i)).getAttribute_id() == 1) {
-                    temp += ((XincoAddAttribute) attr.get(i)).getAttrib_text();
-                }
-                text.setText(temp);
-                save.setEnabled(false);
-            }
-        } else {
-            text.setText(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
-        }
-        jScrollPane1.setLocation(0, 0);
-    }
-
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+  /**
+   * This method is called from within the constructor to initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is always
+   * regenerated by the Form Editor.
+   */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -182,20 +184,15 @@ public class AddAttributeText extends AbstractDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        setVisible(false);
-        
+      setVisible(false);
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        save.addActionListener(new java.awt.event.ActionListener() {
-
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_text(text.getText());
-                explorer.setGlobal_dialog_return_value(1);
-                setVisible(false);
-            }
-        });
+      save.addActionListener((java.awt.event.ActionEvent e) -> {
+        ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_text(text.getText());
+        explorer.setGlobalDialogReturnValue(1);
+        setVisible(false);
+      });
     }//GEN-LAST:event_saveActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;

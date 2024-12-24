@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DateTool {
 
-    public static long getDifference(Calendar a, Calendar b, TimeUnit units) {
-        return units.convert(b.getTimeInMillis() - a.getTimeInMillis(), TimeUnit.MILLISECONDS);
-    }
+  public static long getDifference(Calendar a, Calendar b, TimeUnit units) {
+    return units.convert(b.getTimeInMillis() - a.getTimeInMillis(), TimeUnit.MILLISECONDS);
+  }
 }

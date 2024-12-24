@@ -36,13 +36,12 @@
 
 package com.bluecubs.xinco.core.server;
 
-import java.util.Vector;
+import com.bluecubs.xinco.core.*;
+import java.sql.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.sql.*;
-
-import com.bluecubs.xinco.core.*;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 public class XincoCoreLogServer extends XincoCoreLog {
     private XincoCoreUser user;

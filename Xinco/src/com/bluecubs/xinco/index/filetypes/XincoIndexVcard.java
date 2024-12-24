@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.index.filetypes;
 
 import java.io.File;
@@ -42,11 +41,11 @@ import lius.index.application.VCardIndexer;
 
 /**
  * Class: VCardIndexer <br>
- * 
+ *
  * This Indexer reads .vcf and .vcard files as exported by various email and PIM
  * applications (e.g. Mozilla Mail, Evolution, KMail). Fields which can be
  * indexed are:
- * 
+ *
  * <ul>
  * <li><code>name</code>: The contact's full name</li>
  * <li><code>title</code>: Title (e.g. 'Dr.')</li>
@@ -66,27 +65,27 @@ import lius.index.application.VCardIndexer;
  * <li><code>organization</code>: the organization</li>
  * </ul>
  * <br/>
- * 
+ *
  * Changelog:
  * <ul>
  * <li>02.06.2005: Initial implementation (jf)</li>
  * </ul>
- * 
+ *
  * @author <a href="mailto:jf@teamskill.de">Jens Fendler </a>
  */
 /**
- *Adapted by Javier Ortiz
+ * Adapted by Javier Ortiz
  */
-public class XincoIndexVcard extends VCardIndexer implements XincoIndexFileType{
+public class XincoIndexVcard extends VCardIndexer implements XincoIndexFileType {
 
-    @Override
-    public Reader getFileContentReader(File f) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+  @Override
+  public Reader getFileContentReader(File f) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 
-    @Override
-    public String getFileContentString(File f) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+  @Override
+  public String getFileContentString(File f) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 
 }

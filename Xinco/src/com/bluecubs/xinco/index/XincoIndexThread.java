@@ -21,13 +21,13 @@
  *
  * Name:            XincoIndexThread
  *
- * Description:     handle document indexing in thread 
+ * Description:     handle document indexing in thread
  *
  * Original Author: Alexander Manes
  * Date:            2004/12/18
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -43,23 +43,23 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
  */
 public class XincoIndexThread extends Thread {
 
-    private XincoCoreData d = null;
-    private boolean index_content = false;
-    private XincoDBManager dbm = null;
+  private XincoCoreData d = null;
+  private boolean index_content = false;
+  private XincoDBManager dbm = null;
 
-    @Override
-    public void run() {
-        XincoIndexer.indexXincoCoreData(d, index_content, dbm);
-        try {
-            dbm.con.close();
-        } catch (Exception e) {
-        //do nothing
-        }
+  @Override
+  public void run() {
+    XincoIndexer.indexXincoCoreData(d, index_content, dbm);
+    try {
+      dbm.con.close();
+    } catch (Exception e) {
+      //do nothing
     }
+  }
 
-    public XincoIndexThread(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
-        this.d = d;
-        this.index_content = index_content;
-        this.dbm = dbm;
-    }
+  public XincoIndexThread(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
+    this.d = d;
+    this.index_content = index_content;
+    this.dbm = dbm;
+  }
 }

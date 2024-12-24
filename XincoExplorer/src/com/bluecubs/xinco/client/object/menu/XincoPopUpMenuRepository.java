@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * XincoMenuPopUpRepository.java
@@ -50,56 +50,58 @@ import javax.swing.JPopupMenu;
  */
 public class XincoPopUpMenuRepository extends JPopupMenu {
 
-    public JMenuItem tmi = null;
-    public XincoExplorer explorer = null;
-    public JMenuItem AddData = null, AddDataStructure = null,
-            ViewURL = null, EmailContact = null,
-            EditFolderData = null, CheckoutData = null,
-            UndoCheckoutData = null, CheckinData = null,
-            PublishData = null, LockData = null,
-            DownloadRevision = null, Refresh = null,
-            AddFolder = null, ViewEditAddAttributes = null,
-            EditFolderDataACL = null, MoveFolderData = null,
-            InsertFolderData = null, ViewData = null,
-            CommentData = null;
-    private JMenuItem[] items, copy;
-    public ResourceBundle xerb;
+  public JMenuItem tmi = null;
+  public XincoExplorer explorer = null;
+  public JMenuItem AddData = null, AddDataStructure = null,
+      ViewURL = null, EmailContact = null,
+      EditFolderData = null, CheckoutData = null,
+      UndoCheckoutData = null, CheckinData = null,
+      PublishData = null, LockData = null,
+      DownloadRevision = null, Refresh = null,
+      AddFolder = null, ViewEditAddAttributes = null,
+      EditFolderDataACL = null, MoveFolderData = null,
+      InsertFolderData = null, ViewData = null,
+      CommentData = null;
+  private final JMenuItem[] items;
+  private JMenuItem[] copy;
+  public ResourceBundle xerb;
 
-    /**
-     * Creates a new instance of XincoMenuPopUpRepository
-     * @param explorer
-     */
-    public XincoPopUpMenuRepository(final XincoExplorer explorer) {
-        this.explorer = explorer;
-        addMouseListener(this.explorer);
-        xerb = this.explorer.getResourceBundle();
-        int count = 0;
-        items = new JMenuItem[this.explorer.getActionSize()];
-        copy = new JMenuItem[this.explorer.getActionSize()];
-        //Make a copy & paste of the menus in XincoMenuRepository class!
-        this.copy = ((XincoMenuRepository) this.explorer.getJMenuRepository()).getItems();
-        Component[] components = ((XincoMenuRepository) this.explorer.getJMenuRepository()).getMenuComponents();
-        for (int i = 0; i < components.length; i++) {
-            if (components[i].getClass() == Separator.class) {
-                add(components[i]);
-            } else {
-                items[count] = new JMenuItem(copy[count].getAction());
-                add(items[count]);
-                count++;
-            }
-        }
-        resetItems();
+  /**
+   * Creates a new instance of XincoMenuPopUpRepository
+   *
+   * @param explorer
+   */
+  public XincoPopUpMenuRepository(final XincoExplorer explorer) {
+    this.explorer = explorer;
+    addMouseListener(this.explorer);
+    xerb = this.explorer.getResourceBundle();
+    int count = 0;
+    items = new JMenuItem[this.explorer.getActionSize()];
+    copy = new JMenuItem[this.explorer.getActionSize()];
+    //Make a copy & paste of the menus in XincoMenuRepository class!
+    this.copy = ((XincoMenuRepository) this.explorer.getJMenuRepository()).getItems();
+    Component[] components = ((XincoMenuRepository) this.explorer.getJMenuRepository()).getMenuComponents();
+    for (Component component : components) {
+      if (component.getClass() == Separator.class) {
+        add(component);
+      } else {
+        items[count] = new JMenuItem(copy[count].getAction());
+        add(items[count]);
+        count++;
+      }
     }
+    resetItems();
+  }
 
-    public void resetItems() {
-        for (int i = 1; i < this.items.length; i++) {
-            if (this.items[i] != null) {
-                this.itemSetEnable(i, false);
-            }
-        }
+  public final void resetItems() {
+    for (int i = 1; i < this.items.length; i++) {
+      if (this.items[i] != null) {
+        this.itemSetEnable(i, false);
+      }
     }
+  }
 
-    public void itemSetEnable(int number, boolean enable) {
-        items[number].setEnabled(enable);
-    }
+  public void itemSetEnable(int number, boolean enable) {
+    items[number].setEnabled(enable);
+  }
 }

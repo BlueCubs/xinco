@@ -45,26 +45,28 @@ import javax.swing.Timer;
  */
 public class XincoActivityTimer {
 
-    private XincoExplorer explorer = null;
-    private Timer activityTimer = null;
+  private XincoExplorer explorer = null;
+  private Timer activityTimer = null;
 
-    /** Creates a new instance of XincoActivityTimer
-     * @param e
-     * @param delay 
-     */
-    public XincoActivityTimer(XincoExplorer e, int delay) {
-        this.explorer = e;
-        ActionListener lockExplorer = new XincoActivityActionListener(this.explorer, this);
-        //Use delay as minute value
-        this.activityTimer = new Timer(delay * 1000 * 60, lockExplorer);
-        this.getActivityTimer().start();
-    }
+  /**
+   * Creates a new instance of XincoActivityTimer
+   *
+   * @param e
+   * @param delay
+   */
+  public XincoActivityTimer(XincoExplorer e, int delay) {
+    this.explorer = e;
+    ActionListener lockExplorer = new XincoActivityActionListener(this.explorer, this);
+    //Use delay as minute value
+    this.activityTimer = new Timer(delay * 1_000 * 60, lockExplorer);
+    this.getActivityTimer().start();
+  }
 
-    /**
-     * 
-     * @return
-     */
-    public Timer getActivityTimer() {
-        return activityTimer;
-    }
+  /**
+   *
+   * @return
+   */
+  public final Timer getActivityTimer() {
+    return activityTimer;
+  }
 }

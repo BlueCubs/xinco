@@ -21,26 +21,25 @@
  *
  * Name:            XincoCoreDataTypeClient
  *
- * Description:     data type 
+ * Description:     data type
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreDataTypeClient extends XincoCoreDataType {
-    
-	public XincoCoreDataTypeClient() throws XincoException {
-	}
+
+  public XincoCoreDataTypeClient() throws XincoException {
+  }
 
 }

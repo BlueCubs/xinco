@@ -21,27 +21,25 @@
  *
  * Name:            XincoAddAttributeClient
  *
- * Description:     additional attributes of a data object 
+ * Description:     additional attributes of a data object
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.add.client;
 
-import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.add.*;
+import com.bluecubs.xinco.core.*;
 
 public class XincoAddAttributeClient extends XincoAddAttribute {
-    
-	public XincoAddAttributeClient() throws XincoException {
-	}
 
+  public XincoAddAttributeClient() throws XincoException {
+  }
 }

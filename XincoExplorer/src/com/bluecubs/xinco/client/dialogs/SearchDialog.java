@@ -48,6 +48,7 @@ import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
+import java.rmi.RemoteException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -56,123 +57,121 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author  Javier A. Ortiz
+ * @author Javier A. Ortiz
  */
 public class SearchDialog extends AbstractDialog {
 
-    private XincoExplorer explorer;
-    private ResourceBundle xerb;
+  private XincoExplorer explorer;
+  private ResourceBundle xerb;
 
-    /** Creates new form SearchDialog
-     * @param parent
-     * @param modal
-     * @param e
-     */
-    public SearchDialog(java.awt.Frame parent, boolean modal, XincoExplorer e) {
-        super(parent, modal);
-        initComponents();
-        getRootPane().setDefaultButton(this.searchButton);
-        this.explorer = e;
-        this.xerb = this.explorer.getResourceBundle();
-        setTitle(xerb.getString("window.search"));
-        queryLabel.setText(xerb.getString("window.search.query") + ":");
-        languageLabel.setText(xerb.getString("general.language") + ":");
-        builderLabel.setText(xerb.getString("window.search.querybuilder") + ":");
-        systemOptionsValueLabel.setText(xerb.getString("window.search.querybuilderhintslabel"));
-        systemOptionsLabel.setText(xerb.getString("window.search.querybuilderhints"));
-        searchButton.setText(xerb.getString("window.search.addtoquery"));
-        allLanguagesCheckBox.setText(xerb.getString("window.search.alllanguages"));
-        searchButton.setText(xerb.getString("window.search"));
-        goToSelectionButton.setText(xerb.getString("window.search.gotoselection"));
-        addToQueryButton.setText(xerb.getString("window.search.addtoquery"));
-        resetButton.setText(xerb.getString("general.reset"));
-        String[] cn = {xerb.getString("window.search.table.designation"), xerb.getString("window.search.table.path")};
-        resultTable.setModel(new DefaultTableModel(new Object[][]{},
-                new String[]{xerb.getString("window.search.table.designation"),
-                    xerb.getString("window.search.table.path")}) {
+  /**
+   * Creates new form SearchDialog
+   *
+   * @param parent
+   * @param modal
+   * @param e
+   */
+  public SearchDialog(java.awt.Frame parent, boolean modal, XincoExplorer e) {
+    super(parent, modal);
+    initComponents();
+    getRootPane().setDefaultButton(this.searchButton);
+    this.explorer = e;
+    this.xerb = this.explorer.getResourceBundle();
+    setTitle(xerb.getString("window.search"));
+    queryLabel.setText(xerb.getString("window.search.query") + ":");
+    languageLabel.setText(xerb.getString("general.language") + ":");
+    builderLabel.setText(xerb.getString("window.search.querybuilder") + ":");
+    systemOptionsValueLabel.setText(xerb.getString("window.search.querybuilderhintslabel"));
+    systemOptionsLabel.setText(xerb.getString("window.search.querybuilderhints"));
+    searchButton.setText(xerb.getString("window.search.addtoquery"));
+    allLanguagesCheckBox.setText(xerb.getString("window.search.alllanguages"));
+    searchButton.setText(xerb.getString("window.search"));
+    goToSelectionButton.setText(xerb.getString("window.search.gotoselection"));
+    addToQueryButton.setText(xerb.getString("window.search.addtoquery"));
+    resetButton.setText(xerb.getString("general.reset"));
+    String[] cn = {xerb.getString("window.search.table.designation"), xerb.getString("window.search.table.path")};
+    resultTable.setModel(new DefaultTableModel(new Object[][]{}, cn) {
 
-            boolean[] canEdit = new boolean[]{false, false};
+      boolean[] canEdit = new boolean[]{false, false};
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        });
-        languageList.setEnabled(!allLanguagesCheckBox.isSelected());
+      @Override
+      public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return canEdit[columnIndex];
+      }
+    });
+    languageList.setEnabled(!allLanguagesCheckBox.isSelected());
+  }
+
+  @Override
+  public void setToDefaults() {
+    super.setToDefaults();
+    //processing independent of creation
+    int i;
+    int j;
+    String text;
+    int selection;
+    int alt_selection;
+    XincoCoreDataType xcdt;
+    operatorComboBox.setSelectedIndex(0);
+    //load fields
+    optionsComboBox.removeAllItems();
+    optionsComboBox.addItem(" ");
+    optionsComboBox.addItem(xerb.getString("window.search.filecontent") + " (file)");
+    for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
+      xcdt = (XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i);
+      for (j = 0; j < xcdt.getXinco_core_data_type_attributes().size(); j++) {
+        text = ((XincoCoreDataTypeAttribute) xcdt.getXinco_core_data_type_attributes().elementAt(j)).getDesignation();
+        this.optionsComboBox.addItem(text);
+      }
     }
-
-    @Override
-    public void setToDefaults() {
-        super.setToDefaults();
-        //processing independent of creation
-        int i = 0;
-        int j = 0;
-        String text = "";
-        int selection = -1;
-        int alt_selection = 0;
-        XincoCoreDataType xcdt = null;
-        operatorComboBox.setSelectedIndex(0);
-        //load fields
-        optionsComboBox.removeAllItems();
-        optionsComboBox.addItem(" ");
-        optionsComboBox.addItem(xerb.getString("window.search.filecontent") + " (file)");
-        text = "";
-        for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
-            xcdt = (XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i);
-            for (j = 0; j < xcdt.getXinco_core_data_type_attributes().size(); j++) {
-                text = ((XincoCoreDataTypeAttribute) xcdt.getXinco_core_data_type_attributes().elementAt(j)).getDesignation();
-                this.optionsComboBox.addItem(text);
-            }
-        }
-        this.optionsComboBox.setSelectedIndex(0);
-        //load languages
-        languageList.removeAll();
-        final Vector list = new Vector();
-        selection = -1;
-        alt_selection = 0;
-        text = "";
-        for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
-            text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign() + ")";
-            list.add(text);
-            if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
-                selection = i;
-            }
-            if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == 1) {
-                alt_selection = i;
-            }
-        }
-        if (selection == -1) {
-            selection = alt_selection;
-        }
-        languageList.setModel(new javax.swing.AbstractListModel() {
-
-            Vector strings = list;
-
-            @Override
-            public int getSize() {
-                return strings.size();
-            }
-
-            @Override
-            public Object getElementAt(int i) {
-                return strings.get(i);
-            }
-        });
-        languageList.setSelectedIndex(selection);
-        languageList.ensureIndexIsVisible(languageList.getSelectedIndex());
-        setBounds(0, 0, (Double.valueOf(getToolkit().getScreenSize().getWidth())).intValue() - 100,
-                (Double.valueOf(getToolkit().getScreenSize().getHeight())).intValue() - 75);
+    this.optionsComboBox.setSelectedIndex(0);
+    //load languages
+    languageList.removeAll();
+    final Vector list = new Vector();
+    selection = -1;
+    alt_selection = 0;
+    for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
+      text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign() + ")";
+      list.add(text);
+      if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+        selection = i;
+      }
+      if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == 1) {
+        alt_selection = i;
+      }
     }
-
-    public void clearResults() {
-        this.resultTable.removeAll();
+    if (selection == -1) {
+      selection = alt_selection;
     }
+    languageList.setModel(new javax.swing.AbstractListModel() {
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+      Vector strings = list;
+
+      @Override
+      public int getSize() {
+        return strings.size();
+      }
+
+      @Override
+      public Object getElementAt(int i) {
+        return strings.get(i);
+      }
+    });
+    languageList.setSelectedIndex(selection);
+    languageList.ensureIndexIsVisible(languageList.getSelectedIndex());
+    setBounds(0, 0, (Double.valueOf(getToolkit().getScreenSize().getWidth())).intValue() - 100,
+        (Double.valueOf(getToolkit().getScreenSize().getHeight())).intValue() - 75);
+  }
+
+  public void clearResults() {
+    this.resultTable.removeAll();
+  }
+
+  /**
+   * This method is called from within the constructor to initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is always
+   * regenerated by the Form Editor.
+   */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         builderLabel = new javax.swing.JLabel();
@@ -353,143 +352,142 @@ public class SearchDialog extends AbstractDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void goToSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSelectionButtonActionPerformed
-        if (resultTable.getSelectedRow() < 0) {
-            return;
-        }
-        Vector v = (Vector) explorer.getSession().getCurrentSearchResult().elementAt(resultTable.getSelectedRow());
-        int i = 0;
-        int j = 0;
-        int k = 0;
-        TreePath tp = null;
-        try {
-            //expand tree to selected result (check root items first, then check all sub-folders)
-            XincoMutableTreeNode xmtn = (XincoMutableTreeNode) explorer.getSession().getXincoClientRepository().treemodel.getRoot();
-            if (xmtn.getUserObject().getClass() == XincoCoreNode.class) {
-                if (((XincoCoreNode) xmtn.getUserObject()).getId() == ((XincoCoreNode) v.elementAt(1)).getId()) {
-                    tp = new TreePath(xmtn.getPath());
+      if (resultTable.getSelectedRow() < 0) {
+        return;
+      }
+      Vector v = (Vector) explorer.getSession().getCurrentSearchResult().elementAt(resultTable.getSelectedRow());
+      int i;
+      int j;
+      int k;
+      TreePath tp;
+      try {
+        //expand tree to selected result (check root items first, then check all sub-folders)
+        XincoMutableTreeNode xmtn = (XincoMutableTreeNode) explorer.getSession().getXincoClientRepository().treemodel.getRoot();
+        if (xmtn.getUserObject().getClass() == XincoCoreNode.class) {
+          if (((XincoCoreNode) xmtn.getUserObject()).getId() == ((XincoCoreNode) v.elementAt(1)).getId()) {
+            tp = new TreePath(xmtn.getPath());
+            explorer.jTreeRepository.setSelectionPath(tp);
+            explorer.jTreeRepository.expandPath(tp);
+            //select data
+            if (1 == (v.size() - 1)) {
+              for (k = 0; k < xmtn.getChildCount(); k++) {
+                if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
+                  if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.elementAt(0)).getId()) {
+                    tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
                     explorer.jTreeRepository.setSelectionPath(tp);
-                    explorer.jTreeRepository.expandPath(tp);
-                    j = -1;
-                    //select data
-                    if (1 == (v.size() - 1)) {
-                        for (k = 0; k < xmtn.getChildCount(); k++) {
-                            if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
-                                if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.elementAt(0)).getId()) {
-                                    tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
-                                    explorer.jTreeRepository.setSelectionPath(tp);
-                                }
-                            }
-                        }
-                    }
+                  }
                 }
+              }
             }
-            for (i = 2; i < v.size(); i++) {
-                for (j = 0; j < xmtn.getChildCount(); j++) {
-                    if (((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject().getClass() == XincoCoreNode.class) {
-                        if (((XincoCoreNode) ((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject()).getId() == ((XincoCoreNode) v.elementAt(i)).getId()) {
-                            tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(j)).getPath());
-                            this.explorer.jTreeRepository.setSelectionPath(tp);
-                            this.explorer.jTreeRepository.expandPath(tp);
-                            xmtn = (XincoMutableTreeNode) xmtn.getChildAt(j);
-                            j = -1;
-                            //select data
-                            if (i == (v.size() - 1)) {
-                                for (k = 0; k < xmtn.getChildCount(); k++) {
-                                    if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
-                                        if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.elementAt(0)).getId()) {
-                                            tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
-                                            explorer.jTreeRepository.setSelectionPath(tp);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception tee) {
-            tee.printStackTrace();
+          }
         }
-        this.setVisible(false);
+        for (i = 2; i < v.size(); i++) {
+          for (j = 0; j < xmtn.getChildCount(); j++) {
+            if (((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject().getClass() == XincoCoreNode.class) {
+              if (((XincoCoreNode) ((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject()).getId() == ((XincoCoreNode) v.elementAt(i)).getId()) {
+                tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(j)).getPath());
+                this.explorer.jTreeRepository.setSelectionPath(tp);
+                this.explorer.jTreeRepository.expandPath(tp);
+                xmtn = (XincoMutableTreeNode) xmtn.getChildAt(j);
+                j = -1;
+                //select data
+                if (i == (v.size() - 1)) {
+                  for (k = 0; k < xmtn.getChildCount(); k++) {
+                    if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
+                      if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.elementAt(0)).getId()) {
+                        tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
+                        explorer.jTreeRepository.setSelectionPath(tp);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (Exception tee) {
+        tee.printStackTrace();
+      }
+      this.setVisible(false);
     }//GEN-LAST:event_goToSelectionButtonActionPerformed
 
     private void allLanguagesCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_allLanguagesCheckBoxItemStateChanged
-        this.languageList.setEnabled(!this.allLanguagesCheckBox.isSelected());
+      this.languageList.setEnabled(!this.allLanguagesCheckBox.isSelected());
     }//GEN-LAST:event_allLanguagesCheckBoxItemStateChanged
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-        this.queryValueField.setText("");
+      this.queryValueField.setText("");
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void addToQueryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToQueryButtonActionPerformed
-        String operator = "";
-        String field = "";
-        //create operator string
-        if (this.operatorComboBox.getSelectedIndex() != 0) {
-            operator = (String) this.operatorComboBox.getSelectedItem();
-            operator = operator + " ";
-        } else {
-            operator = "";
-        }
-        //create field string
-        if (this.optionsComboBox.getSelectedIndex() > 1) {
-            field = ((String) this.optionsComboBox.getSelectedItem()) + ":";
-        } else if (this.optionsComboBox.getSelectedIndex() == 1) {
-            field = "file:";
-        } else {
-            field = "";
-        }
-        // append to query
-        this.queryValueField.setText(this.queryValueField.getText() + operator + field + this.variableField.getText() + " ");
-        this.variableField.setText("");
+      String operator;
+      String field;
+      //create operator string
+      if (this.operatorComboBox.getSelectedIndex() != 0) {
+        operator = (String) this.operatorComboBox.getSelectedItem();
+        operator = operator + " ";
+      } else {
+        operator = "";
+      }
+      //create field string
+      if (this.optionsComboBox.getSelectedIndex() > 1) {
+        field = ((String) this.optionsComboBox.getSelectedItem()) + ":";
+      } else if (this.optionsComboBox.getSelectedIndex() == 1) {
+        field = "file:";
+      } else {
+        field = "";
+      }
+      // append to query
+      this.queryValueField.setText(this.queryValueField.getText() + operator + field + this.variableField.getText() + " ");
+      this.variableField.setText("");
     }//GEN-LAST:event_addToQueryButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        searchThread search = new searchThread();
-        search.start();
+      searchThread search = new searchThread();
+      search.start();
     }//GEN-LAST:event_searchButtonActionPerformed
-    private class searchThread extends Thread {
+  private class searchThread extends Thread {
 
-        @Override
-        public void run() {
-            XincoProgressBarThread progressBar = new XincoProgressBarThread(explorer);
-            progressBar.run();
-            progressBar.setTitle(xerb.getString("message.search.progressbar"));
-            progressBar.show();
-            int i = 0, j = 0;
-            //select language OR all languages!
-            XincoCoreLanguage lid = new XincoCoreLanguage();
-            lid.setId(0);
-            if ((!allLanguagesCheckBox.isSelected()) && (languageList.getSelectedIndex() >= 0)) {
-                lid = (XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(languageList.getSelectedIndex());
-            }
-            try {
-                explorer.getSession().setCurrentSearchResult(explorer.getSession().getXinco().findXincoCoreData(queryValueField.getText(), lid, explorer.getSession().getUser()));
-                if (explorer.getSession().getCurrentSearchResult() == null) {
-                    throw new XincoException();
-                }
-            } catch (Exception rme) {
-                explorer.getSession().setCurrentSearchResult(new Vector());
-            }
-            //update search result
-            String[] rdata = {"", ""};
-            DefaultTableModel dtm = (DefaultTableModel) resultTable.getModel();
-            j = dtm.getRowCount();
-            for (i = 0; i < j; i++) {
-                dtm.removeRow(0);
-            }
-            for (i = 0; i < explorer.getSession().getCurrentSearchResult().size(); i++) {
-                rdata[0] = ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getDesignation() + " (" + ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
-                rdata[1] = new String("");
-                for (j = 1; j < ((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).size(); j++) {
-                    rdata[1] = rdata[1] + ((XincoCoreNode) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(j))).getDesignation() + " / ";
-                }
-                dtm.addRow(rdata);
-            }
-            resultTable.repaint();
-            progressBar.hide();
+    @Override
+    public void run() {
+      XincoProgressBarThread progressBar = new XincoProgressBarThread(explorer);
+      progressBar.start();
+      progressBar.setTitle(xerb.getString("message.search.progressbar"));
+      progressBar.show();
+      int i, j;
+      //select language OR all languages!
+      XincoCoreLanguage lid = new XincoCoreLanguage();
+      lid.setId(0);
+      if ((!allLanguagesCheckBox.isSelected()) && (languageList.getSelectedIndex() >= 0)) {
+        lid = (XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(languageList.getSelectedIndex());
+      }
+      try {
+        explorer.getSession().setCurrentSearchResult(explorer.getSession().getXinco().findXincoCoreData(queryValueField.getText(), lid, explorer.getSession().getUser()));
+        if (explorer.getSession().getCurrentSearchResult() == null) {
+          throw new XincoException();
         }
+      } catch (XincoException | RemoteException rme) {
+        explorer.getSession().setCurrentSearchResult(new Vector());
+      }
+      //update search result
+      String[] rdata = {"", ""};
+      DefaultTableModel dtm = (DefaultTableModel) resultTable.getModel();
+      j = dtm.getRowCount();
+      for (i = 0; i < j; i++) {
+        dtm.removeRow(0);
+      }
+      for (i = 0; i < explorer.getSession().getCurrentSearchResult().size(); i++) {
+        rdata[0] = ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getDesignation() + " (" + ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
+        rdata[1] = "";
+        for (j = 1; j < ((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).size(); j++) {
+          rdata[1] = rdata[1] + ((XincoCoreNode) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(j))).getDesignation() + " / ";
+        }
+        dtm.addRow(rdata);
+      }
+      resultTable.repaint();
+      progressBar.hide();
     }
+  }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addToQueryButton;
     private javax.swing.JCheckBox allLanguagesCheckBox;

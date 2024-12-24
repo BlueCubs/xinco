@@ -33,41 +33,43 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.index.filetypes;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import org.apache.lucene.demo.html.HTMLParser;
 
 public class XincoIndexHTML implements XincoIndexFileType {
-    private FileInputStream fis=null;
-    public XincoIndexHTML() {
-        super();
+
+  private FileInputStream fis = null;
+
+  public XincoIndexHTML() {
+    super();
+  }
+
+  @Override
+  public Reader getFileContentReader(File f) {
+    try {
+      fis = new FileInputStream(f);
+    } catch (FileNotFoundException ex) {
+      ex.printStackTrace();
     }
-    
-    @Override
-    public Reader getFileContentReader(File f) {
-        try {
-            fis = new FileInputStream(f);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        }
-        Reader reader = null;
-        try {
-            HTMLParser parser = new HTMLParser(fis);
-            reader = parser.getReader();
-        } catch (Exception fe) {
-            reader = null;
-        }
-        return reader;
+    Reader reader;
+    try {
+      HTMLParser parser = new HTMLParser(fis);
+      reader = parser.getReader();
+    } catch (IOException fe) {
+      reader = null;
     }
-    
-    @Override
-    public String getFileContentString(File f) {
-        return null;
-    }
-    
+    return reader;
+  }
+
+  @Override
+  public String getFileContentString(File f) {
+    return null;
+  }
+
 }

@@ -21,13 +21,13 @@
  *
  * Name:            XincoIndexText
  *
- * Description:     indexing text files 
+ * Description:     indexing text files
  *
  * Original Author: Alexander Manes
  * Date:            2005/02/05
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -38,42 +38,44 @@ package com.bluecubs.xinco.index.filetypes;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
 public class XincoIndexText implements XincoIndexFileType {
 
-    public XincoIndexText() {
-        super();
-    }
+  public XincoIndexText() {
+    super();
+  }
 
-    @Override
-    public Reader getFileContentReader(File f) {
-        Reader reader = null;
-        FileInputStream is = null;
+  @Override
+  public Reader getFileContentReader(File f) {
+    Reader reader = null;
+    FileInputStream is = null;
+    try {
+      is = new FileInputStream(f);
+      reader = new BufferedReader(new InputStreamReader(is));
+    } catch (FileNotFoundException fe) {
+      if (reader != null) {
         try {
-            is = new FileInputStream(f);
-            reader = new BufferedReader(new InputStreamReader(is));
-        } catch (Exception fe) {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (Exception re) {
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (Exception ise) {
-                }
-            }
-            reader = null;
+          reader.close();
+        } catch (IOException re) {
         }
-        return reader;
+      }
+      if (is != null) {
+        try {
+          is.close();
+        } catch (IOException ise) {
+        }
+      }
+      reader = null;
     }
+    return reader;
+  }
 
-    @Override
-    public String getFileContentString(File f) {
-        return null;
-    }
+  @Override
+  public String getFileContentString(File f) {
+    return null;
+  }
 }

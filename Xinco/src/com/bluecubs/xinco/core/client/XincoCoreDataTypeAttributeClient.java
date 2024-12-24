@@ -27,20 +27,19 @@
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreDataTypeAttributeClient extends XincoCoreDataTypeAttribute {
-    
-	public XincoCoreDataTypeAttributeClient() throws XincoException {
-	}
+
+  public XincoCoreDataTypeAttributeClient() throws XincoException {
+  }
 
 }

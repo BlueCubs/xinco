@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * XincoMenuRepository.java
@@ -47,136 +47,140 @@ import javax.swing.JMenuItem;
  *
  * @author Javier A. Ortiz
  */
-public class XincoMenuRepository extends JMenu{
-    private JMenuItem tmi = null;
-    private XincoExplorer explorer;
-    public JMenuItem AddData=null,AddDataStructure=null,
-            ViewURL=null,EmailContact=null,
-            EditFolderData=null,CheckoutData=null,
-            UndoCheckoutData=null,CheckinData=null,
-            PublishData=null,LockData=null,
-            DownloadRevision=null,Refresh=null,
-            AddFolder=null,ViewEditAddAttributes=null,
-            EditFolderDataACL=null,MoveFolderData=null,
-            InsertFolderData=null,ViewData=null,
-            CommentData=null;
-    private JMenuItem [] items = new JMenuItem[20];
-    public ResourceBundle xerb;
-    private int counter=0;
+public class XincoMenuRepository extends JMenu {
 
-    /**
-     * Creates a new instance of XincoMenuRepository
-     * @param explorer
-     */
-    public XincoMenuRepository(final XincoExplorer explorer){
-        this.explorer=explorer;
-        addMouseListener(this.explorer);
-        xerb=this.explorer.getResourceBundle();
-        //add item
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        this.items[counter].setEnabled(true);
-        add(this.items[counter]);
-        //add item
-        addSeparator();
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        this.items[counter].setEnabled(true);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        increaseItemNumber();
-        //add item
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        addSeparator();
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        addSeparator();
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        addSeparator();
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
-        //add item
-        addSeparator();
-    }
-    public void resetItems(){
-        for(int i=1;i<this.items.length;i++){
-            if(this.items[i]!=null)
-                this.itemSetEnable(i,false);
-        }
-    }
-    public void itemSetEnable(int number,boolean enable){
-        items[number].setEnabled(enable);
-    }
+  private final XincoExplorer explorer;
+  public JMenuItem AddData = null, AddDataStructure = null,
+      ViewURL = null, EmailContact = null,
+      EditFolderData = null, CheckoutData = null,
+      UndoCheckoutData = null, CheckinData = null,
+      PublishData = null, LockData = null,
+      DownloadRevision = null, Refresh = null,
+      AddFolder = null, ViewEditAddAttributes = null,
+      EditFolderDataACL = null, MoveFolderData = null,
+      InsertFolderData = null, ViewData = null,
+      CommentData = null;
+  private final JMenuItem[] items = new JMenuItem[20];
+  public ResourceBundle xerb;
+  private int counter = 0;
 
-    private int increaseItemNumber(){
-        counter++;
-        return counter;
-    }
+  /**
+   * Creates a new instance of XincoMenuRepository
+   *
+   * @param explorer
+   */
+  public XincoMenuRepository(final XincoExplorer explorer) {
+    this.explorer = explorer;
+    addMouseListener(this.explorer);
+    xerb = this.explorer.getResourceBundle();
+    //add item
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    this.items[counter].setEnabled(true);
+    add(this.items[counter]);
+    //add item
+    addSeparator();
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    this.items[counter].setEnabled(true);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    increaseItemNumber();
+    //add item
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    addSeparator();
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    addSeparator();
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    addSeparator();
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    increaseItemNumber();
+    this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+    add(this.items[counter]);
+    //add item
+    addSeparator();
+  }
 
-    public JMenuItem[] getItems(){
-        return this.items;
+  public void resetItems() {
+    for (int i = 1; i < this.items.length; i++) {
+      if (this.items[i] != null) {
+        this.itemSetEnable(i, false);
+      }
     }
+  }
+
+  public void itemSetEnable(int number, boolean enable) {
+    items[number].setEnabled(enable);
+  }
+
+  private int increaseItemNumber() {
+    counter++;
+    return counter;
+  }
+
+  public JMenuItem[] getItems() {
+    return this.items;
+  }
 }

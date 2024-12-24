@@ -44,34 +44,34 @@ package com.bluecubs.xinco.core;
  */
 public enum OPCode {
 
-    CREATION("datawizard.logging.creation"),
-    MODIFICATION("datawizard.logging.modification"),
-    CHECKOUT("datawizard.logging.checkoutchangesplanned"),
-    CHECKOUT_UNDONE("datawizard.logging.checkoutundone"),
-    CHECKIN("datawizard.logging.checkinchangesmade"),
-    PUBLISH_COMMENT("datawizard.logging.publishcomment"),
-    LOCK_COMMENT("datawizard.logging.lockcomment"),
-    ARCHIVED("datawizard.logging.archivecomment"),
-    COMMENT_COMMENT("datawizard.logging.commentcomment");
-    private String name;
+  CREATION("datawizard.logging.creation"),
+  MODIFICATION("datawizard.logging.modification"),
+  CHECKOUT("datawizard.logging.checkoutchangesplanned"),
+  CHECKOUT_UNDONE("datawizard.logging.checkoutundone"),
+  CHECKIN("datawizard.logging.checkinchangesmade"),
+  PUBLISH_COMMENT("datawizard.logging.publishcomment"),
+  LOCK_COMMENT("datawizard.logging.lockcomment"),
+  ARCHIVED("datawizard.logging.archivecomment"),
+  COMMENT_COMMENT("datawizard.logging.commentcomment");
+  private final String name;
 
-    OPCode(String name) {
-        this.name = name;
-    }
+  OPCode(String name) {
+    this.name = name;
+  }
 
-    public static OPCode getOPCode(int op_code) {
-        OPCode[] fields = OPCode.values();
-        if (op_code - 1 < fields.length && op_code - 1 >= 0) {
-            return fields[op_code - 1];
-        } else {
-            return null;
-        }
+  public static OPCode getOPCode(int op_code) {
+    OPCode[] fields = OPCode.values();
+    if (op_code - 1 < fields.length && op_code - 1 >= 0) {
+      return fields[op_code - 1];
+    } else {
+      return null;
     }
+  }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
 }

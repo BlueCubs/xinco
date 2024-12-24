@@ -35,8 +35,6 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import javax.sql.DataSource;
-import javax.naming.InitialContext;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -48,6 +46,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 public class XincoDBManager {
 

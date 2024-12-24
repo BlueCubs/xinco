@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * DataFolderDialog.java
@@ -44,6 +44,7 @@ import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
+import java.rmi.RemoteException;
 import java.util.Locale;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
@@ -51,91 +52,93 @@ import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
 /**
- * 
+ *
  * Data folder Dialog
+ *
  * @author Javier A. Ortiz
  */
 public class DataFolderDialog extends AbstractDialog {
 
-    private XincoExplorer explorer = null;
+  private XincoExplorer explorer = null;
 
-    /**
-     * Creates new form DataFolderDialog
-     * @param parent Dialog's parent
-     * @param modal Is modal?
-     * @param explorer Related XincoExplorer.
-     */
-    public DataFolderDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
-        super(parent, modal);
-        initComponents();
-        setLocationRelativeTo(null);
-        this.explorer = explorer;
-        setTitle(explorer.getResourceBundle().getString("window.folder"));
-        save.setText(explorer.getResourceBundle().getString("general.save") + "!");
-        cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
-        designationLabel.setText(explorer.getResourceBundle().getString("general.designation"));
-        idLabel.setText(explorer.getResourceBundle().getString("general.id"));
-        languageLabel.setText(explorer.getResourceBundle().getString("general.language"));
-        stateLabel.setText(explorer.getResourceBundle().getString("general.status"));
-    }
+  /**
+   * Creates new form DataFolderDialog
+   *
+   * @param parent Dialog's parent
+   * @param modal Is modal?
+   * @param explorer Related XincoExplorer.
+   */
+  public DataFolderDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
+    super(parent, modal);
+    initComponents();
+    setLocationRelativeTo(null);
+    this.explorer = explorer;
+    setTitle(explorer.getResourceBundle().getString("window.folder"));
+    save.setText(explorer.getResourceBundle().getString("general.save") + "!");
+    cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
+    designationLabel.setText(explorer.getResourceBundle().getString("general.designation"));
+    idLabel.setText(explorer.getResourceBundle().getString("general.id"));
+    languageLabel.setText(explorer.getResourceBundle().getString("general.language"));
+    stateLabel.setText(explorer.getResourceBundle().getString("general.status"));
+  }
 
-    @Override
-    public void setToDefaults() {
-        super.setToDefaults();
-        //processing independent of creation
-        int i = 0;
-        String text = "";
-        int selection = -1;
-        int alt_selection = 0;
-        if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
-            text = "" + ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId();
-            id.setText(text);
-            text = "" + ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getDesignation();
-            designation.setText(text);
-            designation.selectAll();
-            DefaultListModel dlm = new DefaultListModel();
-            dlm.removeAllElements();
-            for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
-                text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign() + ")";
-                dlm.addElement(text);
-                if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_language().getId()) {
-                    selection = i;
-                }
-                if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
-                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
-                        selection = i;
-                    }
-                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == 1) {
-                        alt_selection = i;
-                    }
-                }
-            }
-            language.setModel(dlm);
-            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
-                if (selection == -1) {
-                    selection = alt_selection;
-                }
-            }
-            language.setSelectedIndex(selection);
-            language.ensureIndexIsVisible(language.getSelectedIndex());
-            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
-                text = explorer.getResourceBundle().getString("general.status.open") + "";
-            }
-            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 2) {
-                text = explorer.getResourceBundle().getString("general.status.locked") + " (-)";
-            }
-            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 3) {
-                text = explorer.getResourceBundle().getString("general.status.archived") + " (->)";
-            }
-            state.setText(text);
+  @Override
+  public void setToDefaults() {
+    super.setToDefaults();
+    //processing independent of creation
+    int i;
+    String text;
+    int selection = -1;
+    int alt_selection = 0;
+    if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
+      text = "" + ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId();
+      id.setText(text);
+      text = "" + ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getDesignation();
+      designation.setText(text);
+      designation.selectAll();
+      DefaultListModel dlm = new DefaultListModel();
+      dlm.removeAllElements();
+      for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
+        text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign() + ")";
+        dlm.addElement(text);
+        if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_language().getId()) {
+          selection = i;
         }
+        if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
+          if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+            selection = i;
+          }
+          if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == 1) {
+            alt_selection = i;
+          }
+        }
+      }
+      language.setModel(dlm);
+      if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
+        if (selection == -1) {
+          selection = alt_selection;
+        }
+      }
+      language.setSelectedIndex(selection);
+      language.ensureIndexIsVisible(language.getSelectedIndex());
+      if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
+        text = explorer.getResourceBundle().getString("general.status.open") + "";
+      }
+      if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 2) {
+        text = explorer.getResourceBundle().getString("general.status.locked") + " (-)";
+      }
+      if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 3) {
+        text = explorer.getResourceBundle().getString("general.status.archived") + " (->)";
+      }
+      state.setText(text);
     }
+  }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+  /**
+   * This method is called from within the constructor to initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is always
+   * regenerated by the Form Editor.
+   */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         idLabel = new javax.swing.JLabel();
@@ -238,65 +241,65 @@ public class DataFolderDialog extends AbstractDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        XincoMutableTreeNode temp_node = null;
-        //delete new folder from treemodel if not saved to server yet
-        if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
-            temp_node = explorer.getSession().getCurrentTreeNodeSelection();
-            explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
-            explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
-            explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
-        }
-        setVisible(false);
-        designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
+      XincoMutableTreeNode temp_node;
+      //delete new folder from treemodel if not saved to server yet
+      if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
+        temp_node = explorer.getSession().getCurrentTreeNodeSelection();
+        explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
+        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+        explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
+      }
+      setVisible(false);
+      designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        boolean insertnewnode = false;
-        XincoMutableTreeNode temp_node = null;
-        XincoCoreNode newnode = (XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject();
-        //check if inserting new node
-        if (newnode.getId() <= 0) {
-            insertnewnode = true;
+      boolean insertnewnode = false;
+      XincoMutableTreeNode temp_node;
+      XincoCoreNode newnode = (XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject();
+      //check if inserting new node
+      if (newnode.getId() <= 0) {
+        insertnewnode = true;
+      }
+      //set altered values
+      newnode.setDesignation(designation.getText());
+      if (language.getSelectedIndex() < 0) {
+        language.setSelectedIndex(0);
+      }
+      newnode.setXinco_core_language(((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(this.language.getSelectedIndex())));
+      try {
+        // optimize node size
+        newnode.setXinco_core_nodes(new Vector());
+        newnode.setXinco_core_data(new Vector());
+        if ((newnode = explorer.getSession().getXinco().setXincoCoreNode(newnode, explorer.getSession().getUser()))
+            == null) {
+          throw new XincoException(explorer.getResourceBundle().getString("error.nowritepermission"));
         }
-        //set altered values
-        newnode.setDesignation(designation.getText());
-        if (language.getSelectedIndex() < 0) {
-            language.setSelectedIndex(0);
+        // update to modified user object
+        explorer.getSession().getCurrentTreeNodeSelection().setUserObject(newnode);
+        explorer.getSession().getXincoClientRepository().treemodel.nodeChanged(explorer.getSession().getCurrentTreeNodeSelection());
+        // select parent of new node
+        if (insertnewnode) {
+          explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
         }
-        newnode.setXinco_core_language(((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(this.language.getSelectedIndex())));
-        try {
-            // optimize node size
-            newnode.setXinco_core_nodes(new Vector());
-            newnode.setXinco_core_data(new Vector());
-            if ((newnode = explorer.getSession().getXinco().setXincoCoreNode(newnode, explorer.getSession().getUser()))
-                    == null) {
-                throw new XincoException(explorer.getResourceBundle().getString("error.nowritepermission"));
-            }
-            // update to modified user object
-            explorer.getSession().getCurrentTreeNodeSelection().setUserObject(newnode);
-            explorer.getSession().getXincoClientRepository().treemodel.nodeChanged(explorer.getSession().getCurrentTreeNodeSelection());
-            // select parent of new node
-            if (insertnewnode) {
-                explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
-            }
-            explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
-            explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.folder.updatesuccess"));
-        } catch (Exception rmie) {
-            //remove new node in case off error
-            if (insertnewnode) {
-                temp_node = explorer.getSession().getCurrentTreeNodeSelection();
-                explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
-                explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
-                explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
-            }
-            JOptionPane.showMessageDialog(explorer,
-                    explorer.getResourceBundle().getString("window.folder.updatefailed")
-                    + " " + explorer.getResourceBundle().getString("general.reason") + ": "
-                    + rmie.toString(), explorer.getResourceBundle().getString("general.error"),
-                    JOptionPane.WARNING_MESSAGE);
+        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+        explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.folder.updatesuccess"));
+      } catch (XincoException | RemoteException rmie) {
+        //remove new node in case off error
+        if (insertnewnode) {
+          temp_node = explorer.getSession().getCurrentTreeNodeSelection();
+          explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
+          explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+          explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
         }
-        setVisible(false);
-        designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
+        JOptionPane.showMessageDialog(explorer,
+            explorer.getResourceBundle().getString("window.folder.updatefailed")
+            + " " + explorer.getResourceBundle().getString("general.reason") + ": "
+            + rmie.toString(), explorer.getResourceBundle().getString("general.error"),
+            JOptionPane.WARNING_MESSAGE);
+      }
+      setVisible(false);
+      designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
     }//GEN-LAST:event_saveActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;

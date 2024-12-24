@@ -29,14 +29,13 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * XincoImportThread.java
  *
  * Created on January 9, 2010, 3:52 PM
  */
-
 package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.XincoExplorer;
@@ -53,55 +52,57 @@ import javax.swing.tree.TreePath;
  * @author Javier A. Ortiz
  */
 public class XincoImportThread extends Thread {
-    private XincoExplorer explorer;
-    @Override
-    public void run() {
-        if(this.explorer!=null){
-            ResourceBundle xerb = this.explorer.getResourceBundle();
-            //import data structure
-            if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
-                if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                    JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
-                    try {
-                        JFileChooser fc = new JFileChooser();
 
-                        fc.setCurrentDirectory(new File(explorer.current_path));
-                        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                        // show dialog
-                        int result = fc.showOpenDialog(explorer);
+  private XincoExplorer explorer;
 
-                        if (result != JFileChooser.APPROVE_OPTION) {
-                            throw new XincoException(xerb.getString("datawizard.updatecancel"));
-                        }
-                        explorer.setCurrentPath(fc.getSelectedFile().toString());
-                        explorer.progressBar.setTitle(xerb.getString("window.massiveimport.progress"));
-                        explorer.progressBar.show();
-                        // update transaction info
-                        JOptionPane.showMessageDialog(explorer,
-                                                      xerb.getString("window.massiveimport.progress"),
-                                                      xerb.getString("window.massiveimport"),
-                                                      JOptionPane.INFORMATION_MESSAGE);
-                        explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
-                        explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
-                                                       new File(explorer.current_path));
-                        // select current path
-                        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
-                        // update transaction info
-                        explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
-                    } catch (Exception ie) {
-                        JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed") +
-                                " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
-                                JOptionPane.WARNING_MESSAGE);
-                        explorer.jLabelInternalFrameInformationText.setText("");
-                        explorer.progressBar.hide();
-                    }
-                }
+  @Override
+  public void run() {
+    if (this.explorer != null) {
+      ResourceBundle xerb = this.explorer.getResourceBundle();
+      //import data structure
+      if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
+        if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+          JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
+          try {
+            JFileChooser fc = new JFileChooser();
+
+            fc.setCurrentDirectory(new File(explorer.current_path));
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            // show dialog
+            int result = fc.showOpenDialog(explorer);
+
+            if (result != JFileChooser.APPROVE_OPTION) {
+              throw new XincoException(xerb.getString("datawizard.updatecancel"));
             }
+            explorer.setCurrentPath(fc.getSelectedFile().toString());
+            explorer.progressBar.setTitle(xerb.getString("window.massiveimport.progress"));
+            explorer.progressBar.show();
+            // update transaction info
+            JOptionPane.showMessageDialog(explorer,
+                xerb.getString("window.massiveimport.progress"),
+                xerb.getString("window.massiveimport"),
+                JOptionPane.INFORMATION_MESSAGE);
+            explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
+            explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
+                new File(explorer.current_path));
+            // select current path
+            explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+            // update transaction info
+            explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
+          } catch (Exception ie) {
+            JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed")
+                + " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
+                JOptionPane.WARNING_MESSAGE);
+            explorer.jLabelInternalFrameInformationText.setText("");
             explorer.progressBar.hide();
+          }
         }
+      }
+      explorer.progressBar.hide();
     }
-    
-    public void setXincoExplorer(XincoExplorer e){
-        this.explorer=e;
-    }
+  }
+
+  public void setXincoExplorer(XincoExplorer e) {
+    this.explorer = e;
+  }
 }

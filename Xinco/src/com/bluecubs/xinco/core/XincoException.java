@@ -33,25 +33,24 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core;
 
 public class XincoException extends Exception {
 
-	String xinco_message = "";
+  String xinco_message = "";
 
-	public XincoException() {
-		super();
-		xinco_message = "";
-	}
+  public XincoException() {
+    super();
+    xinco_message = "";
+  }
 
-	public XincoException(String s) {
-		super(s);
-		xinco_message = s;
-	}
+  public XincoException(String s) {
+    super(s);
+    xinco_message = s;
+  }
 
   @Override
-	public String toString() {
-		return xinco_message;
-	}
+  public String toString() {
+    return xinco_message;
+  }
 }
