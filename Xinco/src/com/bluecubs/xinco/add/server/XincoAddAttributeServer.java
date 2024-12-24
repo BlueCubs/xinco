@@ -47,6 +47,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class XincoAddAttributeServer extends XincoAddAttribute {
+
+  private static final Logger log = Logger.getLogger(XincoAddAttributeServer.class.getSimpleName());
   //create add attribute object for data structures
 
   public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
@@ -120,7 +122,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
       stmt.executeUpdate("INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() + ", " + getAttribute_id() + ", " + getAttrib_int() + ", " + getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" + attrVC + "', '" + attrT + "', " + attrDT + ")");
       stmt.close();
     } catch (SQLException e) {
-      Logger.getLogger(XincoAddAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+      log.log(Level.SEVERE, null, e);
       //no commit or rollback -> CoreData manages exceptions!
       throw new XincoException();
     }

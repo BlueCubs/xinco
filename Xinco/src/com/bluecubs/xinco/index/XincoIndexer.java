@@ -70,17 +70,16 @@ public class XincoIndexer {
       writer.addDocument(XincoDocument.getXincoDocument(d, index_content, dbm));
       //writer.optimize();
       writer.close();
-
-    } catch (IOException e) {
+    } catch (Exception e) {
       if (writer != null) {
         try {
           writer.close();
         } catch (IOException we) {
+          we.printStackTrace();
         }
       }
       return false;
     }
-
     return true;
   }
 

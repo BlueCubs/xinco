@@ -251,20 +251,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     } catch (Exception icone) {
       Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, icone);
     }
-    //load config
-    loadConfig();
-    saveConfig();
-    //Apply LAF to all screens including de Locale Dialog
-    try {
-      switchPLAF((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()));
-    } catch (Throwable e) {
-      Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
-          Level.SEVERE, null, e);
-      createDefaultConfiguration(true);
-      switchPLAF((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()));
-    }
-    //choose language
-    getJDialogLocale().setVisible(true);
     Locale loc;
     try {
       String list = ((Locale) xincoClientConfig.get(ConfigElement.LOCALE.ordinal())).toString();
@@ -287,7 +273,20 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
       loc = Locale.getDefault();
     }
     xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-    xerb.getLocale();
+    //load config
+    loadConfig();
+    saveConfig();
+    //Apply LAF to all screens including de Locale Dialog
+    try {
+      switchPLAF((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()));
+    } catch (Throwable e) {
+      Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
+          Level.SEVERE, null, e);
+      createDefaultConfiguration(true);
+      switchPLAF((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()));
+    }
+    //choose language
+    getJDialogLocale().setVisible(true);
     progressBar = new XincoProgressBarThread(this);
     initialize();
     //Windows-Listener

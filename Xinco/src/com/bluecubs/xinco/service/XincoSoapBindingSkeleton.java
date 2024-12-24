@@ -8,9 +8,9 @@ package com.bluecubs.xinco.service;
 
 public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinco, org.apache.axis.wsdl.Skeleton {
 
-  private com.bluecubs.xinco.service.Xinco impl;
-  private static java.util.Map _myOperations = new java.util.Hashtable();
-  private static java.util.Collection _myOperationsList = new java.util.ArrayList();
+  private final com.bluecubs.xinco.service.Xinco impl;
+  private static final java.util.Map _myOperations = new java.util.Hashtable();
+  private static final java.util.Collection _myOperationsList = new java.util.ArrayList();
 
   /**
    * Returns List of OperationDesc objects with this name
@@ -488,5 +488,4 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     boolean ret = impl.checkXincoCoreUserNewPassword(in0, in1, in2);
     return ret;
   }
-
 }

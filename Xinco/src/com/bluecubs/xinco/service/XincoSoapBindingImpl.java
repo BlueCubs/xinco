@@ -33,6 +33,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
@@ -41,6 +43,7 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.attachments.AttachmentPart;
 
 public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
+  private final Logger log=Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName());
 
   @Override
   public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException {
@@ -63,7 +66,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       dbm.con.close();
       return (XincoCoreUser) user;
     } catch (Exception e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -78,7 +81,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       dbm.con.close();
       return v;
     } catch (Exception e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -88,12 +91,12 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
     try {
       XincoDBManager dbm = new XincoDBManager();
       //check if user exists
-      XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
+      new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
       java.util.Vector v = XincoCoreLanguageServer.getXincoCoreLanguages(dbm);
       dbm.con.close();
       return v;
     } catch (Exception e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -108,7 +111,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       dbm.con.close();
       return v;
     } catch (Exception e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -145,7 +148,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         return null;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -165,7 +168,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         return null;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -347,6 +350,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         return null;
       }
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -441,6 +445,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         return 0;
       }
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return 0;
     }
   }
@@ -516,6 +521,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       }
       dbm.con.close();
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
     return v;
@@ -676,6 +682,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         return null;
       }
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -725,6 +732,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         return null;
       }
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -756,6 +764,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         return false;
       }
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return false;
     }
   }
@@ -785,6 +794,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       dbm.con.close();
       return (XincoCoreLog) log;
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -811,6 +821,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       dbm.con.close();
       return (XincoCoreUser) user;
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;
     }
   }
@@ -843,15 +854,16 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
   @Override
   public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreUser in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException {
     XincoDBManager dbm;
-    XincoCoreUserServer user = null;
+    XincoCoreUserServer user;
     try {
       dbm = new XincoDBManager();
       user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+      return user.isPasswordUsable(in0);
     } catch (XincoException ex) {
-      ex.printStackTrace();
+      log.log(Level.SEVERE, ex.getLocalizedMessage(),ex);
     } catch (Exception ex) {
-      ex.printStackTrace();
+      log.log(Level.SEVERE, ex.getLocalizedMessage(),ex);
     }
-    return user.isPasswordUsable(in0);
+    return false;
   }
 }

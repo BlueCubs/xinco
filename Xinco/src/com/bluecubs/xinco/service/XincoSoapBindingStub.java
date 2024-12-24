@@ -1325,5 +1325,4 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
       throw axisFaultException;
     }
   }
-
 }

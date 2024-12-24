@@ -124,7 +124,6 @@ public class XincoDocument {
             // Do nothing
           }
         }
-
       }
     }
 

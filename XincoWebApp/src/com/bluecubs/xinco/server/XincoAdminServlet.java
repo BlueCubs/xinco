@@ -1475,17 +1475,22 @@ public class XincoAdminServlet extends HttpServlet {
               try (Statement stmt = dbm.con.createStatement()) {
                 ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
                 while (rs.next()) {
-                  xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
-                  index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, dbm);
-                  out.println("<tr>");
-                  out.println("<td class=\"text\">" + xdata_temp.getDesignation() + "</td>");
-                  if (index_result) {
-                    out.println("<td class=\"text\">" + rb.getString("general.ok") + "!</td>");
-                  } else {
-                    out.println("<td class=\"text\">" + rb.getString("general.fail") + "</td>");
+                  try {
+                    xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
+                    index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, dbm);
+                    out.println("<tr>");
+                    out.println("<td class=\"text\">" + xdata_temp.getDesignation() + "</td>");
+                    if (index_result) {
+                      out.println("<td class=\"text\">" + rb.getString("general.ok") + "!</td>");
+                    } else {
+                      out.println("<td class=\"text\">" + rb.getString("general.fail") + "</td>");
+                    }
+                    out.println("</tr>");
+                    out.flush();
+                  } catch (XincoException | SQLException ex) {
+                    ex.printStackTrace();
+                    throw ex;
                   }
-                  out.println("</tr>");
-                  out.flush();
                 }
               }
 
