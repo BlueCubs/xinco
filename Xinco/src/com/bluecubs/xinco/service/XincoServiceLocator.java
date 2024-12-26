@@ -8,6 +8,9 @@ package com.bluecubs.xinco.service;
 
 public class XincoServiceLocator extends org.apache.axis.client.Service implements com.bluecubs.xinco.service.XincoService {
 
+  // The WSDD service name defaults to the port name.
+  private java.lang.String XincoWSDDServiceName = "Xinco";
+
   public XincoServiceLocator() {
   }
 
@@ -26,9 +29,6 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
   public java.lang.String getXincoAddress() {
     return Xinco_address;
   }
-
-  // The WSDD service name defaults to the port name.
-  private java.lang.String XincoWSDDServiceName = "Xinco";
 
   public java.lang.String getXincoWSDDServiceName() {
     return XincoWSDDServiceName;
@@ -135,5 +135,4 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
   public void setEndpointAddress(javax.xml.namespace.QName portName, java.lang.String address) throws javax.xml.rpc.ServiceException {
     setEndpointAddress(portName.getLocalPart(), address);
   }
-
 }

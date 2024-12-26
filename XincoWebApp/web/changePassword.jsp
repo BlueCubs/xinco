@@ -4,7 +4,7 @@
 <%@page import="java.util.ResourceBundle,com.bluecubs.xinco.core.server.XincoDBManager"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+    "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
     <head>
@@ -15,38 +15,38 @@
         <link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'>
     </head>
     <%
-            XincoDBManager DBM = new XincoDBManager();
-            out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' class='text'>" : "class='text'>"));
+      XincoDBManager DBM = new XincoDBManager();
+      out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' class='text'>" : "class='text'>"));
     %>
     <center>
         <br/><img src="resources/images/blueCubs.gif" width="356" height="400" alt="blueCubs"/><br/>
         <%
-            Locale loc = null;
-            try {
-                String list = request.getParameter("list");
-                String[] locales;
-                locales = list.split("_");
-                switch (locales.length) {
-                    case 1:
-                        loc = new Locale(locales[0]);
-                        break;
-                    case 2:
-                        loc = new Locale(locales[0], locales[1]);
-                        break;
-                    case 3:
-                        loc = new Locale(locales[0], locales[1], locales[2]);
-                        break;
-                    default:
-                        loc = Locale.getDefault();
-                }
-            } catch (Exception e) {
+          Locale loc = null;
+          try {
+            String list = request.getParameter("list");
+            String[] locales;
+            locales = list.split("_");
+            switch (locales.length) {
+              case 1:
+                loc = new Locale.Builder().setLanguage(locales[0]).build();
+                break;
+              case 2:
+                loc = new Locale.Builder().setLanguage(locales[0]).setRegion(locales[1]).build();
+                break;
+              case 3:
+                loc = new Locale.Builder().setLanguage(locales[0]).setRegion(locales[1]).setVariant(locales[2]).build();
+                break;
+              default:
                 loc = Locale.getDefault();
             }
-            ResourceBundle rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc),
-                    settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings", loc);
-            out.println("<span class='bigtext'>" + rb.getString("password.aged") + "</span><br/><br/>");
-            out.print(rb.getString("password.change.warning").replaceAll("%n", settings.getString("password.unusable_period")));
-            out.println("</span>");%>
+          } catch (Exception e) {
+            loc = Locale.getDefault();
+          }
+          ResourceBundle rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc),
+              settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings", loc);
+          out.println("<span class='bigtext'>" + rb.getString("password.aged") + "</span><br/><br/>");
+          out.print(rb.getString("password.change.warning").replaceAll("%n", settings.getString("password.unusable_period")));
+          out.println("</span>");%>
         <br/><br/>
         <form name="password" action="XincoAdmin" method="post">
             <table border="0">
@@ -67,6 +67,6 @@
         </form>
     </center>
     <%
-            out.println("</body>");
+      out.println("</body>");
     %>
 </html>

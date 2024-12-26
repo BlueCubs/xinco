@@ -50,7 +50,7 @@ public final class changePassword_jsp extends org.apache.jasper.runtime.HttpJspB
       out.write("\r\n");
       out.write("\r\n");
       out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\r\n");
-      out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\r\n");
+      out.write("    \"http://www.w3.org/TR/html4/loose.dtd\">\r\n");
       out.write("\r\n");
       out.write("<html>\r\n");
       out.write("    <head>\r\n");
@@ -62,40 +62,40 @@ public final class changePassword_jsp extends org.apache.jasper.runtime.HttpJspB
       out.write("    </head>\r\n");
       out.write("    ");
 
-            XincoDBManager DBM = new XincoDBManager();
-            out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' class='text'>" : "class='text'>"));
+      XincoDBManager DBM = new XincoDBManager();
+      out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' class='text'>" : "class='text'>"));
     
       out.write("\r\n");
       out.write("    <center>\r\n");
       out.write("        <br/><img src=\"resources/images/blueCubs.gif\" width=\"356\" height=\"400\" alt=\"blueCubs\"/><br/>\r\n");
       out.write("        ");
 
-            Locale loc = null;
-            try {
-                String list = request.getParameter("list");
-                String[] locales;
-                locales = list.split("_");
-                switch (locales.length) {
-                    case 1:
-                        loc = new Locale(locales[0]);
-                        break;
-                    case 2:
-                        loc = new Locale(locales[0], locales[1]);
-                        break;
-                    case 3:
-                        loc = new Locale(locales[0], locales[1], locales[2]);
-                        break;
-                    default:
-                        loc = Locale.getDefault();
-                }
-            } catch (Exception e) {
+          Locale loc = null;
+          try {
+            String list = request.getParameter("list");
+            String[] locales;
+            locales = list.split("_");
+            switch (locales.length) {
+              case 1:
+                loc = new Locale.Builder().setLanguage(locales[0]).build();
+                break;
+              case 2:
+                loc = new Locale.Builder().setLanguage(locales[0]).setRegion(locales[1]).build();
+                break;
+              case 3:
+                loc = new Locale.Builder().setLanguage(locales[0]).setRegion(locales[1]).setVariant(locales[2]).build();
+                break;
+              default:
                 loc = Locale.getDefault();
             }
-            ResourceBundle rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc),
-                    settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings", loc);
-            out.println("<span class='bigtext'>" + rb.getString("password.aged") + "</span><br/><br/>");
-            out.print(rb.getString("password.change.warning").replaceAll("%n", settings.getString("password.unusable_period")));
-            out.println("</span>");
+          } catch (Exception e) {
+            loc = Locale.getDefault();
+          }
+          ResourceBundle rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc),
+              settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings", loc);
+          out.println("<span class='bigtext'>" + rb.getString("password.aged") + "</span><br/><br/>");
+          out.print(rb.getString("password.change.warning").replaceAll("%n", settings.getString("password.unusable_period")));
+          out.println("</span>");
       out.write("\r\n");
       out.write("        <br/><br/>\r\n");
       out.write("        <form name=\"password\" action=\"XincoAdmin\" method=\"post\">\r\n");
@@ -126,7 +126,7 @@ out.println(rb.getString("password.change"));
       out.write("    </center>\r\n");
       out.write("    ");
 
-            out.println("</body>");
+      out.println("</body>");
     
       out.write("\r\n");
       out.write("</html>\r\n");

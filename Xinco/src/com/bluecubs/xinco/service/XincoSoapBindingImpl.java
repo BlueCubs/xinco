@@ -43,7 +43,7 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.attachments.AttachmentPart;
 
 public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
-  private final Logger log=Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName());
+  private static final Logger log = Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName());
 
   @Override
   public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException {
@@ -55,6 +55,10 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
     version.setVersion_low(Integer.parseInt(settings.getString("version.low")));
     version.setVersion_postfix(settings.getString("version.postfix"));
     return version;
+  }
+
+  private void checkValidUser(com.bluecubs.xinco.core.XincoCoreUser in0, XincoDBManager dbm) throws XincoException{
+    new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
   }
 
   @Override
@@ -76,7 +80,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
     try {
       XincoDBManager dbm = new XincoDBManager();
       //check if user exists
-      new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
+      checkValidUser(in0, dbm);
       java.util.Vector v = XincoCoreGroupServer.getXincoCoreGroups(dbm);
       dbm.con.close();
       return v;
@@ -91,7 +95,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
     try {
       XincoDBManager dbm = new XincoDBManager();
       //check if user exists
-      new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
+      checkValidUser(in0, dbm);
       java.util.Vector v = XincoCoreLanguageServer.getXincoCoreLanguages(dbm);
       dbm.con.close();
       return v;
@@ -106,7 +110,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
     try {
       XincoDBManager dbm = new XincoDBManager();
       //check if user exists
-      new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
+      checkValidUser(in0, dbm);
       java.util.Vector v = XincoCoreDataTypeServer.getXincoCoreDataTypes(dbm);
       dbm.con.close();
       return v;
@@ -295,9 +299,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
       data = new XincoCoreDataServer(in0.getId(), dbm);
       ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
       if (ace.isRead_permission()) {
-        //determine requested revision if data with only one specific log object is requested
+        //determine requested revision if data with only one specific newLog object is requested
         if ((data.getXinco_core_logs().size() > 1) && (in0.getXinco_core_logs().size() == 1)) {
-          //find id of log
+          //find id of newLog
           int LogId = 0;
           if ((((XincoCoreLog) in0.getXinco_core_logs().elementAt(0)).getOp_code() == 1) || (((XincoCoreLog) in0.getXinco_core_logs().elementAt(0)).getOp_code() == 5)) {
             LogId = ((XincoCoreLog) in0.getXinco_core_logs().elementAt(0)).getId();
@@ -404,7 +408,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
 
         //dupicate file to preserve current revision
         if (((XincoAddAttribute) data.getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 1) {
-          //find id of latest log
+          //find id of latest newLog
           int maxLogId = 0;
           for (i = 0; i < data.getXinco_core_logs().size(); i++) {
             if ((((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getId() > maxLogId) && ((((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog) data.getXinco_core_logs().elementAt(i)).getOp_code() == 5))) {
@@ -773,26 +777,26 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
   public com.bluecubs.xinco.core.XincoCoreLog setXincoCoreLog(com.bluecubs.xinco.core.XincoCoreLog in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
     try {
       XincoDBManager dbm = new XincoDBManager();
-      XincoCoreLogServer log;
+      XincoCoreLogServer newLog;
       XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
-      //load log or create new one
+      //load newLog or create new one
       if (in0.getId() > 0) {
-        log = new XincoCoreLogServer(in0.getId(), dbm);
+        newLog = new XincoCoreLogServer(in0.getId(), dbm);
       } else {
-        log = new XincoCoreLogServer(0, 0, 0, 0, null, "", 0, 0, 0, "");
+        newLog = new XincoCoreLogServer(0, 0, 0, 0, null, "", 0, 0, 0, "");
       }
-      //update log
-      log.setXinco_core_data_id(in0.getXinco_core_data_id());
-      log.setChangerID(in1.getId());
-      log.setXinco_core_user_id(in0.getXinco_core_user_id());
-      log.setOp_code(in0.getOp_code());
-      log.setOp_description(in0.getOp_description());
-      log.setOp_datetime(in0.getOp_datetime());
-      log.setVersion(in0.getVersion());
-      log.setUser(user);
-      log.write2DB(dbm);
+      //update newLog
+      newLog.setXinco_core_data_id(in0.getXinco_core_data_id());
+      newLog.setChangerID(in1.getId());
+      newLog.setXinco_core_user_id(in0.getXinco_core_user_id());
+      newLog.setOp_code(in0.getOp_code());
+      newLog.setOp_description(in0.getOp_description());
+      newLog.setOp_datetime(in0.getOp_datetime());
+      newLog.setVersion(in0.getVersion());
+      newLog.setUser(user);
+      newLog.write2DB(dbm);
       dbm.con.close();
-      return (XincoCoreLog) log;
+      return (XincoCoreLog) newLog;
     } catch (Exception e) {
       log.log(Level.SEVERE, e.getLocalizedMessage(),e);
       return null;

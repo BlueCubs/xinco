@@ -6,14 +6,19 @@
  */
 package com.bluecubs.xinco.service;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinco, org.apache.axis.wsdl.Skeleton {
 
   private final com.bluecubs.xinco.service.Xinco impl;
-  private static final java.util.Map _myOperations = new java.util.Hashtable();
+  private static final java.util.Map _myOperations = new ConcurrentHashMap();
   private static final java.util.Collection _myOperationsList = new java.util.ArrayList();
 
   /**
    * Returns List of OperationDesc objects with this name
+   *
+   * @param methodName
+   * @return
    */
   public static java.util.List getOperationDescByName(java.lang.String methodName) {
     return (java.util.List) _myOperations.get(methodName);
@@ -21,6 +26,8 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
 
   /**
    * Returns Collection of OperationDescs
+   *
+   * @return
    */
   public static java.util.Collection getOperationDescs() {
     return _myOperationsList;
@@ -28,7 +35,6 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
 
   static {
     org.apache.axis.description.OperationDesc _oper;
-    org.apache.axis.description.FaultDesc _fault;
     org.apache.axis.description.ParameterDesc[] _params;
     _params = new org.apache.axis.description.ParameterDesc[]{};
     _oper = new org.apache.axis.description.OperationDesc("getXincoServerVersion", _params, new javax.xml.namespace.QName("", "getXincoServerVersionReturn"));
