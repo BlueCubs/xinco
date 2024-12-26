@@ -139,7 +139,7 @@
 		<genkey alias="${keystore.alias}" storepass="${keystore.password}"
 								dname="${keystore.dname}"
 								keystore="${keystore.file}"
-								validity="3650"
+								validity="36500"
 		            keyalg="RSA"/>
 		<!--Sign libraries-->
 		<signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}">
