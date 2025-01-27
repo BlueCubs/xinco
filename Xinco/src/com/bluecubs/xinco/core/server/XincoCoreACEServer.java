@@ -45,16 +45,14 @@ public class XincoCoreACEServer extends XincoCoreACE {
   //create single ace object for data structures
 
   public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
-
     try {
-
       try (Statement stmt = DBM.con.createStatement()) {
         ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_ace WHERE id=" + attrID);
 
         //throw exception if no result found
-        int RowCount = 0;
+        int rowCount = 0;
         while (rs.next()) {
-          RowCount++;
+          rowCount++;
           setId(rs.getInt("id"));
           setXinco_core_user_id(rs.getInt("xinco_core_user_id"));
           setXinco_core_group_id(rs.getInt("xinco_core_group_id"));
@@ -65,7 +63,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
           setExecute_permission(rs.getBoolean("execute_permission"));
           setAdmin_permission(rs.getBoolean("admin_permission"));
         }
-        if (RowCount < 1) {
+        if (rowCount < 1) {
           throw new XincoException();
         }
       }
@@ -73,12 +71,10 @@ public class XincoCoreACEServer extends XincoCoreACE {
     } catch (XincoException | SQLException e) {
       throw new XincoException();
     }
-
   }
 
   //create single ace object for data structures
   public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID, int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, boolean attrAP) throws XincoException {
-
     setId(attrID);
     setXinco_core_user_id(attrUID);
     setXinco_core_group_id(attrGID);
@@ -88,7 +84,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
     setWrite_permission(attrWP);
     setExecute_permission(attrEP);
     setAdmin_permission(attrAP);
-
   }
 
   //write to db
@@ -169,7 +164,9 @@ public class XincoCoreACEServer extends XincoCoreACE {
       try {
         DBM.con.rollback();
       } catch (SQLException erollback) {
+        System.err.println(erollback);
       }
+      System.err.println(e);
       throw new XincoException();
     }
 
@@ -194,8 +191,9 @@ public class XincoCoreACEServer extends XincoCoreACE {
       try {
         DBM.con.rollback();
       } catch (SQLException erollback) {
+        System.err.println(erollback);
       }
-      e.printStackTrace();
+      System.err.println(e);
       throw new XincoException();
     }
 
@@ -227,12 +225,10 @@ public class XincoCoreACEServer extends XincoCoreACE {
   //check access by comparing user / user groups to ACL and return permissions
   public static XincoCoreACE checkAccess(XincoCoreUser attrU, Vector attrACL) {
 
-    int i = 0;
-    int j = 0;
-    boolean match_ace = false;
+    boolean match_ace;
     XincoCoreACE core_ace = new XincoCoreACE();
 
-    for (i = 0; i < attrACL.size(); i++) {
+    for (int i = 0; i < attrACL.size(); i++) {
       //reset match_ace
       match_ace = false;
       //check if user is mentioned in ACE
@@ -241,7 +237,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
       }
       //check if group of user is mentioned in ACE
       if (!match_ace) {
-        for (j = 0; j < attrU.getXinco_core_groups().size(); j++) {
+        for (int j = 0; j < attrU.getXinco_core_groups().size(); j++) {
           if (((XincoCoreACE) attrACL.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup) attrU.getXinco_core_groups().elementAt(j)).getId()) {
             match_ace = true;
             break;
