@@ -620,8 +620,7 @@ public final class XincoJTree extends JTree {
                 int selRow = getRowForLocation(e.getX(),
                         e.getY());
                 if (selRow != -1) {
-                    if (e.getClickCount() == 1) {
-                    } else if (e.getClickCount() == 2) {
+                    if (e.getClickCount() == 2) {
                         // double-click -> preview file
                         // setSelectionPath(selPath);
                         // Only if not archieved
