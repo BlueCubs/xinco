@@ -7,7 +7,7 @@
 - [x] Task: Update Dependencies 0600720
     - [ ] Run `mvn versions:display-dependency-updates` to identify outdated artifacts.
     - [ ] Update critical dependencies (Spring, Hibernate, etc.) to versions compatible with the target JDK.
-- [ ] Task: Verify Build
+- [x] Task: Verify Build
     - [ ] Run `mvn clean install` to ensure a successful build with the new configuration.
 
 ## Phase 2: Docker Environment
