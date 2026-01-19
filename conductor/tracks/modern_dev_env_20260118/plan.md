@@ -14,7 +14,7 @@
 - [x] Task: Create Dockerfile 05eaed9
     - [ ] Create a `Dockerfile` that uses a modern base image (e.g., `openjdk:17-slim` or `tomcat:9-jdk17`).
     - [ ] Configure the Dockerfile to deploy the built WAR file.
-- [ ] Task: Create Docker Compose
+- [x] Task: Create Docker Compose 967a325
     - [ ] Create `docker-compose.yml` to orchestrate the application and a database (MySQL/PostgreSQL).
     - [ ] Configure environment variables for database connection.
 - [ ] Task: Verify Containerization
