@@ -370,8 +370,11 @@ public class XincoDBManager {
   private static void updateDatabase(DataSource dataSource) {
     FluentConfiguration configuration = configure();
     configuration.baselineOnMigrate(true);
+    configuration.baselineVersion("0");
     configuration.dataSource(dataSource);
-    configuration.locations("db.migration");
+    configuration.locations("classpath:db/migration");
+    LOG.info("Flyway Baseline Version: " + configuration.getBaselineVersion());
+    LOG.info("Flyway Locations: " + Arrays.toString(configuration.getLocations()));
     Flyway flyway = new Flyway(configuration);
     try {
       LOG.info("Starting migration...");

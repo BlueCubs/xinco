@@ -11,3 +11,7 @@ XincoExplorer/nbproject/private/
 XincoWebApp/nbproject/private/
 
 nb-configuration.xml
+/.gemini/
+.gemini/
+**/gwt-unitCache/
+**/src/main/webapp/VAADIN/widgetsets/
