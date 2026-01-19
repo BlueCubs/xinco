@@ -21,7 +21,7 @@
     - [ ] Run `docker-compose up` and verify the application starts and connects to the DB.
 
 ## Phase 3: Testing & Coverage
-- [ ] Task: Configure Testing Plugins
+- [x] Task: Configure Testing Plugins 5d4f88f
     - [ ] Add/Update `maven-surefire-plugin` and `maven-failsafe-plugin`.
     - [ ] Add `jacoco-maven-plugin` for code coverage.
 - [ ] Task: Establish Baseline Tests
