@@ -17,7 +17,7 @@
 - [x] Task: Create Docker Compose 967a325
     - [ ] Create `docker-compose.yml` to orchestrate the application and a database (MySQL/PostgreSQL).
     - [ ] Configure environment variables for database connection.
-- [ ] Task: Verify Containerization
+- [x] Task: Verify Containerization a3d20fd
     - [ ] Run `docker-compose up` and verify the application starts and connects to the DB.
 
 ## Phase 3: Testing & Coverage
