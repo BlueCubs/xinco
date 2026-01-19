@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  xinco:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=xinco
+      - MYSQL_USER=xinco
+      - MYSQL_PASSWORD=xinco
+    depends_on:
+      - db
+    networks:
+      - xinco-net
+
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=xinco
+      - MYSQL_USER=xinco
+      - MYSQL_PASSWORD=xinco
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - xinco-net
+
+networks:
+  xinco-net:
+
+volumes:
+  db_data:
