@@ -10,7 +10,7 @@
 - [x] Task: Verify Build
     - [ ] Run `mvn clean install` to ensure a successful build with the new configuration.
 
-## Phase 2: Docker Environment
+## Phase 2: Docker Environment [checkpoint: d39819b]
 - [x] Task: Create Dockerfile 05eaed9
     - [ ] Create a `Dockerfile` that uses a modern base image (e.g., `openjdk:17-slim` or `tomcat:9-jdk17`).
     - [ ] Configure the Dockerfile to deploy the built WAR file.
