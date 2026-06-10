@@ -43,7 +43,7 @@ class XincoIndexFileTypeTest {
   @Test
   void xincoIndexGenericFile_getFileContentReader_returnsNull() throws Exception {
     File f = new File(tempDir, "generic.bin");
-    Files.write(f.toPath(), new byte[]{1, 2, 3});
+    Files.write(f.toPath(), new byte[] {1, 2, 3});
     XincoIndexGenericFile indexer = new XincoIndexGenericFile();
     assertThat(indexer.getFileContentReader(f)).isNull();
   }

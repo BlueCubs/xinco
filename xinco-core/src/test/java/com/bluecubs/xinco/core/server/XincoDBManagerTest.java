@@ -117,8 +117,7 @@ public class XincoDBManagerTest extends AbstractXincoDataBaseTestCase {
     try {
       var params = new java.util.HashMap<String, Object>();
       params.put("id", 1);
-      var results = createdQuery(
-          "select l from XincoCoreLanguage l where l.id = :id", params);
+      var results = createdQuery("select l from XincoCoreLanguage l where l.id = :id", params);
       assertNotNull(results);
       assertEquals(1, results.size());
     } catch (XincoException e) {

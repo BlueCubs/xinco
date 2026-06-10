@@ -109,7 +109,8 @@ Follow conventional commits: `<type>(<scope>): <description>`
 
 ## Key Configuration
 
-- **Java version:** 21 (enforced in compiler plugin)
+- **Java version:** 25 LTS (enforced in compiler plugin and maven-enforcer-plugin)
+- **JAVA_HOME:** Set to JDK 25 before running Maven — Homebrew Java 26 breaks JaCoCo. Use: `export JAVA_HOME=/Users/javierortiz/Library/Java/JavaVirtualMachines/openjdk-25.0.2/Contents/Home`
 - **Database:** MySQL 8 in production (via Docker), H2 for tests
 - **Flyway** handles schema migrations in `xinco-core`
 - **CI:** GitHub Actions runs `mvn install` then `mvn verify` on every push/PR; JaCoCo report uploaded as artifact

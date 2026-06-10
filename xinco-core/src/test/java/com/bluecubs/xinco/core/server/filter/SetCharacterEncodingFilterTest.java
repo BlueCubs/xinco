@@ -72,8 +72,7 @@ class SetCharacterEncodingFilterTest {
   }
 
   @Test
-  void doFilter_skipsSetWhenEncodingPresentAndNotIgnoring()
-      throws IOException, ServletException {
+  void doFilter_skipsSetWhenEncodingPresentAndNotIgnoring() throws IOException, ServletException {
     when(config.getInitParameter("encoding")).thenReturn("UTF-8");
     when(config.getInitParameter("ignore")).thenReturn("false");
     filter.init(config);

@@ -50,7 +50,7 @@
     <!-- If addon submodule is not used, this can also be "fetch" or "cdn" -->
     <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.compiler.release>21</maven.compiler.release>
+    <maven.compiler.release>25</maven.compiler.release>
     <widgetset.path>src/main/webapp</widgetset.path>
     <git-code-format-maven-plugin.version>2.7</git-code-format-maven-plugin.version>
   </properties>
@@ -107,7 +107,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.12</version>
+          <version>0.8.13</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -196,9 +196,21 @@
           <artifactId>git-code-format-maven-plugin</artifactId>
           <version>${git-code-format-maven-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.20.1</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <configuration>
+          <allowMajorUpdates>false</allowMajorUpdates>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -214,6 +226,10 @@
                 <requireMavenVersion>
                   <version>3.3.9</version>
                 </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[25,)</version>
+                  <message>This project requires JDK 25 LTS or newer.</message>
+                </requireJavaVersion>
               </rules>
             </configuration>
           </execution>
@@ -270,6 +286,12 @@
             <goals>
               <goal>prepare-agent</goal>
             </goals>
+            <configuration>
+              <!-- Only instrument xinco classes; avoids JDK-internal class version errors -->
+              <includes>
+                <include>com/bluecubs/**</include>
+              </includes>
+            </configuration>
           </execution>
           <execution>
             <id>report</id>

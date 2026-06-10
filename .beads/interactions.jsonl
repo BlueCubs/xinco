@@ -1,0 +1,1 @@
+{"id":"int-142c8c29b25fa6d7dd07be95b369026f","kind":"field_change","created_at":"2026-06-10T13:52:36.305765Z","actor":"Javier Ortiz Bultron","issue_id":"xinco-775","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"JaCoCo 40% threshold enforced with correct path-style exclusions for generated server.service and rendering"}}
