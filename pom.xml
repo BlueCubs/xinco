@@ -49,7 +49,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- If addon submodule is not used, this can also be "fetch" or "cdn" -->
     <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
-    <maven.compiler.release>17</maven.compiler.release>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.release>21</maven.compiler.release>
+    <widgetset.path>src/main/webapp</widgetset.path>
     <git-code-format-maven-plugin.version>2.7</git-code-format-maven-plugin.version>
   </properties>
   <build>
@@ -93,6 +95,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.3.1</version>
+          <configuration>
+            <argLine>@{argLine} -Dnet.bytebuddy.experimental=true</argLine>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -361,5 +366,6 @@
   <modules>
     <module>xinco-core</module>
     <module>Xinco</module>
+    <module>xinco-ui-v25</module>
   </modules>
 </project>
