@@ -37,12 +37,17 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
 import java.util.ResourceBundle;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Administration window for managing Xinco settings.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class SettingAdminWindow extends Panel implements ComponentContainer {
 
   private Table table;
   private EntityContainer<com.bluecubs.xinco.core.server.persistence.XincoSetting> container;
 
+  /** Default constructor. */
   public SettingAdminWindow() {
     buildMainArea();
   }

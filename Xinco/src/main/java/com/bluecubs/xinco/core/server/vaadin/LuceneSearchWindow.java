@@ -18,7 +18,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import org.vaadin.lucenecontainer.LuceneContainer;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Search window backed by Lucene full-text search.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class LuceneSearchWindow extends Window {
 
   private static final long serialVersionUID = -6457102992676680930L;
@@ -39,6 +43,7 @@ public class LuceneSearchWindow extends Window {
   private Select options = new Select();
   private final CheckBox allLanguages;
 
+  /** Default constructor. */
   public LuceneSearchWindow() {
     allLanguages =
         new CheckBox(
@@ -184,6 +189,7 @@ public class LuceneSearchWindow extends Window {
     setSizeUndefined();
   }
 
+  /** Returns the button that transfers selection to the caller. */
   protected final com.vaadin.ui.Button getToSelectionButton() {
     return new com.vaadin.ui.Button(
         getInstance().getResource().getString("window.search.gotoselection"),

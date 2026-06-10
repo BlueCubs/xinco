@@ -17,16 +17,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Manages the collection of Xinco menu items.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoMenuItemManager {
 
   private static TreeMap<Integer, XincoMenuItem> items = new TreeMap<Integer, XincoMenuItem>();
   private static TreeMap<String, MenuItem> groups = new TreeMap<String, MenuItem>();
 
+  /** Adds an item to the menu registry. */
   public static XincoMenuItem addItem(XincoMenuItem item) {
     return items.put(item.getIndex(), item);
   }
 
+  /** Populates the menu bar from the registered items. */
   public static void updateMenuBar(MenuBar menu) {
     menu.removeItems();
     groups.clear();

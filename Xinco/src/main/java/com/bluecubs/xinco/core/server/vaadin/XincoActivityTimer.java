@@ -3,7 +3,11 @@ package com.bluecubs.xinco.core.server.vaadin;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Timer that tracks user activity and triggers session timeout.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public final class XincoActivityTimer {
 
   private Timer activityTimer = null;

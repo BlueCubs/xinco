@@ -4,7 +4,11 @@ import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 
 import com.vaadin.terminal.ThemeResource;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Represents a menu item in the Xinco DMS menu bar.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoMenuItem {
 
   private final int index;
@@ -19,6 +23,8 @@ public class XincoMenuItem {
   private final boolean selected;
 
   /**
+   * Creates a menu item.
+   *
    * @param index Order of the item
    * @param groupName Name of the item group (Resource Bundle key)
    * @param name Name of the item (Resource Bundle key)
@@ -53,67 +59,70 @@ public class XincoMenuItem {
     this.dataTypes = validDataTypes;
   }
 
-  /** @return the index */
+  /** Returns the item index. @return the index */
   public int getIndex() {
     return index;
   }
 
-  /** @return the name */
+  /** Returns the item name. @return the name */
   public String getName() {
     return getInstance().getResource().getString(name);
   }
 
-  /** @return the icon */
+  /** Returns the item icon. @return the icon */
   public ThemeResource getIcon() {
     return icon;
   }
 
-  /** @return the command */
+  /** Returns the menu command. @return the command */
   public com.vaadin.ui.MenuBar.Command getCommand() {
     return command;
   }
 
-  /** @return the loggedIn */
+  /** Returns whether item requires login. @return the loggedIn */
   public boolean isLoggedIn() {
     return loggedIn;
   }
 
-  /** @return the dataOnly */
+  /** Returns whether item applies to data nodes only. @return the dataOnly */
   public boolean isDataOnly() {
     return dataOnly;
   }
 
-  /** @return the nodeOnly */
+  /** Returns whether item applies to folder nodes only. @return the nodeOnly */
   public boolean isNodeOnly() {
     return nodeOnly;
   }
 
-  /** @return the dataTypes */
+  /** Returns the valid data types for this item. @return the dataTypes */
   public int[] getDataTypes() {
     return dataTypes;
   }
 
-  /** @param dataTypes the data types to set. Only meaning full for non node objects */
+  /**
+   * Sets the valid data types. @param dataTypes the data types to set. Only meaning full for non
+   * node objects
+   */
   public void setDataTypes(int[] dataTypes) {
     this.dataTypes = dataTypes;
   }
 
-  /** @return the groupName */
+  /** Returns the group name. @return the groupName */
   public String getGroupName() {
     return getInstance().getResource().getString(groupName);
   }
 
-  /** @return the selected */
+  /** Returns whether the item is selected. @return the selected */
   public boolean isSelected() {
     return selected;
   }
 
-  /** @return the statuses */
+  /** Returns the valid status codes. @return the statuses */
   public int[] getStatuses() {
     return statuses;
   }
 
-  /** @param statuses the statuses to set */
+  /** Sets the valid status codes. @param statuses the statuses to set */
   public void setStatuses(int[] statuses) {
     this.statuses = statuses;
   }

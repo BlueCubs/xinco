@@ -14,6 +14,7 @@ public final class WizardProgressBar extends ProgressIndicator implements Wizard
 
   private final XincoWizard wizard;
 
+  /** Creates a progress bar bound to the given wizard. */
   public WizardProgressBar(XincoWizard wizard) {
     super(0.0f);
     setIndeterminate(false);

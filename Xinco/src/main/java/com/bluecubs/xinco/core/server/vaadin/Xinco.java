@@ -211,8 +211,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.vaadin.easyuploads.MultiFileUpload;
 import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Xinco DMS Vaadin 6 main application class.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class Xinco extends Application implements HttpServletRequestListener {
+
+  /** Default constructor. */
+  public Xinco() {}
 
   private static final Logger LOG = getLogger(Xinco.class.getName());
   private static final long serialVersionUID = 1L;
@@ -266,12 +273,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return version;
   }
 
-  // @return the current application instance
+  /** Returns the singleton application instance. */
   public static Xinco getInstance() {
     return LOCAL_THREAD.get();
   }
 
-  // Set the current application instance
+  /** Sets the singleton application instance. */
   public static void setInstance(Xinco application) {
     LOCAL_THREAD.set(application);
   }
@@ -286,6 +293,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return image;
   }
 
+  /** Recursively removes a directory and its contents. */
   public static boolean removeDirectory(File directory) {
     boolean result = false;
     if (directory == null) {
@@ -683,6 +691,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return resource;
   }
 
+  /** Returns the icon resource for the given file extension. */
   protected FileResource getIcon(String extension) throws IOException {
     WebApplicationContext context = (WebApplicationContext) getContext();
     File iconsFolder =
@@ -718,12 +727,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return resource;
   }
 
-  /** @return the Resource Bundle */
+  /**
+   * Returns the Resource Bundle.
+   *
+   * @return the Resource Bundle
+   */
   public ResourceBundle getResource() {
     return xerb;
   }
 
-  /** @return the loggedUser */
+  /**
+   * Returns the loggedUser.
+   *
+   * @return the loggedUser
+   */
   public XincoCoreUser getLoggedUser() {
     return loggedUser;
   }
@@ -752,6 +769,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return panel;
   }
 
+  /** Returns the main tree component. */
   public Tree getXincoTree() {
     if (xincoTree == null) {
       try {
@@ -1010,6 +1028,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
   }
 
+  /** Updates the menu bar based on current selection and permissions. */
   protected void updateMenu() throws XincoException {
     updateMenuBar(menuBar);
     // Hide it if empty
@@ -1499,6 +1518,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
   }
 
+  /** Locks the application UI. */
   public void setLock() {
     // Don't do anything if no one is logged in.
     if (loggedUser != null) {
@@ -1515,6 +1535,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
   }
 
+  /** Handles window resize events. */
   public void windowResized(ResizeEvent e) {
     // Center sub window in new screen size
     getMainWindow().getChildWindows().forEach(Window::center);
@@ -4190,10 +4211,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
     addItem(item);
   }
 
+  /** Selects the tree node with the given ID. */
   public boolean selectNode(String nodeId) {
     return getXincoTree() == null ? false : getXincoTree().expandItem(nodeId);
   }
 
+  /** Expands tree nodes for the given parent IDs. */
   public boolean expandTreeNodes(java.util.List<Integer> parents) {
     boolean result = true;
     if (getXincoTree() == null) {
@@ -4208,7 +4231,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return result;
   }
 
-  /** @return the data */
+  /**
+   * Returns the data.
+   *
+   * @return the data
+   */
   protected XincoCoreData getXincoCoreData() {
     return data;
   }
@@ -4760,22 +4787,38 @@ public class Xinco extends Application implements HttpServletRequestListener {
     getMainWindow().addWindow(wizardWindow);
   }
 
-  /** @return the fileToLoad */
+  /**
+   * Returns the fileToLoad.
+   *
+   * @return the fileToLoad
+   */
   protected File getFileToLoad() {
     return fileToLoad;
   }
 
-  /** @return the fileName */
+  /**
+   * Returns the fileName.
+   *
+   * @return the fileName
+   */
   protected String getFileName() {
     return fileName;
   }
 
-  /** @param fileToLoad the fileToLoad to set */
+  /**
+   * Sets fileToLoad.
+   *
+   * @param fileToLoad the fileToLoad to set
+   */
   protected void setFileToLoad(File fileToLoad) {
     this.fileToLoad = fileToLoad;
   }
 
-  /** @param fileName the fileName to set */
+  /**
+   * Sets fileName.
+   *
+   * @param fileName the fileName to set
+   */
   protected void setFileName(String fileName) {
     this.fileName = fileName;
   }
@@ -5531,6 +5574,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     getMainWindow().requestRepaintAll();
   }
 
+  /** Returns the web service client. */
   public XincoWebService getService() {
     if (service == null) {
       service = new XincoWebService();

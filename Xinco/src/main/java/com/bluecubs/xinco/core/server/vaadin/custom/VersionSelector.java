@@ -8,7 +8,11 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.*;
 import org.vaadin.risto.stepper.IntStepper;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * UI component for selecting a version number.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public final class VersionSelector extends CustomComponent {
 
   private static final long serialVersionUID = 6980240938236771282L;
@@ -21,6 +25,7 @@ public final class VersionSelector extends CustomComponent {
   private final IntStepper low = new IntStepper();
   private TextField postfix;
 
+  /** Creates a version selector with a caption and initial version. */
   public VersionSelector(String caption, XincoVersion version) {
     this.caption = caption;
     this.version = version;
@@ -28,6 +33,7 @@ public final class VersionSelector extends CustomComponent {
     setCompositionRoot(setup());
   }
 
+  /** Default constructor. */
   public VersionSelector() {
     caption = "";
     version = new XincoVersion();
@@ -35,6 +41,7 @@ public final class VersionSelector extends CustomComponent {
     setCompositionRoot(setup());
   }
 
+  /** Enables or disables the minor/patch version fields. */
   public void setMinorEnabled(boolean enable) {
     minor.setEnabled(enable);
   }
@@ -86,14 +93,17 @@ public final class VersionSelector extends CustomComponent {
     return getInstance().getResource().getString(key);
   }
 
+  /** Increments the major version number. */
   public void increaseHigh() {
     high.setValue((Integer) high.getValue() + 1);
   }
 
+  /** Increments the minor version number. */
   public void increaseMid() {
     mid.setValue((Integer) mid.getValue() + 1);
   }
 
+  /** Increments the patch version number. */
   public void increaseLow() {
     low.setValue((Integer) low.getValue() + 1);
   }
@@ -122,6 +132,7 @@ public final class VersionSelector extends CustomComponent {
     postfix.setEnabled(enable);
   }
 
+  /** Sets the displayed version. */
   public void setVersion(XincoVersion version) {
     this.version.setVersionHigh(version.getVersionHigh());
     this.version.setVersionMid(version.getVersionMid());

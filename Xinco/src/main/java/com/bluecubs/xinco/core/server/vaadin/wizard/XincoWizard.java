@@ -48,6 +48,7 @@ public final class XincoWizard extends CustomComponent {
   private int lastCompleted, progress;
   private ResourceBundle xerb;
 
+  /** Creates a wizard using the given locale. */
   public XincoWizard(Locale locale) {
     setLocale(locale);
     init();
@@ -248,10 +249,12 @@ public final class XincoWizard extends CustomComponent {
     }
   }
 
+  /** Adds a step to the wizard. */
   public void addStep(WizardStep step) {
     addStep(step, "wizard-step-" + (steps.size() + 1));
   }
 
+  /** Adds a step with the given identifier. */
   public void addStep(WizardStep step, String id) {
     steps.add(step);
     idMap.put(id, step);
@@ -272,18 +275,22 @@ public final class XincoWizard extends CustomComponent {
     super.paintContent(target);
   }
 
+  /** Registers a wizard progress listener. */
   public void addListener(WizardProgressListener listener) {
     listeners.add(listener);
   }
 
+  /** Removes a previously registered progress listener. */
   public void removeListener(WizardProgressListener listener) {
     listeners.remove(listener);
   }
 
+  /** Returns all registered wizard steps. */
   public List<WizardStep> getSteps() {
     return unmodifiableList(steps);
   }
 
+  /** Removes a step from the wizard. */
   public boolean removeStep(WizardStep step) {
     boolean remove = steps.remove(step);
     if (remove) {
@@ -294,10 +301,12 @@ public final class XincoWizard extends CustomComponent {
     return remove;
   }
 
+  /** Returns true if the given step has been completed. */
   public boolean isCompleted(WizardStep step) {
     return steps.indexOf(step) < steps.indexOf(currentStep);
   }
 
+  /** Returns true if the given step is currently active. */
   public boolean isActive(WizardStep step) {
     return (step == currentStep);
   }
@@ -327,18 +336,22 @@ public final class XincoWizard extends CustomComponent {
     return false;
   }
 
+  /** Returns the Next navigation button. */
   public Button getNextButton() {
     return nextButton;
   }
 
+  /** Returns the Back navigation button. */
   public Button getBackButton() {
     return backButton;
   }
 
+  /** Returns the Finish button. */
   public Button getFinishButton() {
     return finishButton;
   }
 
+  /** Returns the Cancel button. */
   public Button getCancelButton() {
     return cancelButton;
   }
@@ -401,6 +414,7 @@ public final class XincoWizard extends CustomComponent {
     }
   }
 
+  /** Activates the step with the given ID. */
   public void activateStep(String id) {
     WizardStep step = idMap.get(id);
     if (step != null) {
@@ -416,6 +430,7 @@ public final class XincoWizard extends CustomComponent {
     }
   }
 
+  /** Returns the identifier for the given step. */
   public String getId(WizardStep step) {
     for (Map.Entry<String, WizardStep> entry : idMap.entrySet()) {
       if (entry.getValue().equals(step)) {
@@ -425,12 +440,12 @@ public final class XincoWizard extends CustomComponent {
     return null;
   }
 
-  /** @return the currentIndex */
+  /** Returns the current step index. @return the currentIndex */
   public int getLastCompleted() {
     return lastCompleted;
   }
 
-  /** @return the progress */
+  /** Returns the progress bar component. @return the progress */
   public int getProgress() {
     return progress;
   }
