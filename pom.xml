@@ -383,6 +383,5 @@
   <modules>
     <module>xinco-core</module>
     <module>Xinco</module>
-    <module>xinco-ui-v25</module>
   </modules>
 </project>
