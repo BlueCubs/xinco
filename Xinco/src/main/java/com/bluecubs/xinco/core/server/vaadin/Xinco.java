@@ -273,12 +273,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return version;
   }
 
-  /** Returns the singleton application instance. */
+  /**
+   * Returns the singleton application instance.
+   *
+   * @return the singleton Xinco application instance
+   */
   public static Xinco getInstance() {
     return LOCAL_THREAD.get();
   }
 
-  /** Sets the singleton application instance. */
+  /**
+   * Sets the singleton application instance.
+   *
+   * @param application the application instance to set
+   */
   public static void setInstance(Xinco application) {
     LOCAL_THREAD.set(application);
   }
@@ -293,7 +301,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return image;
   }
 
-  /** Recursively removes a directory and its contents. */
+  /**
+   * Recursively removes a directory and its contents.
+   *
+   * @param directory the directory to remove
+   * @return true if removal succeeded
+   */
   public static boolean removeDirectory(File directory) {
     boolean result = false;
     if (directory == null) {
@@ -691,7 +704,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return resource;
   }
 
-  /** Returns the icon resource for the given file extension. */
+  /**
+   * Returns the icon resource for the given file extension.
+   *
+   * @param extension the file extension
+   * @return the icon resource
+   * @throws IOException if the icon cannot be read
+   */
   protected FileResource getIcon(String extension) throws IOException {
     WebApplicationContext context = (WebApplicationContext) getContext();
     File iconsFolder =
@@ -769,7 +788,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
     return panel;
   }
 
-  /** Returns the main tree component. */
+  /**
+   * Returns the main tree component.
+   *
+   * @return the main tree component
+   */
   public Tree getXincoTree() {
     if (xincoTree == null) {
       try {
@@ -1535,7 +1558,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
   }
 
-  /** Handles window resize events. */
+  /**
+   * Handles window resize events.
+   *
+   * @param e the resize event
+   */
   public void windowResized(ResizeEvent e) {
     // Center sub window in new screen size
     getMainWindow().getChildWindows().forEach(Window::center);
@@ -4211,12 +4238,22 @@ public class Xinco extends Application implements HttpServletRequestListener {
     addItem(item);
   }
 
-  /** Selects the tree node with the given ID. */
+  /**
+   * Selects the tree node with the given ID.
+   *
+   * @param nodeId the node identifier
+   * @return true if the node was found and selected
+   */
   public boolean selectNode(String nodeId) {
     return getXincoTree() == null ? false : getXincoTree().expandItem(nodeId);
   }
 
-  /** Expands tree nodes for the given parent IDs. */
+  /**
+   * Expands tree nodes for the given parent IDs.
+   *
+   * @param parents list of parent node IDs to expand
+   * @return true if expansion succeeded
+   */
   public boolean expandTreeNodes(java.util.List<Integer> parents) {
     boolean result = true;
     if (getXincoTree() == null) {
@@ -5574,7 +5611,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
     getMainWindow().requestRepaintAll();
   }
 
-  /** Returns the web service client. */
+  /**
+   * Returns the web service client.
+   *
+   * @return the web service client
+   */
   public XincoWebService getService() {
     if (service == null) {
       service = new XincoWebService();

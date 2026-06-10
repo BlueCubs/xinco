@@ -25,7 +25,12 @@ public final class VersionSelector extends CustomComponent {
   private final IntStepper low = new IntStepper();
   private TextField postfix;
 
-  /** Creates a version selector with a caption and initial version. */
+  /**
+   * Creates a version selector with a caption and initial version.
+   *
+   * @param caption the field caption
+   * @param version the initial version value
+   */
   public VersionSelector(String caption, XincoVersion version) {
     this.caption = caption;
     this.version = version;
@@ -41,7 +46,11 @@ public final class VersionSelector extends CustomComponent {
     setCompositionRoot(setup());
   }
 
-  /** Enables or disables the minor/patch version fields. */
+  /**
+   * Enables or disables the minor/patch version fields.
+   *
+   * @param enable true to enable minor/patch fields
+   */
   public void setMinorEnabled(boolean enable) {
     minor.setEnabled(enable);
   }
@@ -132,7 +141,11 @@ public final class VersionSelector extends CustomComponent {
     postfix.setEnabled(enable);
   }
 
-  /** Sets the displayed version. */
+  /**
+   * Sets the displayed version.
+   *
+   * @param version the version to display
+   */
   public void setVersion(XincoVersion version) {
     this.version.setVersionHigh(version.getVersionHigh());
     this.version.setVersionMid(version.getVersionMid());

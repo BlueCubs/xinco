@@ -37,7 +37,11 @@ import com.vaadin.ui.*;
 import java.util.Iterator;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Dialog for adding attributes to a data item.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 class AddAttributeDialog extends CustomComponent {
 
   private static final long serialVersionUID = -8882910370437780800L;

@@ -29,18 +29,31 @@ public class LuceneSearchWindow extends Window {
 
   private final com.vaadin.ui.TextField variableField = new com.vaadin.ui.TextField();
   private final com.vaadin.ui.TextField queryField = new com.vaadin.ui.TextField();
+  /** First horizontal layout row. */
   private HorizontalLayout hl = new HorizontalLayout();
+
+  /** Second horizontal layout row. */
   private HorizontalLayout hl2 = new HorizontalLayout();
+
+  /** Third horizontal layout row. */
   private HorizontalLayout hl3 = new HorizontalLayout();
+
   private HorizontalLayout hl4 = new HorizontalLayout();
   private HorizontalLayout hl5 = new HorizontalLayout();
+
+  /** The Lucene search data source. */
   private LuceneContainer dataSource = null;
+
+  /** The search form. */
   private final Form form = new Form();
+
   private final com.vaadin.ui.Label info = new com.vaadin.ui.Label();
   private final Table table = new Table();
   private final Select lang = new Select();
   private Select operator = new Select();
   private Select options = new Select();
+
+  /** Checkbox to search across all languages. */
   private final CheckBox allLanguages;
 
   /** Default constructor. */
@@ -189,7 +202,11 @@ public class LuceneSearchWindow extends Window {
     setSizeUndefined();
   }
 
-  /** Returns the button that transfers selection to the caller. */
+  /**
+   * Returns the button that transfers selection to the caller.
+   *
+   * @return the selection button
+   */
   protected final com.vaadin.ui.Button getToSelectionButton() {
     return new com.vaadin.ui.Button(
         getInstance().getResource().getString("window.search.gotoselection"),

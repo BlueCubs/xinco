@@ -72,7 +72,7 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.7.0</version>
           <configuration>
-            <additionalparam>-Xdoclint:none</additionalparam>
+            <additionalOptions>-Xdoclint:none</additionalOptions>
             <excludePackageNames>*.service</excludePackageNames>
           </configuration>
         </plugin>

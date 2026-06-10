@@ -6,7 +6,11 @@ import com.bluecubs.xinco.core.server.vaadin.wizard.XincoWizard;
 /** Event fired when the wizard completes successfully. */
 public class WizardCompletedEvent extends AbstractWizardEvent {
 
-  /** Creates a wizard-completed event. */
+  /**
+   * Creates a wizard-completed event.
+   *
+   * @param source the wizard that generated this event
+   */
   public WizardCompletedEvent(XincoWizard source) {
     super(source);
   }

@@ -59,70 +59,119 @@ public class XincoMenuItem {
     this.dataTypes = validDataTypes;
   }
 
-  /** Returns the item index. @return the index */
+  /**
+   * Returns the item index.
+   *
+   * @return the item index
+   */
   public int getIndex() {
     return index;
   }
 
-  /** Returns the item name. @return the name */
+  /**
+   * Returns the item name.
+   *
+   * @return the item name
+   */
   public String getName() {
     return getInstance().getResource().getString(name);
   }
 
-  /** Returns the item icon. @return the icon */
+  /**
+   * Returns the item icon.
+   *
+   * @return the item icon
+   */
   public ThemeResource getIcon() {
     return icon;
   }
 
-  /** Returns the menu command. @return the command */
+  /**
+   * Returns the menu command.
+   *
+   * @return the menu command
+   */
   public com.vaadin.ui.MenuBar.Command getCommand() {
     return command;
   }
 
-  /** Returns whether item requires login. @return the loggedIn */
+  /**
+   * Returns whether item requires login.
+   *
+   * @return true if item requires login
+   */
   public boolean isLoggedIn() {
     return loggedIn;
   }
 
-  /** Returns whether item applies to data nodes only. @return the dataOnly */
+  /**
+   * Returns whether item applies to data nodes only.
+   *
+   * @return true if item applies to data nodes only
+   */
   public boolean isDataOnly() {
     return dataOnly;
   }
 
-  /** Returns whether item applies to folder nodes only. @return the nodeOnly */
+  /**
+   * Returns whether item applies to folder nodes only.
+   *
+   * @return true if item applies to folder nodes only
+   */
   public boolean isNodeOnly() {
     return nodeOnly;
   }
 
-  /** Returns the valid data types for this item. @return the dataTypes */
+  /**
+   * Returns the valid data types for this item.
+   *
+   * @return the valid data types
+   */
   public int[] getDataTypes() {
     return dataTypes;
   }
 
   /**
-   * Sets the valid data types. @param dataTypes the data types to set. Only meaning full for non
-   * node objects
+   * Sets the valid data types. Only meaningful for non-node objects.
+   *
+   * @param dataTypes the data types to set
    */
   public void setDataTypes(int[] dataTypes) {
     this.dataTypes = dataTypes;
   }
 
-  /** Returns the group name. @return the groupName */
+  /**
+   * Returns the group name.
+   *
+   * @return the group name
+   */
   public String getGroupName() {
     return getInstance().getResource().getString(groupName);
   }
 
-  /** Returns whether the item is selected. @return the selected */
+  /**
+   * Returns whether the item is selected.
+   *
+   * @return true if the item is selected
+   */
   public boolean isSelected() {
     return selected;
   }
 
-  /** Returns the valid status codes. @return the statuses */
+  /**
+   * Returns the valid status codes.
+   *
+   * @return the valid status codes
+   */
   public int[] getStatuses() {
     return statuses;
   }
 
-  /** Sets the valid status codes. @param statuses the statuses to set */
+  /**
+   * Sets the valid status codes.
+   *
+   * @param statuses the statuses to set
+   */
   public void setStatuses(int[] statuses) {
     this.statuses = statuses;
   }

@@ -27,12 +27,21 @@ public class XincoMenuItemManager {
   private static TreeMap<Integer, XincoMenuItem> items = new TreeMap<Integer, XincoMenuItem>();
   private static TreeMap<String, MenuItem> groups = new TreeMap<String, MenuItem>();
 
-  /** Adds an item to the menu registry. */
+  /**
+   * Adds an item to the menu registry.
+   *
+   * @param item the item to add
+   * @return the added item
+   */
   public static XincoMenuItem addItem(XincoMenuItem item) {
     return items.put(item.getIndex(), item);
   }
 
-  /** Populates the menu bar from the registered items. */
+  /**
+   * Populates the menu bar from the registered items.
+   *
+   * @param menu the menu bar to populate
+   */
   public static void updateMenuBar(MenuBar menu) {
     menu.removeItems();
     groups.clear();

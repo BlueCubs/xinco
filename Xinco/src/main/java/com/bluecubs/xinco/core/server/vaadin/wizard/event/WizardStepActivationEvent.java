@@ -9,7 +9,12 @@ public class WizardStepActivationEvent extends AbstractWizardEvent {
 
   private final WizardStep activatedStep;
 
-  /** Creates a step-activation event for the given step. */
+  /**
+   * Creates a step-activation event for the given step.
+   *
+   * @param source the wizard that generated this event
+   * @param activatedStep the step that was activated
+   */
   public WizardStepActivationEvent(XincoWizard source, WizardStep activatedStep) {
     super(source);
     this.activatedStep = activatedStep;

@@ -71,7 +71,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <additionalOptions>-Xdoclint:none</additionalOptions>
         </configuration>
         <executions>
           <execution>
@@ -106,29 +106,7 @@
         <configuration>
           <release>17</release>
           <showDeprecation>true</showDeprecation>
-          <!-- Don't forget to use endorsed with JAX-WS 2.2 on Java 6 !! -->
-          <compilerArguments>
-            <endorseddirs>${project.build.directory}/endorsed</endorseddirs>
-          </compilerArguments>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>native2ascii-maven-plugin</artifactId>
-        <configuration>
-          <dest>target/resources</dest>
-          <src>src/main/resources</src>
-          <encoding>UTF8</encoding>
-          <include>*.properties</include>
-        </configuration>
-        <executions>
-          <execution>
-            <id>native2ascii-utf8-resources</id>
-            <goals>
-              <goal>resources</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>com.vaadin</groupId>
@@ -153,12 +131,10 @@
           <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
           <noServer>true</noServer>
           <port>8084</port>
-          <soyc>false</soyc>
         </configuration>
         <executions>
           <execution>
             <goals>
-              <goal>resources</goal>
               <goal>compile</goal>
             </goals>
           </execution>
@@ -218,7 +194,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.7.0</version>
         <configuration>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <additionalOptions>-Xdoclint:none</additionalOptions>
           <excludePackageNames>*.service</excludePackageNames>
         </configuration>
       </plugin>

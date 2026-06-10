@@ -36,7 +36,11 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 import java.util.Iterator;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Dialog for managing data type definitions.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 class DataTypeDialog extends CustomComponent {
 
   private final Select types;
