@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "xinco",
+  "project_id": "0c90d4b0-6b3a-48fe-9835-338d41cbb664"
+}
