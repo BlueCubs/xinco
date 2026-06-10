@@ -51,6 +51,8 @@ public class XincoMailer {
             .getIntValue());
     props.put("mail.smtp.starttls.enable", "true");
     props.put("mail.smtp.auth ", "true ");
+    props.put("mail.smtp.connectiontimeout", "5000");
+    props.put("mail.smtp.timeout", "5000");
 
     Authenticator auth = new SMTPAuthenticator();
     Session session = getDefaultInstance(props, auth);
