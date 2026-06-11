@@ -701,6 +701,246 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     langCtrl.destroy(srcLangId);
   }
 
+  // ---- XincoCoreDataJpaController.edit — change Node FK (covers lines 421-422) ----
+
+  public void testDataController_editChangeNode() throws Exception {
+    XincoCoreDataJpaController dataCtrl = new XincoCoreDataJpaController(getEntityManagerFactory());
+    XincoCoreLanguageJpaController langCtrl =
+        new XincoCoreLanguageJpaController(getEntityManagerFactory());
+    XincoCoreDataTypeJpaController dtCtrl =
+        new XincoCoreDataTypeJpaController(getEntityManagerFactory());
+    XincoCoreNodeJpaController nodeCtrl = new XincoCoreNodeJpaController(getEntityManagerFactory());
+
+    // Create a second node to move the data item to
+    XincoCoreNode newNode = new XincoCoreNode();
+    newNode.setDesignation("TestNodeForDataMove");
+    newNode.setStatusNumber(1);
+    newNode.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    newNode.setXincoCoreNode(nodeCtrl.findXincoCoreNode(1));
+    newNode.setXincoCoreNodeList(new ArrayList<>());
+    newNode.setXincoCoreDataList(new ArrayList<>());
+    newNode.setXincoCoreAceList(new ArrayList<>());
+    nodeCtrl.create(newNode);
+    int newNodeId = newNode.getId();
+
+    // Create data in node 1
+    XincoCoreData data = new XincoCoreData();
+    data.setDesignation("test.data.nodechange");
+    data.setStatusNumber(1);
+    data.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    data.setXincoCoreDataType(dtCtrl.findXincoCoreDataType(1));
+    data.setXincoCoreNode(nodeCtrl.findXincoCoreNode(1));
+    data.setXincoCoreAceList(new ArrayList<>());
+    data.setXincoCoreLogList(new ArrayList<>());
+    data.setXincoCoreDataHasDependencyList(new ArrayList<>());
+    data.setXincoCoreDataHasDependencyList1(new ArrayList<>());
+    data.setXincoAddAttributeList(new ArrayList<>());
+    dataCtrl.create(data);
+    int dataId = data.getId();
+
+    // Edit data: move from node 1 to newNode
+    // xincoCoreNodeOld != xincoCoreNodeNew → lines 420-426 execute
+    XincoCoreData toEdit = dataCtrl.findXincoCoreData(dataId);
+    toEdit.setDesignation("test.data.nodechange.updated");
+    toEdit.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    toEdit.setXincoCoreDataType(dtCtrl.findXincoCoreDataType(1));
+    toEdit.setXincoCoreNode(nodeCtrl.findXincoCoreNode(newNodeId));
+    toEdit.setXincoCoreAceList(new ArrayList<>());
+    toEdit.setXincoCoreLogList(new ArrayList<>());
+    toEdit.setXincoCoreDataHasDependencyList(new ArrayList<>());
+    toEdit.setXincoCoreDataHasDependencyList1(new ArrayList<>());
+    toEdit.setXincoAddAttributeList(new ArrayList<>());
+    dataCtrl.edit(toEdit);
+    assertEquals(newNodeId, (int) dataCtrl.findXincoCoreData(dataId).getXincoCoreNode().getId());
+
+    dataCtrl.destroy(dataId);
+    nodeCtrl.destroy(newNodeId);
+  }
+
+  // ---- XincoCoreDataJpaController.edit — remove ACE from data (line 477-478) ----
+
+  public void testDataController_editRemoveAce() throws Exception {
+    XincoCoreDataJpaController dataCtrl = new XincoCoreDataJpaController(getEntityManagerFactory());
+    XincoCoreLanguageJpaController langCtrl =
+        new XincoCoreLanguageJpaController(getEntityManagerFactory());
+    XincoCoreDataTypeJpaController dtCtrl =
+        new XincoCoreDataTypeJpaController(getEntityManagerFactory());
+    XincoCoreNodeJpaController nodeCtrl = new XincoCoreNodeJpaController(getEntityManagerFactory());
+    XincoCoreAceJpaController aceCtrl = new XincoCoreAceJpaController(getEntityManagerFactory());
+
+    // Create data with an ACE linked to it
+    XincoCoreData data = new XincoCoreData();
+    data.setDesignation("test.data.removeace");
+    data.setStatusNumber(1);
+    data.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    data.setXincoCoreDataType(dtCtrl.findXincoCoreDataType(1));
+    data.setXincoCoreNode(nodeCtrl.findXincoCoreNode(1));
+    data.setXincoCoreAceList(new ArrayList<>());
+    data.setXincoCoreLogList(new ArrayList<>());
+    data.setXincoCoreDataHasDependencyList(new ArrayList<>());
+    data.setXincoCoreDataHasDependencyList1(new ArrayList<>());
+    data.setXincoAddAttributeList(new ArrayList<>());
+    dataCtrl.create(data);
+    int dataId = data.getId();
+
+    XincoCoreAce ace = new XincoCoreAce();
+    ace.setReadPermission(true);
+    ace.setWritePermission(false);
+    ace.setExecutePermission(false);
+    ace.setAdminPermission(false);
+    ace.setXincoCoreData(dataCtrl.findXincoCoreData(dataId));
+    aceCtrl.create(ace);
+    int aceId = ace.getId();
+
+    // Edit data with EMPTY ace list while persistent data has the ACE.
+    // xincoCoreAceListOld = [ace], xincoCoreAceListNew = []
+    // Loop at line 475: ace NOT in new list → ace.setXincoCoreData(null) → merge (lines 477-478)
+    XincoCoreData toEdit = dataCtrl.findXincoCoreData(dataId);
+    toEdit.setDesignation("test.data.removeace.updated");
+    toEdit.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    toEdit.setXincoCoreDataType(dtCtrl.findXincoCoreDataType(1));
+    toEdit.setXincoCoreNode(nodeCtrl.findXincoCoreNode(1));
+    toEdit.setXincoCoreAceList(new ArrayList<>()); // empty — removes ACE from data
+    toEdit.setXincoCoreLogList(new ArrayList<>());
+    toEdit.setXincoCoreDataHasDependencyList(new ArrayList<>());
+    toEdit.setXincoCoreDataHasDependencyList1(new ArrayList<>());
+    toEdit.setXincoAddAttributeList(new ArrayList<>());
+    dataCtrl.edit(toEdit);
+
+    // Cleanup (ACE now has null data FK, can still be destroyed)
+    aceCtrl.destroy(aceId);
+    dataCtrl.destroy(dataId);
+  }
+
+  // ---- XincoCoreDataJpaController.edit — move Log from D1 to D2 (lines 497-513) ----
+
+  public void testDataController_editMoveLog() throws Exception {
+    XincoCoreDataJpaController dataCtrl = new XincoCoreDataJpaController(getEntityManagerFactory());
+    XincoCoreLanguageJpaController langCtrl =
+        new XincoCoreLanguageJpaController(getEntityManagerFactory());
+    XincoCoreDataTypeJpaController dtCtrl =
+        new XincoCoreDataTypeJpaController(getEntityManagerFactory());
+    XincoCoreNodeJpaController nodeCtrl = new XincoCoreNodeJpaController(getEntityManagerFactory());
+    XincoCoreLogJpaController logCtrl = new XincoCoreLogJpaController(getEntityManagerFactory());
+
+    // Create source data D1 with a log entry
+    XincoCoreData d1 = buildEmptyData(dataCtrl, langCtrl, dtCtrl, nodeCtrl, "test.data.logSrc");
+    int d1Id = d1.getId();
+
+    XincoCoreLog log = new XincoCoreLog();
+    log.setOpCode(1);
+    log.setOpDatetime(new java.util.Date());
+    log.setOpDescription("log for move test");
+    log.setVersionHigh(1);
+    log.setVersionMid(0);
+    log.setVersionLow(0);
+    log.setVersionPostfix("");
+    log.setXincoCoreData(dataCtrl.findXincoCoreData(d1Id));
+    logCtrl.create(log);
+    int logId = log.getId();
+
+    // Create target data D2 with no logs
+    XincoCoreData d2 = buildEmptyData(dataCtrl, langCtrl, dtCtrl, nodeCtrl, "test.data.logDst");
+    int d2Id = d2.getId();
+
+    // Edit D2 passing the log from D1 in its list.
+    // xincoCoreLogListOld for D2 = empty; xincoCoreLogListNew = [log from D1]
+    // !old.contains(log) → TRUE → enter IF body (lines 497-513)
+    // oldData = log.getXincoCoreData() = D1 != null → nested IF body runs
+    XincoCoreData toEdit = dataCtrl.findXincoCoreData(d2Id);
+    toEdit.setDesignation("test.data.logDst.updated");
+    toEdit.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    toEdit.setXincoCoreDataType(dtCtrl.findXincoCoreDataType(1));
+    toEdit.setXincoCoreNode(nodeCtrl.findXincoCoreNode(1));
+    toEdit.setXincoCoreAceList(new ArrayList<>());
+    toEdit.setXincoCoreLogList(Arrays.asList(logCtrl.findXincoCoreLog(logId)));
+    toEdit.setXincoCoreDataHasDependencyList(new ArrayList<>());
+    toEdit.setXincoCoreDataHasDependencyList1(new ArrayList<>());
+    toEdit.setXincoAddAttributeList(new ArrayList<>());
+    dataCtrl.edit(toEdit);
+
+    // Cleanup
+    logCtrl.destroy(logId);
+    dataCtrl.destroy(d2Id);
+    dataCtrl.destroy(d1Id);
+  }
+
+  // ---- XincoCoreDataJpaController.edit — move AddAttribute from D1 to D2 (lines 515-541) ----
+
+  public void testDataController_editMoveAddAttribute() throws Exception {
+    XincoCoreDataJpaController dataCtrl = new XincoCoreDataJpaController(getEntityManagerFactory());
+    XincoCoreLanguageJpaController langCtrl =
+        new XincoCoreLanguageJpaController(getEntityManagerFactory());
+    XincoCoreDataTypeJpaController dtCtrl =
+        new XincoCoreDataTypeJpaController(getEntityManagerFactory());
+    XincoCoreNodeJpaController nodeCtrl = new XincoCoreNodeJpaController(getEntityManagerFactory());
+    XincoAddAttributeJpaController attrCtrl =
+        new XincoAddAttributeJpaController(getEntityManagerFactory());
+
+    // Create source data D1 with an add-attribute
+    XincoCoreData d1 = buildEmptyData(dataCtrl, langCtrl, dtCtrl, nodeCtrl, "test.data.attrSrc");
+    int d1Id = d1.getId();
+
+    XincoAddAttributePK pk1 = new XincoAddAttributePK(d1Id, 1);
+    XincoAddAttribute attr = new XincoAddAttribute();
+    attr.setXincoAddAttributePK(pk1);
+    attr.setAttribInt(0);
+    attr.setAttribUnsignedint(0L);
+    attr.setAttribDouble(0.0);
+    attr.setAttribVarchar("src_filename.txt");
+    attr.setAttribText("");
+    attr.setXincoCoreData(dataCtrl.findXincoCoreData(d1Id));
+    attrCtrl.create(attr);
+
+    // Create target data D2 with no attributes
+    XincoCoreData d2 = buildEmptyData(dataCtrl, langCtrl, dtCtrl, nodeCtrl, "test.data.attrDst");
+    int d2Id = d2.getId();
+
+    // Edit D2 passing attr from D1.
+    // xincoAddAttributeListOld for D2 = empty; new = [attr from D1]
+    // !old.contains(attr) → TRUE → enter IF body (lines 515-541)
+    // oldData = attr.getXincoCoreData() = D1 != null → nested IF body runs
+    XincoCoreData toEdit = dataCtrl.findXincoCoreData(d2Id);
+    toEdit.setDesignation("test.data.attrDst.updated");
+    toEdit.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    toEdit.setXincoCoreDataType(dtCtrl.findXincoCoreDataType(1));
+    toEdit.setXincoCoreNode(nodeCtrl.findXincoCoreNode(1));
+    toEdit.setXincoCoreAceList(new ArrayList<>());
+    toEdit.setXincoCoreLogList(new ArrayList<>());
+    toEdit.setXincoCoreDataHasDependencyList(new ArrayList<>());
+    toEdit.setXincoCoreDataHasDependencyList1(new ArrayList<>());
+    toEdit.setXincoAddAttributeList(Arrays.asList(attrCtrl.findXincoAddAttribute(pk1)));
+    dataCtrl.edit(toEdit);
+
+    // Cleanup: attr's data FK was moved to D2, destroy by PK
+    attrCtrl.destroy(pk1);
+    dataCtrl.destroy(d2Id);
+    dataCtrl.destroy(d1Id);
+  }
+
+  /** Helper: create a data item with all empty collections. */
+  private XincoCoreData buildEmptyData(
+      XincoCoreDataJpaController dataCtrl,
+      XincoCoreLanguageJpaController langCtrl,
+      XincoCoreDataTypeJpaController dtCtrl,
+      XincoCoreNodeJpaController nodeCtrl,
+      String designation)
+      throws Exception {
+    XincoCoreData data = new XincoCoreData();
+    data.setDesignation(designation);
+    data.setStatusNumber(1);
+    data.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    data.setXincoCoreDataType(dtCtrl.findXincoCoreDataType(1));
+    data.setXincoCoreNode(nodeCtrl.findXincoCoreNode(1));
+    data.setXincoCoreAceList(new ArrayList<>());
+    data.setXincoCoreLogList(new ArrayList<>());
+    data.setXincoCoreDataHasDependencyList(new ArrayList<>());
+    data.setXincoCoreDataHasDependencyList1(new ArrayList<>());
+    data.setXincoAddAttributeList(new ArrayList<>());
+    dataCtrl.create(data);
+    return data;
+  }
+
   // ---- XincoCoreGroupJpaController.create with ACE in list ----
 
   public void testGroupController_createWithAce() throws Exception {
