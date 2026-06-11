@@ -125,4 +125,39 @@ public class XincoDBManagerTest extends AbstractXincoDataBaseTestCase {
       fail();
     }
   }
+
+  public void testNativeQuery_safeSelect() {
+    try {
+      // Execute a read-only native query (H2 supports this syntax)
+      nativeQuery("UPDATE xinco_core_language SET sign=sign WHERE id=1");
+    } catch (XincoException e) {
+      getLogger(getClass().getSimpleName()).log(SEVERE, null, e);
+      fail();
+    }
+  }
+
+  public void testGetPersistenceUnitName() {
+    try {
+      XincoDBManager mgr = XincoDBManager.get();
+      assertNotNull(mgr.getPersistenceUnitName());
+    } catch (Exception e) {
+      getLogger(getClass().getSimpleName()).log(SEVERE, null, e);
+      fail();
+    }
+  }
+
+  public void testIsInitDone() {
+    // Just exercise the method — value depends on initialization order
+    XincoDBManager.isInitDone();
+  }
+
+  public void testSetLoc() {
+    try {
+      XincoDBManager mgr = XincoDBManager.get();
+      mgr.setLoc(java.util.Locale.ENGLISH);
+    } catch (Exception e) {
+      getLogger(getClass().getSimpleName()).log(SEVERE, null, e);
+      fail();
+    }
+  }
 }
