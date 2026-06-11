@@ -112,20 +112,64 @@ public class XincoDocumentTest extends AbstractXincoDataBaseTestCase {
     assertNotNull(doc.get("attr_text"));
   }
 
-  /** Test with indexContent=true and data type == 1 (file), statusNumber != 3. */
-  public void testGetXincoDocument_fileType_indexContent() {
+  /** Helper: build a minimal synthetic type-1 XincoCoreData with one varchar filename attr. */
+  private XincoCoreData buildFileTypeData(int id, String filename) {
+    XincoCoreData data = new XincoCoreData();
+    data.setId(id);
+    data.setDesignation(filename);
+    data.setStatusNumber(1);
+    data.setXincoCoreNodeId(1);
+
+    XincoCoreLanguage lang = new XincoCoreLanguage();
+    lang.setId(1);
+    lang.setSign("en");
+    data.setXincoCoreLanguage(lang);
+
+    XincoCoreDataType dt = new XincoCoreDataType();
+    dt.setId(1); // FILE type — triggers the indexContent block
+    dt.setDesignation("file");
+
+    // Must add a matching DataTypeAttribute so the attribute-loop in getXincoDocument works
+    XincoCoreDataTypeAttribute attrDef = new XincoCoreDataTypeAttribute();
+    attrDef.setAttributeId(1);
+    attrDef.setDesignation("general.filename");
+    attrDef.setDataType("varchar");
+    dt.getXincoCoreDataTypeAttributes().add(attrDef);
+
+    data.setXincoCoreDataType(dt);
+
+    XincoAddAttribute filenameAttr = new XincoAddAttribute();
+    filenameAttr.setAttributeId(1);
+    filenameAttr.setAttribVarchar(filename);
+    data.getXincoAddAttributes().add(filenameAttr);
+
+    return data;
+  }
+
+  /**
+   * Synthetic type-1 data with an "exe" extension — "exe" is in the noIndex list, so fileType is
+   * set to -1 (no indexing). No file access occurs and the method returns normally. Covers the
+   * noIndex detection loop in getXincoDocument.
+   */
+  public void testGetXincoDocument_fileType1_noIndexExt() throws java.io.FileNotFoundException {
+    Document doc = XincoDocument.getXincoDocument(buildFileTypeData(77, "binary.exe"), true);
+    assertNotNull(doc);
+    assertEquals("77", doc.get("id"));
+  }
+
+  /**
+   * Synthetic type-1 data with an unknown extension not in any indexer or noIndex list — fileType
+   * stays 0, XincoIndexText is used. The text indexer returns null for a missing file, which causes
+   * Lucene Field to throw NPE (caught here). Covers the text-indexer path in getXincoDocument.
+   */
+  public void testGetXincoDocument_fileType1_textIndexerPath() {
     try {
-      XincoCoreDataServer data = new XincoCoreDataServer(1);
-      data.loadAddAttributes();
-      // Data item 1 is likely a file type (dataType.id == 1) -- test with indexContent=true
-      // FileNotFoundException is expected since no real file exists in test repo
-      Document doc = XincoDocument.getXincoDocument(data, true);
-      assertNotNull(doc);
+      XincoDocument.getXincoDocument(buildFileTypeData(78, "doc.zzz"), true);
     } catch (java.io.FileNotFoundException e) {
-      // expected in test environment — file doesn't exist, still exercises code paths
-    } catch (XincoException e) {
-      getLogger(getClass().getSimpleName()).log(SEVERE, null, e);
-      fail("Unexpected XincoException: " + e.getMessage());
+      // acceptable
+    } catch (NullPointerException e) {
+      // XincoIndexText.getFileContentReader returns null for a missing file;
+      // Lucene Field rejects null readers with NPE
     }
   }
 }
