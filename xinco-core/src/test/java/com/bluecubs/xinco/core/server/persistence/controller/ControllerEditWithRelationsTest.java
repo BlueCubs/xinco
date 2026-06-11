@@ -941,6 +941,78 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     return data;
   }
 
+  // ---- XincoCoreAceJpaController.edit — change Data/Node/Group FKs (lines 151-173) ----
+
+  public void testAceController_editChangeFKs() throws Exception {
+    XincoCoreAceJpaController aceCtrl = new XincoCoreAceJpaController(getEntityManagerFactory());
+    XincoCoreDataJpaController dataCtrl = new XincoCoreDataJpaController(getEntityManagerFactory());
+    XincoCoreLanguageJpaController langCtrl =
+        new XincoCoreLanguageJpaController(getEntityManagerFactory());
+    XincoCoreDataTypeJpaController dtCtrl =
+        new XincoCoreDataTypeJpaController(getEntityManagerFactory());
+    XincoCoreNodeJpaController nodeCtrl = new XincoCoreNodeJpaController(getEntityManagerFactory());
+    XincoCoreGroupJpaController groupCtrl =
+        new XincoCoreGroupJpaController(getEntityManagerFactory());
+
+    // Create two data items, two nodes, two groups for FK changes
+    XincoCoreData d1 = buildEmptyData(dataCtrl, langCtrl, dtCtrl, nodeCtrl, "ace.fk.d1");
+    XincoCoreData d2 = buildEmptyData(dataCtrl, langCtrl, dtCtrl, nodeCtrl, "ace.fk.d2");
+
+    XincoCoreNode n2 = new XincoCoreNode();
+    n2.setDesignation("AceFkNode2");
+    n2.setStatusNumber(1);
+    n2.setXincoCoreLanguage(langCtrl.findXincoCoreLanguage(1));
+    n2.setXincoCoreNode(nodeCtrl.findXincoCoreNode(1));
+    n2.setXincoCoreNodeList(new ArrayList<>());
+    n2.setXincoCoreDataList(new ArrayList<>());
+    n2.setXincoCoreAceList(new ArrayList<>());
+    nodeCtrl.create(n2);
+
+    XincoCoreGroup g1 = new XincoCoreGroup();
+    g1.setDesignation("AceFkGroup1");
+    g1.setStatusNumber(1);
+    g1.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
+    g1.setXincoCoreAceList(new ArrayList<>());
+    groupCtrl.create(g1);
+
+    XincoCoreGroup g2 = new XincoCoreGroup();
+    g2.setDesignation("AceFkGroup2");
+    g2.setStatusNumber(1);
+    g2.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
+    g2.setXincoCoreAceList(new ArrayList<>());
+    groupCtrl.create(g2);
+
+    // Create ACE linked to D1 and G1
+    XincoCoreAce ace = new XincoCoreAce();
+    ace.setReadPermission(true);
+    ace.setWritePermission(false);
+    ace.setExecutePermission(false);
+    ace.setAdminPermission(false);
+    ace.setXincoCoreData(dataCtrl.findXincoCoreData(d1.getId()));
+    ace.setXincoCoreGroup(groupCtrl.findXincoCoreGroup(g1.getId()));
+    aceCtrl.create(ace);
+    int aceId = ace.getId();
+
+    // Edit ACE changing Data → D2, Group → G2, and adding Node N2
+    // xincoCoreDataOld=D1 != xincoCoreDataNew=D2 → lines 151-154 execute
+    // xincoCoreGroupOld=G1 != xincoCoreGroupNew=G2 → lines 167-173 execute
+    // xincoCoreNodeOld=null, xincoCoreNodeNew=N2 → lines 163-165 execute
+    XincoCoreAce toEdit = aceCtrl.findXincoCoreAce(aceId);
+    toEdit.setWritePermission(true);
+    toEdit.setXincoCoreData(dataCtrl.findXincoCoreData(d2.getId()));
+    toEdit.setXincoCoreNode(nodeCtrl.findXincoCoreNode(n2.getId()));
+    toEdit.setXincoCoreGroup(groupCtrl.findXincoCoreGroup(g2.getId()));
+    aceCtrl.edit(toEdit);
+
+    // Cleanup
+    aceCtrl.destroy(aceId);
+    groupCtrl.destroy(g2.getId());
+    groupCtrl.destroy(g1.getId());
+    nodeCtrl.destroy(n2.getId());
+    dataCtrl.destroy(d2.getId());
+    dataCtrl.destroy(d1.getId());
+  }
+
   // ---- XincoCoreGroupJpaController.create with ACE in list ----
 
   public void testGroupController_createWithAce() throws Exception {
