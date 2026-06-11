@@ -172,4 +172,39 @@ public class XincoDocumentTest extends AbstractXincoDataBaseTestCase {
       // Lucene Field rejects null readers with NPE
     }
   }
+
+  /**
+   * Injects a real indexer class into CONFIG via reflection so fileType > 0 triggers. Covers the
+   * "else if (fileType > 0)" branch (lines ~139-173) where the indexer class is instantiated,
+   * returns null for a missing file, and the method falls through to the generic-file path.
+   */
+  @SuppressWarnings("unchecked")
+  public void testGetXincoDocument_fileType1_specIndexer() throws Exception {
+    com.bluecubs.xinco.core.server.XincoConfigSingletonServer cfg =
+        com.bluecubs.xinco.core.server.XincoConfigSingletonServer.getInstance();
+
+    java.lang.reflect.Field countField =
+        com.bluecubs.xinco.core.server.XincoConfigSingletonServer.class.getDeclaredField(
+            "fileIndexerCount");
+    countField.setAccessible(true);
+    long origCount = (long) countField.get(cfg);
+
+    // Temporarily register XincoIndexGenericFile (always available) for "abc" extension
+    countField.set(cfg, origCount + 1);
+    cfg.getIndexFileTypesClass()
+        .add("com.bluecubs.xinco.core.server.index.filetypes.XincoIndexGenericFile");
+    cfg.getIndexFileTypesExt().add(new String[] {"abc"});
+
+    try {
+      // "file.abc" → fileType=indexerCount (>0) → instantiate GenericFile → null reader, null
+      // string → no field added → method returns normally
+      Document doc = XincoDocument.getXincoDocument(buildFileTypeData(79, "file.abc"), true);
+      assertNotNull(doc);
+    } finally {
+      // Restore CONFIG to original state
+      countField.set(cfg, origCount);
+      cfg.getIndexFileTypesClass().remove(cfg.getIndexFileTypesClass().size() - 1);
+      cfg.getIndexFileTypesExt().remove(cfg.getIndexFileTypesExt().size() - 1);
+    }
+  }
 }
