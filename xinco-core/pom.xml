@@ -193,7 +193,6 @@
                       <counter>INSTRUCTION</counter>
                       <value>COVEREDRATIO</value>
                       <minimum>0.64</minimum>
-                      <!-- Achieved: 64.6% — continue toward 90% goal -->
                     </limit>
                   </limits>
                 </rule>
