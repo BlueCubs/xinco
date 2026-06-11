@@ -69,4 +69,31 @@ public class XincoIdServerTest extends AbstractXincoDataBaseTestCase {
     assertTrue(server.getLastId() == 42);
     assertTrue(server.getId() == 0);
   }
+
+  public void testDeleteFromDB_withJpaCreatedEntity() {
+    try {
+      // Create via JPA controller so we have a real entity with auto ID
+      com.bluecubs.xinco.core.server.persistence.controller.XincoIdJpaController ctrl =
+          new com.bluecubs.xinco.core.server.persistence.controller.XincoIdJpaController(
+              com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory());
+      com.bluecubs.xinco.core.server.persistence.XincoId jpaEntity =
+          new com.bluecubs.xinco.core.server.persistence.XincoId();
+      jpaEntity.setId(9996);
+      jpaEntity.setTablename("test_xinco_id_del");
+      jpaEntity.setLastId(1);
+      ctrl.create(jpaEntity);
+
+      // Load via XincoIdServer and delete via server layer
+      XincoIdServer server = new XincoIdServer(9996);
+      assertNotNull(server);
+      assertEquals("test_xinco_id_del", server.getTablename());
+
+      // deleteFromDB exercises the server-layer delete
+      XincoIdServer.deleteFromDB(server);
+      assertNull(ctrl.findXincoId(9996));
+    } catch (Exception e) {
+      getLogger(getClass().getSimpleName()).log(SEVERE, null, e);
+      fail("Unexpected exception: " + e.getMessage());
+    }
+  }
 }
