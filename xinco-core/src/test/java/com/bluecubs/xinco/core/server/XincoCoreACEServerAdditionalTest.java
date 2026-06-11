@@ -72,4 +72,51 @@ public class XincoCoreACEServerAdditionalTest extends AbstractXincoDataBaseTestC
       fail();
     }
   }
+
+  public void testConstructor_fullArgs() {
+    try {
+      XincoCoreACEServer ace = new XincoCoreACEServer(0, 1, 0, 1, 0, true, false, false, false);
+      assertNotNull(ace);
+      assertEquals(0, ace.getId());
+      assertEquals(1, ace.getXincoCoreUserId());
+      assertTrue(ace.isReadPermission());
+      assertFalse(ace.isWritePermission());
+    } catch (XincoException ex) {
+      getLogger(getClass().getSimpleName()).log(SEVERE, null, ex);
+      fail();
+    }
+  }
+
+  public void testConstructor_byId() {
+    try {
+      XincoCoreACEServer ace = new XincoCoreACEServer(1);
+      assertNotNull(ace);
+      assertTrue(ace.getId() > 0);
+    } catch (XincoException ex) {
+      getLogger(getClass().getSimpleName()).log(SEVERE, null, ex);
+      fail();
+    }
+  }
+
+  public void testToString() {
+    try {
+      XincoCoreACEServer ace = new XincoCoreACEServer(1);
+      assertNotNull(ace.toString());
+    } catch (XincoException ex) {
+      getLogger(getClass().getSimpleName()).log(SEVERE, null, ex);
+      fail();
+    }
+  }
+
+  public void testWrite2DB_createAndDelete() {
+    try {
+      XincoCoreACEServer ace = new XincoCoreACEServer(0, 2, 0, 2, 0, true, true, false, false);
+      int id = ace.write2DB();
+      assertTrue(id > 0);
+      XincoCoreACEServer.removeFromDB(ace, 1);
+    } catch (XincoException ex) {
+      getLogger(getClass().getSimpleName()).log(SEVERE, null, ex);
+      fail();
+    }
+  }
 }

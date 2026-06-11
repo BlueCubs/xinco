@@ -87,6 +87,18 @@ public class XincoCoreServerMiscTest extends AbstractXincoDataBaseTestCase {
     }
   }
 
+  public void testGetMembersOfGroup_adminGroup() {
+    try {
+      // Group 1 (admin) has at least the admin user as a member
+      java.util.List<?> members = XincoCoreGroupServer.getMembersOfGroup(1);
+      assertNotNull(members);
+      assertTrue(members.size() >= 1);
+    } catch (Exception e) {
+      getLogger(getClass().getSimpleName()).log(java.util.logging.Level.SEVERE, null, e);
+      fail();
+    }
+  }
+
   public void testUserServer_newUserLifecycle() {
     try {
       XincoCoreUserServer user =
