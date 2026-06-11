@@ -106,4 +106,66 @@ public class XincoCoreUserServerTest extends AbstractXincoDataBaseTestCase {
       fail();
     }
   }
+
+  public void testIncreaseAttempts_getterSetter() {
+    try {
+      XincoCoreUserServer instance = new XincoCoreUserServer(1);
+      assertFalse(instance.isIncreaseAttempts());
+      instance.setIncreaseAttempts(true);
+      assertTrue(instance.isIncreaseAttempts());
+      instance.setIncreaseAttempts(false);
+      assertFalse(instance.isIncreaseAttempts());
+    } catch (XincoException ex) {
+      getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(SEVERE, null, ex);
+      fail();
+    }
+  }
+
+  public void testValidCredentials_validAdmin() {
+    assertTrue(XincoCoreUserServer.validCredentials("admin", "admin", true));
+  }
+
+  public void testValidCredentials_invalidPassword() {
+    assertFalse(XincoCoreUserServer.validCredentials("admin", "wrongpassword", true));
+  }
+
+  public void testValidCredentials_noEncrypt() {
+    // admin password is stored hashed; passing without encrypt won't match
+    assertFalse(XincoCoreUserServer.validCredentials("admin", "admin"));
+  }
+
+  public void testWriteXincoCoreGroups_emptyGroups() {
+    try {
+      // Create a temporary user
+      XincoCoreUserServer user =
+          new XincoCoreUserServer(
+              0,
+              "testWriteGrpsUser",
+              "pw",
+              "Test",
+              "WriteGrps",
+              "writegrps@example.com",
+              1,
+              0,
+              new java.sql.Timestamp(System.currentTimeMillis()));
+      user.setHashPassword(false);
+      user.setChangerID(1);
+      int id = user.write2DB();
+      assertTrue(id > 0);
+
+      // Reload user; clear group list; then write with writeGroups=true
+      XincoCoreUserServer reload = new XincoCoreUserServer(id);
+      XincoCoreGroupServer.getXincoCoreGroups().clear();
+      reload.setWriteGroups(true);
+      reload.setChangerID(1);
+      reload.write2DB();
+
+      // writeXincoCoreGroups was invoked — user still exists
+      assertNotNull(new XincoCoreUserServer(id));
+      // (no DB delete — H2 in-memory; data gone after the test run)
+    } catch (XincoException ex) {
+      getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(SEVERE, null, ex);
+      fail();
+    }
+  }
 }

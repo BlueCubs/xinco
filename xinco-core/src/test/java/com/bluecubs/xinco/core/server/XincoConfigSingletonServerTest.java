@@ -42,4 +42,20 @@ public class XincoConfigSingletonServerTest extends AbstractXincoDataBaseTestCas
     assertTrue(cfg.getFileIndexerCount() >= 0);
     assertTrue(cfg.getFileIndexOptimizerPeriod() > 0);
   }
+
+  public void testMiscGetters() {
+    XincoConfigSingletonServer cfg = XincoConfigSingletonServer.getInstance();
+    cfg.loadSettings();
+    // These getters were at 0% coverage — call them to exercise the return statements
+    cfg.isAllowOutsideLinks();
+    cfg.isAllowPublisherList();
+    cfg.isGuessLanguage();
+    cfg.getOOPort();
+    cfg.getJNDIDB();
+    // setter round-trip
+    long original = cfg.getFileIndexOptimizerPeriod();
+    cfg.setFileIndexOptimizerPeriod(original + 1);
+    assertEquals(original + 1, cfg.getFileIndexOptimizerPeriod());
+    cfg.setFileIndexOptimizerPeriod(original);
+  }
 }

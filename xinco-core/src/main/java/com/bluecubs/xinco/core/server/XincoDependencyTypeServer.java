@@ -43,8 +43,8 @@ public final class XincoDependencyTypeServer extends XincoDependencyType {
         new XincoDependencyTypeJpaController(getEntityManagerFactory())
             .findXincoDependencyType(behaviorId);
     if (dependency != null) {
+      setId(dependency.getId());
       setDescription(dependency.getDescription());
-      setDesignation(dependency.getDesignation());
       setDesignation(dependency.getDesignation());
     } else {
       throw new XincoException();
