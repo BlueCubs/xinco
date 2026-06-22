@@ -405,6 +405,7 @@ public class ControllerDataBranchesTest extends AbstractXincoDataBaseTestCase {
     }
 
     depCtrl.destroy(depPK);
+    getEntityManagerFactory().getCache().evictAll();
     dataCtrl.destroy(dChild.getId());
     dataCtrl.destroy(dParent.getId());
   }
@@ -438,6 +439,7 @@ public class ControllerDataBranchesTest extends AbstractXincoDataBaseTestCase {
     }
 
     depCtrl.destroy(depPK);
+    getEntityManagerFactory().getCache().evictAll();
     dataCtrl.destroy(dParent.getId());
     dataCtrl.destroy(dChild.getId());
   }
