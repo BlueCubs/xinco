@@ -24,6 +24,10 @@ public class ExplorerView extends HorizontalLayout {
   private final Grid<XincoCoreDataServer> dataGrid = new Grid<>(XincoCoreDataServer.class, false);
   private final PropertyGrid propertyGrid = new PropertyGrid();
 
+  public ExplorerView() {
+    this(new UserSession());
+  }
+
   public ExplorerView(UserSession session) {
     setSizeFull();
     setPadding(false);

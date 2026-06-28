@@ -16,6 +16,11 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @AnonymousAllowed
 public class MainLayout extends AppLayout {
 
+  // No-arg constructor required by Karibu-Testing (no Spring DI in mock environment)
+  public MainLayout() {
+    this(new UserSession());
+  }
+
   public MainLayout(UserSession session) {
     DrawerToggle toggle = new DrawerToggle();
     H1 title = new H1("Xinco DMS");

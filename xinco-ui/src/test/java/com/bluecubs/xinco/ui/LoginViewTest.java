@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -27,27 +28,26 @@ class LoginViewTest {
   @BeforeEach
   void setup() {
     MockVaadin.setup(routes);
+    UI.getCurrent().navigate(LoginView.class);
   }
 
   @AfterEach
   void tearDown() {
-    MockVaadin.teardown();
+    MockVaadin.tearDown();
   }
 
   @Test
   void loginView_renders() {
-    MockVaadin.navigate(LoginView.class);
-    assertNotNull(_get(TextField.class, spec -> spec.withCaption("Username")));
-    assertNotNull(_get(PasswordField.class, spec -> spec.withCaption("Password")));
-    assertNotNull(_get(Button.class, spec -> spec.withCaption("Login")));
+    assertNotNull(_get(TextField.class, spec -> spec.withLabel("Username")));
+    assertNotNull(_get(PasswordField.class, spec -> spec.withLabel("Password")));
+    assertNotNull(_get(Button.class, spec -> spec.withText("Login")));
   }
 
   @Test
   void loginView_emptyCredentials_showsNotification() {
-    MockVaadin.navigate(LoginView.class);
-    _setValue(_get(TextField.class, spec -> spec.withCaption("Username")), "");
-    _setValue(_get(PasswordField.class, spec -> spec.withCaption("Password")), "");
-    _click(_get(Button.class, spec -> spec.withCaption("Login")));
-    // No exception thrown — invalid credentials show notification, not crash
+    _setValue(_get(TextField.class, spec -> spec.withLabel("Username")), "");
+    _setValue(_get(PasswordField.class, spec -> spec.withLabel("Password")), "");
+    _click(_get(Button.class, spec -> spec.withText("Login")));
+    // Invalid credentials produce a notification, not a crash
   }
 }
