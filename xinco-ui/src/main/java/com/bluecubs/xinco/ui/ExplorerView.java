@@ -90,7 +90,7 @@ public class ExplorerView extends HorizontalLayout {
       List<XincoCoreNodeServer> roots = new ArrayList<>();
       roots.add(root);
       nodeTree.setItems(roots, this::getChildNodes);
-    } catch (Exception e) {
+    } catch (Throwable e) {
       Notification.show("Failed to load nodes: " + e.getMessage());
     }
   }
