@@ -23,6 +23,34 @@ public class XincoCoreDataHasDependencyServerTest extends AbstractXincoDataBaseT
     super(testName);
   }
 
+  /** Tests the int-based constructor that loads from DB. */
+  @Test
+  public void testConstructor_loadFromDB() {
+    try {
+      // First create a dependency so it can be loaded
+      int parentId = 1, childId = 2, depTypeId = 3;
+      XincoCoreDataHasDependencyServer created =
+          new XincoCoreDataHasDependencyServer(
+              new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(parentId),
+              new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(childId),
+              new XincoDependencyTypeJpaController(getEntityManagerFactory())
+                  .findXincoDependencyType(depTypeId));
+      created.write2DB();
+
+      // Now load it via the int-based constructor
+      XincoCoreDataHasDependencyServer loaded =
+          new XincoCoreDataHasDependencyServer(parentId, childId, depTypeId);
+      assertNotNull(loaded);
+      assertNotNull(loaded.getXincoCoreDataHasDependencyPK());
+
+      // Clean up
+      deleteFromDB(parentId, childId, depTypeId);
+    } catch (XincoException ex) {
+      getLogger(XincoCoreDataHasDependencyServerTest.class.getName()).log(SEVERE, null, ex);
+      fail();
+    }
+  }
+
   /** Test of write2DB method, of class XincoCoreDataHasDependencyServer. */
   @Test
   public void testWriteAndDelete() {

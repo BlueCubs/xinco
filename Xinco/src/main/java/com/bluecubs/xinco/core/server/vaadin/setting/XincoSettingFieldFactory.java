@@ -31,8 +31,15 @@ import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 
 import com.vaadin.ui.DefaultFieldFactory;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Field factory for Xinco setting form fields.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoSettingFieldFactory extends DefaultFieldFactory {
+
+  /** Default constructor. */
+  public XincoSettingFieldFactory() {}
 
   /**
    * If name follows method naming conventions, convert the name to spaced upper case text. For

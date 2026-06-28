@@ -44,7 +44,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import org.vaadin.lucenecontainer.LuceneContainer;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Simplified search input component for the Xinco UI.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public final class SimplifiedSearchComponent extends CustomComponent {
 
   private static final long serialVersionUID = 7956646304284770550L;
@@ -55,6 +59,7 @@ public final class SimplifiedSearchComponent extends CustomComponent {
   private Window results;
   private final com.vaadin.ui.Panel panel;
 
+  /** Default constructor. */
   public SimplifiedSearchComponent() {
     goToSelection =
         new Button(getInstance().getResource().getString("window.search.gotoselection"));

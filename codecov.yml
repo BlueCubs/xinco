@@ -1,6 +1,7 @@
 codecov:
   notify:
     require_ci_to_pass: yes
+  token: ${{ secrets.CODECOV_TOKEN }}
 
 coverage:
   precision: 2
@@ -11,14 +12,6 @@ coverage:
     project: yes
     patch: yes
     changes: no
-
-parsers:
-  gcov:
-    branch_detection:
-      conditional: yes
-      loop: yes
-      method: no
-      macro: no
 
 comment:
   layout: "header, diff"

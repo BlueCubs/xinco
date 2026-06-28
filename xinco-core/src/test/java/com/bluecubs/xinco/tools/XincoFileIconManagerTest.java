@@ -1,5 +1,7 @@
 package com.bluecubs.xinco.tools;
 
+import static org.junit.Assert.assertNull;
+
 import java.io.IOException;
 import org.junit.*;
 
@@ -20,30 +22,24 @@ public class XincoFileIconManagerTest {
   @After
   public void tearDown() {}
 
-  /** Test of getIcon method, of class XincoFileIconManager. */
+  /** Test null extension — returns null without filesystem access. */
   @Test
-  public void testGetIcon() throws IOException {
-    //        try {
-    //            System.out.println("getIcon");
-    //            String extension = ".txt";
-    //            XincoFileIconManager instance = new XincoFileIconManager();
-    //            System.out.println("Testing with extension: " + extension);
-    //            Icon result = instance.getIcon(extension);
-    //            assertTrue(result != null);
-    //            extension = null;
-    //            System.out.println("Testing with extension: " + extension);
-    //            result = instance.getIcon(extension);
-    //            assertTrue(result == null);
-    //            extension = "txt";
-    //            System.out.println("Testing with extension: " + extension);
-    //            result = instance.getIcon(extension);
-    //            assertTrue(result != null);
-    //            extension = "tx";
-    //            System.out.println("Testing with extension: " + extension);
-    //            result = instance.getIcon(extension);
-    //            assertTrue(result == null);
-    //        } catch (IOException ex) {
-    //            //Not supported. For some reason it fails on the hosted virtual server for Hudson.
-    //        }
+  public void testGetIcon_null() throws IOException {
+    XincoFileIconManager instance = new XincoFileIconManager();
+    assertNull(instance.getIcon(null));
+  }
+
+  /** Test extension shorter than 3 chars — returns null without filesystem access. */
+  @Test
+  public void testGetIcon_shortExtension() throws IOException {
+    XincoFileIconManager instance = new XincoFileIconManager();
+    assertNull(instance.getIcon("tx"));
+  }
+
+  /** Test extension with dot-only prefix shorter than 3 chars after stripping dot. */
+  @Test
+  public void testGetIcon_dotShortExtension() throws IOException {
+    XincoFileIconManager instance = new XincoFileIconManager();
+    assertNull(instance.getIcon(".tx"));
   }
 }

@@ -11,8 +11,15 @@ import static java.util.logging.Logger.getLogger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Action listener that handles Xinco activity menu actions.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoActivityActionListener implements ActionListener {
+
+  /** Default constructor. */
+  public XincoActivityActionListener() {}
 
   @Override
   public void actionPerformed(ActionEvent e) {

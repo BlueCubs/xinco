@@ -4,8 +4,14 @@ import com.bluecubs.xinco.core.server.vaadin.wizard.XincoWizard;
 import com.vaadin.ui.Component;
 
 @SuppressWarnings("serial")
+/** Base class for wizard lifecycle events. */
 public class AbstractWizardEvent extends Component.Event {
 
+  /**
+   * Creates a new event for the given wizard.
+   *
+   * @param source the wizard that generated this event
+   */
   protected AbstractWizardEvent(XincoWizard source) {
     super(source);
   }

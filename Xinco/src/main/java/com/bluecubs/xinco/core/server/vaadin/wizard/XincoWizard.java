@@ -48,6 +48,11 @@ public final class XincoWizard extends CustomComponent {
   private int lastCompleted, progress;
   private ResourceBundle xerb;
 
+  /**
+   * Creates a wizard using the given locale.
+   *
+   * @param locale the locale for the wizard UI
+   */
   public XincoWizard(Locale locale) {
     setLocale(locale);
     init();
@@ -248,10 +253,21 @@ public final class XincoWizard extends CustomComponent {
     }
   }
 
+  /**
+   * Adds a step to the wizard.
+   *
+   * @param step the step to add
+   */
   public void addStep(WizardStep step) {
     addStep(step, "wizard-step-" + (steps.size() + 1));
   }
 
+  /**
+   * Adds a step with the given identifier.
+   *
+   * @param step the step to add
+   * @param id the step identifier
+   */
   public void addStep(WizardStep step, String id) {
     steps.add(step);
     idMap.put(id, step);
@@ -272,18 +288,39 @@ public final class XincoWizard extends CustomComponent {
     super.paintContent(target);
   }
 
+  /**
+   * Registers a wizard progress listener.
+   *
+   * @param listener the listener to register
+   */
   public void addListener(WizardProgressListener listener) {
     listeners.add(listener);
   }
 
+  /**
+   * Removes a previously registered progress listener.
+   *
+   * @param listener the listener to remove
+   */
   public void removeListener(WizardProgressListener listener) {
     listeners.remove(listener);
   }
 
+  /**
+   * Returns all registered wizard steps.
+   *
+   * @return list of all registered steps
+   */
   public List<WizardStep> getSteps() {
     return unmodifiableList(steps);
   }
 
+  /**
+   * Removes a step from the wizard.
+   *
+   * @param step the step to remove
+   * @return true if the step was removed
+   */
   public boolean removeStep(WizardStep step) {
     boolean remove = steps.remove(step);
     if (remove) {
@@ -294,10 +331,22 @@ public final class XincoWizard extends CustomComponent {
     return remove;
   }
 
+  /**
+   * Returns true if the given step has been completed.
+   *
+   * @param step the step to check
+   * @return true if the step is completed
+   */
   public boolean isCompleted(WizardStep step) {
     return steps.indexOf(step) < steps.indexOf(currentStep);
   }
 
+  /**
+   * Returns true if the given step is currently active.
+   *
+   * @param step the step to check
+   * @return true if the step is active
+   */
   public boolean isActive(WizardStep step) {
     return (step == currentStep);
   }
@@ -327,18 +376,38 @@ public final class XincoWizard extends CustomComponent {
     return false;
   }
 
+  /**
+   * Returns the Next navigation button.
+   *
+   * @return the Next button
+   */
   public Button getNextButton() {
     return nextButton;
   }
 
+  /**
+   * Returns the Back navigation button.
+   *
+   * @return the Back button
+   */
   public Button getBackButton() {
     return backButton;
   }
 
+  /**
+   * Returns the Finish button.
+   *
+   * @return the Finish button
+   */
   public Button getFinishButton() {
     return finishButton;
   }
 
+  /**
+   * Returns the Cancel button.
+   *
+   * @return the Cancel button
+   */
   public Button getCancelButton() {
     return cancelButton;
   }
@@ -401,6 +470,11 @@ public final class XincoWizard extends CustomComponent {
     }
   }
 
+  /**
+   * Activates the step with the given ID.
+   *
+   * @param id the identifier of the step to activate
+   */
   public void activateStep(String id) {
     WizardStep step = idMap.get(id);
     if (step != null) {
@@ -416,6 +490,12 @@ public final class XincoWizard extends CustomComponent {
     }
   }
 
+  /**
+   * Returns the identifier for the given step.
+   *
+   * @param step the step
+   * @return the step's identifier
+   */
   public String getId(WizardStep step) {
     for (Map.Entry<String, WizardStep> entry : idMap.entrySet()) {
       if (entry.getValue().equals(step)) {
@@ -425,12 +505,20 @@ public final class XincoWizard extends CustomComponent {
     return null;
   }
 
-  /** @return the currentIndex */
+  /**
+   * Returns the index of the last completed step.
+   *
+   * @return index of the last completed step
+   */
   public int getLastCompleted() {
     return lastCompleted;
   }
 
-  /** @return the progress */
+  /**
+   * Returns the current progress value.
+   *
+   * @return current progress value
+   */
   public int getProgress() {
     return progress;
   }

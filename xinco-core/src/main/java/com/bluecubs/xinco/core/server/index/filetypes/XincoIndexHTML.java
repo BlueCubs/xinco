@@ -54,6 +54,7 @@ public class XincoIndexHTML implements XincoIndexFileType {
       fis = new FileInputStream(f);
     } catch (FileNotFoundException ex) {
       getLogger(XincoIndexHTML.class.getName()).log(SEVERE, null, ex);
+      return null;
     }
     Reader reader;
     try {

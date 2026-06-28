@@ -100,7 +100,7 @@ public class XincoCoreDataHasDependencyJpaController implements Serializable {
         xincoCoreData = em.merge(xincoCoreData);
       }
       if (xincoCoreData1 != null) {
-        xincoCoreData1.getXincoCoreDataHasDependencyList().add(xincoCoreDataHasDependency);
+        xincoCoreData1.getXincoCoreDataHasDependencyList1().add(xincoCoreDataHasDependency);
         xincoCoreData1 = em.merge(xincoCoreData1);
       }
       em.getTransaction().commit();

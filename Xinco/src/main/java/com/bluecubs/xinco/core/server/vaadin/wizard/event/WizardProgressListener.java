@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.core.server.vaadin.wizard.event;
 
+/** Listener for wizard progress events. */
 public interface WizardProgressListener {
 
   /**

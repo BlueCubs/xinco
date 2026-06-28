@@ -26,7 +26,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>eclipselink</artifactId>
-      <version>2.7.15</version>
+      <version>2.7.16</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>2.2.224</version>
+      <version>2.4.240</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
@@ -46,12 +46,12 @@
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
-      <version>1.4.7</version>
+      <version>1.5.0-b01</version>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>3.4.0</version>
+      <version>3.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
-      <version>2.9.2</version>
+      <version>2.9.4</version>
     </dependency>
     <dependency>
       <groupId>org.jodconverter</groupId>
@@ -71,17 +71,17 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>10.15.2</version>
+      <version>10.22.0</version>
     </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-mysql</artifactId>
-      <version>10.15.2</version>
+      <version>10.22.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.17.0</version>
+      <version>3.20.0</version>
     </dependency>
     <dependency>
       <groupId>org.jodconverter</groupId>
@@ -92,7 +92,7 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-tools</artifactId>
-      <version>4.0.2</version>
+      <version>4.0.5</version>
       <scope>compile</scope>
     </dependency>
     <!-- xml.ws module -->
@@ -109,8 +109,37 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.23.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.27.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.14.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>5.14.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>6.2.19</version>
     </dependency>
   </dependencies>
   <build>
@@ -142,6 +171,48 @@
         <artifactId>maven-surefire-plugin</artifactId>
       </plugin>
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jacoco-check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <!-- CXF-generated WSDL stubs and LibreOffice-dependent rendering excluded -->
+              <!-- XincoDemoResetThread: demo-only utility -->
+              <!-- Environment-specific classes: JNDI, filesystem, background threads -->
+              <excludes>
+                <exclude>com/bluecubs/xinco/server/service/**</exclude>
+                <exclude>com/bluecubs/xinco/core/server/rendering/**</exclude>
+                <exclude>com/bluecubs/xinco/core/server/XincoDemoResetThread.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/XincoConfigSingletonServer.class</exclude>
+                <exclude>com/bluecubs/xinco/archive/XincoArchiveThread.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/index/XincoIndexer.class</exclude>
+                <exclude>com/bluecubs/xinco/archive/XincoArchiver.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/index/XincoIndexOptimizeThread.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/JPAEclipseLinkSessionCustomizer.class</exclude>
+                <exclude>com/bluecubs/xinco/tools/XincoFileIconManager.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/service/XincoFileService.class</exclude>
+              </excludes>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.900</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <executions>
@@ -156,6 +227,6 @@
     </plugins>
   </build>
   <properties>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>25</maven.compiler.release>
   </properties>
 </project>

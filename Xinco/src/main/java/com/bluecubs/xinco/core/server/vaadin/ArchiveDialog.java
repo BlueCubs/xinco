@@ -48,7 +48,11 @@ import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Dialog for archiving a data item.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 final class ArchiveDialog extends CustomComponent {
 
   private static final long serialVersionUID = -7968557953363984932L;

@@ -36,7 +36,11 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * Dialog for managing data item properties.
+ *
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 class DataDialog extends CustomComponent {
 
   private static final long serialVersionUID = -4284117659154164640L;
