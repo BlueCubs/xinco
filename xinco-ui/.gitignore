@@ -1,0 +1,11 @@
+# Vaadin generated frontend resources (produced by vaadin-maven-plugin prepare-frontend)
+src/main/frontend/generated/
+src/main/frontend/index.html
+
+# Node / npm (if running frontend dev server locally)
+node/
+node_modules/
+package-lock.json
+
+# Spring Boot fat jar
+target/
