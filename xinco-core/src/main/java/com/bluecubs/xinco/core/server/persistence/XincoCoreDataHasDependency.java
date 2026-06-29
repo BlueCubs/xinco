@@ -27,9 +27,9 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity

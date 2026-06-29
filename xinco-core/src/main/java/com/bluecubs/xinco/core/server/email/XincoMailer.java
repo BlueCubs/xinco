@@ -13,24 +13,24 @@ Author : Sudhir Ancha
 */
 package com.bluecubs.xinco.core.server.email;
 
+import static jakarta.mail.Message.RecipientType.TO;
+import static jakarta.mail.Session.getDefaultInstance;
+import static jakarta.mail.Transport.send;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
-import static javax.mail.Message.RecipientType.TO;
-import static javax.mail.Session.getDefaultInstance;
-import static javax.mail.Transport.send;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.util.List;
 import java.util.Properties;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 public class XincoMailer {
 
@@ -81,7 +81,7 @@ public class XincoMailer {
   }
 
   /** SimpleAuthenticator is used to do simple authentication when the SMTP server requires it. */
-  private static class SMTPAuthenticator extends javax.mail.Authenticator {
+  private static class SMTPAuthenticator extends jakarta.mail.Authenticator {
 
     @Override
     public PasswordAuthentication getPasswordAuthentication() {

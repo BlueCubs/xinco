@@ -41,12 +41,12 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.3.7</version>
+      <version>4.0.3</version>
     </dependency>
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.5.0-b01</version>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>2.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
@@ -95,12 +95,6 @@
       <version>4.0.5</version>
       <scope>compile</scope>
     </dependency>
-    <!-- xml.ws module -->
-    <dependency>
-      <groupId>javax.xml.ws</groupId>
-      <artifactId>jaxws-api</artifactId>
-      <version>2.3.1</version>
-    </dependency>
     <!-- Testing -->
     <dependency>
       <groupId>junit</groupId>
@@ -147,7 +141,7 @@
       <plugin>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-codegen-plugin</artifactId>
-        <version>3.6.3</version>
+        <version>4.0.0</version>
         <executions>
           <execution>
             <id>generate-sources</id>

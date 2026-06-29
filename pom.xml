@@ -155,19 +155,7 @@
           <artifactId>maven-jetty-plugin</artifactId>
           <version>6.1.26</version>
         </plugin>
-        <!-- Plugin to generate JAXB classes and webservice interface -->
-        <plugin>
-          <groupId>org.jvnet.jax-ws-commons</groupId>
-          <artifactId>jaxws-maven-plugin</artifactId>
-          <version>2.3</version>
-          <configuration>
-            <!-- Needed with JAXP 1.5 -->
-            <vmArgs>
-              <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
-            </vmArgs>
-          </configuration>
-        </plugin>
-        <plugin>
+<plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
           <version>3.7.1</version>
