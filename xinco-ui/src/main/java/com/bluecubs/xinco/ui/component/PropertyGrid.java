@@ -1,7 +1,11 @@
 package com.bluecubs.xinco.ui.component;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.server.service.XincoCoreLog;
+import com.bluecubs.xinco.server.service.XincoVersion;
 import com.vaadin.flow.component.grid.Grid;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PropertyGrid extends Grid<PropertyGrid.Row> {
 
@@ -14,11 +18,30 @@ public class PropertyGrid extends Grid<PropertyGrid.Row> {
   }
 
   public void setData(XincoCoreDataServer data) {
-    setItems(
-        new Row("ID", String.valueOf(data.getId())),
-        new Row("Name", data.getDesignation()),
-        new Row("Language", data.getXincoCoreLanguage().getSign()),
-        new Row("Status", String.valueOf(data.getStatusNumber())),
-        new Row("Type", data.getXincoCoreDataType().getDesignation()));
+    List<Row> rows = new ArrayList<>();
+    rows.add(new Row("ID", String.valueOf(data.getId())));
+    rows.add(new Row("Name", data.getDesignation()));
+    rows.add(new Row("Language", data.getXincoCoreLanguage().getSign()));
+    rows.add(new Row("Type", data.getXincoCoreDataType().getDesignation()));
+    rows.add(new Row("Status", String.valueOf(data.getStatusNumber())));
+
+    List<Object> logs = data.getXincoCoreLogs();
+    if (logs != null) {
+      for (Object obj : logs) {
+        XincoCoreLog log = (XincoCoreLog) obj;
+        XincoVersion v = log.getVersion();
+        String version = v.getVersionHigh() + "." + v.getVersionMid() + "." + v.getVersionLow();
+        if (v.getVersionPostfix() != null && !v.getVersionPostfix().isBlank()) {
+          version += "-" + v.getVersionPostfix();
+        }
+        String desc =
+            log.getOpDescription() != null && !log.getOpDescription().isBlank()
+                ? log.getOpDescription()
+                : "(no description)";
+        rows.add(new Row("v" + version, desc));
+      }
+    }
+
+    setItems(rows);
   }
 }
