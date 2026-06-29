@@ -40,6 +40,7 @@ public class MainLayout extends AppLayout {
           .getStyle()
           .set("font-size", "var(--lumo-font-size-s)")
           .set("padding", "var(--lumo-space-s)");
+      nav.addItem(new SideNavItem("Admin", AdminView.class, VaadinIcon.COG.create()));
       nav.addItem(new SideNavItem("Logout", LoginView.class, VaadinIcon.SIGN_OUT.create()));
       addToDrawer(nav, userLabel);
     } else {
