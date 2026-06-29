@@ -1,16 +1,10 @@
-FROM tomcat:10.1-jdk21
+FROM eclipse-temurin:25-jre-noble
 
-# Remove default webapps
-RUN rm -rf /usr/local/tomcat/webapps/*
+WORKDIR /app
 
-# Copy the WAR file to the webapps directory
-COPY Xinco/target/Xinco-*.war /usr/local/tomcat/webapps/xinco.war
+# Requires the project to be built first: mvn -B install -DskipTests
+COPY xinco-ui/target/xinco-ui-*.jar app.jar
 
-# Expose the default Tomcat port
-EXPOSE 8080
+EXPOSE 8081
 
-# Set headless mode for AWT
-ENV CATALINA_OPTS="-Djava.awt.headless=true"
-
-# Start Tomcat
-CMD ["catalina.sh", "run"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

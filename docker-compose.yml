@@ -4,15 +4,18 @@ services:
   xinco:
     build: .
     ports:
-      - "8081:8080"
+      - "8081:8081"
     environment:
-      - MYSQL_HOST=db
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=xinco
-      - MYSQL_USER=xinco
-      - MYSQL_PASSWORD=xinco
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/xinco?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=xinco
+      - SPRING_DATASOURCE_PASSWORD=xinco
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQL8Dialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: on-failure
     networks:
       - xinco-net
 
@@ -27,6 +30,11 @@ services:
       - MYSQL_PASSWORD=xinco
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "xinco", "-pxinco"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - xinco-net
 
