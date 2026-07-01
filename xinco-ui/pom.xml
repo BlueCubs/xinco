@@ -28,6 +28,11 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- Core business logic -->
     <dependency>
       <groupId>com.bluecubs.xinco</groupId>
