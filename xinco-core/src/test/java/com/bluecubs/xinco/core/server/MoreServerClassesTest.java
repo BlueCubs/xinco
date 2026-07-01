@@ -31,7 +31,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   // =========================================================================
 
   /** Covers constructor(int id) with userId+nodeId non-null; groupId+dataId null. */
-  public void testAce_loadById_userNode() throws Exception {
+  public void testAce_loadById_userNode() {
     // Seed ACE id=1: userId=1, nodeId=1, all perms
     XincoCoreACEServer ace = new XincoCoreACEServer(1);
     assertEquals(1, ace.getId());
@@ -40,7 +40,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int id) with groupId+dataId non-null; userId+nodeId null. */
-  public void testAce_loadById_groupData() throws Exception {
+  public void testAce_loadById_groupData() {
     // Seed ACE id=12: groupId=1, dataId=1
     XincoCoreACEServer ace = new XincoCoreACEServer(12);
     assertEquals(12, ace.getId());
@@ -70,7 +70,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int, int, int, int, int, boolean×4) — direct field assignment. */
-  public void testAce_constructorFields() throws Exception {
+  public void testAce_constructorFields() {
     XincoCoreACEServer ace = new XincoCoreACEServer(0, 1, 0, 1, 0, true, false, false, true);
     assertEquals(0, ace.getId());
     assertTrue(ace.isReadPermission());
@@ -79,7 +79,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers write2DB() create path (id==0) and removeFromDB(). */
-  public void testAce_write2DB_create() throws Exception {
+  public void testAce_write2DB_create() {
     XincoCoreACEServer ace = new XincoCoreACEServer(0, 1, 0, 1, 0, true, false, false, false);
     int newId = ace.write2DB();
     assertTrue("New ACE id must be positive", newId > 0);
@@ -87,7 +87,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers write2DB() update path (id > 0 — namedQuery + edit). */
-  public void testAce_write2DB_update() throws Exception {
+  public void testAce_write2DB_update() {
     // Create one ACE first so we have a known id > 0
     XincoCoreACEServer aceCreate = new XincoCoreACEServer(0, 1, 0, 1, 0, true, false, false, false);
     int newId = aceCreate.write2DB();
@@ -108,7 +108,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers checkAccess() user-match path — userId == attrU.getId(). */
-  public void testAce_checkAccess_userMatch() throws Exception {
+  public void testAce_checkAccess_userMatch() {
     // ACE: userId=1, all perms true
     XincoCoreACEServer ace = new XincoCoreACEServer(0, 1, 0, 0, 0, true, true, true, true);
     com.bluecubs.xinco.server.service.XincoCoreUser user =
@@ -120,7 +120,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers checkAccess() group-match path — inner for loop + group-id match. */
-  public void testAce_checkAccess_groupMatch() throws Exception {
+  public void testAce_checkAccess_groupMatch() {
     // ACE: userId=99 (no user match), groupId=1, write=true
     XincoCoreACEServer ace = new XincoCoreACEServer(0, 99, 1, 0, 0, false, true, false, false);
     com.bluecubs.xinco.server.service.XincoCoreUser user =
@@ -132,7 +132,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers checkAccess() public-group path — groupId==3, null user. */
-  public void testAce_checkAccess_publicGroup() throws Exception {
+  public void testAce_checkAccess_publicGroup() {
     // ACE: groupId=3 (public), execute=true
     XincoCoreACEServer ace = new XincoCoreACEServer(0, 0, 3, 0, 0, false, false, true, false);
     XincoCoreACE result = XincoCoreACEServer.checkAccess(null, Arrays.asList(ace));
@@ -140,7 +140,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers checkAccess() no-match path — if(match_ace)==false. */
-  public void testAce_checkAccess_noMatch() throws Exception {
+  public void testAce_checkAccess_noMatch() {
     // ACE: userId=99, groupId=99 — neither matches user 1 with empty groups
     XincoCoreACEServer ace = new XincoCoreACEServer(0, 99, 99, 0, 0, true, true, true, true);
     com.bluecubs.xinco.server.service.XincoCoreUser user =
@@ -155,7 +155,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   // =========================================================================
 
   /** Covers constructor(int id) happy path — loads node, fills data, nodes, ACL. */
-  public void testNode_loadById() throws Exception {
+  public void testNode_loadById() {
     XincoCoreNodeServer ns = new XincoCoreNodeServer(1);
     assertEquals(1, ns.getId());
     assertNotNull(ns.getXincoCoreLanguage());
@@ -172,7 +172,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int, int, int, String, int) — direct field assignment. */
-  public void testNode_constructorFields() throws Exception {
+  public void testNode_constructorFields() {
     XincoCoreNodeServer ns = new XincoCoreNodeServer(0, 1, 1, "test-node-fields", 1);
     assertEquals(0, ns.getId());
     assertEquals("test-node-fields", ns.getDesignation());
@@ -180,13 +180,13 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers write2DB() update path (id > 0). */
-  public void testNode_write2DB_update() throws Exception {
+  public void testNode_write2DB_update() {
     XincoCoreNodeServer ns = new XincoCoreNodeServer(1);
     assertEquals(1, ns.write2DB());
   }
 
   /** Covers write2DB() create path (id==0) and deleteFromDB(delete_this=true). */
-  public void testNode_write2DB_createDelete() throws Exception {
+  public void testNode_write2DB_createDelete() {
     XincoCoreNodeServer ns = new XincoCoreNodeServer(0, 1, 1, "test.node.srv.create", 1);
     int newId = ns.write2DB();
     assertTrue("New node id must be positive", newId > 0);
@@ -196,14 +196,14 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers fillXincoCoreData() — node 1 has seed data items 1 and 2. */
-  public void testNode_fillXincoCoreData() throws Exception {
+  public void testNode_fillXincoCoreData() {
     XincoCoreNodeServer ns = new XincoCoreNodeServer(1);
     ns.fillXincoCoreData();
     assertFalse("Node 1 must have at least one data item", ns.getXincoCoreData().isEmpty());
   }
 
   /** Covers fillXincoCoreNodes() — node 1 has child nodes 2, 3, 4. */
-  public void testNode_fillXincoCoreNodes() throws Exception {
+  public void testNode_fillXincoCoreNodes() {
     XincoCoreNodeServer ns = new XincoCoreNodeServer(1);
     ns.fillXincoCoreNodes();
     assertFalse("Node 1 must have child nodes", ns.getXincoCoreNodes().isEmpty());
@@ -231,7 +231,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int, int, String) happy path — behavior found. */
-  public void testDepType_constructorIdBehavior_found() throws Exception {
+  public void testDepType_constructorIdBehavior_found() {
     XincoDependencyTypeServer dts = new XincoDependencyTypeServer(1, 1, "test-deptype-srv");
     assertEquals(1, (int) dts.getId());
     assertNotNull(dts.getXincoDependencyBehavior());
@@ -248,7 +248,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int behaviorId) happy path. */
-  public void testDepType_loadById_found() throws Exception {
+  public void testDepType_loadById_found() {
     XincoDependencyTypeServer dts = new XincoDependencyTypeServer(1);
     assertEquals(1, (int) dts.getId());
   }
@@ -264,7 +264,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers write2DB() create path and deleteFromDB() success path (returns 0). */
-  public void testDepType_write2DB_create() throws Exception {
+  public void testDepType_write2DB_create() {
     XincoDependencyTypeServer dts = new XincoDependencyTypeServer(1, 1, "test-deptype-srv-create");
     dts.setId(0);
     int newId = dts.write2DB();
@@ -273,7 +273,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers write2DB() update path (id > 0). */
-  public void testDepType_write2DB_update() throws Exception {
+  public void testDepType_write2DB_update() {
     XincoDependencyTypeServer dts = new XincoDependencyTypeServer(1, 1, "test-deptype-srv-update");
     assertEquals(1, dts.write2DB());
   }
@@ -311,7 +311,7 @@ public class MoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers deleteFromDB() NonexistentEntityException catch → returns -1. */
-  public void testDepType_deleteFromDB_nonexistent() throws Exception {
+  public void testDepType_deleteFromDB_nonexistent() {
     assertEquals(-1, XincoDependencyTypeServer.deleteFromDB(99999));
   }
 

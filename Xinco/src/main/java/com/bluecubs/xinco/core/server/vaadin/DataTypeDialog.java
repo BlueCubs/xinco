@@ -35,6 +35,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 import java.util.Iterator;
+import lombok.Getter;
 
 /**
  * Dialog for managing data type definitions.
@@ -43,7 +44,7 @@ import java.util.Iterator;
  */
 class DataTypeDialog extends CustomComponent {
 
-  private final Select types;
+  @Getter private final Select types;
 
   DataTypeDialog() {
     types = new Select(getInstance().getResource().getString("window.datatype.datatype") + ":");
@@ -67,11 +68,5 @@ class DataTypeDialog extends CustomComponent {
     setSizeUndefined();
     // The composition root MUST be set
     setCompositionRoot(panel);
-  }
-
-  /** @return the types */
-  /** @return the types */
-  public Select getTypes() {
-    return types;
   }
 }

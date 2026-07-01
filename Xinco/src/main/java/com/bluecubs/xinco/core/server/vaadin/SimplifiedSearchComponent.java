@@ -147,7 +147,7 @@ public final class SimplifiedSearchComponent extends CustomComponent {
                 // If the last in the list is the root (1) we can access it!
                 haveAccess = parents.getLast() == 1;
               }
-              if (!(haveAccess && getInstance().expandTreeNodes(parents))) {
+              if (!haveAccess || !getInstance().expandTreeNodes(parents)) {
                 // Able to expand nodes
                 getApplication()
                     .getMainWindow()

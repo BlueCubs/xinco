@@ -40,10 +40,10 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
   }
 
   @BeforeClass
-  public static void setUpClass() throws Exception {}
+  public static void setUpClass() {}
 
   @AfterClass
-  public static void tearDownClass() throws Exception {}
+  public static void tearDownClass() {}
 
   private void addAttributes(XincoCoreDataServer xcds) throws DatatypeConfigurationException {
     out.println("Adding default attributes...");
@@ -55,8 +55,7 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
       xaa =
           new XincoAddAttributeServer(
               xcds.getId(),
-              (xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(i))
-                  .getAttributeId(),
+              xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(i).getAttributeId(),
               0,
               0,
               0,
@@ -149,7 +148,7 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
       xcds.loadLogs();
       show(xcds);
       assertTrue(isArchived(xcds));
-    } catch (XincoException | Exception ex) {
+    } catch (XincoException ex) {
       getLogger(XincoArchiveThreadTest.class.getName()).log(SEVERE, null, ex);
       fail();
     }

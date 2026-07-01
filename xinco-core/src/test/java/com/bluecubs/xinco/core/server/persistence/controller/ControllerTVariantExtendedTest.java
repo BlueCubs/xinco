@@ -3,7 +3,10 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttributeT;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyT;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataT;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupT;
 import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;

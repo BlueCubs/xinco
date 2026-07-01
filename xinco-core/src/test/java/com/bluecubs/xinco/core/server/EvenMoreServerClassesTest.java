@@ -46,7 +46,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     }
   }
 
-  public void testLanguage_deleteFromDB() throws Exception {
+  public void testLanguage_deleteFromDB() {
     XincoCoreLanguageServer lang = new XincoCoreLanguageServer(0, "DL", "DeleteLang");
     lang.setChangerID(1);
     int id = lang.write2DB();
@@ -60,7 +60,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     assertFalse(langs.isEmpty());
   }
 
-  public void testLanguage_isLanguageUsed_true() throws Exception {
+  public void testLanguage_isLanguageUsed_true() {
     XincoCoreLanguageServer lang = new XincoCoreLanguageServer(1);
     assertTrue(XincoCoreLanguageServer.isLanguageUsed(lang));
   }
@@ -78,7 +78,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
 
   // ---- XincoCoreNodeServer additional ----
 
-  public void testNode_write2DB_update() throws Exception {
+  public void testNode_write2DB_update() {
     XincoCoreNodeServer node = new XincoCoreNodeServer(0, 1, 1, "update.node.test", 1);
     int id = node.write2DB();
     assertTrue(id > 0);
@@ -93,13 +93,13 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     }
   }
 
-  public void testNode_fillXincoCoreNodes_rootHasChildren() throws Exception {
+  public void testNode_fillXincoCoreNodes_rootHasChildren() {
     XincoCoreNodeServer root = new XincoCoreNodeServer(1);
     root.fillXincoCoreNodes();
     assertFalse("root node should have child nodes", root.getXincoCoreNodes().isEmpty());
   }
 
-  public void testNode_fillXincoCoreData_nodeWithData() throws Exception {
+  public void testNode_fillXincoCoreData_nodeWithData() {
     // Node 1 (root) has child data items (e.g. xinco.org URL)
     XincoCoreNodeServer root = new XincoCoreNodeServer(1);
     root.fillXincoCoreData();
@@ -112,7 +112,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     assertNotNull(nodes);
   }
 
-  public void testNode_deleteFromDB_deleteThis() throws Exception {
+  public void testNode_deleteFromDB_deleteThis() {
     // Create a leaf node and delete it (delete_this=true exercises ACE cleanup + destroy)
     XincoCoreNodeServer node = new XincoCoreNodeServer(0, 1, 1, "delete.self.test", 1);
     int id = node.write2DB();
@@ -128,7 +128,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
 
   // ---- XincoCoreDataServer additional ----
 
-  public void testData_removeFromDB() throws Exception {
+  public void testData_removeFromDB() {
     XincoCoreDataServer data = new XincoCoreDataServer(0, 1, 1, 1, "removeFromDB.test", 1);
     data.setChangerID(1);
     int id = data.write2DB();
@@ -142,7 +142,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     }
   }
 
-  public void testData_getCurrentVersion_noLogs() throws Exception {
+  public void testData_getCurrentVersion_noLogs() {
     XincoCoreDataServer data = new XincoCoreDataServer(0, 1, 1, 1, "noLogs.test", 1);
     data.setChangerID(1);
     int id = data.write2DB();
@@ -154,7 +154,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     }
   }
 
-  public void testData_getLastMajorVersion_noMidZeroLog() throws Exception {
+  public void testData_getLastMajorVersion_noMidZeroLog() {
     // getCurrentVersion on data-1 (has logs with versionMid>0?) → exercise the loop
     XincoCoreDataServer data = new XincoCoreDataServer(1);
     data.loadLogs();
@@ -170,7 +170,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     assertNotNull(result);
   }
 
-  public void testData_getAttribute_found() throws Exception {
+  public void testData_getAttribute_found() {
     XincoCoreDataServer data = new XincoCoreDataServer(1);
     data.loadAddAttributes();
     // Attribute id=1 should exist for data item 1 (URL data type)
@@ -188,7 +188,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     assertFalse(users.isEmpty());
   }
 
-  public void testUser_validCredentials_correct() throws Exception {
+  public void testUser_validCredentials_correct() {
     // Admin user with known password hash (admin is in seed data)
     // validCredentials(user, pass, false) treats pass as already encrypted
     XincoCoreUserServer admin = new XincoCoreUserServer(1);
@@ -208,7 +208,7 @@ public class EvenMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     assertFalse(result);
   }
 
-  public void testUser_isPasswordUsable_newPassword() throws Exception {
+  public void testUser_isPasswordUsable_newPassword() {
     XincoCoreUserServer admin = new XincoCoreUserServer(1);
     // A completely random password should be usable (not in history)
     boolean usable = admin.isPasswordUsable("totally_new_xyzabc_12345678", false);

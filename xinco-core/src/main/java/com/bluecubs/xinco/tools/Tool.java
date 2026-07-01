@@ -11,7 +11,7 @@ import com.bluecubs.xinco.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

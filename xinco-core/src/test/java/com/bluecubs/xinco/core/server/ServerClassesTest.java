@@ -31,7 +31,7 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   // =========================================================================
 
   /** Covers constructor(int id) happy path — namedQuery hit, fields populated. */
-  public void testGroupServer_loadById() throws Exception {
+  public void testGroupServer_loadById() {
     XincoCoreGroupServer gs = new XincoCoreGroupServer(1);
     assertEquals(1, gs.getId());
   }
@@ -47,7 +47,7 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int, String, int) — direct field assignment. */
-  public void testGroupServer_constructorFields() throws Exception {
+  public void testGroupServer_constructorFields() {
     XincoCoreGroupServer gs = new XincoCoreGroupServer(1, "field-grp", 1);
     assertEquals(1, gs.getId());
   }
@@ -61,14 +61,14 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers write2DB() update path (id > 0). */
-  public void testGroupServer_write2DB_update() throws Exception {
+  public void testGroupServer_write2DB_update() {
     XincoCoreGroupServer gs = new XincoCoreGroupServer(1);
     int id = gs.write2DB();
     assertEquals(1, id);
   }
 
   /** Covers write2DB() create path (id == 0) and deleteFromDB() success path. */
-  public void testGroupServer_write2DB_create() throws Exception {
+  public void testGroupServer_write2DB_create() {
     XincoCoreGroupServer gs = new XincoCoreGroupServer(0, "test.srv.grp", 1);
     int newId = gs.write2DB();
     assertTrue("New group id must be positive", newId > 0);
@@ -93,7 +93,7 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   // =========================================================================
 
   /** Covers constructor(int id) happy path. */
-  public void testLangServer_loadById() throws Exception {
+  public void testLangServer_loadById() {
     XincoCoreLanguageServer ls = new XincoCoreLanguageServer(1);
     assertEquals(1, ls.getId());
   }
@@ -109,7 +109,7 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int, String, String) — direct fields. */
-  public void testLangServer_constructorFields() throws Exception {
+  public void testLangServer_constructorFields() {
     new XincoCoreLanguageServer(1, "en", "English");
   }
 
@@ -122,13 +122,13 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers write2DB() update path (id > 0). */
-  public void testLangServer_write2DB_update() throws Exception {
+  public void testLangServer_write2DB_update() {
     XincoCoreLanguageServer ls = new XincoCoreLanguageServer(1);
     ls.write2DB();
   }
 
   /** Covers write2DB() create path + deleteFromDB(). */
-  public void testLangServer_write2DB_create() throws Exception {
+  public void testLangServer_write2DB_create() {
     XincoCoreLanguageServer ls = new XincoCoreLanguageServer(0, "xq", "TestLangSrv");
     int newId = ls.write2DB();
     assertTrue("New language id must be positive", newId > 0);
@@ -145,13 +145,13 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
    * Covers isLanguageUsed() with lang 2 (used only by data, not nodes) — first node-count query
    * returns 0 → enters if(!is_used) block → data-count query returns >0 → true.
    */
-  public void testLangServer_isLanguageUsed_true() throws Exception {
+  public void testLangServer_isLanguageUsed_true() {
     XincoCoreLanguageServer ls = new XincoCoreLanguageServer(2);
     assertTrue(XincoCoreLanguageServer.isLanguageUsed(ls));
   }
 
   /** Covers isLanguageUsed() false path — fresh language has no references. */
-  public void testLangServer_isLanguageUsed_false() throws Exception {
+  public void testLangServer_isLanguageUsed_false() {
     XincoCoreLanguageServer ls = new XincoCoreLanguageServer(0, "xa", "Unused");
     ls.write2DB();
     assertFalse(XincoCoreLanguageServer.isLanguageUsed(ls));
@@ -163,7 +163,7 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   // =========================================================================
 
   /** Covers constructor(int id) happy path. */
-  public void testDtServer_loadById() throws Exception {
+  public void testDtServer_loadById() {
     XincoCoreDataTypeServer dts = new XincoCoreDataTypeServer(1);
     assertEquals(1, dts.getId());
   }
@@ -179,7 +179,7 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int, String, String, ArrayList) — direct fields. */
-  public void testDtServer_constructorFields() throws Exception {
+  public void testDtServer_constructorFields() {
     new XincoCoreDataTypeServer(1, "test-dt", "desc", new ArrayList<>());
   }
 
@@ -202,13 +202,13 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers write2DB() update path (id > 0). */
-  public void testDtServer_write2DB_update() throws Exception {
+  public void testDtServer_write2DB_update() {
     XincoCoreDataTypeServer dts = new XincoCoreDataTypeServer(1);
     dts.write2DB();
   }
 
   /** Covers write2DB() create path + deleteFromDB(). */
-  public void testDtServer_write2DB_create() throws Exception {
+  public void testDtServer_write2DB_create() {
     XincoCoreDataTypeServer dts =
         new XincoCoreDataTypeServer(0, "test-srv-dt", "srv-desc", new ArrayList<>());
     int newId = dts.write2DB();
@@ -232,7 +232,7 @@ public class ServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Covers constructor(int, int, String, String, int) — direct fields. */
-  public void testDtaServer_constructorFields() throws Exception {
+  public void testDtaServer_constructorFields() {
     new XincoCoreDataTypeAttributeServer(1, 1, "test-attr", "String", 10);
   }
 

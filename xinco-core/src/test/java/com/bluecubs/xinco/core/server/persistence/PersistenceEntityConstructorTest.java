@@ -49,7 +49,7 @@ public class PersistenceEntityConstructorTest {
     dep2.setXincoCoreDataHasDependencyPK(new XincoCoreDataHasDependencyPK(1, 2, 1));
     assertEquals(dep1.hashCode(), dep2.hashCode());
     assertEquals(dep1, dep2);
-    assertFalse(dep1.equals(null));
+    assertFalse(dep1 == null);
     assertFalse(dep1.equals("other"));
     assertNotNull(dep1.toString());
   }
@@ -74,7 +74,7 @@ public class PersistenceEntityConstructorTest {
     XincoCoreUserHasXincoCoreGroup uhg2 = new XincoCoreUserHasXincoCoreGroup(1, 2);
     assertEquals(uhg1.hashCode(), uhg2.hashCode());
     assertEquals(uhg1, uhg2);
-    assertFalse(uhg1.equals(null));
+    assertFalse(uhg1 == null);
     assertFalse(uhg1.equals("other"));
     assertNotNull(uhg1.toString());
   }
@@ -147,7 +147,7 @@ public class PersistenceEntityConstructorTest {
 
     assertEquals(b1.hashCode(), b1.hashCode());
     assertFalse(b1.equals(b2));
-    assertFalse(b1.equals(null));
+    assertFalse(b1 == null);
     assertFalse(b1.equals("string"));
     assertNotNull(b1.toString());
   }

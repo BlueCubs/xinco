@@ -115,7 +115,7 @@ public class ControllerDepthTest extends AbstractXincoDataBaseTestCase {
       // Different objects
       assertFalse(id1.equals(id2));
       // null
-      assertFalse(id1.equals(null));
+      assertFalse(id1 == null);
       // different class
       assertFalse(id1.equals("notAnId"));
       // hashCode consistent with equals
@@ -125,7 +125,7 @@ public class ControllerDepthTest extends AbstractXincoDataBaseTestCase {
       XincoId id = ids.get(0);
       assertEquals(id, id);
       assertNotNull(id.toString());
-      assertFalse(id.equals(null));
+      assertFalse(id == null);
     }
   }
 }

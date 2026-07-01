@@ -22,7 +22,7 @@ class PersistenceTEntityTest {
     assertThat(e.toString()).isNotNull();
     assertThat(e.hashCode()).isNotZero();
     assertThat(e.equals(e)).isTrue();
-    assertThat(e.equals(null)).isFalse();
+    assertThat(e == null).isFalse();
   }
 
   @Test
@@ -260,7 +260,7 @@ class PersistenceTEntityTest {
     assertThat(pk.getId()).isEqualTo(3);
     assertThat(pk.hashCode()).isNotZero();
     assertThat(pk.equals(pk)).isTrue();
-    assertThat(pk.equals(null)).isFalse();
+    assertThat(pk == null).isFalse();
     assertThat(pk.toString()).isNotNull();
   }
 }

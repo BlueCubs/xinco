@@ -12,10 +12,10 @@ public class MD5Test {
   public MD5Test() {}
 
   @BeforeClass
-  public static void setUpClass() throws Exception {}
+  public static void setUpClass() {}
 
   @AfterClass
-  public static void tearDownClass() throws Exception {}
+  public static void tearDownClass() {}
 
   @Before
   public void setUp() {}
@@ -25,7 +25,7 @@ public class MD5Test {
 
   /** Test of encrypt method, of class MD5. */
   @Test
-  public void testEncrypt() throws Exception {
+  public void testEncrypt() {
     out.println("encrypt");
     String text = "test";
     String result = encrypt(text);

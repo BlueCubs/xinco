@@ -22,7 +22,9 @@ public class MainLayout extends AppLayout {
   }
 
   private static UserSession sessionFromVaadin() {
-    if (VaadinSession.getCurrent() == null) return new UserSession();
+    if (VaadinSession.getCurrent() == null) {
+      return new UserSession();
+    }
     UserSession s = VaadinSession.getCurrent().getAttribute(UserSession.class);
     return s != null ? s : new UserSession();
   }

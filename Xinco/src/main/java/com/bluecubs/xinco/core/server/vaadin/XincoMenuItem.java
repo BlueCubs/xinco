@@ -3,6 +3,8 @@ package com.bluecubs.xinco.core.server.vaadin;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 
 import com.vaadin.terminal.ThemeResource;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a menu item in the Xinco DMS menu bar.
@@ -11,16 +13,16 @@ import com.vaadin.terminal.ThemeResource;
  */
 public class XincoMenuItem {
 
-  private final int index;
+  @Getter private final int index;
   private final String groupName;
   private final String name;
-  private final ThemeResource icon;
-  private final com.vaadin.ui.MenuBar.Command command;
-  private final boolean loggedIn;
-  private final boolean dataOnly;
-  private final boolean nodeOnly;
-  private int[] dataTypes, statuses;
-  private final boolean selected;
+  @Getter private final ThemeResource icon;
+  @Getter private final com.vaadin.ui.MenuBar.Command command;
+  @Getter private final boolean loggedIn;
+  @Getter private final boolean dataOnly;
+  @Getter private final boolean nodeOnly;
+  @Getter @Setter private int[] dataTypes, statuses;
+  @Getter private final boolean selected;
 
   /**
    * Creates a menu item.
@@ -60,15 +62,6 @@ public class XincoMenuItem {
   }
 
   /**
-   * Returns the item index.
-   *
-   * @return the item index
-   */
-  public int getIndex() {
-    return index;
-  }
-
-  /**
    * Returns the item name.
    *
    * @return the item name
@@ -78,101 +71,11 @@ public class XincoMenuItem {
   }
 
   /**
-   * Returns the item icon.
-   *
-   * @return the item icon
-   */
-  public ThemeResource getIcon() {
-    return icon;
-  }
-
-  /**
-   * Returns the menu command.
-   *
-   * @return the menu command
-   */
-  public com.vaadin.ui.MenuBar.Command getCommand() {
-    return command;
-  }
-
-  /**
-   * Returns whether item requires login.
-   *
-   * @return true if item requires login
-   */
-  public boolean isLoggedIn() {
-    return loggedIn;
-  }
-
-  /**
-   * Returns whether item applies to data nodes only.
-   *
-   * @return true if item applies to data nodes only
-   */
-  public boolean isDataOnly() {
-    return dataOnly;
-  }
-
-  /**
-   * Returns whether item applies to folder nodes only.
-   *
-   * @return true if item applies to folder nodes only
-   */
-  public boolean isNodeOnly() {
-    return nodeOnly;
-  }
-
-  /**
-   * Returns the valid data types for this item.
-   *
-   * @return the valid data types
-   */
-  public int[] getDataTypes() {
-    return dataTypes;
-  }
-
-  /**
-   * Sets the valid data types. Only meaningful for non-node objects.
-   *
-   * @param dataTypes the data types to set
-   */
-  public void setDataTypes(int[] dataTypes) {
-    this.dataTypes = dataTypes;
-  }
-
-  /**
    * Returns the group name.
    *
    * @return the group name
    */
   public String getGroupName() {
     return getInstance().getResource().getString(groupName);
-  }
-
-  /**
-   * Returns whether the item is selected.
-   *
-   * @return true if the item is selected
-   */
-  public boolean isSelected() {
-    return selected;
-  }
-
-  /**
-   * Returns the valid status codes.
-   *
-   * @return the valid status codes
-   */
-  public int[] getStatuses() {
-    return statuses;
-  }
-
-  /**
-   * Sets the valid status codes.
-   *
-   * @param statuses the statuses to set
-   */
-  public void setStatuses(int[] statuses) {
-    this.statuses = statuses;
   }
 }

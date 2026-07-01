@@ -37,7 +37,7 @@ public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
   public void testFillXincoCoreNodes() {
     try {
       XincoCoreNodeServer instance = new XincoCoreNodeServer(1);
-      assertTrue((instance.getXincoCoreNodes()).size() > 0);
+      assertTrue(instance.getXincoCoreNodes().size() > 0);
     } catch (Exception e) {
       getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(SEVERE, null, e);
       fail();

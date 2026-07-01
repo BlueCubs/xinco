@@ -32,6 +32,8 @@ import static javax.persistence.GenerationType.TABLE;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Embeddable
@@ -39,8 +41,10 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
 
   @Basic(optional = false)
   @NotNull
+  @Setter
   @Column(name = "id")
   @GeneratedValue(strategy = TABLE, generator = "UserModifiedRecordGen")
+  @Getter
   @TableGenerator(
       name = "UserModifiedRecordGen",
       table = "xinco_id",
@@ -53,7 +57,9 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
 
   @Basic(optional = false)
   @NotNull
+  @Setter
   @Column(name = "record_id")
+  @Getter
   private int recordId;
 
   public XincoCoreUserModifiedRecordPK() {}
@@ -63,27 +69,9 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
     this.recordId = recordId;
   }
 
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  public int getRecordId() {
-    return recordId;
-  }
-
-  public void setRecordId(int recordId) {
-    this.recordId = recordId;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (int) id;
-    hash += (int) recordId;
+    int hash = (0 + ((int) id)) + ((int) recordId);
     return hash;
   }
 
@@ -96,10 +84,7 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
     if (this.id != other.id) {
       return false;
     }
-    if (this.recordId != other.recordId) {
-      return false;
-    }
-    return true;
+    return !(this.recordId != other.recordId);
   }
 
   @Override

@@ -35,7 +35,6 @@ import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
 import com.vaadin.data.Item;
 import com.vaadin.ui.*;
 import java.util.Iterator;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * Dialog for adding attributes to a data item.
@@ -84,31 +83,26 @@ class AddAttributeDialog extends CustomComponent {
     for (int i = start; i < attributes.size(); i++) {
       String value = "";
       if (dataTypeAttributes.get(i).getDataType().equals("datetime")) {
-        value =
-            ""
-                + ((XMLGregorianCalendar) (attributes.get(i)).getAttribDatetime())
-                    .toGregorianCalendar()
-                    .getTime()
-                    .toString();
+        value = "" + attributes.get(i).getAttribDatetime().toGregorianCalendar().getTime();
       }
       if (dataTypeAttributes.get(i).getDataType().equals("double")) {
-        value = "" + (attributes.get(i)).getAttribDouble();
+        value = "" + attributes.get(i).getAttribDouble();
       }
       if (dataTypeAttributes.get(i).getDataType().equals("int")) {
-        value = "" + (attributes.get(i)).getAttribInt();
+        value = "" + attributes.get(i).getAttribInt();
       }
       if (dataTypeAttributes.get(i).getDataType().equals("text")) {
-        value = "" + (attributes.get(i)).getAttribText();
+        value = "" + attributes.get(i).getAttribText();
       }
       if (dataTypeAttributes.get(i).getDataType().equals("unsignedint")) {
-        value = "" + (attributes.get(i)).getAttribUnsignedint();
+        value = "" + attributes.get(i).getAttribUnsignedint();
       }
       if (dataTypeAttributes.get(i).getDataType().equals("varchar")) {
         value =
             ""
-                + (getInstance().getResource().containsKey((attributes.get(i)).getAttribVarchar())
-                    ? getInstance().getResource().getString((attributes.get(i)).getAttribVarchar())
-                    : (attributes.get(i)).getAttribVarchar());
+                + (getInstance().getResource().containsKey(attributes.get(i).getAttribVarchar())
+                    ? getInstance().getResource().getString(attributes.get(i).getAttribVarchar())
+                    : attributes.get(i).getAttribVarchar());
       }
       String type =
           getInstance().getResource().containsKey(dataTypeAttributes.get(i).getDesignation())

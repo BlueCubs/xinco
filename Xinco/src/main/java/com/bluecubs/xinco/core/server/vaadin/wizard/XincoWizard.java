@@ -9,6 +9,7 @@ import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.*;
 import java.util.*;
+import lombok.Getter;
 
 /**
  * Component for displaying multi-step wizard style user interface.
@@ -38,14 +39,14 @@ public final class XincoWizard extends CustomComponent {
   private final Map<String, WizardStep> idMap = new HashMap<>();
   private VerticalLayout mainLayout;
   private Panel contentPanel;
-  private Button nextButton;
-  private Button backButton;
-  private Button finishButton;
-  private Button cancelButton;
+  @Getter private Button nextButton;
+  @Getter private Button backButton;
+  @Getter private Button finishButton;
+  @Getter private Button cancelButton;
   private WizardStep currentStep;
   private WizardStep lastCompletedStep;
-  private Component header;
-  private int lastCompleted, progress;
+  @Getter private Component header;
+  @Getter private int lastCompleted, progress;
   private ResourceBundle xerb;
 
   /**
@@ -194,25 +195,10 @@ public final class XincoWizard extends CustomComponent {
       } else {
         mainLayout.replaceComponent(header, newHeader);
       }
-    } else {
-      if (newHeader != null) {
-        mainLayout.addComponentAsFirst(newHeader);
-      }
+    } else if (newHeader != null) {
+      mainLayout.addComponentAsFirst(newHeader);
     }
     this.header = newHeader;
-  }
-
-  /**
-   * Returns a {@link Component} that is displayed on top of the actual content or {@code null} if
-   * no header is specified.
-   *
-   * <p>By default the header is a {@link WizardProgressBar} component that is also registered as a
-   * {@link WizardProgressListener} to this XincoWizard.
-   *
-   * @return {@link Component} that is displayed on top of the actual content or {@code null}.
-   */
-  public Component getHeader() {
-    return header;
   }
 
   /**
@@ -348,7 +334,7 @@ public final class XincoWizard extends CustomComponent {
    * @return true if the step is active
    */
   public boolean isActive(WizardStep step) {
-    return (step == currentStep);
+    return step == currentStep;
   }
 
   private void updateButtons() {
@@ -376,42 +362,6 @@ public final class XincoWizard extends CustomComponent {
     return false;
   }
 
-  /**
-   * Returns the Next navigation button.
-   *
-   * @return the Next button
-   */
-  public Button getNextButton() {
-    return nextButton;
-  }
-
-  /**
-   * Returns the Back navigation button.
-   *
-   * @return the Back button
-   */
-  public Button getBackButton() {
-    return backButton;
-  }
-
-  /**
-   * Returns the Finish button.
-   *
-   * @return the Finish button
-   */
-  public Button getFinishButton() {
-    return finishButton;
-  }
-
-  /**
-   * Returns the Cancel button.
-   *
-   * @return the Cancel button
-   */
-  public Button getCancelButton() {
-    return cancelButton;
-  }
-
   private void activateStep(WizardStep step) {
     if (step == null) {
       return;
@@ -430,11 +380,9 @@ public final class XincoWizard extends CustomComponent {
           // not allowed to advance
           return;
         }
-      } else {
-        if (!currentStep.onBack()) {
-          // not allowed to go back
-          return;
-        }
+      } else if (!currentStep.onBack()) {
+        // not allowed to go back
+        return;
       }
 
       // keep track of the last step that was completed
@@ -503,23 +451,5 @@ public final class XincoWizard extends CustomComponent {
       }
     }
     return null;
-  }
-
-  /**
-   * Returns the index of the last completed step.
-   *
-   * @return index of the last completed step
-   */
-  public int getLastCompleted() {
-    return lastCompleted;
-  }
-
-  /**
-   * Returns the current progress value.
-   *
-   * @return current progress value
-   */
-  public int getProgress() {
-    return progress;
   }
 }

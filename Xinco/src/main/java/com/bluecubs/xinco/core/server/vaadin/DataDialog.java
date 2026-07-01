@@ -35,6 +35,7 @@ import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
+import lombok.Getter;
 
 /**
  * Dialog for managing data item properties.
@@ -45,10 +46,10 @@ class DataDialog extends CustomComponent {
 
   private static final long serialVersionUID = -4284117659154164640L;
 
-  private com.vaadin.ui.TextField idField;
-  private com.vaadin.ui.TextField designationField;
-  private com.vaadin.ui.TextField statusField;
-  private final Select languages;
+  @Getter private com.vaadin.ui.TextField idField;
+  @Getter private com.vaadin.ui.TextField designationField;
+  @Getter private com.vaadin.ui.TextField statusField;
+  @Getter private final Select languages;
 
   DataDialog(boolean newData) {
     languages = new Select(getInstance().getResource().getString("general.language") + ":");
@@ -134,25 +135,5 @@ class DataDialog extends CustomComponent {
     setSizeUndefined();
     // The composition root MUST be set
     setCompositionRoot(panel);
-  }
-
-  /** @return the idField */
-  public com.vaadin.ui.TextField getIdField() {
-    return idField;
-  }
-
-  /** @return the designationField */
-  public com.vaadin.ui.TextField getDesignationField() {
-    return designationField;
-  }
-
-  /** @return the statusField */
-  public com.vaadin.ui.TextField getStatusField() {
-    return statusField;
-  }
-
-  /** @return the languages */
-  public Select getLanguages() {
-    return languages;
   }
 }

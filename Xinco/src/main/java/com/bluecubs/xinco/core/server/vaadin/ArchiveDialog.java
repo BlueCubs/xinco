@@ -47,6 +47,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
+import lombok.Getter;
 
 /**
  * Dialog for archiving a data item.
@@ -57,7 +58,9 @@ final class ArchiveDialog extends CustomComponent {
 
   private static final long serialVersionUID = -7968557953363984932L;
 
+  @Getter(value = AccessLevel.PRIVATEATE)
   private final Select archiveModel;
+
   private final DateField date = new DateField();
   private final NumberField days = new NumberField();
   private static final Logger LOG = getLogger(ArchiveDialog.class.getName());
@@ -111,8 +114,8 @@ final class ArchiveDialog extends CustomComponent {
     date.setEnabled(false);
     // set date / days
     // convert clone from remote time to local time
-    Calendar cal = (Calendar) (attributes.get(5)).getAttribDatetime().toGregorianCalendar().clone();
-    Calendar realcal = (attributes.get(5)).getAttribDatetime().toGregorianCalendar();
+    Calendar cal = (Calendar) attributes.get(5).getAttribDatetime().toGregorianCalendar().clone();
+    Calendar realcal = attributes.get(5).getAttribDatetime().toGregorianCalendar();
     Calendar ngc = new GregorianCalendar();
     cal.add(
         MILLISECOND,
@@ -151,11 +154,6 @@ final class ArchiveDialog extends CustomComponent {
     setCompositionRoot(panel);
   }
 
-  /** @return the archiveModel */
-  private Select getArchiveModel() {
-    return archiveModel;
-  }
-
   /** @return the date */
   private Date getDate() {
     return (Date) date.getValue();
@@ -163,7 +161,7 @@ final class ArchiveDialog extends CustomComponent {
 
   private int getDays() {
     return days.isEnabled() && !days.getValue().toString().isEmpty()
-        ? valueOf(days.getValue().toString())
+        ? Integer.parseInt(days.getValue().toString())
         : 0;
   }
 
@@ -175,8 +173,8 @@ final class ArchiveDialog extends CustomComponent {
         .getXincoCoreData()
         .getXincoAddAttributes()
         .get(4)
-        .setAttribUnsignedint(valueOf(model));
-    // Archieve date
+        .setAttribUnsignedint(Integer.parseInt(model));
+    // Archive date
     Date archiveDate = getDate();
     LOG.log(FINE, "Archive date: {0}", archiveDate);
     GregorianCalendar c = new GregorianCalendar();

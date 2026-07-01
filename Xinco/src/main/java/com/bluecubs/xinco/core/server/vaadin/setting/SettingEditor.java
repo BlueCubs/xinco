@@ -44,6 +44,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
+import lombok.Getter;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 class SettingEditor extends Window implements Button.ClickListener {
@@ -145,15 +146,11 @@ class SettingEditor extends Window implements Button.ClickListener {
 
   public static class EditorSavedEvent extends Component.Event {
 
-    private Item savedItem;
+    @Getter private Item savedItem;
 
     public EditorSavedEvent(Component source, Item savedItem) {
       super(source);
       this.savedItem = savedItem;
-    }
-
-    public Item getSavedItem() {
-      return savedItem;
     }
   }
 

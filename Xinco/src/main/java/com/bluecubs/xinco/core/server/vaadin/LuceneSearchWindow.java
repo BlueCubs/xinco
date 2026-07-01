@@ -252,7 +252,7 @@ public class LuceneSearchWindow extends Window {
             haveAccess = parents.getLast() == 1;
           }
           close();
-          if (!(haveAccess && getInstance().expandTreeNodes(parents))) {
+          if (!haveAccess || !getInstance().expandTreeNodes(parents)) {
             // Able to expand nodes
             getApplication()
                 .getMainWindow()

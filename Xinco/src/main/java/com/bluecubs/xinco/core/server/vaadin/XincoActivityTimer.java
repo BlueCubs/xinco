@@ -2,6 +2,7 @@ package com.bluecubs.xinco.core.server.vaadin;
 
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
+import lombok.Getter;
 
 /**
  * Timer that tracks user activity and triggers session timeout.
@@ -10,7 +11,7 @@ import javax.swing.Timer;
  */
 public final class XincoActivityTimer {
 
-  private Timer activityTimer = null;
+  @Getter private Timer activityTimer = null;
 
   /**
    * Creates a new instance of XincoActivityTimer
@@ -22,14 +23,5 @@ public final class XincoActivityTimer {
     // Use delay as minute value
     activityTimer = new Timer(delay * 1_000 * 60, lockExplorer);
     getActivityTimer().start();
-  }
-
-  /**
-   * Get timer.
-   *
-   * @return the timer
-   */
-  public Timer getActivityTimer() {
-    return activityTimer;
   }
 }

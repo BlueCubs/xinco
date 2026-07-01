@@ -41,13 +41,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import lombok.Getter;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 class UploadManager extends CustomComponent
     implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 
-  private File file; // File to write to.
-  private boolean success = false;
+  @Getter private File file; // File to write to.
+  @Getter private boolean success = false;
 
   // Callback method to begin receiving the upload.
   @Override
@@ -91,18 +92,8 @@ class UploadManager extends CustomComponent
     success = false;
   }
 
-  /** @return the file */
-  public File getFile() {
-    return file;
-  }
-
   /** @return the fileName */
   public String getFileName() {
     return getInstance().getFileName();
-  }
-
-  /** @return the success */
-  public boolean isSuccess() {
-    return success;
   }
 }

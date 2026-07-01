@@ -121,7 +121,7 @@ public class ControllerTVariantTest extends AbstractXincoDataBaseTestCase {
     assertNull(ctrl.findXincoSettingT(rid));
   }
 
-  public void testGroupTController_findAll_count() throws Exception {
+  public void testGroupTController_findAll_count() {
     XincoCoreGroupTJpaController ctrl = new XincoCoreGroupTJpaController(getEntityManagerFactory());
     assertTrue(ctrl.getXincoCoreGroupTCount() >= 0);
     assertNotNull(ctrl.findXincoCoreGroupTEntities());
