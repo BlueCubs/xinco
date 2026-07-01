@@ -60,7 +60,7 @@ public class XincoIndexDepthTest extends AbstractXincoDataBaseTestCase {
       data.loadAddAttributes();
       var doc = XincoDocument.getXincoDocument(data, true);
       assertNotNull(doc);
-    } catch (XincoException | java.io.FileNotFoundException e) {
+    } catch (XincoException e) {
       // FileNotFoundException is expected since no file exists in test environment
     }
   }

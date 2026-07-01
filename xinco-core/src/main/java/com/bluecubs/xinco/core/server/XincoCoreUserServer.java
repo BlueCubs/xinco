@@ -181,9 +181,9 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                     + attrUPW
                     + "' AND xcu.statusNumber <> 2");
       }
-      if (result.size() > 0) {
+      if (!result.isEmpty()) {
         com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
-            (com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0);
+            (com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.getFirst();
         setId(xcu.getId());
         setUsername(xcu.getUsername());
         // previously hashing the already hashed password
@@ -220,7 +220,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         parameters.put("username", attrUN);
         result = namedQuery("XincoCoreUser.findByUsername", parameters);
         // The username is valid but wrong password. Increase the login attempts.
-        if (result.size() > 0) {
+        if (!result.isEmpty()) {
           increaseAttempts = true;
           com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
               (com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0);
@@ -257,7 +257,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                     + attrUN
                     + "' AND xcu.statusNumber <> 2");
         // increase number of attempts
-        if (result.size() > 0) {
+        if (!result.isEmpty()) {
           com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
               (com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0);
           setId(xcu.getId());
@@ -290,7 +290,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
       parameters.put("id", attrID);
       result = namedQuery("XincoCoreUser.findById", parameters);
       // throw exception if no result found
-      if (result.size() > 0) {
+      if (!result.isEmpty()) {
         com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
             (com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0);
         setId(xcu.getId());
@@ -557,7 +557,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                   + " and x.userpassword='"
                   + (hash ? encrypt(newPass) : newPass)
                   + "'");
-      if (result.size() > 0) {
+      if (!result.isEmpty()) {
         return false;
       }
       // Here we'll catch if the password have been used in the unusable period (use id in case the
@@ -609,7 +609,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
    *
    * <p>the password is already encrypted. Usually queries from within the server itself
    *
-   * @param username User name
+   * @param username Username
    * @param password Password
    * @param encrypt Password needs encrypting?
    * @return true if valid

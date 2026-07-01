@@ -25,11 +25,9 @@ import com.bluecubs.xinco.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.server.service.XincoCoreLog;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import lombok.SneakyThrows;
 import org.junit.Test;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
@@ -38,12 +36,6 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
   public XincoArchiveThreadTest(String testName) {
     super(testName);
   }
-
-  @BeforeClass
-  public static void setUpClass() {}
-
-  @AfterClass
-  public static void tearDownClass() {}
 
   private void addAttributes(XincoCoreDataServer xcds) throws DatatypeConfigurationException {
     out.println("Adding default attributes...");
@@ -99,6 +91,7 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
 
   /** Test of archiveData method, of class XincoArchiveThread. */
   @Test
+  @SneakyThrows
   public void testArchiveData() {
     try {
       out.println("archiveData");
@@ -185,8 +178,8 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
         out.println("date time: " + attr.getAttribDatetime());
       }
       out.println("Logs:");
-      for (Iterator<Object> it = xcds.getXincoCoreLogs().iterator(); it.hasNext(); ) {
-        XincoCoreLog log = (XincoCoreLog) it.next();
+      for (Object o : xcds.getXincoCoreLogs()) {
+        XincoCoreLog log = (XincoCoreLog) o;
         out.println("ID: " + log.getId());
         out.println("Code: " + log.getOpCode() + " Desc: " + getOPCode(log.getOpCode()).name());
         out.println("Description: " + log.getOpDescription());

@@ -47,6 +47,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 /**
@@ -58,7 +59,7 @@ final class ArchiveDialog extends CustomComponent {
 
   private static final long serialVersionUID = -7968557953363984932L;
 
-  @Getter(value = AccessLevel.PRIVATEATE)
+  @Getter(AccessLevel.PRIVATE)
   private final Select archiveModel;
 
   private final DateField date = new DateField();

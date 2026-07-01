@@ -412,12 +412,8 @@ public class XincoDBManager {
 
   private static void updateDatabase(DataSource dataSource) {
     String locEnv = System.getenv("FLYWAY_LOCATIONS");
-    if (locEnv == null || !locEnv.startsWith("filesystem:")) {
-      LOG.warning("No FLYWAY_LOCATIONS filesystem path configured; skipping SQL seeding.");
-      setState(VALID);
-      return;
-    }
-    String fsDir = locEnv.substring("filesystem:".length());
+    boolean useFilesystem = locEnv != null && locEnv.startsWith("filesystem:");
+
     try (Connection seedConn = dataSource.getConnection()) {
       try (java.sql.Statement check = seedConn.createStatement();
           ResultSet rs = check.executeQuery("SELECT COUNT(*) FROM xinco_core_user")) {
@@ -431,40 +427,69 @@ public class XincoDBManager {
         setState(VALID);
         return;
       }
-      File dir = new File(fsDir);
-      File[] sqlFiles = dir.listFiles((d, n) -> n.endsWith(".sql"));
-      if (sqlFiles == null || sqlFiles.length == 0) {
-        LOG.warning("No SQL files found in " + fsDir + "; skipping seeding.");
-        setState(VALID);
-        return;
-      }
-      Arrays.sort(sqlFiles, Comparator.comparing(File::getName));
-      for (File sqlFile : sqlFiles) {
-        LOG.warning("Seeding from: " + sqlFile.getName());
-        try (BufferedReader reader = new BufferedReader(new FileReader(sqlFile))) {
-          String line;
-          while ((line = reader.readLine()) != null) {
-            line = line.trim();
-            if (line.isEmpty() || line.startsWith("--")) continue;
-            if (line.endsWith(";")) line = line.substring(0, line.length() - 1);
-            if (line.toUpperCase().startsWith("INSERT INTO")) {
-              line = "INSERT IGNORE INTO" + line.substring("INSERT INTO".length());
-            }
-            try (java.sql.Statement st = seedConn.createStatement()) {
-              st.execute(line);
-            } catch (SQLException e) {
-              LOG.warning("Seed statement skipped (" + e.getMessage() + ")");
-            }
+
+      if (useFilesystem) {
+        String fsDir = locEnv.substring("filesystem:".length());
+        File dir = new File(fsDir);
+        File[] sqlFiles = dir.listFiles((d, n) -> n.endsWith(".sql"));
+        if (sqlFiles == null || sqlFiles.length == 0) {
+          LOG.warning("No SQL files found in " + fsDir + "; skipping seeding.");
+          setState(VALID);
+          return;
+        }
+        Arrays.sort(sqlFiles, Comparator.comparing(File::getName));
+        for (File sqlFile : sqlFiles) {
+          LOG.warning("Seeding from: " + sqlFile.getName());
+          try (BufferedReader reader = new BufferedReader(new FileReader(sqlFile))) {
+            runSeedScript(seedConn, reader, true);
+            LOG.warning("Seeded: " + sqlFile.getName());
+          } catch (IOException e) {
+            LOG.log(SEVERE, "Cannot read " + sqlFile.getName(), e);
           }
-          LOG.warning("Seeded: " + sqlFile.getName());
+        }
+      } else {
+        // Classpath fallback for tests (H2): strip MySQL backtick quoting, no INSERT IGNORE
+        try (InputStream in =
+            XincoDBManager.class.getResourceAsStream("/db/migration/V1_1__Base_Version.sql")) {
+          if (in == null) {
+            LOG.warning("No classpath SQL migration found; skipping seeding.");
+            setState(VALID);
+            return;
+          }
+          LOG.warning("Seeding from classpath: V1_1__Base_Version.sql");
+          try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+            runSeedScript(seedConn, reader, false);
+          }
         } catch (IOException e) {
-          LOG.log(SEVERE, "Cannot read " + sqlFile.getName(), e);
+          LOG.log(SEVERE, "Cannot read classpath migration", e);
         }
       }
       setState(VALID);
     } catch (SQLException e) {
       LOG.log(SEVERE, "updateDatabase connection failed", e);
       setState(ERROR);
+    }
+  }
+
+  private static void runSeedScript(Connection conn, BufferedReader reader, boolean mysqlMode)
+      throws IOException {
+    String line;
+    while ((line = reader.readLine()) != null) {
+      line = line.trim();
+      if (line.isEmpty() || line.startsWith("--")) continue;
+      if (line.endsWith(";")) line = line.substring(0, line.length() - 1);
+      if (mysqlMode && line.toUpperCase().startsWith("INSERT INTO")) {
+        line = "INSERT IGNORE INTO" + line.substring("INSERT INTO".length());
+      }
+      if (!mysqlMode) {
+        // H2 standard mode does not support MySQL backtick identifier quoting
+        line = line.replace("`", "");
+      }
+      try (java.sql.Statement st = conn.createStatement()) {
+        st.execute(line);
+      } catch (SQLException e) {
+        LOG.warning("Seed statement skipped (" + e.getMessage() + ")");
+      }
     }
   }
 

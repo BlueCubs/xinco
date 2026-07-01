@@ -9,7 +9,6 @@ import static java.lang.Class.forName;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.sql.DataSource;
 import junit.framework.TestCase;
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -25,7 +24,7 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
   @Override
   protected void setUp() throws Exception {
     setPU("XincoTest");
-    assertTrue(getState().equals(VALID));
+    assertEquals(VALID, getState());
   }
 
   @Override
@@ -34,10 +33,10 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
       Connection conn = null;
       Statement stmt = null;
       try {
-        DataSource ds = new JdbcDataSource();
-        ((JdbcDataSource) ds).setPassword("xinco");
-        ((JdbcDataSource) ds).setUser("root");
-        ((JdbcDataSource) ds).setURL("jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
+        JdbcDataSource ds = new JdbcDataSource();
+        ds.setPassword("xinco");
+        ds.setUser("root");
+        ds.setURL("jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
         // Load the H2 driver
         forName("org.h2.Driver");
         conn = ds.getConnection();

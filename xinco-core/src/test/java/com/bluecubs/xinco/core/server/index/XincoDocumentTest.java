@@ -37,7 +37,7 @@ public class XincoDocumentTest extends AbstractXincoDataBaseTestCase {
       assertNotNull(doc.get("designation"));
       assertEquals(data.getDesignation(), doc.get("designation"));
       assertNotNull(doc.get("language"));
-    } catch (XincoException | java.io.FileNotFoundException e) {
+    } catch (XincoException e) {
       getLogger(getClass().getSimpleName()).log(SEVERE, null, e);
       fail("Unexpected exception: " + e.getMessage());
     }
@@ -52,7 +52,7 @@ public class XincoDocumentTest extends AbstractXincoDataBaseTestCase {
       assertNotNull(doc);
       assertNotNull(doc.get("id"));
       assertNotNull(doc.get("designation"));
-    } catch (XincoException | java.io.FileNotFoundException e) {
+    } catch (XincoException e) {
       getLogger(getClass().getSimpleName()).log(SEVERE, null, e);
       fail("Unexpected exception: " + e.getMessage());
     }
@@ -165,8 +165,6 @@ public class XincoDocumentTest extends AbstractXincoDataBaseTestCase {
   public void testGetXincoDocument_fileType1_textIndexerPath() {
     try {
       XincoDocument.getXincoDocument(buildFileTypeData(78, "doc.zzz"), true);
-    } catch (java.io.FileNotFoundException e) {
-      // acceptable
     } catch (NullPointerException e) {
       // XincoIndexText.getFileContentReader returns null for a missing file;
       // Lucene Field rejects null readers with NPE
