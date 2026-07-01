@@ -4,12 +4,12 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/xinco?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      - SPRING_DATASOURCE_USERNAME=xinco
-      - SPRING_DATASOURCE_PASSWORD=xinco
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
-      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQL8Dialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - VAADIN_PRODUCTIONMODE=true
+      # XincoDBManager JNDI fallback: override persistence.xml localhost URL
+      - XINCO_JDBC_URL=jdbc:mysql://db:3306/xinco?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - XINCO_JDBC_USER=xinco
+      - XINCO_JDBC_PASSWORD=xinco
+      - FLYWAY_LOCATIONS=filesystem:/app/db/migration
     depends_on:
       db:
         condition: service_healthy

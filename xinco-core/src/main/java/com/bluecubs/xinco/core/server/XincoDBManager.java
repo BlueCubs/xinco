@@ -49,14 +49,13 @@ import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static java.util.logging.Logger.getLogger;
 import static javax.persistence.Persistence.createEntityManagerFactory;
-import static org.flywaydb.core.Flyway.configure;
-import static org.flywaydb.core.api.MigrationState.SUCCESS;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -69,10 +68,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.*;
 import javax.sql.DataSource;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.FlywayException;
-import org.flywaydb.core.api.MigrationInfo;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.h2.jdbcx.JdbcDataSource;
 
 public class XincoDBManager {
@@ -250,17 +245,65 @@ public class XincoDBManager {
       try {
         ds = (javax.sql.DataSource) new InitialContext().lookup("java:comp/env/jdbc/XincoDB");
       } catch (NamingException ne) {
-        try {
-          LOG.log(FINE, null, ne);
-          // It might be the tests, use an H2 Database
-          ds = new JdbcDataSource();
-          ((JdbcDataSource) ds).setPassword("xinco");
-          ((JdbcDataSource) ds).setUser("root");
-          ((JdbcDataSource) ds).setURL("jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
-          // Load the H2 driver
-          forName("org.h2.Driver");
-        } catch (ClassNotFoundException ex) {
-          LOG.log(SEVERE, null, ex);
+        LOG.log(FINE, null, ne);
+        String jdbcUrl = System.getenv("XINCO_JDBC_URL");
+        if (jdbcUrl != null) {
+          final String envUser = System.getenv("XINCO_JDBC_USER");
+          final String envPassword = System.getenv("XINCO_JDBC_PASSWORD");
+          ds =
+              new DataSource() {
+                @Override
+                public Connection getConnection() throws SQLException {
+                  return DriverManager.getConnection(jdbcUrl, envUser, envPassword);
+                }
+
+                @Override
+                public Connection getConnection(String u, String p) throws SQLException {
+                  return DriverManager.getConnection(jdbcUrl, u, p);
+                }
+
+                @Override
+                public <T> T unwrap(Class<T> iface) {
+                  return null;
+                }
+
+                @Override
+                public boolean isWrapperFor(Class<?> iface) {
+                  return false;
+                }
+
+                @Override
+                public PrintWriter getLogWriter() {
+                  return null;
+                }
+
+                @Override
+                public void setLogWriter(PrintWriter out) {}
+
+                @Override
+                public void setLoginTimeout(int s) {}
+
+                @Override
+                public int getLoginTimeout() {
+                  return 0;
+                }
+
+                @Override
+                public Logger getParentLogger() {
+                  return null;
+                }
+              };
+        } else {
+          try {
+            // Tests: fall back to H2
+            ds = new JdbcDataSource();
+            ((JdbcDataSource) ds).setPassword("xinco");
+            ((JdbcDataSource) ds).setUser("root");
+            ((JdbcDataSource) ds).setURL("jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
+            forName("org.h2.Driver");
+          } catch (ClassNotFoundException ex) {
+            LOG.log(SEVERE, null, ex);
+          }
         }
       }
       try {
@@ -368,39 +411,61 @@ public class XincoDBManager {
   }
 
   private static void updateDatabase(DataSource dataSource) {
-    FluentConfiguration configuration = configure();
-    configuration.baselineOnMigrate(true);
-    configuration.baselineVersion("0");
-    configuration.dataSource(dataSource);
-    configuration.locations("classpath:db/migration");
-    LOG.info("Flyway Baseline Version: " + configuration.getBaselineVersion());
-    LOG.info("Flyway Locations: " + Arrays.toString(configuration.getLocations()));
-    Flyway flyway = new Flyway(configuration);
-    try {
-      LOG.info("Starting migration...");
-      flyway.migrate();
-      LOG.info("Done!");
-    } catch (FlywayException fe) {
-      LOG.log(SEVERE, "Unable to migrate data", fe);
+    String locEnv = System.getenv("FLYWAY_LOCATIONS");
+    if (locEnv == null || !locEnv.startsWith("filesystem:")) {
+      LOG.warning("No FLYWAY_LOCATIONS filesystem path configured; skipping SQL seeding.");
+      setState(VALID);
+      return;
+    }
+    String fsDir = locEnv.substring("filesystem:".length());
+    try (Connection seedConn = dataSource.getConnection()) {
+      try (java.sql.Statement check = seedConn.createStatement();
+          ResultSet rs = check.executeQuery("SELECT COUNT(*) FROM xinco_core_user")) {
+        if (rs.next() && rs.getInt(1) > 0) {
+          LOG.warning("Database already seeded; skipping.");
+          setState(VALID);
+          return;
+        }
+      } catch (SQLException e) {
+        LOG.warning("Seed check failed (" + e.getMessage() + "); skipping seeding.");
+        setState(VALID);
+        return;
+      }
+      File dir = new File(fsDir);
+      File[] sqlFiles = dir.listFiles((d, n) -> n.endsWith(".sql"));
+      if (sqlFiles == null || sqlFiles.length == 0) {
+        LOG.warning("No SQL files found in " + fsDir + "; skipping seeding.");
+        setState(VALID);
+        return;
+      }
+      Arrays.sort(sqlFiles, Comparator.comparing(File::getName));
+      for (File sqlFile : sqlFiles) {
+        LOG.warning("Seeding from: " + sqlFile.getName());
+        try (BufferedReader reader = new BufferedReader(new FileReader(sqlFile))) {
+          String line;
+          while ((line = reader.readLine()) != null) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("--")) continue;
+            if (line.endsWith(";")) line = line.substring(0, line.length() - 1);
+            if (line.toUpperCase().startsWith("INSERT INTO")) {
+              line = "INSERT IGNORE INTO" + line.substring("INSERT INTO".length());
+            }
+            try (java.sql.Statement st = seedConn.createStatement()) {
+              st.execute(line);
+            } catch (SQLException e) {
+              LOG.warning("Seed statement skipped (" + e.getMessage() + ")");
+            }
+          }
+          LOG.warning("Seeded: " + sqlFile.getName());
+        } catch (IOException e) {
+          LOG.log(SEVERE, "Cannot read " + sqlFile.getName(), e);
+        }
+      }
+      setState(VALID);
+    } catch (SQLException e) {
+      LOG.log(SEVERE, "updateDatabase connection failed", e);
       setState(ERROR);
     }
-    try {
-      LOG.info("Validating migration...");
-      flyway.validate();
-      LOG.info("Done!");
-      displayDBStatus(flyway.info().current());
-      setState(flyway.info().current().getState() == SUCCESS ? VALID : ERROR);
-    } catch (FlywayException fe) {
-      LOG.log(SEVERE, "Unable to validate", fe);
-      setState(ERROR);
-    }
-  }
-
-  private static void displayDBStatus(MigrationInfo status) {
-    LOG.log(
-        INFO,
-        "Description: {0}\nState: {1}\nVersion: {2}",
-        new Object[] {status.getDescription(), status.getState(), status.getVersion()});
   }
 
   /**
@@ -445,7 +510,18 @@ public class XincoDBManager {
               "Manually specified connection parameters. "
                   + "Using pre-defined persistence unit: {0}",
               puName);
-          emf = createEntityManagerFactory(puName);
+          Map<String, String> envOverrides = new HashMap<>();
+          String jdbcUrl = System.getenv("XINCO_JDBC_URL");
+          if (jdbcUrl != null) envOverrides.put("javax.persistence.jdbc.url", jdbcUrl);
+          String jdbcUser = System.getenv("XINCO_JDBC_USER");
+          if (jdbcUser != null) envOverrides.put("javax.persistence.jdbc.user", jdbcUser);
+          String jdbcPassword = System.getenv("XINCO_JDBC_PASSWORD");
+          if (jdbcPassword != null)
+            envOverrides.put("javax.persistence.jdbc.password", jdbcPassword);
+          emf =
+              envOverrides.isEmpty()
+                  ? createEntityManagerFactory(puName)
+                  : createEntityManagerFactory(puName, envOverrides);
         } else {
           LOG.log(SEVERE, "Context doesn't exist. Check your configuration.", e);
         }

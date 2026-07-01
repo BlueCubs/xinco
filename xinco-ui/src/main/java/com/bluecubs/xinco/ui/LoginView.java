@@ -9,9 +9,10 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-@Route(value = "login")
+@Route(value = "")
 @PageTitle("Login — Xinco DMS")
 @AnonymousAllowed
 public class LoginView extends VerticalLayout {
@@ -36,13 +37,16 @@ public class LoginView extends VerticalLayout {
                 new XincoCoreUserServer(username.getValue(), password.getValue());
             if (user.getStatusNumber() == 1) {
               session.setUser(user);
+              if (VaadinSession.getCurrent() != null) {
+                VaadinSession.getCurrent().setAttribute(UserSession.class, session);
+              }
               getUI().ifPresent(ui -> ui.navigate(ExplorerView.class));
             } else {
               Notification.show(
                   "Account locked or password expired. Status: " + user.getStatusNumber());
             }
-          } catch (Exception ex) {
-            Notification.show("Invalid credentials.");
+          } catch (Throwable ex) {
+            Notification.show("Login failed: " + ex.getMessage());
           }
         });
 
