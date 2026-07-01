@@ -138,6 +138,15 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.13.0</version>
+          <configuration>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.46</version>
+              </path>
+            </annotationProcessorPaths>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -261,6 +270,12 @@
             <version>3.34.0</version>
             <scope>runtime</scope>
           </dependency>
+          <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-java-lombok</artifactId>
+            <version>8.85.0</version>
+            <scope>runtime</scope>
+          </dependency>
         </dependencies>
       </plugin>
       <plugin>
@@ -374,7 +389,7 @@
       <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
-        <version>1.18.36</version>
+        <version>1.18.46</version>
         <scope>provided</scope>
       </dependency>
     </dependencies>
