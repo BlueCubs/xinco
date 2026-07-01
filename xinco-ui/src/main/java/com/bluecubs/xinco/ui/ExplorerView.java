@@ -9,16 +9,22 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "explorer", layout = MainLayout.class)
 @PageTitle("Explorer — Xinco DMS")
 @AnonymousAllowed
-public class ExplorerView extends HorizontalLayout {
+public class ExplorerView extends HorizontalLayout
+    implements BeforeEnterObserver, AfterNavigationObserver {
 
   private final TreeGrid<XincoCoreNodeServer> nodeTree = new TreeGrid<>();
   private final Grid<XincoCoreDataServer> dataGrid = new Grid<>(XincoCoreDataServer.class, false);
@@ -48,7 +54,21 @@ public class ExplorerView extends HorizontalLayout {
     right.setPadding(false);
 
     add(left, center, right);
+  }
 
+  @Override
+  public void beforeEnter(BeforeEnterEvent event) {
+    UserSession s =
+        VaadinSession.getCurrent() != null
+            ? VaadinSession.getCurrent().getAttribute(UserSession.class)
+            : null;
+    if (s == null || !s.isLoggedIn()) {
+      event.rerouteTo(LoginView.class);
+    }
+  }
+
+  @Override
+  public void afterNavigation(AfterNavigationEvent event) {
     loadRootNodes();
   }
 

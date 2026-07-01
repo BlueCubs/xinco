@@ -10,15 +10,21 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.Layout;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @Layout
 @AnonymousAllowed
 public class MainLayout extends AppLayout {
 
-  // No-arg constructor required by Karibu-Testing (no Spring DI in mock environment)
   public MainLayout() {
-    this(new UserSession());
+    this(sessionFromVaadin());
+  }
+
+  private static UserSession sessionFromVaadin() {
+    if (VaadinSession.getCurrent() == null) return new UserSession();
+    UserSession s = VaadinSession.getCurrent().getAttribute(UserSession.class);
+    return s != null ? s : new UserSession();
   }
 
   public MainLayout(UserSession session) {
