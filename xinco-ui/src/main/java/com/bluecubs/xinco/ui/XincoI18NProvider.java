@@ -12,7 +12,7 @@ public class XincoI18NProvider implements I18NProvider {
 
   private static final String BUNDLE_BASE = "com/bluecubs/xinco/messages/XincoMessages";
 
-  private static final List<Locale> PROVIDED_LOCALES =
+  public static final List<Locale> PROVIDED_LOCALES =
       List.of(
           Locale.ENGLISH,
           Locale.FRENCH,
