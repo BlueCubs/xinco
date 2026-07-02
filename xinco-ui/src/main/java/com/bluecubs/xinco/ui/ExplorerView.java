@@ -1,11 +1,17 @@
 package com.bluecubs.xinco.ui;
 
+import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
+import com.bluecubs.xinco.core.server.XincoCoreLogServerBuilder;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.ui.component.PropertyGrid;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -17,8 +23,11 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -30,10 +39,16 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 @Route(value = "explorer", layout = MainLayout.class)
 @PageTitle("Explorer — Xinco DMS")
@@ -50,6 +65,7 @@ public class ExplorerView extends VerticalLayout
 
   // Menu items that need enable/disable based on context
   private com.vaadin.flow.component.contextmenu.MenuItem miNewFolder;
+  private com.vaadin.flow.component.contextmenu.MenuItem miAddData;
   private com.vaadin.flow.component.contextmenu.MenuItem miDelete;
   private com.vaadin.flow.component.contextmenu.MenuItem miDownload;
   private com.vaadin.flow.component.contextmenu.MenuItem miCheckOut;
@@ -117,6 +133,7 @@ public class ExplorerView extends VerticalLayout
     var repoMenu = menuBar.addItem("Repository");
     var repoSub = repoMenu.getSubMenu();
     miNewFolder = repoSub.addItem("New Folder…", e -> openNewFolderDialog());
+    miAddData = repoSub.addItem("Add Data…", e -> openAddDataDialog());
     repoSub.addItem("Refresh", e -> loadRootNodes());
 
     // Edit menu
@@ -150,6 +167,7 @@ public class ExplorerView extends VerticalLayout
     boolean isCheckedOut = dataStatus == 3;
 
     miNewFolder.setEnabled(canWriteNode);
+    miAddData.setEnabled(canWriteNode);
     miDelete.setEnabled(canWriteNode || canWriteData);
     miDownload.setEnabled(dataSelected && isFile);
     miCheckOut.setEnabled(canWriteData && isFile && !isCheckedOut);
@@ -334,6 +352,138 @@ public class ExplorerView extends VerticalLayout
     }
   }
 
+  private void openAddDataDialog() {
+    if (selectedNode == null) return;
+
+    MemoryBuffer buffer = new MemoryBuffer();
+    Upload upload = new Upload(buffer);
+    upload.setMaxFiles(1);
+    upload.setWidthFull();
+
+    TextField designationField = new TextField("Name");
+    designationField.setWidthFull();
+    designationField.setRequired(true);
+
+    upload.addSucceededListener(
+        e -> {
+          if (designationField.isEmpty()) {
+            designationField.setValue(e.getFileName());
+          }
+        });
+
+    List<XincoCoreLanguageServer> languages;
+    try {
+      languages = XincoCoreLanguageServer.getXincoCoreLanguages();
+    } catch (Exception e) {
+      languages = List.of();
+    }
+    Select<XincoCoreLanguageServer> langSelect = new Select<>();
+    langSelect.setLabel("Language");
+    langSelect.setItems(languages);
+    langSelect.setItemLabelGenerator(l -> l.getSign() + " – " + l.getDesignation());
+    langSelect.setWidthFull();
+    if (!languages.isEmpty()) {
+      langSelect.setValue(languages.get(0));
+    }
+
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle("Add Data");
+    dialog.setWidth("480px");
+    dialog.add(new VerticalLayout(upload, designationField, langSelect));
+
+    final List<XincoCoreLanguageServer> finalLanguages = languages;
+    Button addBtn =
+        new Button(
+            "Add",
+            e -> {
+              String name = designationField.getValue().trim();
+              if (name.isEmpty()) {
+                designationField.setErrorMessage("Name is required");
+                designationField.setInvalid(true);
+                return;
+              }
+              if (buffer.getFileName() == null || buffer.getFileName().isEmpty()) {
+                error("Please upload a file first.");
+                return;
+              }
+              XincoCoreLanguageServer lang =
+                  langSelect.getValue() != null && !finalLanguages.isEmpty()
+                      ? langSelect.getValue()
+                      : null;
+              if (lang == null) {
+                error("Please select a language.");
+                return;
+              }
+              try {
+                // 1. Persist the data record
+                XincoCoreDataServer newData =
+                    new XincoCoreDataServer(0, selectedNode.getId(), lang.getId(), 1, name, 1);
+                newData.write2DB();
+                int dataId = newData.getId();
+
+                // 2. Create CREATION log entry (versionHigh=1, versionMid=0 for major version)
+                var log =
+                    new XincoCoreLogServerBuilder()
+                        .setXincoCoreDataId(dataId)
+                        .setXincoCoreUserId(session.getUser().getId())
+                        .setOpCode(OPCode.CREATION.ordinal() + 1)
+                        .setOperationDescription("Initial upload")
+                        .setVersionHigh(1)
+                        .setVersionMid(0)
+                        .setVersionLow(0)
+                        .setVersionPostFix("")
+                        .createXincoCoreLogServer();
+                log.write2DB();
+                int logId = log.getId();
+
+                // 3. Write file bytes to repository path {id}-{logId}
+                String repoPath =
+                    XincoCoreDataServer.getXincoCoreDataPath(
+                        XincoDBManager.CONFIG.fileRepositoryPath, dataId, dataId + "-" + logId);
+                File repoFile = new File(repoPath);
+                repoFile.getParentFile().mkdirs();
+                try (InputStream in = buffer.getInputStream()) {
+                  Files.copy(in, repoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                // 4. Write add attributes for data type 1 (12 attributes)
+                XMLGregorianCalendar now =
+                    DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
+                String filename = buffer.getFileName();
+                long filesize = repoFile.length();
+                // attr 1: filename (varchar)
+                new XincoAddAttributeServer(dataId, 1, 0, 0L, 0.0, filename, "", now).write2DB();
+                // attr 2: filesize (unsignedint)
+                new XincoAddAttributeServer(dataId, 2, 0, filesize, 0.0, "", "", now).write2DB();
+                // attr 3: checksum (varchar, empty)
+                new XincoAddAttributeServer(dataId, 3, 0, 0L, 0.0, "", "", now).write2DB();
+                // attr 4: revision model = 1
+                new XincoAddAttributeServer(dataId, 4, 0, 1L, 0.0, "", "", now).write2DB();
+                // attr 5-12: defaults
+                for (int i = 5; i <= 12; i++) {
+                  new XincoAddAttributeServer(dataId, i, 0, 0L, 0.0, "", "", now).write2DB();
+                }
+
+                dialog.close();
+                // Refresh data grid for current node
+                selectedNode.fillXincoCoreData();
+                dataGrid.setItems(
+                    selectedNode.getXincoCoreData().stream()
+                        .filter(o -> o instanceof XincoCoreDataServer)
+                        .map(o -> (XincoCoreDataServer) o)
+                        .toList());
+                Notification.show("'" + name + "' added.")
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+              } catch (Exception ex) {
+                LOG.log(Level.SEVERE, "Add data failed", ex);
+                error("Failed to add data: " + ex.getMessage());
+              }
+            });
+
+    dialog.getFooter().add(new Button("Cancel", e -> dialog.close()), addBtn);
+    dialog.open();
+  }
+
   private void openNewFolderDialog() {
     if (selectedNode == null) return;
     Dialog dialog = new Dialog();
@@ -346,8 +496,8 @@ public class ExplorerView extends VerticalLayout
     dialog
         .getFooter()
         .add(
-            new com.vaadin.flow.component.button.Button("Cancel", e -> dialog.close()),
-            new com.vaadin.flow.component.button.Button(
+            new Button("Cancel", e -> dialog.close()),
+            new Button(
                 "Create",
                 e -> {
                   String name = nameField.getValue().trim();
