@@ -72,6 +72,8 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miCheckOut;
   private com.vaadin.flow.component.contextmenu.MenuItem miCheckIn;
   private com.vaadin.flow.component.contextmenu.MenuItem miUndoCheckOut;
+  private com.vaadin.flow.component.contextmenu.MenuItem miLock;
+  private com.vaadin.flow.component.contextmenu.MenuItem miPublish;
 
   // UI components
   private final TreeGrid<XincoCoreNodeServer> nodeTree = new TreeGrid<>();
@@ -154,6 +156,9 @@ public class ExplorerView extends VerticalLayout
         fileSub.addItem(getTranslation("menu.edit.checkinfile") + "…", e -> openCheckinDialog());
     miUndoCheckOut =
         fileSub.addItem(getTranslation("menu.edit.undocheckout"), e -> undoCheckoutSelected());
+    fileSub.add(new com.vaadin.flow.component.html.Hr());
+    miLock = fileSub.addItem(getTranslation("menu.edit.lockdata"), e -> lockSelected());
+    miPublish = fileSub.addItem(getTranslation("menu.edit.publishdata"), e -> publishSelected());
 
     updateMenuState();
   }
@@ -178,6 +183,8 @@ public class ExplorerView extends VerticalLayout
     miCheckOut.setEnabled(canWriteData && isFile && dataStatus == 1);
     miCheckIn.setEnabled(canWriteData && isFile && isCheckedOut);
     miUndoCheckOut.setEnabled(canWriteData && isFile && isCheckedOut);
+    miLock.setEnabled(canWriteData && (dataStatus == 1 || dataStatus == 5));
+    miPublish.setEnabled(canWriteData && dataStatus == 1);
   }
 
   // ── ACL helpers ───────────────────────────────────────────────────────────
@@ -784,6 +791,106 @@ public class ExplorerView extends VerticalLayout
           } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Undo checkout failed", ex);
             error("Undo checkout failed: " + ex.getMessage());
+          }
+        });
+    confirm.open();
+  }
+
+  private void lockSelected() {
+    if (selectedData == null) return;
+    ConfirmDialog confirm = new ConfirmDialog();
+    confirm.setHeader(getTranslation("menu.edit.lockdata") + "?");
+    confirm.setCancelable(true);
+    confirm.setConfirmText(getTranslation("menu.edit.lockdata"));
+    confirm.addConfirmListener(
+        e -> {
+          try {
+            XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+            XincoCoreLogServer lastLog =
+                data.getXincoCoreLogs().isEmpty()
+                    ? null
+                    : (XincoCoreLogServer)
+                        data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
+            int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() : 1;
+            int vm = lastLog != null ? lastLog.getVersion().getVersionMid() : 0;
+            int vl = lastLog != null ? lastLog.getVersion().getVersionLow() : 0;
+            String vp =
+                lastLog != null && lastLog.getVersion().getVersionPostfix() != null
+                    ? lastLog.getVersion().getVersionPostfix()
+                    : "";
+
+            var log =
+                new XincoCoreLogServerBuilder()
+                    .setXincoCoreDataId(data.getId())
+                    .setXincoCoreUserId(session.getUser().getId())
+                    .setOpCode(OPCode.LOCK_COMMENT.ordinal() + 1)
+                    .setOperationDescription(getTranslation("menu.edit.lockdata"))
+                    .setVersionHigh(vh)
+                    .setVersionMid(vm)
+                    .setVersionLow(vl)
+                    .setVersionPostFix(vp)
+                    .createXincoCoreLogServer();
+            log.write2DB();
+
+            data.setStatusNumber(2);
+            data.write2DB();
+
+            refreshDataGrid();
+            Notification.show(getTranslation("menu.edit.lockdata") + " OK")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+          } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Lock failed", ex);
+            error("Lock failed: " + ex.getMessage());
+          }
+        });
+    confirm.open();
+  }
+
+  private void publishSelected() {
+    if (selectedData == null) return;
+    ConfirmDialog confirm = new ConfirmDialog();
+    confirm.setHeader(getTranslation("menu.edit.publishdata") + "?");
+    confirm.setCancelable(true);
+    confirm.setConfirmText(getTranslation("menu.edit.publishdata"));
+    confirm.addConfirmListener(
+        e -> {
+          try {
+            XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+            XincoCoreLogServer lastLog =
+                data.getXincoCoreLogs().isEmpty()
+                    ? null
+                    : (XincoCoreLogServer)
+                        data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
+            int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() : 1;
+            int vm = lastLog != null ? lastLog.getVersion().getVersionMid() : 0;
+            int vl = lastLog != null ? lastLog.getVersion().getVersionLow() : 0;
+            String vp =
+                lastLog != null && lastLog.getVersion().getVersionPostfix() != null
+                    ? lastLog.getVersion().getVersionPostfix()
+                    : "";
+
+            var log =
+                new XincoCoreLogServerBuilder()
+                    .setXincoCoreDataId(data.getId())
+                    .setXincoCoreUserId(session.getUser().getId())
+                    .setOpCode(OPCode.PUBLISH_COMMENT.ordinal() + 1)
+                    .setOperationDescription(getTranslation("menu.edit.publishdata"))
+                    .setVersionHigh(vh)
+                    .setVersionMid(vm)
+                    .setVersionLow(vl)
+                    .setVersionPostFix(vp)
+                    .createXincoCoreLogServer();
+            log.write2DB();
+
+            data.setStatusNumber(5);
+            data.write2DB();
+
+            refreshDataGrid();
+            Notification.show(getTranslation("menu.edit.publishdata") + " OK")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+          } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Publish failed", ex);
+            error("Publish failed: " + ex.getMessage());
           }
         });
     confirm.open();
