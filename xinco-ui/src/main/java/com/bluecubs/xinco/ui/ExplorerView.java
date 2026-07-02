@@ -5,14 +5,18 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
 import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
 import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreLogServerBuilder;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.ui.component.PropertyGrid;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -22,6 +26,7 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -45,7 +50,9 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeFactory;
@@ -74,6 +81,7 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miUndoCheckOut;
   private com.vaadin.flow.component.contextmenu.MenuItem miLock;
   private com.vaadin.flow.component.contextmenu.MenuItem miPublish;
+  private com.vaadin.flow.component.contextmenu.MenuItem miManageAcl;
 
   // UI components
   private final TreeGrid<XincoCoreNodeServer> nodeTree = new TreeGrid<>();
@@ -144,6 +152,8 @@ public class ExplorerView extends VerticalLayout
     var editMenu = menuBar.addItem("Edit");
     var editSub = editMenu.getSubMenu();
     miDelete = editSub.addItem(getTranslation("general.delete"), e -> confirmDelete());
+    editSub.add(new com.vaadin.flow.component.html.Hr());
+    miManageAcl = editSub.addItem("Manage ACL…", e -> openAclDialog());
 
     // File menu
     var fileMenu = menuBar.addItem("File");
@@ -185,6 +195,9 @@ public class ExplorerView extends VerticalLayout
     miUndoCheckOut.setEnabled(canWriteData && isFile && isCheckedOut);
     miLock.setEnabled(canWriteData && (dataStatus == 1 || dataStatus == 5));
     miPublish.setEnabled(canWriteData && dataStatus == 1);
+    boolean canAdminNode = loggedIn && nodeSelected && hasAdminAccess(selectedNode);
+    boolean canAdminData = loggedIn && dataSelected && hasAdminAccess(selectedData);
+    miManageAcl.setEnabled(canAdminNode || canAdminData);
   }
 
   // ── ACL helpers ───────────────────────────────────────────────────────────
@@ -204,6 +217,26 @@ public class ExplorerView extends VerticalLayout
     try {
       var ace = XincoCoreACEServer.checkAccess(session.getUser(), data.getXincoCoreAcl());
       return ace != null && ace.isWritePermission();
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private boolean hasAdminAccess(XincoCoreNodeServer node) {
+    try {
+      var ace = XincoCoreACEServer.checkAccess(session.getUser(), node.getXincoCoreAcl());
+      return ace != null && ace.isAdminPermission();
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private boolean hasAdminAccess(XincoCoreDataServer data) {
+    try {
+      var ace = XincoCoreACEServer.checkAccess(session.getUser(), data.getXincoCoreAcl());
+      return ace != null && ace.isAdminPermission();
     } catch (Exception e) {
       return false;
     }
@@ -907,6 +940,209 @@ public class ExplorerView extends VerticalLayout
     }
     selectedData = null;
     updateMenuState();
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private void openAclDialog() {
+    if (selectedNode == null && selectedData == null) return;
+
+    boolean isData = selectedData != null;
+    int targetId = isData ? selectedData.getId() : selectedNode.getId();
+    String designation = isData ? selectedData.getDesignation() : selectedNode.getDesignation();
+    String aclType = isData ? "xincoCoreData.id" : "xincoCoreNode.id";
+    int nodeIdForAce = isData ? 0 : targetId;
+    int dataIdForAce = isData ? targetId : 0;
+
+    List<XincoCoreACEServer> acl =
+        new ArrayList<>(XincoCoreACEServer.getXincoCoreACL(targetId, aclType));
+    List<XincoCoreACEServer> deletedAces = new ArrayList<>();
+
+    List<XincoCoreUserServer> allUsers;
+    List<XincoCoreGroupServer> allGroups;
+    try {
+      allUsers = XincoCoreUserServer.getXincoCoreUsers();
+      allGroups = XincoCoreGroupServer.getXincoCoreGroups();
+    } catch (Exception e) {
+      error("Failed to load subjects: " + e.getMessage());
+      return;
+    }
+
+    VerticalLayout aceRows = new VerticalLayout();
+    aceRows.setPadding(false);
+    aceRows.setSpacing(false);
+    aceRows.setWidthFull();
+
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle("ACL — " + designation);
+    dialog.setWidth("700px");
+
+    for (XincoCoreACEServer ace : new ArrayList<>(acl)) {
+      String name;
+      if (ace.getXincoCoreUserId() > 0) {
+        int uid = ace.getXincoCoreUserId();
+        name =
+            "User: "
+                + allUsers.stream()
+                    .filter(u -> u.getId() == uid)
+                    .map(XincoCoreUserServer::getUsername)
+                    .findFirst()
+                    .orElse("#" + uid);
+      } else {
+        int gid = ace.getXincoCoreGroupId();
+        name =
+            "Group: "
+                + allGroups.stream()
+                    .filter(g -> g.getId() == gid)
+                    .map(XincoCoreGroupServer::getDesignation)
+                    .findFirst()
+                    .orElse("#" + gid);
+      }
+
+      Checkbox cbAdmin = new Checkbox("Admin", ace.isAdminPermission());
+      cbAdmin.addValueChangeListener(ev -> ace.setAdminPermission(ev.getValue()));
+      Checkbox cbRead = new Checkbox("Read", ace.isReadPermission());
+      cbRead.addValueChangeListener(ev -> ace.setReadPermission(ev.getValue()));
+      Checkbox cbWrite = new Checkbox("Write", ace.isWritePermission());
+      cbWrite.addValueChangeListener(ev -> ace.setWritePermission(ev.getValue()));
+      Checkbox cbExec = new Checkbox("Execute", ace.isExecutePermission());
+      cbExec.addValueChangeListener(ev -> ace.setExecutePermission(ev.getValue()));
+
+      HorizontalLayout row = new HorizontalLayout();
+      row.setWidthFull();
+      row.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+      Span nameSpan = new Span(name);
+      nameSpan.getStyle().set("min-width", "180px").set("flex-grow", "1");
+      Button delBtn =
+          new Button(
+              "×",
+              ev -> {
+                acl.remove(ace);
+                deletedAces.add(ace);
+                aceRows.remove(row);
+              });
+      row.add(nameSpan, cbAdmin, cbRead, cbWrite, cbExec, delBtn);
+      aceRows.add(row);
+    }
+
+    // Build subject list for the add-entry combo
+    List<String> subjects = new ArrayList<>();
+    Map<String, int[]> subjectIds = new LinkedHashMap<>();
+    for (XincoCoreUserServer u : allUsers) {
+      int uid = u.getId();
+      if (acl.stream().noneMatch(a -> a.getXincoCoreUserId() == uid)) {
+        String label = "User: " + u.getUsername();
+        subjects.add(label);
+        subjectIds.put(label, new int[] {uid, 0});
+      }
+    }
+    for (XincoCoreGroupServer g : allGroups) {
+      int gid = g.getId();
+      if (acl.stream().noneMatch(a -> a.getXincoCoreGroupId() == gid)) {
+        String label = "Group: " + g.getDesignation();
+        subjects.add(label);
+        subjectIds.put(label, new int[] {0, gid});
+      }
+    }
+
+    ComboBox<String> subjectBox = new ComboBox<>("Add entry");
+    subjectBox.setItems(subjects);
+    subjectBox.setWidth("220px");
+    Checkbox newAdmin = new Checkbox("Admin");
+    Checkbox newRead = new Checkbox("Read", true);
+    Checkbox newWrite = new Checkbox("Write", true);
+    Checkbox newExec = new Checkbox("Execute");
+
+    Button addBtn = new Button("Add");
+    addBtn.addClickListener(
+        ev -> {
+          String sel = subjectBox.getValue();
+          if (sel == null || !subjectIds.containsKey(sel)) {
+            error("Select a subject first.");
+            return;
+          }
+          int[] ids = subjectIds.get(sel);
+          try {
+            XincoCoreACEServer newAce =
+                new XincoCoreACEServer(
+                    0,
+                    ids[0],
+                    ids[1],
+                    nodeIdForAce,
+                    dataIdForAce,
+                    newRead.getValue(),
+                    newWrite.getValue(),
+                    newExec.getValue(),
+                    newAdmin.getValue());
+            acl.add(newAce);
+
+            Checkbox r1 = new Checkbox("Admin", newAce.isAdminPermission());
+            r1.addValueChangeListener(e2 -> newAce.setAdminPermission(e2.getValue()));
+            Checkbox r2 = new Checkbox("Read", newAce.isReadPermission());
+            r2.addValueChangeListener(e2 -> newAce.setReadPermission(e2.getValue()));
+            Checkbox r3 = new Checkbox("Write", newAce.isWritePermission());
+            r3.addValueChangeListener(e2 -> newAce.setWritePermission(e2.getValue()));
+            Checkbox r4 = new Checkbox("Execute", newAce.isExecutePermission());
+            r4.addValueChangeListener(e2 -> newAce.setExecutePermission(e2.getValue()));
+
+            HorizontalLayout newRow = new HorizontalLayout();
+            newRow.setWidthFull();
+            newRow.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+            Span ns = new Span(sel);
+            ns.getStyle().set("min-width", "180px").set("flex-grow", "1");
+            Button delNew =
+                new Button(
+                    "×",
+                    e2 -> {
+                      acl.remove(newAce);
+                      deletedAces.add(newAce);
+                      aceRows.remove(newRow);
+                      subjects.add(sel);
+                      subjectIds.put(sel, ids);
+                      subjectBox.setItems(subjects);
+                    });
+            newRow.add(ns, r1, r2, r3, r4, delNew);
+            aceRows.add(newRow);
+
+            subjects.remove(sel);
+            subjectBox.setItems(subjects);
+            subjectBox.clear();
+          } catch (Exception ex) {
+            error("Failed to add entry: " + ex.getMessage());
+          }
+        });
+
+    HorizontalLayout addRow =
+        new HorizontalLayout(subjectBox, newAdmin, newRead, newWrite, newExec, addBtn);
+    addRow.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
+    addRow.setWidthFull();
+
+    VerticalLayout content =
+        new VerticalLayout(aceRows, new com.vaadin.flow.component.html.Hr(), addRow);
+    content.setPadding(false);
+    dialog.add(content);
+
+    Button saveBtn =
+        new Button(
+            "Save",
+            ev -> {
+              try {
+                for (XincoCoreACEServer d : deletedAces) {
+                  if (d.getId() > 0) {
+                    XincoCoreACEServer.removeFromDB(d, session.getUser().getId());
+                  }
+                }
+                for (XincoCoreACEServer a : acl) {
+                  a.write2DB();
+                }
+                dialog.close();
+                Notification.show("ACL saved.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+              } catch (Exception ex) {
+                LOG.log(Level.SEVERE, "ACL save failed", ex);
+                error("ACL save failed: " + ex.getMessage());
+              }
+            });
+    dialog.getFooter().add(new Button("Close", ev -> dialog.close()), saveBtn);
+    dialog.open();
   }
 
   private void error(String msg) {
