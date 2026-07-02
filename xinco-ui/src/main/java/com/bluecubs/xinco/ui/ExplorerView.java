@@ -230,13 +230,18 @@ public class ExplorerView extends VerticalLayout
   }
 
   private static String statusLabel(int status) {
-    return switch (status) {
-      case 1 -> "Active";
-      case 2 -> "Locked";
-      case 3 -> "Checked Out";
-      case 5 -> "Published";
-      default -> "Unknown (" + status + ")";
-    };
+    switch (status) {
+      case 1:
+        return "Active";
+      case 2:
+        return "Locked";
+      case 3:
+        return "Checked Out";
+      case 5:
+        return "Published";
+      default:
+        return "Unknown (" + status + ")";
+    }
   }
 
   // ── Navigation ────────────────────────────────────────────────────────────
@@ -302,14 +307,17 @@ public class ExplorerView extends VerticalLayout
         return;
       }
       String filename = selectedData.getDesignation();
-      StreamResource resource = new StreamResource(filename, () -> {
-        try {
-          return new FileInputStream(file);
-        } catch (Exception ex) {
-          LOG.log(Level.SEVERE, "Download stream error", ex);
-          return null;
-        }
-      });
+      StreamResource resource =
+          new StreamResource(
+              filename,
+              () -> {
+                try {
+                  return new FileInputStream(file);
+                } catch (Exception ex) {
+                  LOG.log(Level.SEVERE, "Download stream error", ex);
+                  return null;
+                }
+              });
       // Add a hidden anchor and programmatically click it to trigger download
       Anchor anchor = new Anchor(resource, "");
       anchor.getElement().setAttribute("download", true);
@@ -319,8 +327,7 @@ public class ExplorerView extends VerticalLayout
       // Clean up anchor after a short delay so it doesn't accumulate
       UI.getCurrent()
           .getPage()
-          .executeJs(
-              "setTimeout(() => $0.remove(), 5000)", anchor.getElement());
+          .executeJs("setTimeout(() => $0.remove(), 5000)", anchor.getElement());
     } catch (Exception e) {
       LOG.log(Level.SEVERE, "Download failed", e);
       error("Download failed: " + e.getMessage());
@@ -336,32 +343,37 @@ public class ExplorerView extends VerticalLayout
     nameField.setAutofocus(true);
     dialog.add(nameField);
 
-    dialog.getFooter().add(
-        new com.vaadin.flow.component.button.Button("Cancel", e -> dialog.close()),
-        new com.vaadin.flow.component.button.Button("Create", e -> {
-          String name = nameField.getValue().trim();
-          if (name.isEmpty()) {
-            nameField.setErrorMessage("Name is required");
-            nameField.setInvalid(true);
-            return;
-          }
-          try {
-            XincoCoreNodeServer newNode = new XincoCoreNodeServer(
-                0,
-                selectedNode.getId(),
-                selectedNode.getXincoCoreLanguage().getId(),
-                name,
-                1);
-            newNode.write2DB();
-            dialog.close();
-            loadRootNodes();
-            Notification.show("Folder '" + name + "' created.").addThemeVariants(
-                NotificationVariant.LUMO_SUCCESS);
-          } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, "Create folder failed", ex);
-            error("Could not create folder: " + ex.getMessage());
-          }
-        }));
+    dialog
+        .getFooter()
+        .add(
+            new com.vaadin.flow.component.button.Button("Cancel", e -> dialog.close()),
+            new com.vaadin.flow.component.button.Button(
+                "Create",
+                e -> {
+                  String name = nameField.getValue().trim();
+                  if (name.isEmpty()) {
+                    nameField.setErrorMessage("Name is required");
+                    nameField.setInvalid(true);
+                    return;
+                  }
+                  try {
+                    XincoCoreNodeServer newNode =
+                        new XincoCoreNodeServer(
+                            0,
+                            selectedNode.getId(),
+                            selectedNode.getXincoCoreLanguage().getId(),
+                            name,
+                            1);
+                    newNode.write2DB();
+                    dialog.close();
+                    loadRootNodes();
+                    Notification.show("Folder '" + name + "' created.")
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                  } catch (XincoException ex) {
+                    LOG.log(Level.SEVERE, "Create folder failed", ex);
+                    error("Could not create folder: " + ex.getMessage());
+                  }
+                }));
     dialog.open();
   }
 
@@ -378,27 +390,28 @@ public class ExplorerView extends VerticalLayout
     confirm.setCancelable(true);
     confirm.setConfirmText("Delete");
     confirm.setConfirmButtonTheme("error primary");
-    confirm.addConfirmListener(e -> {
-      try {
-        if (selectedData != null) {
-          if (selectedData.getStatusNumber() == 3) {
-            error("Cannot delete a checked-out item.");
-            return;
+    confirm.addConfirmListener(
+        e -> {
+          try {
+            if (selectedData != null) {
+              if (selectedData.getStatusNumber() == 3) {
+                error("Cannot delete a checked-out item.");
+                return;
+              }
+              selectedData.deleteFromDB();
+              selectedData = null;
+            } else if (selectedNode != null) {
+              int userId = session.getUser() != null ? session.getUser().getId() : 0;
+              selectedNode.deleteFromDB(true, userId);
+              selectedNode = null;
+            }
+            loadRootNodes();
+            Notification.show("Deleted.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+          } catch (XincoException ex) {
+            LOG.log(Level.SEVERE, "Delete failed", ex);
+            error("Delete failed: " + ex.getMessage());
           }
-          selectedData.deleteFromDB();
-          selectedData = null;
-        } else if (selectedNode != null) {
-          int userId = session.getUser() != null ? session.getUser().getId() : 0;
-          selectedNode.deleteFromDB(true, userId);
-          selectedNode = null;
-        }
-        loadRootNodes();
-        Notification.show("Deleted.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-      } catch (XincoException ex) {
-        LOG.log(Level.SEVERE, "Delete failed", ex);
-        error("Delete failed: " + ex.getMessage());
-      }
-    });
+        });
     confirm.open();
   }
 
