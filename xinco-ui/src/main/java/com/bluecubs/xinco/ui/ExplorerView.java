@@ -130,25 +130,36 @@ public class ExplorerView extends VerticalLayout
     menuBar.setWidthFull();
 
     // Repository menu
-    var repoMenu = menuBar.addItem("Repository");
+    var repoMenu = menuBar.addItem(getTranslation("menu.repository"));
     var repoSub = repoMenu.getSubMenu();
-    miNewFolder = repoSub.addItem("New Folder…", e -> openNewFolderDialog());
-    miAddData = repoSub.addItem("Add Data…", e -> openAddDataDialog());
-    repoSub.addItem("Refresh", e -> loadRootNodes());
+    miNewFolder = repoSub.addItem(getTranslation("general.newfolder"), e -> openNewFolderDialog());
+    miAddData =
+        repoSub.addItem(getTranslation("menu.repository.adddata") + "…", e -> openAddDataDialog());
+    repoSub.addItem(getTranslation("menu.repository.refresh"), e -> loadRootNodes());
 
     // Edit menu
     var editMenu = menuBar.addItem("Edit");
     var editSub = editMenu.getSubMenu();
-    miDelete = editSub.addItem("Delete", e -> confirmDelete());
+    miDelete = editSub.addItem(getTranslation("general.delete"), e -> confirmDelete());
 
     // File menu
     var fileMenu = menuBar.addItem("File");
     var fileSub = fileMenu.getSubMenu();
-    miDownload = fileSub.addItem("Download", e -> downloadSelected());
+    miDownload =
+        fileSub.addItem(getTranslation("menu.repository.downloadfile"), e -> downloadSelected());
     fileSub.add(new com.vaadin.flow.component.html.Hr());
-    miCheckOut = fileSub.addItem("Check Out", e -> notImplemented("Check Out"));
-    miCheckIn = fileSub.addItem("Check In…", e -> notImplemented("Check In"));
-    miUndoCheckOut = fileSub.addItem("Undo Check Out", e -> notImplemented("Undo Check Out"));
+    miCheckOut =
+        fileSub.addItem(
+            getTranslation("menu.edit.checkoutfile"),
+            e -> notImplemented("menu.edit.checkoutfile"));
+    miCheckIn =
+        fileSub.addItem(
+            getTranslation("menu.edit.checkinfile") + "…",
+            e -> notImplemented("menu.edit.checkinfile"));
+    miUndoCheckOut =
+        fileSub.addItem(
+            getTranslation("menu.edit.undocheckout"),
+            e -> notImplemented("menu.edit.undocheckout"));
 
     updateMenuState();
   }
@@ -200,7 +211,9 @@ public class ExplorerView extends VerticalLayout
   // ── Tree ──────────────────────────────────────────────────────────────────
 
   private void buildNodeTree() {
-    nodeTree.addHierarchyColumn(XincoCoreNodeServer::getDesignation).setHeader("Folder");
+    nodeTree
+        .addHierarchyColumn(XincoCoreNodeServer::getDesignation)
+        .setHeader(getTranslation("general.folder"));
     nodeTree.setSizeFull();
     nodeTree.addSelectionListener(
         e ->
@@ -223,8 +236,12 @@ public class ExplorerView extends VerticalLayout
   // ── Data Grid ─────────────────────────────────────────────────────────────
 
   private void buildDataGrid() {
-    dataGrid.addColumn(XincoCoreDataServer::getDesignation).setHeader("Name");
-    dataGrid.addColumn(d -> d.getXincoCoreLanguage().getSign()).setHeader("Language");
+    dataGrid
+        .addColumn(XincoCoreDataServer::getDesignation)
+        .setHeader(getTranslation("general.filename"));
+    dataGrid
+        .addColumn(d -> d.getXincoCoreLanguage().getSign())
+        .setHeader(getTranslation("general.language"));
     dataGrid.addColumn(d -> statusLabel(d.getStatusNumber())).setHeader("Status");
     dataGrid.setSizeFull();
     dataGrid.addSelectionListener(
@@ -360,7 +377,7 @@ public class ExplorerView extends VerticalLayout
     upload.setMaxFiles(1);
     upload.setWidthFull();
 
-    TextField designationField = new TextField("Name");
+    TextField designationField = new TextField(getTranslation("general.filename"));
     designationField.setWidthFull();
     designationField.setRequired(true);
 
@@ -378,7 +395,7 @@ public class ExplorerView extends VerticalLayout
       languages = List.of();
     }
     Select<XincoCoreLanguageServer> langSelect = new Select<>();
-    langSelect.setLabel("Language");
+    langSelect.setLabel(getTranslation("general.language"));
     langSelect.setItems(languages);
     langSelect.setItemLabelGenerator(l -> l.getSign() + " – " + l.getDesignation());
     langSelect.setWidthFull();
@@ -387,7 +404,7 @@ public class ExplorerView extends VerticalLayout
     }
 
     Dialog dialog = new Dialog();
-    dialog.setHeaderTitle("Add Data");
+    dialog.setHeaderTitle(getTranslation("menu.repository.adddata"));
     dialog.setWidth("480px");
     dialog.add(new VerticalLayout(upload, designationField, langSelect));
 
@@ -480,15 +497,17 @@ public class ExplorerView extends VerticalLayout
               }
             });
 
-    dialog.getFooter().add(new Button("Cancel", e -> dialog.close()), addBtn);
+    dialog
+        .getFooter()
+        .add(new Button(getTranslation("general.cancel"), e -> dialog.close()), addBtn);
     dialog.open();
   }
 
   private void openNewFolderDialog() {
     if (selectedNode == null) return;
     Dialog dialog = new Dialog();
-    dialog.setHeaderTitle("New Folder");
-    TextField nameField = new TextField("Folder name");
+    dialog.setHeaderTitle(getTranslation("general.newfolder"));
+    TextField nameField = new TextField(getTranslation("general.folder"));
     nameField.setWidthFull();
     nameField.setAutofocus(true);
     dialog.add(nameField);
@@ -496,9 +515,9 @@ public class ExplorerView extends VerticalLayout
     dialog
         .getFooter()
         .add(
-            new Button("Cancel", e -> dialog.close()),
+            new Button(getTranslation("general.cancel"), e -> dialog.close()),
             new Button(
-                "Create",
+                getTranslation("general.create"),
                 e -> {
                   String name = nameField.getValue().trim();
                   if (name.isEmpty()) {
@@ -565,8 +584,8 @@ public class ExplorerView extends VerticalLayout
     confirm.open();
   }
 
-  private void notImplemented(String feature) {
-    Notification.show(feature + " is not yet implemented in this version.")
+  private void notImplemented(String i18nKey) {
+    Notification.show(getTranslation(i18nKey) + " is not yet implemented in this version.")
         .addThemeVariants(NotificationVariant.LUMO_CONTRAST);
   }
 
