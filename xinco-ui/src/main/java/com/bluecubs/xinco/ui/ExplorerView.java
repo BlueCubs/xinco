@@ -6,6 +6,7 @@ import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
+import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreLogServerBuilder;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
@@ -148,18 +149,11 @@ public class ExplorerView extends VerticalLayout
     miDownload =
         fileSub.addItem(getTranslation("menu.repository.downloadfile"), e -> downloadSelected());
     fileSub.add(new com.vaadin.flow.component.html.Hr());
-    miCheckOut =
-        fileSub.addItem(
-            getTranslation("menu.edit.checkoutfile"),
-            e -> notImplemented("menu.edit.checkoutfile"));
+    miCheckOut = fileSub.addItem(getTranslation("menu.edit.checkoutfile"), e -> checkoutSelected());
     miCheckIn =
-        fileSub.addItem(
-            getTranslation("menu.edit.checkinfile") + "…",
-            e -> notImplemented("menu.edit.checkinfile"));
+        fileSub.addItem(getTranslation("menu.edit.checkinfile") + "…", e -> openCheckinDialog());
     miUndoCheckOut =
-        fileSub.addItem(
-            getTranslation("menu.edit.undocheckout"),
-            e -> notImplemented("menu.edit.undocheckout"));
+        fileSub.addItem(getTranslation("menu.edit.undocheckout"), e -> undoCheckoutSelected());
 
     updateMenuState();
   }
@@ -174,14 +168,14 @@ public class ExplorerView extends VerticalLayout
     boolean canWriteData = loggedIn && dataSelected && hasWriteAccess(selectedData);
 
     int dataStatus = dataSelected ? selectedData.getStatusNumber() : -1;
-    // statusNumber: 1=active, 2=locked, 3=checked-out, 5=published
-    boolean isCheckedOut = dataStatus == 3;
+    // statusNumber: 1=active, 2=locked, 4=checked-out, 5=published
+    boolean isCheckedOut = dataStatus == 4;
 
     miNewFolder.setEnabled(canWriteNode);
     miAddData.setEnabled(canWriteNode);
     miDelete.setEnabled(canWriteNode || canWriteData);
     miDownload.setEnabled(dataSelected && isFile);
-    miCheckOut.setEnabled(canWriteData && isFile && !isCheckedOut);
+    miCheckOut.setEnabled(canWriteData && isFile && dataStatus == 1);
     miCheckIn.setEnabled(canWriteData && isFile && isCheckedOut);
     miUndoCheckOut.setEnabled(canWriteData && isFile && isCheckedOut);
   }
@@ -270,7 +264,7 @@ public class ExplorerView extends VerticalLayout
         return "Active";
       case 2:
         return "Locked";
-      case 3:
+      case 4:
         return "Checked Out";
       case 5:
         return "Published";
@@ -462,6 +456,14 @@ public class ExplorerView extends VerticalLayout
                 try (InputStream in = buffer.getInputStream()) {
                   Files.copy(in, repoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
+                // Also write to base path {id} so checkout/checkin operations have a working copy
+                String basePath =
+                    XincoCoreDataServer.getXincoCoreDataPath(
+                        XincoDBManager.CONFIG.fileRepositoryPath, dataId, "" + dataId);
+                Files.copy(
+                    repoFile.toPath(),
+                    new File(basePath).toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
 
                 // 4. Write add attributes for data type 1 (12 attributes)
                 XMLGregorianCalendar now =
@@ -563,7 +565,7 @@ public class ExplorerView extends VerticalLayout
         e -> {
           try {
             if (selectedData != null) {
-              if (selectedData.getStatusNumber() == 3) {
+              if (selectedData.getStatusNumber() == 4) {
                 error("Cannot delete a checked-out item.");
                 return;
               }
@@ -584,9 +586,220 @@ public class ExplorerView extends VerticalLayout
     confirm.open();
   }
 
-  private void notImplemented(String i18nKey) {
-    Notification.show(getTranslation(i18nKey) + " is not yet implemented in this version.")
-        .addThemeVariants(NotificationVariant.LUMO_CONTRAST);
+  private void checkoutSelected() {
+    if (selectedData == null) return;
+    try {
+      XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+      XincoCoreLogServer lastLog =
+          data.getXincoCoreLogs().isEmpty()
+              ? null
+              : (XincoCoreLogServer)
+                  data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
+      int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() : 1;
+      int vm = lastLog != null ? lastLog.getVersion().getVersionMid() : 0;
+      int vl = lastLog != null ? lastLog.getVersion().getVersionLow() : 0;
+      String vp =
+          lastLog != null && lastLog.getVersion().getVersionPostfix() != null
+              ? lastLog.getVersion().getVersionPostfix()
+              : "";
+
+      var log =
+          new XincoCoreLogServerBuilder()
+              .setXincoCoreDataId(data.getId())
+              .setXincoCoreUserId(session.getUser().getId())
+              .setOpCode(OPCode.CHECKOUT.ordinal() + 1)
+              .setOperationDescription(
+                  getTranslation("menu.edit.checkoutfile")
+                      + " (user: "
+                      + session.getUser().getUsername()
+                      + ")")
+              .setVersionHigh(vh)
+              .setVersionMid(vm)
+              .setVersionLow(vl)
+              .setVersionPostFix(vp)
+              .createXincoCoreLogServer();
+      log.write2DB();
+
+      data.setStatusNumber(4);
+      data.write2DB();
+
+      selectedData = data;
+      downloadSelected();
+      refreshDataGrid();
+      Notification.show(getTranslation("menu.edit.checkoutfile") + " OK")
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Checkout failed", ex);
+      error("Checkout failed: " + ex.getMessage());
+    }
+  }
+
+  private void openCheckinDialog() {
+    if (selectedData == null) return;
+
+    MemoryBuffer buffer = new MemoryBuffer();
+    Upload upload = new Upload(buffer);
+    upload.setMaxFiles(1);
+    upload.setWidthFull();
+
+    TextField descField = new TextField("Change description");
+    descField.setWidthFull();
+
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(getTranslation("menu.edit.checkinfile"));
+    dialog.setWidth("480px");
+    dialog.add(new VerticalLayout(upload, descField));
+
+    dialog
+        .getFooter()
+        .add(
+            new Button(getTranslation("general.cancel"), e -> dialog.close()),
+            new Button(
+                getTranslation("menu.edit.checkinfile"),
+                e -> {
+                  if (buffer.getFileName() == null || buffer.getFileName().isEmpty()) {
+                    error("Please upload the revised file first.");
+                    return;
+                  }
+                  try {
+                    XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+                    XincoCoreLogServer lastLog =
+                        data.getXincoCoreLogs().isEmpty()
+                            ? null
+                            : (XincoCoreLogServer)
+                                data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
+                    int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() + 1 : 2;
+                    String desc =
+                        descField.getValue().trim().isEmpty()
+                            ? getTranslation("menu.edit.checkinfile")
+                            : descField.getValue().trim();
+
+                    var log =
+                        new XincoCoreLogServerBuilder()
+                            .setXincoCoreDataId(data.getId())
+                            .setXincoCoreUserId(session.getUser().getId())
+                            .setOpCode(OPCode.CHECKIN.ordinal() + 1)
+                            .setOperationDescription(desc)
+                            .setVersionHigh(vh)
+                            .setVersionMid(0)
+                            .setVersionLow(0)
+                            .setVersionPostFix("")
+                            .createXincoCoreLogServer();
+                    log.write2DB();
+                    int logId = log.getId();
+
+                    // Write new bytes to base path {id}
+                    String base =
+                        XincoCoreDataServer.getXincoCoreDataPath(
+                            XincoDBManager.CONFIG.fileRepositoryPath,
+                            data.getId(),
+                            "" + data.getId());
+                    File baseFile = new File(base);
+                    baseFile.getParentFile().mkdirs();
+                    try (InputStream in = buffer.getInputStream()) {
+                      Files.copy(in, baseFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
+
+                    // Archive versioned copy {id}-{logId}
+                    String versionPath =
+                        XincoCoreDataServer.getXincoCoreDataPath(
+                            XincoDBManager.CONFIG.fileRepositoryPath,
+                            data.getId(),
+                            data.getId() + "-" + logId);
+                    Files.copy(
+                        baseFile.toPath(),
+                        new File(versionPath).toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
+
+                    // Update filename and filesize add attributes
+                    XMLGregorianCalendar now =
+                        DatatypeFactory.newInstance()
+                            .newXMLGregorianCalendar(new GregorianCalendar());
+                    new XincoAddAttributeServer(
+                            data.getId(), 1, 0, 0L, 0.0, buffer.getFileName(), "", now)
+                        .write2DB();
+                    new XincoAddAttributeServer(
+                            data.getId(), 2, 0, baseFile.length(), 0.0, "", "", now)
+                        .write2DB();
+
+                    data.setStatusNumber(1);
+                    data.write2DB();
+
+                    dialog.close();
+                    refreshDataGrid();
+                    Notification.show(getTranslation("menu.edit.checkinfile") + " OK")
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                  } catch (Exception ex) {
+                    LOG.log(Level.SEVERE, "Checkin failed", ex);
+                    error("Checkin failed: " + ex.getMessage());
+                  }
+                }));
+    dialog.open();
+  }
+
+  private void undoCheckoutSelected() {
+    if (selectedData == null) return;
+    ConfirmDialog confirm = new ConfirmDialog();
+    confirm.setHeader(getTranslation("menu.edit.undocheckout") + "?");
+    confirm.setText(
+        "Local changes will be discarded. The file reverts to the last checked-in version.");
+    confirm.setCancelable(true);
+    confirm.setConfirmText(getTranslation("menu.edit.undocheckout"));
+    confirm.addConfirmListener(
+        e -> {
+          try {
+            XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+            XincoCoreLogServer lastLog =
+                data.getXincoCoreLogs().isEmpty()
+                    ? null
+                    : (XincoCoreLogServer)
+                        data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
+            int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() : 1;
+            int vm = lastLog != null ? lastLog.getVersion().getVersionMid() : 0;
+            int vl = lastLog != null ? lastLog.getVersion().getVersionLow() : 0;
+            String vp =
+                lastLog != null && lastLog.getVersion().getVersionPostfix() != null
+                    ? lastLog.getVersion().getVersionPostfix()
+                    : "";
+
+            var log =
+                new XincoCoreLogServerBuilder()
+                    .setXincoCoreDataId(data.getId())
+                    .setXincoCoreUserId(session.getUser().getId())
+                    .setOpCode(OPCode.CHECKOUT_UNDONE.ordinal() + 1)
+                    .setOperationDescription(getTranslation("menu.edit.undocheckout"))
+                    .setVersionHigh(vh)
+                    .setVersionMid(vm)
+                    .setVersionLow(vl)
+                    .setVersionPostFix(vp)
+                    .createXincoCoreLogServer();
+            log.write2DB();
+
+            data.setStatusNumber(1);
+            data.write2DB();
+
+            refreshDataGrid();
+            Notification.show(getTranslation("menu.edit.undocheckout") + " OK")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+          } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Undo checkout failed", ex);
+            error("Undo checkout failed: " + ex.getMessage());
+          }
+        });
+    confirm.open();
+  }
+
+  private void refreshDataGrid() {
+    if (selectedNode != null) {
+      selectedNode.fillXincoCoreData();
+      dataGrid.setItems(
+          selectedNode.getXincoCoreData().stream()
+              .filter(o -> o instanceof XincoCoreDataServer)
+              .map(o -> (XincoCoreDataServer) o)
+              .toList());
+    }
+    selectedData = null;
+    updateMenuState();
   }
 
   private void error(String msg) {
