@@ -18,6 +18,10 @@ public class PropertyGrid extends Grid<PropertyGrid.Row> {
   }
 
   public void setData(XincoCoreDataServer data) {
+    if (data == null) {
+      setItems(List.of());
+      return;
+    }
     List<Row> rows = new ArrayList<>();
     rows.add(new Row("ID", String.valueOf(data.getId())));
     rows.add(new Row("Name", data.getDesignation()));
