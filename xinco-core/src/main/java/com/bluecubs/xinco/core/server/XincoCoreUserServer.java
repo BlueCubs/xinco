@@ -504,6 +504,34 @@ public final class XincoCoreUserServer extends XincoCoreUser {
     new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory()).create(mod);
   }
 
+  public static void deleteFromDB(int userId) throws Exception {
+    removeUserGroups(userId);
+    new XincoCoreUserJpaController(getEntityManagerFactory()).destroy(userId);
+  }
+
+  public static void removeUserGroups(int userId) throws Exception {
+    var uhgController = new XincoCoreUserHasXincoCoreGroupJpaController(getEntityManagerFactory());
+    for (XincoCoreGroupServer g : XincoCoreGroupServer.getGroupsOfUser(userId)) {
+      uhgController.destroy(new XincoCoreUserHasXincoCoreGroupPK(userId, g.getId()));
+    }
+  }
+
+  public static void saveUserGroups(int userId, java.util.Collection<Integer> groupIds)
+      throws Exception {
+    removeUserGroups(userId);
+    var emf = getEntityManagerFactory();
+    var uhgController = new XincoCoreUserHasXincoCoreGroupJpaController(emf);
+    var groupController = new XincoCoreGroupJpaController(emf);
+    var userController = new XincoCoreUserJpaController(emf);
+    for (int groupId : groupIds) {
+      var pk = new XincoCoreUserHasXincoCoreGroupPK(userId, groupId);
+      var uhg = new XincoCoreUserHasXincoCoreGroup(pk, 1);
+      uhg.setXincoCoreUser(userController.findXincoCoreUser(userId));
+      uhg.setXincoCoreGroup(groupController.findXincoCoreGroup(groupId));
+      uhgController.create(uhg);
+    }
+  }
+
   // create complete list of users
   public static ArrayList<XincoCoreUserServer> getXincoCoreUsers() {
     ArrayList<XincoCoreUserServer> coreUsers = new ArrayList<>();

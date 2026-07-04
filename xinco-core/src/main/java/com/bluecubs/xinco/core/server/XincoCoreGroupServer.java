@@ -155,4 +155,16 @@ public final class XincoCoreGroupServer extends XincoCoreGroup {
     }
     return users;
   }
+
+  public static List<XincoCoreGroupServer> getGroupsOfUser(int userId) {
+    parameters.clear();
+    parameters.put("xincoCoreUserId", userId);
+    result = namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
+    List<XincoCoreGroupServer> groups = new ArrayList<>();
+    for (Iterator it = result.iterator(); it.hasNext(); ) {
+      XincoCoreUserHasXincoCoreGroup uhg = (XincoCoreUserHasXincoCoreGroup) it.next();
+      groups.add(new XincoCoreGroupServer(uhg.getXincoCoreGroup()));
+    }
+    return groups;
+  }
 }
