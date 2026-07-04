@@ -56,6 +56,7 @@ public final class XincoCoreLogServer extends XincoCoreLog {
 
   private static List result;
   private static HashMap parameters = new HashMap();
+
   // create single log object for data structures
 
   public XincoCoreLogServer(int attrID) throws XincoException {

@@ -12,7 +12,9 @@ import java.sql.Statement;
 import junit.framework.TestCase;
 import org.h2.jdbcx.JdbcDataSource;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public abstract class AbstractXincoDataBaseTestCase extends TestCase {
 
   public static boolean deleteDatabase = true;

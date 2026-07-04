@@ -42,7 +42,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 @Entity
 @Table(
     name = "xinco_core_user",

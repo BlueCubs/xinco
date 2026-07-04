@@ -43,7 +43,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import lombok.Getter;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 class UploadManager extends CustomComponent
     implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 
@@ -92,7 +94,9 @@ class UploadManager extends CustomComponent
     success = false;
   }
 
-  /** @return the fileName */
+  /**
+   * @return the fileName
+   */
   public String getFileName() {
     return getInstance().getFileName();
   }

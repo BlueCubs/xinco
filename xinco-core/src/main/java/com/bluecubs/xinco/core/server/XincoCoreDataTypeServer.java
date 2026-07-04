@@ -52,6 +52,7 @@ public final class XincoCoreDataTypeServer extends XincoCoreDataType {
 
   private static List result;
   private static HashMap parameters = new HashMap();
+
   // create data type object for data structures
 
   public XincoCoreDataTypeServer(int attrID) throws XincoException {

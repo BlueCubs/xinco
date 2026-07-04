@@ -69,6 +69,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
   private static HashMap<String, Object> parameters = new HashMap<String, Object>();
   private static List<Object> result;
   private static final Logger LOG = getLogger(XincoCoreDataServer.class.getName());
+
   // create data object for data structures
 
   /**

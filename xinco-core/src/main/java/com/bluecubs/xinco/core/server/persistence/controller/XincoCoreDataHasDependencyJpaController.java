@@ -41,7 +41,9 @@ import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreDataHasDependencyJpaController implements Serializable {
 
   public XincoCoreDataHasDependencyJpaController(EntityManagerFactory emf) {

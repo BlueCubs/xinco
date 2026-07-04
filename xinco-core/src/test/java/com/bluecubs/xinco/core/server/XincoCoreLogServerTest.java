@@ -8,7 +8,9 @@ import com.bluecubs.xinco.core.XincoException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreLogServerTest extends AbstractXincoDataBaseTestCase {
 
   public XincoCoreLogServerTest(String testName) {

@@ -37,7 +37,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 @Entity
 @Table(name = "xinco_add_attribute")
 @EntityListeners(AuditedEntityListener.class)
@@ -78,6 +80,7 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
 
   @Column(name = "attrib_unsignedint")
   private long attribUnsignedint;
+
   // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these
   // annotations to enforce field validation
   @Column(name = "attrib_double")

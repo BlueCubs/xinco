@@ -52,6 +52,7 @@ public final class XincoCoreACEServer extends XincoCoreACE {
   private HashMap parameters = new HashMap();
   private static List result;
   private static final Logger LOG = getLogger(XincoCoreACEServer.class.getSimpleName());
+
   // create single ace object for data structures
 
   public XincoCoreACEServer(int attrID) throws XincoException {

@@ -50,7 +50,9 @@ public enum DBState {
     this.mess = mess;
   }
 
-  /** @return the mess */
+  /**
+   * @return the mess
+   */
   public String getMessage() {
     if (lrb.containsKey(mess)) {
       return lrb.getString(mess);

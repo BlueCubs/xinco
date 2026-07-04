@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import org.junit.Test;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreDataHasDependencyServerTest extends AbstractXincoDataBaseTestCase {
 
   private static HashMap parameters = new HashMap();

@@ -4,7 +4,9 @@ import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoAuditedObject implements AuditedObject {
 
   @Getter @Setter private boolean auditable = true;

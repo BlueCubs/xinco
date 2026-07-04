@@ -40,7 +40,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoDependencyBehaviorJpaController implements Serializable {
 
   public XincoDependencyBehaviorJpaController(EntityManagerFactory emf) {

@@ -52,6 +52,7 @@ public final class XincoCoreGroupServer extends XincoCoreGroup {
 
   private static List result;
   private static HashMap parameters = new HashMap();
+
   // create group object for data structures
 
   public XincoCoreGroupServer(int attrID) throws XincoException {

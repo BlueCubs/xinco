@@ -294,42 +294,58 @@ public final class XincoConfigSingletonServer {
     return allowPublisherList;
   }
 
-  /** @return the guessLanguage */
+  /**
+   * @return the guessLanguage
+   */
   public boolean isGuessLanguage() {
     return guessLanguage;
   }
 
-  /** @return the OOPort */
+  /**
+   * @return the OOPort
+   */
   public int getOOPort() {
     return OOPort;
   }
 
-  /** @return the fileIndexerCount */
+  /**
+   * @return the fileIndexerCount
+   */
   public long getFileIndexerCount() {
     return fileIndexerCount;
   }
 
-  /** @return the indexFileTypesClass */
+  /**
+   * @return the indexFileTypesClass
+   */
   public ArrayList getIndexFileTypesClass() {
     return indexFileTypesClass;
   }
 
-  /** @return the indexFileTypesExt */
+  /**
+   * @return the indexFileTypesExt
+   */
   public ArrayList getIndexFileTypesExt() {
     return indexFileTypesExt;
   }
 
-  /** @return the indexNoIndex */
+  /**
+   * @return the indexNoIndex
+   */
   public String[] getIndexNoIndex() {
     return indexNoIndex;
   }
 
-  /** @return the JNDIDB */
+  /**
+   * @return the JNDIDB
+   */
   public String getJNDIDB() {
     return JNDIDB;
   }
 
-  /** @return the maxSearchResult */
+  /**
+   * @return the maxSearchResult
+   */
   public int getMaxSearchResult() {
     return maxSearchResult;
   }

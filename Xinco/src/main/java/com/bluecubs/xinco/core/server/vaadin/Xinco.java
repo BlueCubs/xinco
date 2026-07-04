@@ -1017,7 +1017,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
               // Set Icon
               switch (temp.getXincoCoreDataType().getId()) {
                 case 1: // File
-                  // Fall through
+                // Fall through
                 case 5: // Rendering
                   if (name != null
                       && name.contains(".")
@@ -1567,6 +1567,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     // Center sub window in new screen size
     getMainWindow().getChildWindows().forEach(Window::center);
   }
+
   // TODO: Rendering support
 
   private void showRenderingDialog() throws XincoException {
@@ -4625,7 +4626,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             // the current is wizard.getLastCompleted() + 1,
                             // the next step wizard.getLastCompleted() + 2
                             switch (getXincoCoreData().getXincoCoreDataType().getId()) {
-                                // File = 1
+                              // File = 1
                               case 1:
                                 clearTempSteps();
                                 addAttributeStep();
@@ -4687,7 +4688,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                     });
                                 wizard.addStep(temp.get(temp.size() - 1));
                                 break;
-                                // Text data
+                              // Text data
                               case 2:
                                 clearTempSteps();
                                 addAttributeStep();

@@ -57,6 +57,7 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
   private static List result;
   private static HashMap parameters = new HashMap();
   private static final Logger LOG = getLogger(XincoCoreNodeServer.class.getSimpleName());
+
   // create node object for data structures
 
   public XincoCoreNodeServer(int attrID) throws XincoException {

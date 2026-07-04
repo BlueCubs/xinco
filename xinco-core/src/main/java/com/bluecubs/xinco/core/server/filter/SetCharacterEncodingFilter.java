@@ -32,17 +32,21 @@ package com.bluecubs.xinco.core.server.filter;
 import jakarta.servlet.*;
 import java.io.IOException;
 
-/** @author Leo-Fan.aq */
+/**
+ * @author Leo-Fan.aq
+ */
 public class SetCharacterEncodingFilter implements Filter {
   // ----------------------------------------------------- Instance Variables
 
   /** The default character encoding to set for requests that pass through this filter. */
   protected String encoding = null;
+
   /**
    * The filter configuration object we are associated with. If this value is null, this filter
    * instance is not currently configured.
    */
   protected FilterConfig filterConfig = null;
+
   /** Should a character encoding specified by the client be ignored? */
   protected boolean ignore = true;
 

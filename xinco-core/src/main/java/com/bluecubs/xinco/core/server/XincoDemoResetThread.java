@@ -35,7 +35,9 @@ import static java.util.logging.Logger.getLogger;
 
 import java.util.logging.Logger;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoDemoResetThread extends Thread {
 
   public static XincoDemoResetThread instance = null;

@@ -52,7 +52,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.release>25</maven.compiler.release>
     <widgetset.path>src/main/webapp</widgetset.path>
-    <git-code-format-maven-plugin.version>2.7</git-code-format-maven-plugin.version>
   </properties>
   <build>
     <pluginManagement>
@@ -184,9 +183,9 @@
           <version>3.3.1</version>
         </plugin>
         <plugin>
-          <groupId>com.cosium.code</groupId>
-          <artifactId>git-code-format-maven-plugin</artifactId>
-          <version>${git-code-format-maven-plugin.version}</version>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>3.8.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -327,30 +326,54 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.cosium.code</groupId>
-        <artifactId>git-code-format-maven-plugin</artifactId>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <configuration>
+          <java>
+            <googleJavaFormat>
+              <version>1.35.0</version>
+              <style>GOOGLE</style>
+            </googleJavaFormat>
+            <removeUnusedImports/>
+            <importOrder/>
+          </java>
+        </configuration>
         <executions>
           <execution>
-            <id>install-formatter-hook</id>
+            <id>spotless-check</id>
+            <phase>verify</phase>
             <goals>
-              <goal>install-hooks</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>validate-code-format</id>
-            <goals>
-              <goal>validate-code-format</goal>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <googleJavaFormatOptions>
-            <aosp>false</aosp>
-            <fixImportsOnly>false</fixImportsOnly>
-            <skipSortingImports>false</skipSortingImports>
-            <skipRemovingUnusedImports>false</skipRemovingUnusedImports>
-          </googleJavaFormatOptions>
-        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>install-spotless-hook</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${project.basedir}/.git/hooks"/>
+                <echo file="${project.basedir}/.git/hooks/pre-commit" append="false">#!/bin/bash
+set -e
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+mvn spotless:apply -q
+git add -u
+</echo>
+                <chmod file="${project.basedir}/.git/hooks/pre-commit" perm="755"/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

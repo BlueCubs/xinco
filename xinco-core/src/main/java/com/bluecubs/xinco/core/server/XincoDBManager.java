@@ -88,12 +88,16 @@ public class XincoDBManager {
   private static boolean demo = false;
   private static long demoResetPeriod = 0;
 
-  /** @return the demo */
+  /**
+   * @return the demo
+   */
   public static boolean isDemo() {
     return demo;
   }
 
-  /** @return the demoResetPeriod */
+  /**
+   * @return the demoResetPeriod
+   */
   public static long getDemoResetPeriod() {
     return demoResetPeriod;
   }
@@ -199,12 +203,16 @@ public class XincoDBManager {
     return instance;
   }
 
-  /** @return the locked */
+  /**
+   * @return the locked
+   */
   public static boolean isLocked() {
     return locked;
   }
 
-  /** @param aLocked the lock to set */
+  /**
+   * @param aLocked the lock to set
+   */
   public static void setLocked(boolean aLocked) {
     LOG.log(WARNING, "{0} the database.", (aLocked ? "Locking" : "Unlocking"));
     locked = aLocked;
@@ -703,7 +711,9 @@ public class XincoDBManager {
     return trans;
   }
 
-  /** @return the puName */
+  /**
+   * @return the puName
+   */
   public String getPersistenceUnitName() {
     return puName;
   }
@@ -746,7 +756,9 @@ public class XincoDBManager {
     }
   }
 
-  /** @return the state */
+  /**
+   * @return the state
+   */
   public static DBState getState() {
     return state;
   }
@@ -756,7 +768,9 @@ public class XincoDBManager {
     LOG.warning(state.getMessage());
   }
 
-  /** @return the initDone */
+  /**
+   * @return the initDone
+   */
   public static boolean isInitDone() {
     return initDone;
   }

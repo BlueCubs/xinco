@@ -155,7 +155,9 @@ final class ArchiveDialog extends CustomComponent {
     setCompositionRoot(panel);
   }
 
-  /** @return the date */
+  /**
+   * @return the date
+   */
   private Date getDate() {
     return (Date) date.getValue();
   }

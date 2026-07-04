@@ -35,7 +35,9 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 @Embeddable
 public class XincoCoreDataHasDependencyPK implements Serializable {
 

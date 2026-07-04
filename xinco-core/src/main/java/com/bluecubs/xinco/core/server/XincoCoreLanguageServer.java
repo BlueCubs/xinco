@@ -50,6 +50,7 @@ public final class XincoCoreLanguageServer extends XincoCoreLanguage {
 
   private HashMap parameters = new HashMap();
   private static List result;
+
   // create language object for data structures
 
   public XincoCoreLanguageServer(int attrID) throws XincoException {

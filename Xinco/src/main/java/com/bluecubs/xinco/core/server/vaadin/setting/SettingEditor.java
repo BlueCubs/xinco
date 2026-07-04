@@ -46,7 +46,9 @@ import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 import lombok.Getter;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 class SettingEditor extends Window implements Button.ClickListener {
 
   private final Item settingItem;
@@ -98,7 +100,9 @@ class SettingEditor extends Window implements Button.ClickListener {
     setCaption(buildCaption());
   }
 
-  /** @return the caption of the editor window */
+  /**
+   * @return the caption of the editor window
+   */
   private String buildCaption() {
     return format("%s", settingItem.getItemProperty("description").getValue());
   }

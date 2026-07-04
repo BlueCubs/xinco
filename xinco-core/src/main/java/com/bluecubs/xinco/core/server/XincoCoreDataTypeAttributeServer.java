@@ -51,6 +51,7 @@ import javax.xml.datatype.DatatypeFactory;
 public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
 
   private static List result;
+
   // create data type attribute object for data structures
 
   public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2) throws XincoException {

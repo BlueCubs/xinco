@@ -29,6 +29,7 @@ public class LuceneSearchWindow extends Window {
 
   private final com.vaadin.ui.TextField variableField = new com.vaadin.ui.TextField();
   private final com.vaadin.ui.TextField queryField = new com.vaadin.ui.TextField();
+
   /** First horizontal layout row. */
   private HorizontalLayout hl = new HorizontalLayout();
 

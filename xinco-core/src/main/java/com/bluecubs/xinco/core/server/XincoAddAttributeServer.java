@@ -55,6 +55,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public final class XincoAddAttributeServer extends XincoAddAttribute {
 
   private static List result;
+
   // create add attribute object for data structures
 
   public XincoAddAttributeServer(int xincoCoreDataId, int attributeId) throws XincoException {
@@ -203,6 +204,7 @@ public final class XincoAddAttributeServer extends XincoAddAttribute {
     }
     return 1;
   }
+
   // create complete list of add attributes
 
   public static List<XincoAddAttribute> getXincoAddAttributes(int attrID) {

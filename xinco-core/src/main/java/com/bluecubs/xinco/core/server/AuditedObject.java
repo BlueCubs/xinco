@@ -2,7 +2,9 @@ package com.bluecubs.xinco.core.server;
 
 import java.sql.Timestamp;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public interface AuditedObject {
 
   /**
