@@ -177,6 +177,9 @@ public class ExplorerView extends VerticalLayout
     miLock = fileSub.addItem(getTranslation("menu.edit.lockdata"), e -> lockSelected());
     miPublish = fileSub.addItem(getTranslation("menu.edit.publishdata"), e -> publishSelected());
 
+    // View menu
+    menuBar.addItem("Viewer", e -> getUI().ifPresent(ui -> ui.navigate(ViewerView.class)));
+
     updateMenuState();
   }
 

@@ -22,21 +22,34 @@ import java.util.List;
  */
 public final class XincoSettingServer extends XincoSetting {
 
+  public static final String TYPE_BOOL = "bool";
+  public static final String TYPE_INT = "int";
+  public static final String TYPE_STRING = "string";
+
+  private String settingType = TYPE_BOOL;
+
+  public String getSettingType() {
+    return settingType;
+  }
+
   public XincoSettingServer(int id) throws XincoException {
     XincoSettingJpaController controller = new XincoSettingJpaController(getEntityManagerFactory());
     com.bluecubs.xinco.core.server.persistence.XincoSetting setting =
         controller.findXincoSetting(id);
     if (setting != null) {
+      setId(id);
       if (setting.getBoolValue() != null) {
         setBoolValue(setting.getBoolValue());
+        settingType = TYPE_BOOL;
       }
-      setId(id);
       if (setting.getIntValue() != null) {
         setIntValue(setting.getIntValue());
+        settingType = TYPE_INT;
       }
       setLongValue(setting.getLongValue());
       if (setting.getStringValue() != null) {
         setStringValue(setting.getStringValue());
+        settingType = TYPE_STRING;
       }
       if (setting.getDescription() != null) {
         setDescription(setting.getDescription());
@@ -46,14 +59,23 @@ public final class XincoSettingServer extends XincoSetting {
     }
   }
 
+  /**
+   * Direct constructor for in-memory use and tests. Pass null for unused type fields; the first
+   * non-null value among intVal/stringVal determines the type (bool is the fallback).
+   */
   public XincoSettingServer(
-      int id, String description, int intVal, String stringVal, boolean boolVal, long longVal) {
-    setBoolValue(boolVal);
+      int id, String description, Integer intVal, String stringVal, boolean boolVal, long longVal) {
     setId(id);
-    setIntValue(intVal);
-    setLongValue(longVal);
-    setStringValue(stringVal);
     setDescription(description);
+    setLongValue(longVal);
+    setBoolValue(boolVal);
+    if (intVal != null) {
+      setIntValue(intVal);
+      settingType = TYPE_INT;
+    } else if (stringVal != null) {
+      setStringValue(stringVal);
+      settingType = TYPE_STRING;
+    }
   }
 
   // write to db
@@ -132,6 +154,14 @@ public final class XincoSettingServer extends XincoSetting {
       settings.addAll(getSettings());
     }
     return settings;
+  }
+
+  public static List<XincoSettingServer> getAllSettings() {
+    try {
+      return getSettings();
+    } catch (XincoException e) {
+      return List.of();
+    }
   }
 
   protected static List<XincoSettingServer> getSettings() throws XincoException {

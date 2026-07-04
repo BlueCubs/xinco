@@ -63,7 +63,7 @@ public class LoginView extends VerticalLayout {
                   .ifPresent(
                       ui -> {
                         ui.setLocale(langSelect.getValue());
-                        ui.navigate(ExplorerView.class);
+                        ui.navigate(ViewerView.class);
                       });
             } else {
               Notification.show(

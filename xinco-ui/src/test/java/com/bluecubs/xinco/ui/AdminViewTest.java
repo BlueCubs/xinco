@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
 import com.vaadin.flow.component.Component;
@@ -180,6 +181,37 @@ class AdminViewTest {
     assertEquals("Editors", nameField.getValue());
   }
 
+  // ---- openSettingDialog ----
+
+  @Test
+  void adminView_settingsTab_hasToolbarWithEditButton() throws Exception {
+    HorizontalLayout toolbar = getSettingsToolbar();
+    assertNotNull(toolbar);
+    assertEquals(1, toolbar.getComponentCount(), "Edit only — no create/delete for settings");
+    assertEquals("Edit", ((Button) toolbar.getComponentAt(0)).getText());
+  }
+
+  @Test
+  void openSettingDialog_opensWithCorrectHeader() throws Exception {
+    XincoSettingServer setting =
+        new XincoSettingServer(1, "password.attempts", 5, null, false, 0L);
+    invokeOpenSettingDialog(setting);
+    Dialog dialog = _get(Dialog.class);
+    assertTrue(dialog.isOpened());
+    assertEquals("Edit Setting", dialog.getHeaderTitle());
+  }
+
+  @Test
+  void openSettingDialog_keyFieldIsReadOnly() throws Exception {
+    XincoSettingServer setting =
+        new XincoSettingServer(1, "password.attempts", 5, null, false, 0L);
+    invokeOpenSettingDialog(setting);
+    TextField keyField = findInDialog("Key");
+    assertNotNull(keyField);
+    assertTrue(keyField.isReadOnly());
+    assertEquals("password.attempts", keyField.getValue());
+  }
+
   // ---- helpers ----
 
   private HorizontalLayout getUserToolbar() {
@@ -190,6 +222,11 @@ class AdminViewTest {
     // Groups tab is lazy-rendered; select it first so its content appears in the tree.
     _get(TabSheet.class).setSelectedIndex(1);
     return findToolbarWithCount(view, 3);
+  }
+
+  private HorizontalLayout getSettingsToolbar() {
+    _get(TabSheet.class).setSelectedIndex(2);
+    return findToolbarWithCount(view, 1);
   }
 
   private HorizontalLayout findToolbarWithCount(Component root, int count) {
@@ -225,6 +262,12 @@ class AdminViewTest {
     Method m = AdminView.class.getDeclaredMethod("openGroupDialog", XincoCoreGroupServer.class);
     m.setAccessible(true);
     m.invoke(view, group);
+  }
+
+  private void invokeOpenSettingDialog(XincoSettingServer setting) throws Exception {
+    Method m = AdminView.class.getDeclaredMethod("openSettingDialog", XincoSettingServer.class);
+    m.setAccessible(true);
+    m.invoke(view, setting);
   }
 
   private TextField findUsernameField() {

@@ -2,8 +2,10 @@ package com.bluecubs.xinco.ui;
 
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -16,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.TabSheet;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
@@ -39,6 +42,7 @@ public class AdminView extends VerticalLayout {
   private final UserSession session;
   private Grid<XincoCoreUserServer> userGrid;
   private Grid<XincoCoreGroupServer> groupGrid;
+  private Grid<XincoSettingServer> settingGrid;
 
   public AdminView(UserSession session) {
     this.session = session;
@@ -49,6 +53,7 @@ public class AdminView extends VerticalLayout {
     tabs.setSizeFull();
     tabs.add("Users", buildUsersTab());
     tabs.add("Groups", buildGroupsTab());
+    tabs.add("Settings", buildSettingsTab());
 
     add(tabs);
   }
@@ -340,6 +345,111 @@ public class AdminView extends VerticalLayout {
           }
         });
     confirm.open();
+  }
+
+  private VerticalLayout buildSettingsTab() {
+    settingGrid = new Grid<>();
+    settingGrid.setSizeFull();
+    settingGrid.addColumn(XincoSettingServer::getDescription).setHeader("Key").setFlexGrow(2);
+    settingGrid.addColumn(this::settingType).setHeader("Type").setWidth("80px").setFlexGrow(0);
+    settingGrid.addColumn(this::settingValue).setHeader("Value").setFlexGrow(1);
+    settingGrid.setItems(loadSettings());
+
+    Button btnEdit =
+        new Button(
+            "Edit",
+            e ->
+                settingGrid.asSingleSelect().getOptionalValue().ifPresent(this::openSettingDialog));
+    HorizontalLayout toolbar = new HorizontalLayout(btnEdit);
+    toolbar.setPadding(true);
+
+    VerticalLayout layout = new VerticalLayout(toolbar, settingGrid);
+    layout.setSizeFull();
+    layout.setFlexGrow(1, settingGrid);
+    layout.setPadding(false);
+    layout.setSpacing(false);
+    return layout;
+  }
+
+  void openSettingDialog(XincoSettingServer setting) {
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle("Edit Setting");
+    dialog.setWidth("400px");
+
+    TextField keyField = new TextField("Key");
+    keyField.setValue(nvl(setting.getDescription()));
+    keyField.setReadOnly(true);
+
+    String type = settingType(setting);
+    FormLayout form = new FormLayout(keyField);
+
+    Checkbox boolField = new Checkbox("Value");
+    IntegerField intField = new IntegerField("Value");
+    TextField strField = new TextField("Value");
+
+    if (XincoSettingServer.TYPE_BOOL.equals(type)) {
+      boolField.setValue(setting.isBoolValue());
+      form.add(boolField);
+    } else if (XincoSettingServer.TYPE_INT.equals(type)) {
+      intField.setValue(setting.getIntValue());
+      form.add(intField);
+    } else {
+      strField.setValue(nvl(setting.getStringValue()));
+      form.add(strField);
+    }
+
+    dialog.add(form);
+
+    Button save =
+        new Button(
+            "Save",
+            e -> {
+              try {
+                if (XincoSettingServer.TYPE_BOOL.equals(type)) {
+                  setting.setBoolValue(boolField.getValue());
+                } else if (XincoSettingServer.TYPE_INT.equals(type)) {
+                  Integer val = intField.getValue();
+                  if (val != null) setting.setIntValue(val);
+                } else {
+                  setting.setStringValue(strField.getValue().trim());
+                }
+                setting.write2DB();
+                dialog.close();
+                refreshSettings();
+                showSuccess("Setting saved.");
+              } catch (Exception ex) {
+                logger.log(Level.SEVERE, "Save setting failed", ex);
+                showError("Save failed: " + ex.getMessage());
+              }
+            });
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    Button cancel = new Button("Cancel", e -> dialog.close());
+    dialog.getFooter().add(cancel, save);
+    dialog.open();
+  }
+
+  private String settingType(XincoSettingServer s) {
+    return s.getSettingType();
+  }
+
+  private String settingValue(XincoSettingServer s) {
+    return switch (s.getSettingType()) {
+      case XincoSettingServer.TYPE_INT -> String.valueOf(s.getIntValue());
+      case XincoSettingServer.TYPE_STRING -> s.getStringValue() != null ? s.getStringValue() : "";
+      default -> String.valueOf(s.isBoolValue());
+    };
+  }
+
+  private void refreshSettings() {
+    settingGrid.setItems(loadSettings());
+  }
+
+  private List<XincoSettingServer> loadSettings() {
+    try {
+      return XincoSettingServer.getAllSettings();
+    } catch (Throwable t) {
+      return List.of();
+    }
   }
 
   private void refreshUsers() {
