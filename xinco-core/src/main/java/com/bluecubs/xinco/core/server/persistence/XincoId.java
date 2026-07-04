@@ -27,16 +27,14 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import com.bluecubs.xinco.core.server.XincoIdGenerator;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
 @Table(name = "xinco_id")
-@EntityListeners(XincoIdGenerator.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(name = "XincoId.findAll", query = "SELECT x FROM XincoId x"),
@@ -53,7 +51,7 @@ public class XincoId implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @Basic(optional = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
 

@@ -31,15 +31,14 @@ import com.bluecubs.xinco.core.server.persistence.*;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoCoreUserJpaController implements Serializable {
@@ -77,7 +76,8 @@ public class XincoCoreUserJpaController implements Serializable {
               xincoCoreUser.getXincoCoreUserModifiedRecordList()) {
         xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach =
             em.getReference(
-                xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(
+                    xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach),
                 xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach
                     .getXincoCoreUserModifiedRecordPK());
         attachedXincoCoreUserModifiedRecordList.add(
@@ -89,7 +89,7 @@ public class XincoCoreUserJpaController implements Serializable {
           xincoCoreUser.getXincoCoreAceList()) {
         xincoCoreAceListXincoCoreAceToAttach =
             em.getReference(
-                xincoCoreAceListXincoCoreAceToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(xincoCoreAceListXincoCoreAceToAttach),
                 xincoCoreAceListXincoCoreAceToAttach.getId());
         attachedXincoCoreAceList.add(xincoCoreAceListXincoCoreAceToAttach);
       }
@@ -99,7 +99,7 @@ public class XincoCoreUserJpaController implements Serializable {
           xincoCoreUser.getXincoCoreLogList()) {
         xincoCoreLogListXincoCoreLogToAttach =
             em.getReference(
-                xincoCoreLogListXincoCoreLogToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(xincoCoreLogListXincoCoreLogToAttach),
                 xincoCoreLogListXincoCoreLogToAttach.getId());
         attachedXincoCoreLogList.add(xincoCoreLogListXincoCoreLogToAttach);
       }
@@ -111,7 +111,8 @@ public class XincoCoreUserJpaController implements Serializable {
               xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList()) {
         xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach =
             em.getReference(
-                xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(
+                    xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach),
                 xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach
                     .getXincoCoreUserHasXincoCoreGroupPK());
         attachedXincoCoreUserHasXincoCoreGroupList.add(
@@ -207,20 +208,27 @@ public class XincoCoreUserJpaController implements Serializable {
           persistentXincoCoreUser.getXincoCoreUserModifiedRecordList();
       List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordListNew =
           xincoCoreUser.getXincoCoreUserModifiedRecordList();
+      boolean xincoCoreUserModifiedRecordListNewInit =
+          org.hibernate.Hibernate.isInitialized(xincoCoreUserModifiedRecordListNew);
       List<XincoCoreAce> xincoCoreAceListOld = persistentXincoCoreUser.getXincoCoreAceList();
       List<XincoCoreAce> xincoCoreAceListNew = xincoCoreUser.getXincoCoreAceList();
+      boolean xincoCoreAceListNewInit = org.hibernate.Hibernate.isInitialized(xincoCoreAceListNew);
       List<XincoCoreLog> xincoCoreLogListOld = persistentXincoCoreUser.getXincoCoreLogList();
       List<XincoCoreLog> xincoCoreLogListNew = xincoCoreUser.getXincoCoreLogList();
+      boolean xincoCoreLogListNewInit = org.hibernate.Hibernate.isInitialized(xincoCoreLogListNew);
       List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupListOld =
           persistentXincoCoreUser.getXincoCoreUserHasXincoCoreGroupList();
       List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupListNew =
           xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList();
+      boolean xincoCoreUserHasXincoCoreGroupListNewInit =
+          org.hibernate.Hibernate.isInitialized(xincoCoreUserHasXincoCoreGroupListNew);
       List<String> illegalOrphanMessages = null;
       for (XincoCoreUserModifiedRecord
           xincoCoreUserModifiedRecordListOldXincoCoreUserModifiedRecord :
               xincoCoreUserModifiedRecordListOld) {
-        if (!xincoCoreUserModifiedRecordListNew.contains(
-            xincoCoreUserModifiedRecordListOldXincoCoreUserModifiedRecord)) {
+        if (xincoCoreUserModifiedRecordListNewInit
+            && !xincoCoreUserModifiedRecordListNew.contains(
+                xincoCoreUserModifiedRecordListOldXincoCoreUserModifiedRecord)) {
           if (illegalOrphanMessages == null) {
             illegalOrphanMessages = new ArrayList<>();
           }
@@ -231,7 +239,8 @@ public class XincoCoreUserJpaController implements Serializable {
         }
       }
       for (XincoCoreLog xincoCoreLogListOldXincoCoreLog : xincoCoreLogListOld) {
-        if (!xincoCoreLogListNew.contains(xincoCoreLogListOldXincoCoreLog)) {
+        if (xincoCoreLogListNewInit
+            && !xincoCoreLogListNew.contains(xincoCoreLogListOldXincoCoreLog)) {
           if (illegalOrphanMessages == null) {
             illegalOrphanMessages = new ArrayList<>();
           }
@@ -244,8 +253,9 @@ public class XincoCoreUserJpaController implements Serializable {
       for (XincoCoreUserHasXincoCoreGroup
           xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup :
               xincoCoreUserHasXincoCoreGroupListOld) {
-        if (!xincoCoreUserHasXincoCoreGroupListNew.contains(
-            xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup)) {
+        if (xincoCoreUserHasXincoCoreGroupListNewInit
+            && !xincoCoreUserHasXincoCoreGroupListNew.contains(
+                xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup)) {
           if (illegalOrphanMessages == null) {
             illegalOrphanMessages = new ArrayList<>();
           }
@@ -260,52 +270,61 @@ public class XincoCoreUserJpaController implements Serializable {
       }
       List<XincoCoreUserModifiedRecord> attachedXincoCoreUserModifiedRecordListNew =
           new ArrayList<>();
-      for (XincoCoreUserModifiedRecord
-          xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach :
-              xincoCoreUserModifiedRecordListNew) {
-        xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach =
-            em.getReference(
-                xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach.getClass(),
-                xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach
-                    .getXincoCoreUserModifiedRecordPK());
-        attachedXincoCoreUserModifiedRecordListNew.add(
-            xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach);
+      if (xincoCoreUserModifiedRecordListNewInit) {
+        for (XincoCoreUserModifiedRecord
+            xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach :
+                xincoCoreUserModifiedRecordListNew) {
+          xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(
+                      xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach),
+                  xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach
+                      .getXincoCoreUserModifiedRecordPK());
+          attachedXincoCoreUserModifiedRecordListNew.add(
+              xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach);
+        }
       }
       xincoCoreUserModifiedRecordListNew = attachedXincoCoreUserModifiedRecordListNew;
       xincoCoreUser.setXincoCoreUserModifiedRecordList(xincoCoreUserModifiedRecordListNew);
       List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<>();
-      for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
-        xincoCoreAceListNewXincoCoreAceToAttach =
-            em.getReference(
-                xincoCoreAceListNewXincoCoreAceToAttach.getClass(),
-                xincoCoreAceListNewXincoCoreAceToAttach.getId());
-        attachedXincoCoreAceListNew.add(xincoCoreAceListNewXincoCoreAceToAttach);
+      if (xincoCoreAceListNewInit) {
+        for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
+          xincoCoreAceListNewXincoCoreAceToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(xincoCoreAceListNewXincoCoreAceToAttach),
+                  xincoCoreAceListNewXincoCoreAceToAttach.getId());
+          attachedXincoCoreAceListNew.add(xincoCoreAceListNewXincoCoreAceToAttach);
+        }
       }
       xincoCoreAceListNew = attachedXincoCoreAceListNew;
       xincoCoreUser.setXincoCoreAceList(xincoCoreAceListNew);
       List<XincoCoreLog> attachedXincoCoreLogListNew = new ArrayList<>();
-      for (XincoCoreLog xincoCoreLogListNewXincoCoreLogToAttach : xincoCoreLogListNew) {
-        xincoCoreLogListNewXincoCoreLogToAttach =
-            em.getReference(
-                xincoCoreLogListNewXincoCoreLogToAttach.getClass(),
-                xincoCoreLogListNewXincoCoreLogToAttach.getId());
-        attachedXincoCoreLogListNew.add(xincoCoreLogListNewXincoCoreLogToAttach);
+      if (xincoCoreLogListNewInit) {
+        for (XincoCoreLog xincoCoreLogListNewXincoCoreLogToAttach : xincoCoreLogListNew) {
+          xincoCoreLogListNewXincoCoreLogToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(xincoCoreLogListNewXincoCoreLogToAttach),
+                  xincoCoreLogListNewXincoCoreLogToAttach.getId());
+          attachedXincoCoreLogListNew.add(xincoCoreLogListNewXincoCoreLogToAttach);
+        }
       }
       xincoCoreLogListNew = attachedXincoCoreLogListNew;
       xincoCoreUser.setXincoCoreLogList(xincoCoreLogListNew);
       List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupListNew =
           new ArrayList<>();
-      for (XincoCoreUserHasXincoCoreGroup
-          xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach :
-              xincoCoreUserHasXincoCoreGroupListNew) {
-        xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach =
-            em.getReference(
-                xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach
-                    .getClass(),
-                xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach
-                    .getXincoCoreUserHasXincoCoreGroupPK());
-        attachedXincoCoreUserHasXincoCoreGroupListNew.add(
-            xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach);
+      if (xincoCoreUserHasXincoCoreGroupListNewInit) {
+        for (XincoCoreUserHasXincoCoreGroup
+            xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach :
+                xincoCoreUserHasXincoCoreGroupListNew) {
+          xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(
+                      xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach),
+                  xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach
+                      .getXincoCoreUserHasXincoCoreGroupPK());
+          attachedXincoCoreUserHasXincoCoreGroupListNew.add(
+              xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach);
+        }
       }
       xincoCoreUserHasXincoCoreGroupListNew = attachedXincoCoreUserHasXincoCoreGroupListNew;
       xincoCoreUser.setXincoCoreUserHasXincoCoreGroupList(xincoCoreUserHasXincoCoreGroupListNew);
@@ -422,13 +441,11 @@ public class XincoCoreUserJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreUser xincoCoreUser;
-      try {
-        xincoCoreUser = em.getReference(XincoCoreUser.class, id);
-        xincoCoreUser.getId();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreUser xincoCoreUser = em.find(XincoCoreUser.class, id);
+
+      if (xincoCoreUser == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreUser with id " + id + " no longer exists.", enfe);
+            "The xincoCoreUser with id " + id + " no longer exists.");
       }
       List<String> illegalOrphanMessages = null;
       List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordListOrphanCheck =
@@ -479,7 +496,6 @@ public class XincoCoreUserJpaController implements Serializable {
       List<XincoCoreAce> xincoCoreAceList = xincoCoreUser.getXincoCoreAceList();
       for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreAceList) {
         xincoCoreAceListXincoCoreAce.setXincoCoreUser(null);
-        xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
       }
       em.remove(xincoCoreUser);
       em.getTransaction().commit();

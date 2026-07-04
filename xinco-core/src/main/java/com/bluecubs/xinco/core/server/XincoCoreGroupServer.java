@@ -102,7 +102,7 @@ public final class XincoCoreGroupServer extends XincoCoreGroup {
         xcg.setModificationTime(new Timestamp(new Date().getTime()));
         controller.edit(xcg);
       } else {
-        xcg = new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup(getId());
+        xcg = new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup();
         xcg.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
         xcg.setStatusNumber(getStatusNumber());
         xcg.setModificationReason("audit.general.create");

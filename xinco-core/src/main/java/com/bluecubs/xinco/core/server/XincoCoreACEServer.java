@@ -136,7 +136,7 @@ public final class XincoCoreACEServer extends XincoCoreACE {
         result = namedQuery("XincoCoreAce.findById", parameters);
         ace = (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) result.get(0);
       } else {
-        ace = new com.bluecubs.xinco.core.server.persistence.XincoCoreAce(getId());
+        ace = new com.bluecubs.xinco.core.server.persistence.XincoCoreAce();
         create = true;
       }
       if (getXincoCoreUserId() != 0) {

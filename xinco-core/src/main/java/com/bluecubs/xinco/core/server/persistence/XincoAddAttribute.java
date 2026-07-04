@@ -27,15 +27,15 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.TemporalType.TIMESTAMP;
+import static jakarta.persistence.TemporalType.TIMESTAMP;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity

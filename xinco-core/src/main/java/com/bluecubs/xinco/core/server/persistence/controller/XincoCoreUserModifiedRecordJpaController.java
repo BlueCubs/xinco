@@ -32,14 +32,13 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecordPK;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoCoreUserModifiedRecordJpaController implements Serializable {
@@ -69,7 +68,8 @@ public class XincoCoreUserModifiedRecordJpaController implements Serializable {
       em.getTransaction().begin();
       XincoCoreUser xincoCoreUser = xincoCoreUserModifiedRecord.getXincoCoreUser();
       if (xincoCoreUser != null) {
-        xincoCoreUser = em.getReference(xincoCoreUser.getClass(), xincoCoreUser.getId());
+        xincoCoreUser =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreUser), xincoCoreUser.getId());
         xincoCoreUserModifiedRecord.setXincoCoreUser(xincoCoreUser);
       }
       em.persist(xincoCoreUserModifiedRecord);
@@ -109,7 +109,9 @@ public class XincoCoreUserModifiedRecordJpaController implements Serializable {
       XincoCoreUser xincoCoreUserOld = persistentXincoCoreUserModifiedRecord.getXincoCoreUser();
       XincoCoreUser xincoCoreUserNew = xincoCoreUserModifiedRecord.getXincoCoreUser();
       if (xincoCoreUserNew != null) {
-        xincoCoreUserNew = em.getReference(xincoCoreUserNew.getClass(), xincoCoreUserNew.getId());
+        xincoCoreUserNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreUserNew), xincoCoreUserNew.getId());
         xincoCoreUserModifiedRecord.setXincoCoreUser(xincoCoreUserNew);
       }
       xincoCoreUserModifiedRecord = em.merge(xincoCoreUserModifiedRecord);
@@ -145,18 +147,15 @@ public class XincoCoreUserModifiedRecordJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreUserModifiedRecord xincoCoreUserModifiedRecord;
-      try {
-        xincoCoreUserModifiedRecord = em.getReference(XincoCoreUserModifiedRecord.class, id);
-        xincoCoreUserModifiedRecord.getXincoCoreUserModifiedRecordPK();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreUserModifiedRecord xincoCoreUserModifiedRecord =
+          em.find(XincoCoreUserModifiedRecord.class, id);
+      if (xincoCoreUserModifiedRecord == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreUserModifiedRecord with id " + id + " no longer exists.", enfe);
+            "The xincoCoreUserModifiedRecord with id " + id + " no longer exists.");
       }
       XincoCoreUser xincoCoreUser = xincoCoreUserModifiedRecord.getXincoCoreUser();
       if (xincoCoreUser != null) {
         xincoCoreUser.getXincoCoreUserModifiedRecordList().remove(xincoCoreUserModifiedRecord);
-        xincoCoreUser = em.merge(xincoCoreUser);
       }
       em.remove(xincoCoreUserModifiedRecord);
       em.getTransaction().commit();

@@ -32,14 +32,13 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoCoreLogJpaController implements Serializable {
@@ -61,12 +60,14 @@ public class XincoCoreLogJpaController implements Serializable {
       em.getTransaction().begin();
       XincoCoreUser xincoCoreUser = xincoCoreLog.getXincoCoreUser();
       if (xincoCoreUser != null) {
-        xincoCoreUser = em.getReference(xincoCoreUser.getClass(), xincoCoreUser.getId());
+        xincoCoreUser =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreUser), xincoCoreUser.getId());
         xincoCoreLog.setXincoCoreUser(xincoCoreUser);
       }
       XincoCoreData xincoCoreData = xincoCoreLog.getXincoCoreData();
       if (xincoCoreData != null) {
-        xincoCoreData = em.getReference(xincoCoreData.getClass(), xincoCoreData.getId());
+        xincoCoreData =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreData), xincoCoreData.getId());
         xincoCoreLog.setXincoCoreData(xincoCoreData);
       }
       em.persist(xincoCoreLog);
@@ -103,11 +104,15 @@ public class XincoCoreLogJpaController implements Serializable {
       XincoCoreData xincoCoreDataOld = persistentXincoCoreLog.getXincoCoreData();
       XincoCoreData xincoCoreDataNew = xincoCoreLog.getXincoCoreData();
       if (xincoCoreUserNew != null) {
-        xincoCoreUserNew = em.getReference(xincoCoreUserNew.getClass(), xincoCoreUserNew.getId());
+        xincoCoreUserNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreUserNew), xincoCoreUserNew.getId());
         xincoCoreLog.setXincoCoreUser(xincoCoreUserNew);
       }
       if (xincoCoreDataNew != null) {
-        xincoCoreDataNew = em.getReference(xincoCoreDataNew.getClass(), xincoCoreDataNew.getId());
+        xincoCoreDataNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreDataNew), xincoCoreDataNew.getId());
         xincoCoreLog.setXincoCoreData(xincoCoreDataNew);
       }
       xincoCoreLog = em.merge(xincoCoreLog);
@@ -150,23 +155,19 @@ public class XincoCoreLogJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreLog xincoCoreLog;
-      try {
-        xincoCoreLog = em.getReference(XincoCoreLog.class, id);
-        xincoCoreLog.getId();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreLog xincoCoreLog = em.find(XincoCoreLog.class, id);
+
+      if (xincoCoreLog == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreLog with id " + id + " no longer exists.", enfe);
+            "The xincoCoreLog with id " + id + " no longer exists.");
       }
       XincoCoreUser xincoCoreUser = xincoCoreLog.getXincoCoreUser();
       if (xincoCoreUser != null) {
         xincoCoreUser.getXincoCoreLogList().remove(xincoCoreLog);
-        xincoCoreUser = em.merge(xincoCoreUser);
       }
       XincoCoreData xincoCoreData = xincoCoreLog.getXincoCoreData();
       if (xincoCoreData != null) {
         xincoCoreData.getXincoCoreLogList().remove(xincoCoreLog);
-        xincoCoreData = em.merge(xincoCoreData);
       }
       em.remove(xincoCoreLog);
       em.getTransaction().commit();

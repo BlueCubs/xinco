@@ -27,11 +27,9 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.GenerationType.TABLE;
-
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,7 +41,6 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
   @NotNull
   @Setter
   @Column(name = "id")
-  @GeneratedValue(strategy = TABLE, generator = "UserModifiedRecordGen")
   @Getter
   @TableGenerator(
       name = "UserModifiedRecordGen",

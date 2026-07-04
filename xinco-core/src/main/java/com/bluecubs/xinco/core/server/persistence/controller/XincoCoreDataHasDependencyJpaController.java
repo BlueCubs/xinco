@@ -33,14 +33,13 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK;
 import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoCoreDataHasDependencyJpaController implements Serializable {
@@ -77,17 +76,21 @@ public class XincoCoreDataHasDependencyJpaController implements Serializable {
       XincoDependencyType xincoDependencyType = xincoCoreDataHasDependency.getXincoDependencyType();
       if (xincoDependencyType != null) {
         xincoDependencyType =
-            em.getReference(xincoDependencyType.getClass(), xincoDependencyType.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoDependencyType), xincoDependencyType.getId());
         xincoCoreDataHasDependency.setXincoDependencyType(xincoDependencyType);
       }
       XincoCoreData xincoCoreData = xincoCoreDataHasDependency.getXincoCoreData();
       if (xincoCoreData != null) {
-        xincoCoreData = em.getReference(xincoCoreData.getClass(), xincoCoreData.getId());
+        xincoCoreData =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreData), xincoCoreData.getId());
         xincoCoreDataHasDependency.setXincoCoreData(xincoCoreData);
       }
       XincoCoreData xincoCoreData1 = xincoCoreDataHasDependency.getXincoCoreData1();
       if (xincoCoreData1 != null) {
-        xincoCoreData1 = em.getReference(xincoCoreData1.getClass(), xincoCoreData1.getId());
+        xincoCoreData1 =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreData1), xincoCoreData1.getId());
         xincoCoreDataHasDependency.setXincoCoreData1(xincoCoreData1);
       }
       em.persist(xincoCoreDataHasDependency);
@@ -148,16 +151,21 @@ public class XincoCoreDataHasDependencyJpaController implements Serializable {
       XincoCoreData xincoCoreData1New = xincoCoreDataHasDependency.getXincoCoreData1();
       if (xincoDependencyTypeNew != null) {
         xincoDependencyTypeNew =
-            em.getReference(xincoDependencyTypeNew.getClass(), xincoDependencyTypeNew.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoDependencyTypeNew),
+                xincoDependencyTypeNew.getId());
         xincoCoreDataHasDependency.setXincoDependencyType(xincoDependencyTypeNew);
       }
       if (xincoCoreDataNew != null) {
-        xincoCoreDataNew = em.getReference(xincoCoreDataNew.getClass(), xincoCoreDataNew.getId());
+        xincoCoreDataNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreDataNew), xincoCoreDataNew.getId());
         xincoCoreDataHasDependency.setXincoCoreData(xincoCoreDataNew);
       }
       if (xincoCoreData1New != null) {
         xincoCoreData1New =
-            em.getReference(xincoCoreData1New.getClass(), xincoCoreData1New.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreData1New), xincoCoreData1New.getId());
         xincoCoreDataHasDependency.setXincoCoreData1(xincoCoreData1New);
       }
       xincoCoreDataHasDependency = em.merge(xincoCoreDataHasDependency);
@@ -213,28 +221,24 @@ public class XincoCoreDataHasDependencyJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreDataHasDependency xincoCoreDataHasDependency;
-      try {
-        xincoCoreDataHasDependency = em.getReference(XincoCoreDataHasDependency.class, id);
-        xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreDataHasDependency xincoCoreDataHasDependency =
+          em.find(XincoCoreDataHasDependency.class, id);
+
+      if (xincoCoreDataHasDependency == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreDataHasDependency with id " + id + " no longer exists.", enfe);
+            "The xincoCoreDataHasDependency with id " + id + " no longer exists.");
       }
       XincoDependencyType xincoDependencyType = xincoCoreDataHasDependency.getXincoDependencyType();
       if (xincoDependencyType != null) {
         xincoDependencyType.getXincoCoreDataHasDependencyList().remove(xincoCoreDataHasDependency);
-        xincoDependencyType = em.merge(xincoDependencyType);
       }
       XincoCoreData xincoCoreData = xincoCoreDataHasDependency.getXincoCoreData();
       if (xincoCoreData != null) {
         xincoCoreData.getXincoCoreDataHasDependencyList().remove(xincoCoreDataHasDependency);
-        xincoCoreData = em.merge(xincoCoreData);
       }
       XincoCoreData xincoCoreData1 = xincoCoreDataHasDependency.getXincoCoreData1();
       if (xincoCoreData1 != null) {
         xincoCoreData1.getXincoCoreDataHasDependencyList().remove(xincoCoreDataHasDependency);
-        xincoCoreData1 = em.merge(xincoCoreData1);
       }
       em.remove(xincoCoreDataHasDependency);
       em.getTransaction().commit();

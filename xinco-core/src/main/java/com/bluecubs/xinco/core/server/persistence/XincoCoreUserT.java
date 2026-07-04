@@ -27,15 +27,15 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.TemporalType.DATE;
+import static jakarta.persistence.TemporalType.DATE;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity

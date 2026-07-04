@@ -39,6 +39,7 @@ import static com.bluecubs.xinco.core.server.db.DBState.START_UP;
 import static com.bluecubs.xinco.core.server.db.DBState.UPDATED;
 import static com.bluecubs.xinco.core.server.db.DBState.VALID;
 import static com.bluecubs.xinco.tools.MD5.encrypt;
+import static jakarta.persistence.Persistence.createEntityManagerFactory;
 import static java.lang.Class.forName;
 import static java.lang.Thread.sleep;
 import static java.util.Locale.getDefault;
@@ -48,10 +49,10 @@ import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static java.util.logging.Logger.getLogger;
-import static javax.persistence.Persistence.createEntityManagerFactory;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
+import jakarta.persistence.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -66,13 +67,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.*;
 import javax.sql.DataSource;
 import org.h2.jdbcx.JdbcDataSource;
 
 public class XincoDBManager {
 
   private static EntityManagerFactory emf;
+  private static EntityManager cachedEm;
   // load compiled configuartion
   public static final XincoConfigSingletonServer CONFIG = getInstance();
   private static ResourceBundle lrb = getBundle("com.bluecubs.xinco.messages.XincoMessages");
@@ -227,6 +228,14 @@ public class XincoDBManager {
     LOG.log(INFO, "Changed persistence unit name to: {0}", puName);
     // Set it to null so it's recreated with new Persistence Unit
     // next time is requested.
+    if (cachedEm != null && cachedEm.isOpen()) {
+      try {
+        cachedEm.close();
+      } catch (Exception ex) {
+        LOG.log(SEVERE, null, ex);
+      }
+    }
+    cachedEm = null;
     emf = null;
     initDone = false;
     reload();
@@ -559,18 +568,19 @@ public class XincoDBManager {
     if (!isLocked()) {
       return getProtectedEntityManager();
     } else {
-      throw new XincoException(lrb.getString("message.locked"));
+      throw new XincoException(lrb.getString("message.db.locked"));
     }
   }
 
   protected static EntityManager getProtectedEntityManager() {
-    EntityManager em = null;
-    try {
-      em = getEntityManagerFactory().createEntityManager();
-    } catch (XincoException ex) {
-      LOG.log(SEVERE, null, ex);
+    if (cachedEm == null || !cachedEm.isOpen()) {
+      try {
+        cachedEm = getEntityManagerFactory().createEntityManager();
+      } catch (XincoException ex) {
+        LOG.log(SEVERE, null, ex);
+      }
     }
-    return em;
+    return cachedEm;
   }
 
   public static List<Object> createdQuery(String query) throws XincoException {
@@ -603,6 +613,7 @@ public class XincoDBManager {
     if (getTransaction().isActive()) {
       getTransaction().commit();
     }
+    getProtectedEntityManager().clear();
     return result;
   }
 
@@ -636,6 +647,7 @@ public class XincoDBManager {
     if (getTransaction().isActive()) {
       getTransaction().commit();
     }
+    getProtectedEntityManager().clear();
     return result;
   }
 
@@ -664,6 +676,14 @@ public class XincoDBManager {
   }
 
   static void close() {
+    if (cachedEm != null && cachedEm.isOpen()) {
+      try {
+        cachedEm.close();
+      } catch (Exception ex) {
+        LOG.log(SEVERE, null, ex);
+      }
+    }
+    cachedEm = null;
     try {
       getEntityManagerFactory().close();
     } catch (XincoException ex) {

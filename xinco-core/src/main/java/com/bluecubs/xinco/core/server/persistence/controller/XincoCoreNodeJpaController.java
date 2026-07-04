@@ -34,15 +34,14 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoCoreNodeJpaController implements Serializable {
@@ -74,12 +73,15 @@ public class XincoCoreNodeJpaController implements Serializable {
       XincoCoreLanguage xincoCoreLanguage = xincoCoreNode.getXincoCoreLanguage();
       if (xincoCoreLanguage != null) {
         xincoCoreLanguage =
-            em.getReference(xincoCoreLanguage.getClass(), xincoCoreLanguage.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreLanguage), xincoCoreLanguage.getId());
         xincoCoreNode.setXincoCoreLanguage(xincoCoreLanguage);
       }
       XincoCoreNode xincoCoreNodeRel = xincoCoreNode.getXincoCoreNode();
       if (xincoCoreNodeRel != null) {
-        xincoCoreNodeRel = em.getReference(xincoCoreNodeRel.getClass(), xincoCoreNodeRel.getId());
+        xincoCoreNodeRel =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreNodeRel), xincoCoreNodeRel.getId());
         xincoCoreNode.setXincoCoreNode(xincoCoreNodeRel);
       }
       List<XincoCoreNode> attachedXincoCoreNodeList = new ArrayList<>();
@@ -87,7 +89,7 @@ public class XincoCoreNodeJpaController implements Serializable {
           xincoCoreNode.getXincoCoreNodeList()) {
         xincoCoreNodeListXincoCoreNodeToAttach =
             em.getReference(
-                xincoCoreNodeListXincoCoreNodeToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(xincoCoreNodeListXincoCoreNodeToAttach),
                 xincoCoreNodeListXincoCoreNodeToAttach.getId());
         attachedXincoCoreNodeList.add(xincoCoreNodeListXincoCoreNodeToAttach);
       }
@@ -97,7 +99,7 @@ public class XincoCoreNodeJpaController implements Serializable {
           xincoCoreNode.getXincoCoreAceList()) {
         xincoCoreAceListXincoCoreAceToAttach =
             em.getReference(
-                xincoCoreAceListXincoCoreAceToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(xincoCoreAceListXincoCoreAceToAttach),
                 xincoCoreAceListXincoCoreAceToAttach.getId());
         attachedXincoCoreAceList.add(xincoCoreAceListXincoCoreAceToAttach);
       }
@@ -107,7 +109,7 @@ public class XincoCoreNodeJpaController implements Serializable {
           xincoCoreNode.getXincoCoreDataList()) {
         xincoCoreDataListXincoCoreDataToAttach =
             em.getReference(
-                xincoCoreDataListXincoCoreDataToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(xincoCoreDataListXincoCoreDataToAttach),
                 xincoCoreDataListXincoCoreDataToAttach.getId());
         attachedXincoCoreDataList.add(xincoCoreDataListXincoCoreDataToAttach);
       }
@@ -187,13 +189,19 @@ public class XincoCoreNodeJpaController implements Serializable {
       XincoCoreNode xincoCoreNodeRelNew = xincoCoreNode.getXincoCoreNode();
       List<XincoCoreNode> xincoCoreNodeListOld = persistentXincoCoreNode.getXincoCoreNodeList();
       List<XincoCoreNode> xincoCoreNodeListNew = xincoCoreNode.getXincoCoreNodeList();
+      boolean xincoCoreNodeListNewInit =
+          org.hibernate.Hibernate.isInitialized(xincoCoreNodeListNew);
       List<XincoCoreAce> xincoCoreAceListOld = persistentXincoCoreNode.getXincoCoreAceList();
       List<XincoCoreAce> xincoCoreAceListNew = xincoCoreNode.getXincoCoreAceList();
+      boolean xincoCoreAceListNewInit = org.hibernate.Hibernate.isInitialized(xincoCoreAceListNew);
       List<XincoCoreData> xincoCoreDataListOld = persistentXincoCoreNode.getXincoCoreDataList();
       List<XincoCoreData> xincoCoreDataListNew = xincoCoreNode.getXincoCoreDataList();
+      boolean xincoCoreDataListNewInit =
+          org.hibernate.Hibernate.isInitialized(xincoCoreDataListNew);
       List<String> illegalOrphanMessages = null;
       for (XincoCoreData xincoCoreDataListOldXincoCoreData : xincoCoreDataListOld) {
-        if (!xincoCoreDataListNew.contains(xincoCoreDataListOldXincoCoreData)) {
+        if (xincoCoreDataListNewInit
+            && !xincoCoreDataListNew.contains(xincoCoreDataListOldXincoCoreData)) {
           if (illegalOrphanMessages == null) {
             illegalOrphanMessages = new ArrayList<>();
           }
@@ -208,41 +216,50 @@ public class XincoCoreNodeJpaController implements Serializable {
       }
       if (xincoCoreLanguageNew != null) {
         xincoCoreLanguageNew =
-            em.getReference(xincoCoreLanguageNew.getClass(), xincoCoreLanguageNew.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreLanguageNew),
+                xincoCoreLanguageNew.getId());
         xincoCoreNode.setXincoCoreLanguage(xincoCoreLanguageNew);
       }
       if (xincoCoreNodeRelNew != null) {
         xincoCoreNodeRelNew =
-            em.getReference(xincoCoreNodeRelNew.getClass(), xincoCoreNodeRelNew.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreNodeRelNew), xincoCoreNodeRelNew.getId());
         xincoCoreNode.setXincoCoreNode(xincoCoreNodeRelNew);
       }
       List<XincoCoreNode> attachedXincoCoreNodeListNew = new ArrayList<>();
-      for (XincoCoreNode xincoCoreNodeListNewXincoCoreNodeToAttach : xincoCoreNodeListNew) {
-        xincoCoreNodeListNewXincoCoreNodeToAttach =
-            em.getReference(
-                xincoCoreNodeListNewXincoCoreNodeToAttach.getClass(),
-                xincoCoreNodeListNewXincoCoreNodeToAttach.getId());
-        attachedXincoCoreNodeListNew.add(xincoCoreNodeListNewXincoCoreNodeToAttach);
+      if (xincoCoreNodeListNewInit) {
+        for (XincoCoreNode xincoCoreNodeListNewXincoCoreNodeToAttach : xincoCoreNodeListNew) {
+          xincoCoreNodeListNewXincoCoreNodeToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(xincoCoreNodeListNewXincoCoreNodeToAttach),
+                  xincoCoreNodeListNewXincoCoreNodeToAttach.getId());
+          attachedXincoCoreNodeListNew.add(xincoCoreNodeListNewXincoCoreNodeToAttach);
+        }
       }
       xincoCoreNodeListNew = attachedXincoCoreNodeListNew;
       xincoCoreNode.setXincoCoreNodeList(xincoCoreNodeListNew);
       List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<>();
-      for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
-        xincoCoreAceListNewXincoCoreAceToAttach =
-            em.getReference(
-                xincoCoreAceListNewXincoCoreAceToAttach.getClass(),
-                xincoCoreAceListNewXincoCoreAceToAttach.getId());
-        attachedXincoCoreAceListNew.add(xincoCoreAceListNewXincoCoreAceToAttach);
+      if (xincoCoreAceListNewInit) {
+        for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
+          xincoCoreAceListNewXincoCoreAceToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(xincoCoreAceListNewXincoCoreAceToAttach),
+                  xincoCoreAceListNewXincoCoreAceToAttach.getId());
+          attachedXincoCoreAceListNew.add(xincoCoreAceListNewXincoCoreAceToAttach);
+        }
       }
       xincoCoreAceListNew = attachedXincoCoreAceListNew;
       xincoCoreNode.setXincoCoreAceList(xincoCoreAceListNew);
       List<XincoCoreData> attachedXincoCoreDataListNew = new ArrayList<>();
-      for (XincoCoreData xincoCoreDataListNewXincoCoreDataToAttach : xincoCoreDataListNew) {
-        xincoCoreDataListNewXincoCoreDataToAttach =
-            em.getReference(
-                xincoCoreDataListNewXincoCoreDataToAttach.getClass(),
-                xincoCoreDataListNewXincoCoreDataToAttach.getId());
-        attachedXincoCoreDataListNew.add(xincoCoreDataListNewXincoCoreDataToAttach);
+      if (xincoCoreDataListNewInit) {
+        for (XincoCoreData xincoCoreDataListNewXincoCoreDataToAttach : xincoCoreDataListNew) {
+          xincoCoreDataListNewXincoCoreDataToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(xincoCoreDataListNewXincoCoreDataToAttach),
+                  xincoCoreDataListNewXincoCoreDataToAttach.getId());
+          attachedXincoCoreDataListNew.add(xincoCoreDataListNewXincoCoreDataToAttach);
+        }
       }
       xincoCoreDataListNew = attachedXincoCoreDataListNew;
       xincoCoreNode.setXincoCoreDataList(xincoCoreDataListNew);
@@ -346,13 +363,11 @@ public class XincoCoreNodeJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreNode xincoCoreNode;
-      try {
-        xincoCoreNode = em.getReference(XincoCoreNode.class, id);
-        xincoCoreNode.getId();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreNode xincoCoreNode = em.find(XincoCoreNode.class, id);
+
+      if (xincoCoreNode == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreNode with id " + id + " no longer exists.", enfe);
+            "The xincoCoreNode with id " + id + " no longer exists.");
       }
       List<String> illegalOrphanMessages = null;
       List<XincoCoreData> xincoCoreDataListOrphanCheck = xincoCoreNode.getXincoCoreDataList();
@@ -373,22 +388,18 @@ public class XincoCoreNodeJpaController implements Serializable {
       XincoCoreLanguage xincoCoreLanguage = xincoCoreNode.getXincoCoreLanguage();
       if (xincoCoreLanguage != null) {
         xincoCoreLanguage.getXincoCoreNodeList().remove(xincoCoreNode);
-        xincoCoreLanguage = em.merge(xincoCoreLanguage);
       }
       XincoCoreNode xincoCoreNodeRel = xincoCoreNode.getXincoCoreNode();
       if (xincoCoreNodeRel != null) {
         xincoCoreNodeRel.getXincoCoreNodeList().remove(xincoCoreNode);
-        xincoCoreNodeRel = em.merge(xincoCoreNodeRel);
       }
       List<XincoCoreNode> xincoCoreNodeList = xincoCoreNode.getXincoCoreNodeList();
       for (XincoCoreNode xincoCoreNodeListXincoCoreNode : xincoCoreNodeList) {
         xincoCoreNodeListXincoCoreNode.setXincoCoreNode(null);
-        xincoCoreNodeListXincoCoreNode = em.merge(xincoCoreNodeListXincoCoreNode);
       }
       List<XincoCoreAce> xincoCoreAceList = xincoCoreNode.getXincoCoreAceList();
       for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreAceList) {
         xincoCoreAceListXincoCoreAce.setXincoCoreNode(null);
-        xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
       }
       em.remove(xincoCoreNode);
       em.getTransaction().commit();

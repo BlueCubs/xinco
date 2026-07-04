@@ -9,11 +9,11 @@ import static java.util.logging.Logger.getLogger;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.*;
 import com.bluecubs.xinco.core.server.persistence.controller.*;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.PreUpdate;
 import java.util.Date;
 import java.util.HashMap;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class AuditedEntityListener {

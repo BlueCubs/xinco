@@ -16,13 +16,13 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
+import jakarta.persistence.EntityTransaction;
 import java.io.File;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.persistence.EntityTransaction;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -277,6 +277,8 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     try {
       createdQuery("select l from XincoCoreLanguage l");
       fail("Expected exception when DB is locked");
+    } catch (XincoException expected) {
+      // expected — DB is locked
     } finally {
       setLocked(false);
     }

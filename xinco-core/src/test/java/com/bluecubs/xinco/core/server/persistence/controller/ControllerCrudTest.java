@@ -142,7 +142,11 @@ public class ControllerCrudTest extends AbstractXincoDataBaseTestCase {
     XincoDependencyTypeJpaController ctrl =
         new XincoDependencyTypeJpaController(getEntityManagerFactory());
     XincoDependencyType entity = new XincoDependencyType();
+    entity.setDesignation("test.dep.type.crud");
     entity.setDescription("test.dep.type.crud");
+    entity.setXincoDependencyBehavior(
+        new XincoDependencyBehaviorJpaController(getEntityManagerFactory())
+            .findXincoDependencyBehavior(1));
     entity.setXincoCoreDataHasDependencyList(new ArrayList<>());
 
     ctrl.create(entity);

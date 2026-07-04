@@ -54,9 +54,13 @@ public class ControllerDepTypeAndGroupBranchesTest extends AbstractXincoDataBase
 
     // Create T2 with dep in list: attachment loop + update-refs loop run;
     // dep's old type = 1 != null → inner IF fires (type1.depList.remove(dep))
+    XincoDependencyBehavior behavior =
+        new XincoDependencyBehaviorJpaController(getEntityManagerFactory())
+            .findXincoDependencyBehavior(1);
     XincoDependencyType t2 = new XincoDependencyType();
     t2.setDesignation("test.deptype.create.withdeplist");
     t2.setDescription("test");
+    t2.setXincoDependencyBehavior(behavior);
     t2.setXincoCoreDataHasDependencyList(
         Arrays.asList(depCtrl.findXincoCoreDataHasDependency(depPK)));
     typeCtrl.create(t2);
@@ -82,9 +86,13 @@ public class ControllerDepTypeAndGroupBranchesTest extends AbstractXincoDataBase
         new XincoCoreDataHasDependencyJpaController(getEntityManagerFactory());
     XincoCoreDataJpaController dataCtrl = new XincoCoreDataJpaController(getEntityManagerFactory());
 
+    XincoDependencyBehavior behavior =
+        new XincoDependencyBehaviorJpaController(getEntityManagerFactory())
+            .findXincoDependencyBehavior(1);
     XincoDependencyType t1 = new XincoDependencyType();
     t1.setDesignation("test.deptype.edit.orphancheck");
     t1.setDescription("test");
+    t1.setXincoDependencyBehavior(behavior);
     t1.setXincoCoreDataHasDependencyList(new ArrayList<>());
     typeCtrl.create(t1);
     int t1Id = t1.getId();
@@ -129,9 +137,13 @@ public class ControllerDepTypeAndGroupBranchesTest extends AbstractXincoDataBase
         new XincoCoreDataHasDependencyJpaController(getEntityManagerFactory());
     XincoCoreDataJpaController dataCtrl = new XincoCoreDataJpaController(getEntityManagerFactory());
 
+    XincoDependencyBehavior behavior =
+        new XincoDependencyBehaviorJpaController(getEntityManagerFactory())
+            .findXincoDependencyBehavior(1);
     XincoDependencyType t1 = new XincoDependencyType();
     t1.setDesignation("test.deptype.edit.movedep.src");
     t1.setDescription("test");
+    t1.setXincoDependencyBehavior(behavior);
     t1.setXincoCoreDataHasDependencyList(new ArrayList<>());
     typeCtrl.create(t1);
     int t1Id = t1.getId();
@@ -139,6 +151,7 @@ public class ControllerDepTypeAndGroupBranchesTest extends AbstractXincoDataBase
     XincoDependencyType t2 = new XincoDependencyType();
     t2.setDesignation("test.deptype.edit.movedep.dst");
     t2.setDescription("test");
+    t2.setXincoDependencyBehavior(behavior);
     t2.setXincoCoreDataHasDependencyList(new ArrayList<>());
     typeCtrl.create(t2);
     int t2Id = t2.getId();

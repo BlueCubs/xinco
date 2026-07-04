@@ -153,7 +153,7 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
         xcn.setModificationTime(new Timestamp(new Date().getTime()));
         controller.edit(xcn);
       } else {
-        xcn = new com.bluecubs.xinco.core.server.persistence.XincoCoreNode(getId());
+        xcn = new com.bluecubs.xinco.core.server.persistence.XincoCoreNode();
         if (getXincoCoreNodeId() != 0) {
           xcn.setXincoCoreNode(controller.findXincoCoreNode(getXincoCoreNodeId()));
         }

@@ -27,14 +27,14 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.TemporalType.TIMESTAMP;
+import static jakarta.persistence.TemporalType.TIMESTAMP;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
@@ -102,21 +102,14 @@ public class XincoAddAttributeT implements Serializable {
   @Column(name = "attrib_double")
   private double attribDouble;
 
-  @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
+  @Size(max = 255)
   @Column(name = "attrib_varchar")
   private String attribVarchar;
 
-  @Basic(optional = false)
-  @NotNull
   @Lob
-  @Size(min = 1, max = 65_535)
   @Column(name = "attrib_text")
   private String attribText;
 
-  @Basic(optional = false)
-  @NotNull
   @Column(name = "attrib_datetime")
   @Temporal(TIMESTAMP)
   private Date attribDatetime;

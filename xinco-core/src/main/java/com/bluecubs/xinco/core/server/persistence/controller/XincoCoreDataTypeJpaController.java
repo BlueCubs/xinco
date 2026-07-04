@@ -33,15 +33,14 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoCoreDataTypeJpaController implements Serializable {
@@ -74,7 +73,8 @@ public class XincoCoreDataTypeJpaController implements Serializable {
               xincoCoreDataType.getXincoCoreDataTypeAttributeList()) {
         xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach =
             em.getReference(
-                xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(
+                    xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach),
                 xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach
                     .getXincoCoreDataTypeAttributePK());
         attachedXincoCoreDataTypeAttributeList.add(
@@ -86,7 +86,7 @@ public class XincoCoreDataTypeJpaController implements Serializable {
           xincoCoreDataType.getXincoCoreDataList()) {
         xincoCoreDataListXincoCoreDataToAttach =
             em.getReference(
-                xincoCoreDataListXincoCoreDataToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(xincoCoreDataListXincoCoreDataToAttach),
                 xincoCoreDataListXincoCoreDataToAttach.getId());
         attachedXincoCoreDataList.add(xincoCoreDataListXincoCoreDataToAttach);
       }
@@ -152,13 +152,18 @@ public class XincoCoreDataTypeJpaController implements Serializable {
           persistentXincoCoreDataType.getXincoCoreDataTypeAttributeList();
       List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeListNew =
           xincoCoreDataType.getXincoCoreDataTypeAttributeList();
+      boolean xincoCoreDataTypeAttributeListNewInit =
+          org.hibernate.Hibernate.isInitialized(xincoCoreDataTypeAttributeListNew);
       List<XincoCoreData> xincoCoreDataListOld = persistentXincoCoreDataType.getXincoCoreDataList();
       List<XincoCoreData> xincoCoreDataListNew = xincoCoreDataType.getXincoCoreDataList();
+      boolean xincoCoreDataListNewInit =
+          org.hibernate.Hibernate.isInitialized(xincoCoreDataListNew);
       List<String> illegalOrphanMessages = null;
       for (XincoCoreDataTypeAttribute xincoCoreDataTypeAttributeListOldXincoCoreDataTypeAttribute :
           xincoCoreDataTypeAttributeListOld) {
-        if (!xincoCoreDataTypeAttributeListNew.contains(
-            xincoCoreDataTypeAttributeListOldXincoCoreDataTypeAttribute)) {
+        if (xincoCoreDataTypeAttributeListNewInit
+            && !xincoCoreDataTypeAttributeListNew.contains(
+                xincoCoreDataTypeAttributeListOldXincoCoreDataTypeAttribute)) {
           if (illegalOrphanMessages == null) {
             illegalOrphanMessages = new ArrayList<>();
           }
@@ -169,7 +174,8 @@ public class XincoCoreDataTypeJpaController implements Serializable {
         }
       }
       for (XincoCoreData xincoCoreDataListOldXincoCoreData : xincoCoreDataListOld) {
-        if (!xincoCoreDataListNew.contains(xincoCoreDataListOldXincoCoreData)) {
+        if (xincoCoreDataListNewInit
+            && !xincoCoreDataListNew.contains(xincoCoreDataListOldXincoCoreData)) {
           if (illegalOrphanMessages == null) {
             illegalOrphanMessages = new ArrayList<>();
           }
@@ -184,26 +190,31 @@ public class XincoCoreDataTypeJpaController implements Serializable {
       }
       List<XincoCoreDataTypeAttribute> attachedXincoCoreDataTypeAttributeListNew =
           new ArrayList<>();
-      for (XincoCoreDataTypeAttribute
-          xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach :
-              xincoCoreDataTypeAttributeListNew) {
-        xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach =
-            em.getReference(
-                xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach.getClass(),
-                xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach
-                    .getXincoCoreDataTypeAttributePK());
-        attachedXincoCoreDataTypeAttributeListNew.add(
-            xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach);
+      if (xincoCoreDataTypeAttributeListNewInit) {
+        for (XincoCoreDataTypeAttribute
+            xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach :
+                xincoCoreDataTypeAttributeListNew) {
+          xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(
+                      xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach),
+                  xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach
+                      .getXincoCoreDataTypeAttributePK());
+          attachedXincoCoreDataTypeAttributeListNew.add(
+              xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach);
+        }
       }
       xincoCoreDataTypeAttributeListNew = attachedXincoCoreDataTypeAttributeListNew;
       xincoCoreDataType.setXincoCoreDataTypeAttributeList(xincoCoreDataTypeAttributeListNew);
       List<XincoCoreData> attachedXincoCoreDataListNew = new ArrayList<>();
-      for (XincoCoreData xincoCoreDataListNewXincoCoreDataToAttach : xincoCoreDataListNew) {
-        xincoCoreDataListNewXincoCoreDataToAttach =
-            em.getReference(
-                xincoCoreDataListNewXincoCoreDataToAttach.getClass(),
-                xincoCoreDataListNewXincoCoreDataToAttach.getId());
-        attachedXincoCoreDataListNew.add(xincoCoreDataListNewXincoCoreDataToAttach);
+      if (xincoCoreDataListNewInit) {
+        for (XincoCoreData xincoCoreDataListNewXincoCoreDataToAttach : xincoCoreDataListNew) {
+          xincoCoreDataListNewXincoCoreDataToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(xincoCoreDataListNewXincoCoreDataToAttach),
+                  xincoCoreDataListNewXincoCoreDataToAttach.getId());
+          attachedXincoCoreDataListNew.add(xincoCoreDataListNewXincoCoreDataToAttach);
+        }
       }
       xincoCoreDataListNew = attachedXincoCoreDataListNew;
       xincoCoreDataType.setXincoCoreDataList(xincoCoreDataListNew);
@@ -273,13 +284,11 @@ public class XincoCoreDataTypeJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreDataType xincoCoreDataType;
-      try {
-        xincoCoreDataType = em.getReference(XincoCoreDataType.class, id);
-        xincoCoreDataType.getId();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreDataType xincoCoreDataType = em.find(XincoCoreDataType.class, id);
+
+      if (xincoCoreDataType == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreDataType with id " + id + " no longer exists.", enfe);
+            "The xincoCoreDataType with id " + id + " no longer exists.");
       }
       List<String> illegalOrphanMessages = null;
       List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeListOrphanCheck =

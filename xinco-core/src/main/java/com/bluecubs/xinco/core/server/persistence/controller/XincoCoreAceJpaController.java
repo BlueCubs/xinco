@@ -30,14 +30,13 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import com.bluecubs.xinco.core.server.persistence.*;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoCoreAceJpaController implements Serializable {
@@ -59,22 +58,27 @@ public class XincoCoreAceJpaController implements Serializable {
       em.getTransaction().begin();
       XincoCoreUser xincoCoreUser = xincoCoreAce.getXincoCoreUser();
       if (xincoCoreUser != null) {
-        xincoCoreUser = em.getReference(xincoCoreUser.getClass(), xincoCoreUser.getId());
+        xincoCoreUser =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreUser), xincoCoreUser.getId());
         xincoCoreAce.setXincoCoreUser(xincoCoreUser);
       }
       XincoCoreData xincoCoreData = xincoCoreAce.getXincoCoreData();
       if (xincoCoreData != null) {
-        xincoCoreData = em.getReference(xincoCoreData.getClass(), xincoCoreData.getId());
+        xincoCoreData =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreData), xincoCoreData.getId());
         xincoCoreAce.setXincoCoreData(xincoCoreData);
       }
       XincoCoreNode xincoCoreNode = xincoCoreAce.getXincoCoreNode();
       if (xincoCoreNode != null) {
-        xincoCoreNode = em.getReference(xincoCoreNode.getClass(), xincoCoreNode.getId());
+        xincoCoreNode =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreNode), xincoCoreNode.getId());
         xincoCoreAce.setXincoCoreNode(xincoCoreNode);
       }
       XincoCoreGroup xincoCoreGroup = xincoCoreAce.getXincoCoreGroup();
       if (xincoCoreGroup != null) {
-        xincoCoreGroup = em.getReference(xincoCoreGroup.getClass(), xincoCoreGroup.getId());
+        xincoCoreGroup =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreGroup), xincoCoreGroup.getId());
         xincoCoreAce.setXincoCoreGroup(xincoCoreGroup);
       }
       em.persist(xincoCoreAce);
@@ -123,20 +127,27 @@ public class XincoCoreAceJpaController implements Serializable {
       XincoCoreGroup xincoCoreGroupOld = persistentXincoCoreAce.getXincoCoreGroup();
       XincoCoreGroup xincoCoreGroupNew = xincoCoreAce.getXincoCoreGroup();
       if (xincoCoreUserNew != null) {
-        xincoCoreUserNew = em.getReference(xincoCoreUserNew.getClass(), xincoCoreUserNew.getId());
+        xincoCoreUserNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreUserNew), xincoCoreUserNew.getId());
         xincoCoreAce.setXincoCoreUser(xincoCoreUserNew);
       }
       if (xincoCoreDataNew != null) {
-        xincoCoreDataNew = em.getReference(xincoCoreDataNew.getClass(), xincoCoreDataNew.getId());
+        xincoCoreDataNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreDataNew), xincoCoreDataNew.getId());
         xincoCoreAce.setXincoCoreData(xincoCoreDataNew);
       }
       if (xincoCoreNodeNew != null) {
-        xincoCoreNodeNew = em.getReference(xincoCoreNodeNew.getClass(), xincoCoreNodeNew.getId());
+        xincoCoreNodeNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreNodeNew), xincoCoreNodeNew.getId());
         xincoCoreAce.setXincoCoreNode(xincoCoreNodeNew);
       }
       if (xincoCoreGroupNew != null) {
         xincoCoreGroupNew =
-            em.getReference(xincoCoreGroupNew.getClass(), xincoCoreGroupNew.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreGroupNew), xincoCoreGroupNew.getId());
         xincoCoreAce.setXincoCoreGroup(xincoCoreGroupNew);
       }
       xincoCoreAce = em.merge(xincoCoreAce);
@@ -195,33 +206,27 @@ public class XincoCoreAceJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreAce xincoCoreAce;
-      try {
-        xincoCoreAce = em.getReference(XincoCoreAce.class, id);
-        xincoCoreAce.getId();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreAce xincoCoreAce = em.find(XincoCoreAce.class, id);
+
+      if (xincoCoreAce == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreAce with id " + id + " no longer exists.", enfe);
+            "The xincoCoreAce with id " + id + " no longer exists.");
       }
       XincoCoreUser xincoCoreUser = xincoCoreAce.getXincoCoreUser();
       if (xincoCoreUser != null) {
         xincoCoreUser.getXincoCoreAceList().remove(xincoCoreAce);
-        xincoCoreUser = em.merge(xincoCoreUser);
       }
       XincoCoreData xincoCoreData = xincoCoreAce.getXincoCoreData();
       if (xincoCoreData != null) {
         xincoCoreData.getXincoCoreAceList().remove(xincoCoreAce);
-        xincoCoreData = em.merge(xincoCoreData);
       }
       XincoCoreNode xincoCoreNode = xincoCoreAce.getXincoCoreNode();
       if (xincoCoreNode != null) {
         xincoCoreNode.getXincoCoreAceList().remove(xincoCoreAce);
-        xincoCoreNode = em.merge(xincoCoreNode);
       }
       XincoCoreGroup xincoCoreGroup = xincoCoreAce.getXincoCoreGroup();
       if (xincoCoreGroup != null) {
         xincoCoreGroup.getXincoCoreAceList().remove(xincoCoreAce);
-        xincoCoreGroup = em.merge(xincoCoreGroup);
       }
       em.remove(xincoCoreAce);
       em.getTransaction().commit();

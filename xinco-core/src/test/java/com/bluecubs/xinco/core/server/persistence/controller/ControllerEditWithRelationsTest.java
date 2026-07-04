@@ -139,6 +139,8 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     log.setVersionLow(0);
     log.setVersionPostfix("");
     log.setXincoCoreData(dataCtrl.findXincoCoreData(dataId));
+    log.setXincoCoreUser(
+        new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser(1));
     logCtrl.create(log);
     int logId = log.getId();
     assertTrue(logId > 0);
@@ -836,6 +838,8 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     log.setVersionLow(0);
     log.setVersionPostfix("");
     log.setXincoCoreData(dataCtrl.findXincoCoreData(d1Id));
+    log.setXincoCoreUser(
+        new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser(1));
     logCtrl.create(log);
     int logId = log.getId();
 

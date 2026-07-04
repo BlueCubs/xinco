@@ -51,10 +51,10 @@ public final class XincoIdServer extends XincoId {
         controller.edit(xincoId);
       } else {
         xincoId = new XincoId();
-        xincoId.setId(getId());
         xincoId.setLastId(getLastId());
         xincoId.setTablename(getTablename());
         controller.create(xincoId);
+        setId(xincoId.getId());
       }
       return getId();
     } catch (Exception ex) {

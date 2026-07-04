@@ -444,18 +444,16 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         } else {
           password = getUserpassword().replaceAll("'", "\\\\'");
         }
-        xcu =
-            new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(
-                getId(),
-                getUsername().replaceAll("'", "\\\\'"),
-                password,
-                getLastName().replaceAll("'", "\\\\'"),
-                getFirstName().replaceAll("'", "\\\\'"),
-                getEmail().replaceAll("'", "\\\\'"),
-                getStatusNumber(),
-                getAttempts(),
-                getLastModified());
-        xcu.setModificationReason(getReason());
+        xcu = new com.bluecubs.xinco.core.server.persistence.XincoCoreUser();
+        xcu.setUsername(getUsername().replaceAll("'", "\\\\'"));
+        xcu.setUserpassword(password);
+        xcu.setLastName(getLastName().replaceAll("'", "\\\\'"));
+        xcu.setFirstName(getFirstName().replaceAll("'", "\\\\'"));
+        xcu.setEmail(getEmail().replaceAll("'", "\\\\'"));
+        xcu.setStatusNumber(getStatusNumber());
+        xcu.setAttempts(getAttempts());
+        xcu.setLastModified(getLastModified());
+        xcu.setModificationReason(getReason() == null ? "audit.general.create" : getReason());
         xcu.setModifierId(getChangerID());
         xcu.setModificationTime(new Timestamp(new Date().getTime()));
         controller.create(xcu);

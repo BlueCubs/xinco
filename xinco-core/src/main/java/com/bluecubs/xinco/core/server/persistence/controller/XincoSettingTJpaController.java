@@ -30,14 +30,13 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import com.bluecubs.xinco.core.server.persistence.XincoSettingT;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 public class XincoSettingTJpaController implements Serializable {
@@ -101,13 +100,11 @@ public class XincoSettingTJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoSettingT xincoSettingT;
-      try {
-        xincoSettingT = em.getReference(XincoSettingT.class, id);
-        xincoSettingT.getRecordId();
-      } catch (EntityNotFoundException enfe) {
+      XincoSettingT xincoSettingT = em.find(XincoSettingT.class, id);
+
+      if (xincoSettingT == null) {
         throw new NonexistentEntityException(
-            "The xincoSettingT with id " + id + " no longer exists.", enfe);
+            "The xincoSettingT with id " + id + " no longer exists.");
       }
       em.remove(xincoSettingT);
       em.getTransaction().commit();

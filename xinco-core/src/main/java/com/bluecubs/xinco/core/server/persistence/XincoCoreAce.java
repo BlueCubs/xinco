@@ -27,14 +27,14 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.GenerationType.TABLE;
+import static jakarta.persistence.GenerationType.TABLE;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 /** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
 @Entity
