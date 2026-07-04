@@ -3,13 +3,13 @@ package com.bluecubs.xinco.core.server;
 import static java.util.Locale.getDefault;
 import static java.util.ResourceBundle.getBundle;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.Setter;
 

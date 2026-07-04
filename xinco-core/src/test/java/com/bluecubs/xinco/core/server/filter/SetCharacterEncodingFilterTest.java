@@ -3,8 +3,8 @@ package com.bluecubs.xinco.core.server.filter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import jakarta.servlet.*;
 import java.io.IOException;
-import javax.servlet.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

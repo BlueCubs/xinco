@@ -29,8 +29,8 @@
  */
 package com.bluecubs.xinco.core.server.filter;
 
+import jakarta.servlet.*;
 import java.io.IOException;
-import javax.servlet.*;
 
 /** @author Leo-Fan.aq */
 public class SetCharacterEncodingFilter implements Filter {
@@ -85,7 +85,7 @@ public class SetCharacterEncodingFilter implements Filter {
    * Place this filter into service.
    *
    * @param filterConfig The filter configuration object
-   * @throws javax.servlet.ServletException on an error
+   * @throws jakarta.servlet.ServletException on an error
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
