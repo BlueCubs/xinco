@@ -12,7 +12,9 @@ import com.bluecubs.xinco.core.server.XincoCoreLogServerBuilder;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.ui.component.PropertyGrid;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -22,6 +24,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
@@ -88,6 +91,9 @@ public class ExplorerView extends VerticalLayout
   private final Grid<XincoCoreDataServer> dataGrid = new Grid<>(XincoCoreDataServer.class, false);
   private final PropertyGrid propertyGrid = new PropertyGrid();
   private final MenuBar menuBar = new MenuBar();
+  private final TextField searchField = new TextField();
+  private Span searchStatusLabel;
+  private Button clearSearchBtn;
 
   public ExplorerView() {
     this(resolveSession());
@@ -106,6 +112,7 @@ public class ExplorerView extends VerticalLayout
     setSpacing(false);
 
     buildMenuBar();
+    HorizontalLayout searchBar = buildSearchBar();
 
     HorizontalLayout content = new HorizontalLayout();
     content.setSizeFull();
@@ -130,7 +137,7 @@ public class ExplorerView extends VerticalLayout
     right.setSpacing(false);
 
     content.add(left, center, right);
-    add(menuBar, content);
+    add(menuBar, searchBar, content);
     expand(content);
   }
 
@@ -358,6 +365,78 @@ public class ExplorerView extends VerticalLayout
         .filter(o -> o instanceof XincoCoreNodeServer)
         .map(o -> (XincoCoreNodeServer) o)
         .toList();
+  }
+
+  // ── Search ────────────────────────────────────────────────────────────────
+
+  private HorizontalLayout buildSearchBar() {
+    searchField.setPlaceholder(getTranslation("menu.search"));
+    searchField.setClearButtonVisible(true);
+    searchField.setWidth("280px");
+    searchField.addKeyPressListener(Key.ENTER, e -> doSearch());
+
+    Button searchBtn = new Button(VaadinIcon.SEARCH.create(), e -> doSearch());
+    searchBtn.setTooltipText(getTranslation("menu.search"));
+
+    clearSearchBtn = new Button(VaadinIcon.CLOSE_SMALL.create(), e -> clearSearch());
+    clearSearchBtn.setTooltipText("Clear search");
+    clearSearchBtn.setVisible(false);
+
+    searchStatusLabel = new Span();
+    searchStatusLabel
+        .getStyle()
+        .set("font-size", "var(--lumo-font-size-s)")
+        .set("color", "var(--lumo-secondary-text-color)");
+    searchStatusLabel.setVisible(false);
+
+    HorizontalLayout bar =
+        new HorizontalLayout(searchField, searchBtn, clearSearchBtn, searchStatusLabel);
+    bar.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
+    bar.setPadding(false);
+    return bar;
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private void doSearch() {
+    String query = searchField.getValue().trim();
+    if (query.isEmpty()) return;
+
+    java.util.ArrayList raw = XincoIndexer.findXincoCoreData(query, 0);
+    if (raw == null) {
+      error("Search unavailable — index may not exist yet.");
+      return;
+    }
+
+    List<XincoCoreDataServer> results =
+        raw.stream()
+            .filter(o -> o instanceof XincoCoreDataServer)
+            .map(o -> (XincoCoreDataServer) o)
+            .toList();
+
+    dataGrid.setItems(results);
+    searchStatusLabel.setText(results.size() + " result(s) for \"" + query + "\"");
+    searchStatusLabel.setVisible(true);
+    clearSearchBtn.setVisible(true);
+    selectedData = null;
+    updateMenuState();
+  }
+
+  private void clearSearch() {
+    searchField.clear();
+    searchStatusLabel.setVisible(false);
+    clearSearchBtn.setVisible(false);
+    if (selectedNode != null) {
+      selectedNode.fillXincoCoreData();
+      dataGrid.setItems(
+          selectedNode.getXincoCoreData().stream()
+              .filter(o -> o instanceof XincoCoreDataServer)
+              .map(o -> (XincoCoreDataServer) o)
+              .toList());
+    } else {
+      dataGrid.setItems(List.of());
+    }
+    selectedData = null;
+    updateMenuState();
   }
 
   // ── Actions ───────────────────────────────────────────────────────────────

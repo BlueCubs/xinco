@@ -10,6 +10,7 @@ import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.server.service.XincoCoreData;
 import com.bluecubs.xinco.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.server.service.XincoCoreLanguage;
@@ -372,5 +373,111 @@ class ExplorerViewTest {
     Method m = ExplorerView.class.getDeclaredMethod(name);
     m.setAccessible(true);
     m.invoke(view);
+  }
+
+  // ---- Search bar ----
+
+  @Test
+  void searchBar_renders_searchFieldPresent() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    Field sf = ExplorerView.class.getDeclaredField("searchField");
+    sf.setAccessible(true);
+    assertNotNull(sf.get(view), "searchField should be initialized");
+  }
+
+  @Test
+  void search_emptyQuery_doesNothing() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    // searchField is empty by default; doSearch() should be a no-op
+    Field sf = ExplorerView.class.getDeclaredField("searchField");
+    sf.setAccessible(true);
+    com.vaadin.flow.component.textfield.TextField field =
+        (com.vaadin.flow.component.textfield.TextField) sf.get(view);
+    field.setValue("");
+    invoke(view, "doSearch");
+    // statusLabel stays hidden
+    Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
+    sl.setAccessible(true);
+    assertFalse(((com.vaadin.flow.component.html.Span) sl.get(view)).isVisible());
+  }
+
+  @Test
+  void search_indexUnavailable_showsError() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    Field sf = ExplorerView.class.getDeclaredField("searchField");
+    sf.setAccessible(true);
+    ((com.vaadin.flow.component.textfield.TextField) sf.get(view)).setValue("report");
+
+    try (MockedStatic<XincoIndexer> mocked = mockStatic(XincoIndexer.class)) {
+      mocked.when(() -> XincoIndexer.findXincoCoreData(any(), anyInt())).thenReturn(null);
+      invoke(view, "doSearch");
+      // statusLabel should still be hidden (error path, no results)
+      Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
+      sl.setAccessible(true);
+      assertFalse(((com.vaadin.flow.component.html.Span) sl.get(view)).isVisible());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void search_withResults_populatesDataGridAndShowsStatus() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    Field sf = ExplorerView.class.getDeclaredField("searchField");
+    sf.setAccessible(true);
+    ((com.vaadin.flow.component.textfield.TextField) sf.get(view)).setValue("report");
+
+    XincoCoreDataServer hit = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(hit.getXincoCoreDataType().getId()).thenReturn(1);
+    when(hit.getStatusNumber()).thenReturn(1);
+    java.util.ArrayList results = new java.util.ArrayList();
+    results.add(hit);
+
+    try (MockedStatic<XincoIndexer> mocked = mockStatic(XincoIndexer.class)) {
+      mocked.when(() -> XincoIndexer.findXincoCoreData(any(), anyInt())).thenReturn(results);
+      invoke(view, "doSearch");
+
+      Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
+      sl.setAccessible(true);
+      com.vaadin.flow.component.html.Span label =
+          (com.vaadin.flow.component.html.Span) sl.get(view);
+      assertTrue(label.isVisible(), "status label visible after search");
+      assertTrue(label.getText().contains("1"), "label shows result count");
+
+      Field clr = ExplorerView.class.getDeclaredField("clearSearchBtn");
+      clr.setAccessible(true);
+      assertTrue(
+          ((com.vaadin.flow.component.button.Button) clr.get(view)).isVisible(),
+          "clear button visible");
+    }
+  }
+
+  @Test
+  void clearSearch_hidesStatusAndClearButton() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    Field sf = ExplorerView.class.getDeclaredField("searchField");
+    sf.setAccessible(true);
+    ((com.vaadin.flow.component.textfield.TextField) sf.get(view)).setValue("anything");
+
+    java.util.ArrayList results = new java.util.ArrayList();
+    try (MockedStatic<XincoIndexer> mocked = mockStatic(XincoIndexer.class)) {
+      mocked.when(() -> XincoIndexer.findXincoCoreData(any(), anyInt())).thenReturn(results);
+      invoke(view, "doSearch");
+    }
+
+    invoke(view, "clearSearch");
+
+    Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
+    sl.setAccessible(true);
+    assertFalse(((com.vaadin.flow.component.html.Span) sl.get(view)).isVisible(), "status hidden");
+
+    Field clr = ExplorerView.class.getDeclaredField("clearSearchBtn");
+    clr.setAccessible(true);
+    assertFalse(
+        ((com.vaadin.flow.component.button.Button) clr.get(view)).isVisible(), "clear hidden");
   }
 }
