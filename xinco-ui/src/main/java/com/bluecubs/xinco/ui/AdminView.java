@@ -108,8 +108,7 @@ public class AdminView extends VerticalLayout {
     Button btnDelete =
         new Button(
             "Delete",
-            e ->
-                groupGrid.asSingleSelect().getOptionalValue().ifPresent(this::confirmDeleteGroup));
+            e -> groupGrid.asSingleSelect().getOptionalValue().ifPresent(this::confirmDeleteGroup));
     btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
     HorizontalLayout toolbar = new HorizontalLayout(btnNew, btnEdit, btnDelete);
@@ -156,7 +155,8 @@ public class AdminView extends VerticalLayout {
       lastName.setValue(nvl(existing.getLastName()));
       email.setValue(nvl(existing.getEmail()));
       status.setValue(existing.getStatusNumber());
-      Set<XincoCoreGroupServer> selected = matchByGroupId(loadUserGroups(existing.getId()), allGroups);
+      Set<XincoCoreGroupServer> selected =
+          matchByGroupId(loadUserGroups(existing.getId()), allGroups);
       groupBox.setValue(selected);
     } else {
       status.setValue(1);
@@ -367,7 +367,7 @@ public class AdminView extends VerticalLayout {
       if (raw == null) return List.of();
       List<XincoCoreGroupServer> groups = new ArrayList<>();
       for (Object obj : raw) {
-        if (obj instanceof XincoCoreGroupServer g) groups.add(g);
+        if (obj instanceof XincoCoreGroupServer) groups.add((XincoCoreGroupServer) obj);
       }
       return groups;
     } catch (Throwable t) {
