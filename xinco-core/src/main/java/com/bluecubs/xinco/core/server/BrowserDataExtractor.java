@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Extracts information from browser
@@ -23,7 +22,12 @@ public final class BrowserDataExtractor extends HttpServlet {
 
   HttpServletRequest request;
   HttpSession session;
-  @Setter String userAgent;
+  String userAgent;
+
+  public void setUserAgent(String ua) {
+    this.userAgent = ua != null ? ua.toLowerCase(getDefault()) : "";
+  }
+
   @Getter String company;
   @Getter String name;
   @Getter String version;
@@ -129,10 +133,10 @@ public final class BrowserDataExtractor extends HttpServlet {
         os = "Windows 3.x";
       }
 
-    } else if (userAgent.contains("Mac")) {
-      if (userAgent.contains("Mac_PowerPC") || userAgent.contains("Mac_PPC")) {
+    } else if (userAgent.contains("mac")) {
+      if (userAgent.contains("mac_powerppc") || userAgent.contains("mac_ppc")) {
         os = "Macintosh Power PC";
-      } else if (userAgent.contains("Macintosh")) {
+      } else if (userAgent.contains("macintosh")) {
         os = "Macintosh";
       } else {
         os = "Unknown Mac";
