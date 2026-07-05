@@ -60,7 +60,8 @@ class ViewerViewTest {
     Div viewerPane = (Div) f.get(view);
 
     boolean hasPlaceholder =
-        viewerPane.getChildren()
+        viewerPane
+            .getChildren()
             .filter(c -> c instanceof Span)
             .map(c -> (Span) c)
             .anyMatch(s -> s.getText().contains("Select a file"));

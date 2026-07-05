@@ -36,7 +36,6 @@ package com.bluecubs.xinco.core.server;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoIdServer.getNextId;
 import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import static com.bluecubs.xinco.tools.MD5.encrypt;
 import static java.lang.System.currentTimeMillis;
@@ -47,21 +46,15 @@ import static java.util.logging.Logger.getLogger;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecordPK;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserT;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserModifiedRecordJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserTJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import com.bluecubs.xinco.server.service.XincoCoreUser;
+import jakarta.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -430,12 +423,15 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         xcu.setStatusNumber(getStatusNumber());
         xcu.setUsername(getUsername().replaceAll("'", "\\\\'"));
         xcu.setUserpassword(password);
-        xcu.setModificationReason(getReason() == null ? "audit.general.modified" : getReason());
-        xcu.setModifierId(getChangerID());
-        xcu.setModificationTime(new Timestamp(new Date().getTime()));
-        controller.edit(xcu);
-        // Create audit trail record
-        createAuditTrail(xcu);
+        XincoRevisionListener.MOD_REASON.set(
+            getReason() == null ? "audit.general.modified" : getReason());
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
+        try {
+          controller.edit(xcu);
+        } finally {
+          XincoRevisionListener.MOD_REASON.remove();
+          XincoRevisionListener.MODIFIER_ID.remove();
+        }
       } else {
         // Sometimes password got re-hashed
         String password;
@@ -453,12 +449,15 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         xcu.setStatusNumber(getStatusNumber());
         xcu.setAttempts(getAttempts());
         xcu.setLastModified(getLastModified());
-        xcu.setModificationReason(getReason() == null ? "audit.general.create" : getReason());
-        xcu.setModifierId(getChangerID());
-        xcu.setModificationTime(new Timestamp(new Date().getTime()));
-        controller.create(xcu);
-        // Create audit trail record
-        createAuditTrail(xcu);
+        XincoRevisionListener.MOD_REASON.set(
+            getReason() == null ? "audit.general.create" : getReason());
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
+        try {
+          controller.create(xcu);
+        } finally {
+          XincoRevisionListener.MOD_REASON.remove();
+          XincoRevisionListener.MODIFIER_ID.remove();
+        }
       }
       setId(xcu.getId());
       if (isWriteGroups()) {
@@ -471,37 +470,6 @@ public final class XincoCoreUserServer extends XincoCoreUser {
     setWriteGroups(false);
     setReason("");
     return getId();
-  }
-
-  private void createAuditTrail(com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu)
-      throws XincoException, PreexistingEntityException, Exception {
-    // Create audit trail record
-    int record_ID;
-    XincoCoreUserJpaController controller =
-        new XincoCoreUserJpaController(getEntityManagerFactory());
-    record_ID = getNextId("xinco_core_user_modified_record");
-    new XincoCoreUserTJpaController(getEntityManagerFactory())
-        .create(
-            new XincoCoreUserT(
-                record_ID,
-                getId(),
-                getUsername(),
-                getUserpassword(),
-                getLastName(),
-                getFirstName(),
-                getEmail(),
-                getStatusNumber(),
-                getAttempts(),
-                new Timestamp(getLastModified().getTime())));
-    XincoCoreUserModifiedRecord mod =
-        new XincoCoreUserModifiedRecord(
-            new XincoCoreUserModifiedRecordPK(getChangerID(), record_ID));
-    mod.setModReason(xcu.getModificationReason());
-    com.bluecubs.xinco.core.server.persistence.XincoCoreUser modifier =
-        controller.findXincoCoreUser(xcu.getModifierId());
-    mod.setXincoCoreUser(modifier == null ? controller.findXincoCoreUser(1) : modifier);
-    mod.setModTime(new Date());
-    new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory()).create(mod);
   }
 
   public static void deleteFromDB(int userId) throws Exception {
@@ -590,19 +558,23 @@ public final class XincoCoreUserServer extends XincoCoreUser {
       // username was modified)
       result = createdQuery("Select x from XincoCoreUser x where x.id=" + getId());
       tempId = ((com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0)).getId();
-      result =
-          createdQuery(
-              "Select x from XincoCoreUserT x where x.id="
-                  + tempId
-                  + " and x.userpassword='"
-                  + (hash ? encrypt(newPass) : newPass)
-                  + "'");
-      for (Object o : result) {
-        // Now check the aging
-        XincoCoreUserT user = (XincoCoreUserT) o;
-        long diff = currentTimeMillis() - user.getLastModified().getTime();
-        if (diff / (1_000 * 60 * 60 * 24) > getSetting("password.unusable_period").getIntValue()) {
-          return false;
+      try (EntityManager em = getEntityManagerFactory().createEntityManager()) {
+        org.hibernate.envers.AuditReader reader = org.hibernate.envers.AuditReaderFactory.get(em);
+        List<Number> revisions =
+            reader.getRevisions(
+                com.bluecubs.xinco.core.server.persistence.XincoCoreUser.class, tempId);
+        for (Number rev : revisions) {
+          com.bluecubs.xinco.core.server.persistence.XincoCoreUser historicalUser =
+              reader.find(
+                  com.bluecubs.xinco.core.server.persistence.XincoCoreUser.class, tempId, rev);
+          if (historicalUser != null
+              && historicalUser.getUserpassword().equals(hash ? encrypt(newPass) : newPass)) {
+            long diff = currentTimeMillis() - historicalUser.getLastModified().getTime();
+            if (diff / (1_000 * 60 * 60 * 24)
+                > getSetting("password.unusable_period").getIntValue()) {
+              return false;
+            }
+          }
         }
       }
       // ---------------------------

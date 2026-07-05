@@ -27,20 +27,19 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
 @Table(name = "xinco_core_data_type_attribute")
-@EntityListeners(AuditedEntityListener.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(
@@ -64,7 +63,7 @@ import java.io.Serializable;
       name = "XincoCoreDataTypeAttribute.findByAttrSize",
       query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.attrSize = :attrSize")
 })
-public class XincoCoreDataTypeAttribute extends XincoAuditedObject implements Serializable {
+public class XincoCoreDataTypeAttribute implements Serializable {
 
   private static final long serialVersionUID = 1L;
   @EmbeddedId protected XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK;

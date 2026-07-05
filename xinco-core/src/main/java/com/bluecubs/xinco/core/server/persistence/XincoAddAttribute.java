@@ -29,20 +29,19 @@ package com.bluecubs.xinco.core.server.persistence;
 
 import static jakarta.persistence.TemporalType.TIMESTAMP;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
 @Table(name = "xinco_add_attribute")
-@EntityListeners(AuditedEntityListener.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(name = "XincoAddAttribute.findAll", query = "SELECT x FROM XincoAddAttribute x"),
@@ -70,7 +69,7 @@ import java.util.Date;
       name = "XincoAddAttribute.findByAttribDatetime",
       query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDatetime = :attribDatetime")
 })
-public class XincoAddAttribute extends XincoAuditedObject implements Serializable {
+public class XincoAddAttribute implements Serializable {
 
   private static final long serialVersionUID = 1L;
   @EmbeddedId protected XincoAddAttributePK xincoAddAttributePK;

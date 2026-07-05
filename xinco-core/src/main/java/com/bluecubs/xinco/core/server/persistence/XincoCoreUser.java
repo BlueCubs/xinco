@@ -31,7 +31,6 @@ import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.TABLE;
 import static jakarta.persistence.TemporalType.DATE;
 
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -41,10 +40,12 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
 @Table(
     name = "xinco_core_user",
@@ -80,7 +81,7 @@ import java.util.List;
       name = "XincoCoreUser.findByLastModified",
       query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")
 })
-public class XincoCoreUser extends XincoAuditedObject implements Serializable {
+public class XincoCoreUser implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -151,9 +152,6 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
   @Column(name = "last_modified")
   @Temporal(DATE)
   private Date lastModified;
-
-  @OneToMany(cascade = ALL, mappedBy = "xincoCoreUser")
-  private List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList;
 
   @OneToMany(mappedBy = "xincoCoreUser")
   private List<XincoCoreAce> xincoCoreAceList;
@@ -261,16 +259,6 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
 
   public void setLastModified(Date lastModified) {
     this.lastModified = lastModified;
-  }
-
-  @XmlTransient
-  public List<XincoCoreUserModifiedRecord> getXincoCoreUserModifiedRecordList() {
-    return xincoCoreUserModifiedRecordList;
-  }
-
-  public void setXincoCoreUserModifiedRecordList(
-      List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList) {
-    this.xincoCoreUserModifiedRecordList = xincoCoreUserModifiedRecordList;
   }
 
   @XmlTransient

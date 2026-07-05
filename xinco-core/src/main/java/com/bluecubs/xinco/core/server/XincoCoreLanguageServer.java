@@ -40,9 +40,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJp
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.server.service.XincoCoreLanguage;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -97,23 +95,24 @@ public final class XincoCoreLanguageServer extends XincoCoreLanguage {
         xcl = controller.findXincoCoreLanguage(getId());
         xcl.setSign(getSign().replaceAll("'", "\\\\'"));
         xcl.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
-        xcl.setModificationReason("audit.language.change");
-        xcl.setModifierId(getChangerID());
-        xcl.setModificationTime(new Timestamp(new Date().getTime()));
+        XincoRevisionListener.MOD_REASON.set("audit.language.change");
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
         controller.edit(xcl);
       } else {
         xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage();
         xcl.setSign(getSign().replaceAll("'", "\\\\'"));
         xcl.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
-        xcl.setModificationReason("audit.general.create");
-        xcl.setModifierId(getChangerID());
-        xcl.setModificationTime(new Timestamp(new Date().getTime()));
+        XincoRevisionListener.MOD_REASON.set("audit.general.create");
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
         controller.create(xcl);
         setId(xcl.getId());
       }
     } catch (Exception e) {
       getLogger(XincoCoreLanguageServer.class.getName()).log(SEVERE, null, e);
       throw new XincoException(e.getMessage());
+    } finally {
+      XincoRevisionListener.MOD_REASON.remove();
+      XincoRevisionListener.MODIFIER_ID.remove();
     }
     return getId();
   }

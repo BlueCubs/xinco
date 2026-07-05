@@ -1,7 +1,6 @@
 package com.bluecubs.xinco.ui;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.vaadin.flow.server.ServiceInitEvent;
@@ -41,8 +40,7 @@ class XincoSessionInitListenerTest {
 
     listener.serviceInit(event);
 
-    ArgumentCaptor<SessionInitListener> captor =
-        ArgumentCaptor.forClass(SessionInitListener.class);
+    ArgumentCaptor<SessionInitListener> captor = ArgumentCaptor.forClass(SessionInitListener.class);
     verify(service).addSessionInitListener(captor.capture());
 
     WrappedSession wrapped = mock(WrappedSession.class);
@@ -66,8 +64,7 @@ class XincoSessionInitListenerTest {
 
     listener.serviceInit(event);
 
-    ArgumentCaptor<SessionInitListener> captor =
-        ArgumentCaptor.forClass(SessionInitListener.class);
+    ArgumentCaptor<SessionInitListener> captor = ArgumentCaptor.forClass(SessionInitListener.class);
     verify(service).addSessionInitListener(captor.capture());
 
     WrappedSession wrapped = mock(WrappedSession.class);

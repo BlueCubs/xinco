@@ -60,7 +60,6 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     userCtrl.create(user);
     int userId = user.getId();
     assertTrue(userId > 0);
@@ -288,7 +287,6 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -313,7 +311,6 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
         Arrays.asList(uhgCtrl.findXincoCoreUserHasXincoCoreGroup(pk)));
     toEdit.setXincoCoreAceList(new ArrayList<>());
     toEdit.setXincoCoreLogList(new ArrayList<>());
-    toEdit.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     userCtrl.edit(toEdit);
     assertEquals(2, (int) userCtrl.findXincoCoreUser(userId).getStatusNumber());
 

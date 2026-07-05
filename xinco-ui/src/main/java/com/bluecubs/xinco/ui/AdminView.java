@@ -461,7 +461,11 @@ public class AdminView extends VerticalLayout {
   private VerticalLayout buildDataTypesTab() {
     dataTypeGrid = new Grid<>();
     dataTypeGrid.setSizeFull();
-    dataTypeGrid.addColumn(XincoCoreDataTypeServer::getId).setHeader("ID").setWidth("60px").setFlexGrow(0);
+    dataTypeGrid
+        .addColumn(XincoCoreDataTypeServer::getId)
+        .setHeader("ID")
+        .setWidth("60px")
+        .setFlexGrow(0);
     dataTypeGrid.addColumn(XincoCoreDataTypeServer::getDesignation).setHeader("Designation");
     dataTypeGrid.addColumn(XincoCoreDataTypeServer::getDescription).setHeader("Description");
     dataTypeGrid.setItems(loadDataTypes());
@@ -498,10 +502,22 @@ public class AdminView extends VerticalLayout {
 
     attrGrid = new Grid<>();
     attrGrid.setSizeFull();
-    attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getAttributeId).setHeader("#").setWidth("50px").setFlexGrow(0);
+    attrGrid
+        .addColumn(XincoCoreDataTypeAttributeServer::getAttributeId)
+        .setHeader("#")
+        .setWidth("50px")
+        .setFlexGrow(0);
     attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getDesignation).setHeader("Name");
-    attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getDataType).setHeader("Data Type").setWidth("120px").setFlexGrow(0);
-    attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getSize).setHeader("Size").setWidth("80px").setFlexGrow(0);
+    attrGrid
+        .addColumn(XincoCoreDataTypeAttributeServer::getDataType)
+        .setHeader("Data Type")
+        .setWidth("120px")
+        .setFlexGrow(0);
+    attrGrid
+        .addColumn(XincoCoreDataTypeAttributeServer::getSize)
+        .setHeader("Size")
+        .setWidth("80px")
+        .setFlexGrow(0);
 
     Button btnAddAttr = new Button("Add Attribute", e -> openAttributeDialog());
     Button btnRemoveAttr =

@@ -5,7 +5,6 @@ import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFact
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
 import com.bluecubs.xinco.core.server.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -47,67 +46,6 @@ public class ControllerRemainingTest extends AbstractXincoDataBaseTestCase {
     assertNotNull(ctrl.findXincoDependencyBehaviorEntities());
     assertNotNull(ctrl.findXincoDependencyBehaviorEntities(10, 0));
     assertTrue(ctrl.getXincoDependencyBehaviorCount() >= 0);
-  }
-
-  // ---- XincoCoreUserModifiedRecord ----
-
-  public void testUserModifiedRecordController_createDestroy() throws Exception {
-    XincoCoreUserModifiedRecordJpaController ctrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    XincoCoreUserJpaController userCtrl = new XincoCoreUserJpaController(getEntityManagerFactory());
-
-    XincoCoreUserModifiedRecord entity = new XincoCoreUserModifiedRecord();
-    // PK uses (userId, recordId) - recordId is auto-assigned
-    XincoCoreUserModifiedRecordPK pk = new XincoCoreUserModifiedRecordPK();
-    pk.setId(1);
-    pk.setRecordId(0);
-    entity.setXincoCoreUserModifiedRecordPK(pk);
-    entity.setModTime(new Date());
-    entity.setModReason("test modification");
-    entity.setXincoCoreUser(userCtrl.findXincoCoreUser(1));
-
-    ctrl.create(entity);
-    XincoCoreUserModifiedRecordPK createdPk = entity.getXincoCoreUserModifiedRecordPK();
-    assertNotNull(createdPk);
-    assertNotNull(ctrl.findXincoCoreUserModifiedRecord(createdPk));
-
-    ctrl.destroy(createdPk);
-    assertNull(ctrl.findXincoCoreUserModifiedRecord(createdPk));
-  }
-
-  public void testUserModifiedRecordController_findAll() {
-    XincoCoreUserModifiedRecordJpaController ctrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    assertNotNull(ctrl.findXincoCoreUserModifiedRecordEntities());
-    assertNotNull(ctrl.findXincoCoreUserModifiedRecordEntities(10, 0));
-    assertTrue(ctrl.getXincoCoreUserModifiedRecordCount() >= 0);
-  }
-
-  public void testUserModifiedRecordController_edit() throws Exception {
-    XincoCoreUserModifiedRecordJpaController ctrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    XincoCoreUserJpaController userCtrl = new XincoCoreUserJpaController(getEntityManagerFactory());
-
-    XincoCoreUserModifiedRecord entity = new XincoCoreUserModifiedRecord();
-    XincoCoreUserModifiedRecordPK pk = new XincoCoreUserModifiedRecordPK();
-    pk.setId(1);
-    pk.setRecordId(0);
-    entity.setXincoCoreUserModifiedRecordPK(pk);
-    entity.setModTime(new Date());
-    entity.setModReason("test.edit.reason");
-    entity.setXincoCoreUser(userCtrl.findXincoCoreUser(1));
-
-    ctrl.create(entity);
-    XincoCoreUserModifiedRecordPK createdPk = entity.getXincoCoreUserModifiedRecordPK();
-    assertNotNull(ctrl.findXincoCoreUserModifiedRecord(createdPk));
-
-    entity.setModReason("test.edit.reason.updated");
-    ctrl.edit(entity);
-    assertEquals(
-        "test.edit.reason.updated", ctrl.findXincoCoreUserModifiedRecord(createdPk).getModReason());
-
-    ctrl.destroy(createdPk);
-    assertNull(ctrl.findXincoCoreUserModifiedRecord(createdPk));
   }
 
   // ---- XincoCoreDataHasDependency ----

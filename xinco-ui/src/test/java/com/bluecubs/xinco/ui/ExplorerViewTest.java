@@ -30,11 +30,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.function.Function;
 import org.mockito.MockedStatic;
 
 class ExplorerViewTest {
@@ -446,8 +446,7 @@ class ExplorerViewTest {
 
     Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
     sl.setAccessible(true);
-    com.vaadin.flow.component.html.Span label =
-        (com.vaadin.flow.component.html.Span) sl.get(view);
+    com.vaadin.flow.component.html.Span label = (com.vaadin.flow.component.html.Span) sl.get(view);
     assertTrue(label.isVisible(), "status label visible after search");
     assertTrue(label.getText().contains("1"), "label shows result count");
 
@@ -507,7 +506,8 @@ class ExplorerViewTest {
 
     Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive mode"));
     DatePicker archiveDate = _get(DatePicker.class, spec -> spec.withLabel("Archive on"));
-    IntegerField archiveDays = _get(IntegerField.class, spec -> spec.withLabel("Archive after (days)"));
+    IntegerField archiveDays =
+        _get(IntegerField.class, spec -> spec.withLabel("Archive after (days)"));
 
     // Default: None — both disabled
     assertFalse(archiveDate.isEnabled(), "date disabled in None mode");

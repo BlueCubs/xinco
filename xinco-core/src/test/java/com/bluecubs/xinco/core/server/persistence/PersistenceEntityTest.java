@@ -86,7 +86,6 @@ class PersistenceEntityTest {
     u.setStatusNumber(1);
     u.setAttempts(0);
     u.setLastModified(new Date());
-    u.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     u.setXincoCoreAceList(new ArrayList<>());
     u.setXincoCoreLogList(new ArrayList<>());
     u.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

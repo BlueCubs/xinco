@@ -30,8 +30,6 @@ package com.bluecubs.xinco.core.server.persistence;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.TABLE;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -39,12 +37,13 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
-@EntityListeners(AuditedEntityListener.class)
 @Table(
     name = "xinco_core_group",
     uniqueConstraints = {@UniqueConstraint(columnNames = {"designation"})})
@@ -61,7 +60,7 @@ import java.util.List;
       name = "XincoCoreGroup.findByStatusNumber",
       query = "SELECT x FROM XincoCoreGroup x WHERE x.statusNumber = :statusNumber")
 })
-public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
+public class XincoCoreGroup implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

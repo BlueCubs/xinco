@@ -362,13 +362,7 @@
             <configuration>
               <target>
                 <mkdir dir="${project.basedir}/.git/hooks"/>
-                <echo file="${project.basedir}/.git/hooks/pre-commit" append="false">#!/bin/bash
-set -e
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-cd "$REPO_ROOT"
-mvn spotless:apply -q
-git add -u
-</echo>
+                <echo file="${project.basedir}/.git/hooks/pre-commit" append="false">#!/bin/bash set -e REPO_ROOT="$(git rev-parse --show-toplevel)" cd "$REPO_ROOT" mvn spotless:apply -q git add -u</echo>
                 <chmod file="${project.basedir}/.git/hooks/pre-commit" perm="755"/>
               </target>
             </configuration>

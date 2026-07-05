@@ -5,7 +5,6 @@ import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
@@ -196,8 +195,7 @@ class AdminViewTest {
 
   @Test
   void openSettingDialog_opensWithCorrectHeader() throws Exception {
-    XincoSettingServer setting =
-        new XincoSettingServer(1, "password.attempts", 5, null, false, 0L);
+    XincoSettingServer setting = new XincoSettingServer(1, "password.attempts", 5, null, false, 0L);
     invokeOpenSettingDialog(setting);
     Dialog dialog = _get(Dialog.class);
     assertTrue(dialog.isOpened());
@@ -206,8 +204,7 @@ class AdminViewTest {
 
   @Test
   void openSettingDialog_keyFieldIsReadOnly() throws Exception {
-    XincoSettingServer setting =
-        new XincoSettingServer(1, "password.attempts", 5, null, false, 0L);
+    XincoSettingServer setting = new XincoSettingServer(1, "password.attempts", 5, null, false, 0L);
     invokeOpenSettingDialog(setting);
     TextField keyField = findInDialog("Key");
     assertNotNull(keyField);

@@ -29,20 +29,19 @@ package com.bluecubs.xinco.core.server.persistence;
 
 import static jakarta.persistence.GenerationType.TABLE;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
 @Table(name = "xinco_setting")
-@EntityListeners(AuditedEntityListener.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(name = "XincoSetting.findAll", query = "SELECT x FROM XincoSetting x"),
@@ -62,7 +61,7 @@ import java.io.Serializable;
       name = "XincoSetting.findByLongValue",
       query = "SELECT x FROM XincoSetting x WHERE x.longValue = :longValue")
 })
-public class XincoSetting extends XincoAuditedObject implements Serializable {
+public class XincoSetting implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

@@ -77,49 +77,6 @@ public class ControllerBranchesRemainingTest extends AbstractXincoDataBaseTestCa
   // XincoCoreUserModifiedRecordJpaController
   // -------------------------------------------------------------------------
 
-  /**
-   * Create UserModifiedRecord with null PK (controller initialises id from user), then edit with
-   * same user, then destroy. Covers the full create/edit/destroy main paths.
-   */
-  public void testUmr_createEditDestroy() throws Exception {
-    XincoCoreUserModifiedRecordJpaController umrCtrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    XincoCoreUserJpaController userCtrl = new XincoCoreUserJpaController(getEntityManagerFactory());
-
-    XincoCoreUser user = buildUser(userCtrl, "umr.branch");
-
-    XincoCoreUserModifiedRecord umr = new XincoCoreUserModifiedRecord();
-    XincoCoreUserModifiedRecordPK umrPK = new XincoCoreUserModifiedRecordPK();
-    umrPK.setId(user.getId());
-    umrPK.setRecordId(9901);
-    umr.setXincoCoreUserModifiedRecordPK(umrPK);
-    umr.setXincoCoreUser(userCtrl.findXincoCoreUser(user.getId()));
-    umr.setModTime(new Date());
-    umr.setModReason("test branch coverage");
-    umrCtrl.create(umr);
-
-    assertNotNull(umrCtrl.findXincoCoreUserModifiedRecord(umr.getXincoCoreUserModifiedRecordPK()));
-
-    // Edit with same user — FK-change conditions stay false
-    XincoCoreUserModifiedRecord toEdit =
-        umrCtrl.findXincoCoreUserModifiedRecord(umr.getXincoCoreUserModifiedRecordPK());
-    toEdit.setXincoCoreUser(userCtrl.findXincoCoreUser(user.getId()));
-    umrCtrl.edit(toEdit);
-
-    // Destroy — covers destroy() user != null cleanup
-    umrCtrl.destroy(umr.getXincoCoreUserModifiedRecordPK());
-    assertNull(umrCtrl.findXincoCoreUserModifiedRecord(umr.getXincoCoreUserModifiedRecordPK()));
-
-    userCtrl.destroy(user.getId());
-  }
-
-  /** Covers the paginated findXincoCoreUserModifiedRecordEntities(maxResults, firstResult) path. */
-  public void testUmr_findPaginated() {
-    XincoCoreUserModifiedRecordJpaController umrCtrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    assertNotNull(umrCtrl.findXincoCoreUserModifiedRecordEntities(10, 0));
-  }
-
   // -------------------------------------------------------------------------
   // XincoCoreNodeJpaController — create() list loops
   // -------------------------------------------------------------------------
@@ -351,7 +308,6 @@ public class ControllerBranchesRemainingTest extends AbstractXincoDataBaseTestCa
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

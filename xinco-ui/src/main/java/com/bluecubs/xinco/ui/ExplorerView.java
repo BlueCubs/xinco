@@ -842,7 +842,8 @@ public class ExplorerView extends VerticalLayout
           }
         });
 
-    HorizontalLayout versionRow = new HorizontalLayout(majorField, minorField, patchField, postfixField);
+    HorizontalLayout versionRow =
+        new HorizontalLayout(majorField, minorField, patchField, postfixField);
     versionRow.setAlignItems(FlexComponent.Alignment.END);
 
     Dialog dialog = new Dialog();
@@ -1152,8 +1153,7 @@ public class ExplorerView extends VerticalLayout
             e -> {
               try {
                 XMLGregorianCalendar now =
-                    DatatypeFactory.newInstance()
-                        .newXMLGregorianCalendar(new GregorianCalendar());
+                    DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
                 int model = modelSelect.getValue();
                 new XincoAddAttributeServer(data.getId(), 5, 0, (long) model, 0.0, "", "", now)
                     .write2DB();
@@ -1163,7 +1163,8 @@ public class ExplorerView extends VerticalLayout
                           ? archiveDate.getValue()
                           : LocalDate.now().plusDays(30);
                   GregorianCalendar gc =
-                      new GregorianCalendar(ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
+                      new GregorianCalendar(
+                          ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
                   new XincoAddAttributeServer(
                           data.getId(),
                           6,
@@ -1175,10 +1176,8 @@ public class ExplorerView extends VerticalLayout
                           DatatypeFactory.newInstance().newXMLGregorianCalendar(gc))
                       .write2DB();
                 } else if (model == 2) {
-                  int days =
-                      archiveDays.getValue() != null ? archiveDays.getValue() : 30;
-                  new XincoAddAttributeServer(
-                          data.getId(), 7, 0, (long) days, 0.0, "", "", now)
+                  int days = archiveDays.getValue() != null ? archiveDays.getValue() : 30;
+                  new XincoAddAttributeServer(data.getId(), 7, 0, (long) days, 0.0, "", "", now)
                       .write2DB();
                 }
                 dialog.close();

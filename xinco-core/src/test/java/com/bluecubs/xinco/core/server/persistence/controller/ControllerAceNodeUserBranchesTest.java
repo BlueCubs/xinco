@@ -279,7 +279,6 @@ public class ControllerAceNodeUserBranchesTest extends AbstractXincoDataBaseTest
     u2.setStatusNumber(1);
     u2.setAttempts(0);
     u2.setLastModified(new Date());
-    u2.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     u2.setXincoCoreAceList(new ArrayList<>());
     u2.setXincoCoreLogList(Arrays.asList(logCtrl.findXincoCoreLog(logId)));
     u2.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -329,7 +328,6 @@ public class ControllerAceNodeUserBranchesTest extends AbstractXincoDataBaseTest
     u2.setStatusNumber(1);
     u2.setAttempts(0);
     u2.setLastModified(new Date());
-    u2.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     u2.setXincoCoreAceList(new ArrayList<>());
     u2.setXincoCoreLogList(new ArrayList<>());
     u2.setXincoCoreUserHasXincoCoreGroupList(
@@ -472,7 +470,6 @@ public class ControllerAceNodeUserBranchesTest extends AbstractXincoDataBaseTest
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

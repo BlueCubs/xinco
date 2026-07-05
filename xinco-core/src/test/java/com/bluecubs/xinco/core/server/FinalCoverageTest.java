@@ -5,16 +5,10 @@ import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFact
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreAceT;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreDataT;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeT;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreGroupT;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguageT;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreNodeT;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import com.bluecubs.xinco.core.server.service.PropertyDTO;
 import java.sql.Timestamp;
@@ -365,21 +359,6 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
   }
 
   /**
-   * Exercises XincoCoreGroupT single-arg constructor (lines 83-85), hashCode null-recordId path
-   * (line 129), and equals differing-recordId path (lines 139-141).
-   */
-  public void testXincoCoreGroupT_coverage() {
-    XincoCoreGroupT t1 = new XincoCoreGroupT(42);
-    assertEquals(42, t1.getRecordId().intValue());
-    // null recordId in hashCode covers the ternary null branch (line 129)
-    XincoCoreGroupT nullRec = new XincoCoreGroupT();
-    nullRec.hashCode();
-    // different recordIds → equals returns false (line 141)
-    XincoCoreGroupT t2 = new XincoCoreGroupT(99);
-    assertFalse("different recordId should not be equal", t1.equals(t2));
-  }
-
-  /**
    * Covers the hashCode null-id branch and the equals differing-id path in six JPA entity classes.
    * Each entity's equals() and hashCode() have a branch for null id (4 instructions each = 24
    * total), bridging the last gap to 90% instruction coverage.
@@ -417,42 +396,5 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
     XincoAddAttribute aa0 = new XincoAddAttribute();
     aa0.hashCode();
     assertFalse(aa0.equals(new XincoAddAttribute(1, 1)));
-  }
-
-  /** Covers equals() and getId() in T-class transfer objects to clear the 0.900 boundary. */
-  public void testTransferObjects_edgeCases() {
-    // XincoCoreDataTypeT: getId() + equals with differing recordId
-    XincoCoreDataTypeT dt1 = new XincoCoreDataTypeT(1, 1, "n", "d");
-    XincoCoreDataTypeT dt2 = new XincoCoreDataTypeT(2, 2, "x", "y");
-    dt1.getId();
-    assertFalse(dt1.equals(dt2));
-    assertFalse(new XincoCoreDataTypeT().equals(dt1));
-
-    // XincoCoreLanguageT: getId() + equals with null recordId
-    XincoCoreLanguageT lt1 = new XincoCoreLanguageT(1);
-    XincoCoreLanguageT lt2 = new XincoCoreLanguageT();
-    lt1.getId();
-    assertFalse(lt2.equals(lt1));
-
-    // XincoCoreDataT: getId() + equals with differing recordId
-    XincoCoreDataT dat1 = new XincoCoreDataT(1);
-    XincoCoreDataT dat2 = new XincoCoreDataT(2);
-    dat1.getId();
-    assertFalse(dat1.equals(dat2));
-    assertFalse(new XincoCoreDataT().equals(dat1));
-
-    // XincoCoreNodeT: getId() + equals with differing recordId
-    XincoCoreNodeT nt1 = new XincoCoreNodeT(1);
-    XincoCoreNodeT nt2 = new XincoCoreNodeT(2);
-    nt1.getId();
-    assertFalse(nt1.equals(nt2));
-    assertFalse(new XincoCoreNodeT().equals(nt1));
-
-    // XincoCoreAceT: getId() + equals with differing recordId
-    XincoCoreAceT at1 = new XincoCoreAceT(1);
-    XincoCoreAceT at2 = new XincoCoreAceT(2);
-    at1.getId();
-    assertFalse(at1.equals(at2));
-    assertFalse(new XincoCoreAceT().equals(at1));
   }
 }
