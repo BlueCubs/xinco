@@ -33,6 +33,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.component.upload.Upload;
@@ -759,6 +760,26 @@ public class ExplorerView extends VerticalLayout
   private void openCheckinDialog() {
     if (selectedData == null) return;
 
+    // Load current version from last log to pre-populate the version fields
+    int curHigh = 1, curMid = 0, curLow = 0;
+    String curPostfix = "";
+    try {
+      XincoCoreDataServer snap = new XincoCoreDataServer(selectedData.getId());
+      if (!snap.getXincoCoreLogs().isEmpty()) {
+        XincoCoreLogServer last =
+            (XincoCoreLogServer) snap.getXincoCoreLogs().get(snap.getXincoCoreLogs().size() - 1);
+        curHigh = last.getVersion().getVersionHigh();
+        curMid = last.getVersion().getVersionMid();
+        curLow = last.getVersion().getVersionLow();
+        curPostfix =
+            last.getVersion().getVersionPostfix() == null
+                ? ""
+                : last.getVersion().getVersionPostfix();
+      }
+    } catch (Throwable ignored) {
+    }
+    final int basHigh = curHigh, basMid = curMid, basLow = curLow;
+
     MemoryBuffer buffer = new MemoryBuffer();
     Upload upload = new Upload(buffer);
     upload.setMaxFiles(1);
@@ -767,10 +788,52 @@ public class ExplorerView extends VerticalLayout
     TextField descField = new TextField("Change description");
     descField.setWidthFull();
 
+    // Version fields — default to major bump (high+1, mid=0, low=0)
+    IntegerField majorField = new IntegerField("Major");
+    majorField.setValue(basHigh + 1);
+    majorField.setMin(0);
+    majorField.setStepButtonsVisible(true);
+    majorField.setWidth("90px");
+
+    IntegerField minorField = new IntegerField("Minor");
+    minorField.setValue(0);
+    minorField.setMin(0);
+    minorField.setStepButtonsVisible(true);
+    minorField.setWidth("90px");
+
+    IntegerField patchField = new IntegerField("Patch");
+    patchField.setValue(0);
+    patchField.setMin(0);
+    patchField.setStepButtonsVisible(true);
+    patchField.setWidth("90px");
+
+    TextField postfixField = new TextField("Postfix");
+    postfixField.setValue(curPostfix);
+    postfixField.setWidth("90px");
+
+    Checkbox minorBump = new Checkbox("Minor bump");
+    minorBump.addValueChangeListener(
+        ev -> {
+          if (ev.getValue()) {
+            // minor bump: keep major, increment minor, reset patch
+            majorField.setValue(basHigh);
+            minorField.setValue(basMid + 1);
+            patchField.setValue(0);
+          } else {
+            // major bump (default)
+            majorField.setValue(basHigh + 1);
+            minorField.setValue(0);
+            patchField.setValue(0);
+          }
+        });
+
+    HorizontalLayout versionRow = new HorizontalLayout(majorField, minorField, patchField, postfixField);
+    versionRow.setAlignItems(FlexComponent.Alignment.END);
+
     Dialog dialog = new Dialog();
     dialog.setHeaderTitle(getTranslation("menu.edit.checkinfile"));
-    dialog.setWidth("480px");
-    dialog.add(new VerticalLayout(upload, descField));
+    dialog.setWidth("520px");
+    dialog.add(new VerticalLayout(upload, descField, minorBump, versionRow));
 
     dialog
         .getFooter()
@@ -783,14 +846,12 @@ public class ExplorerView extends VerticalLayout
                     error("Please upload the revised file first.");
                     return;
                   }
+                  int vh = majorField.getValue() != null ? majorField.getValue() : basHigh + 1;
+                  int vm = minorField.getValue() != null ? minorField.getValue() : 0;
+                  int vl = patchField.getValue() != null ? patchField.getValue() : 0;
+                  String vp = postfixField.getValue().trim();
                   try {
                     XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
-                    XincoCoreLogServer lastLog =
-                        data.getXincoCoreLogs().isEmpty()
-                            ? null
-                            : (XincoCoreLogServer)
-                                data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
-                    int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() + 1 : 2;
                     String desc =
                         descField.getValue().trim().isEmpty()
                             ? getTranslation("menu.edit.checkinfile")
@@ -803,9 +864,9 @@ public class ExplorerView extends VerticalLayout
                             .setOpCode(OPCode.CHECKIN.ordinal() + 1)
                             .setOperationDescription(desc)
                             .setVersionHigh(vh)
-                            .setVersionMid(0)
-                            .setVersionLow(0)
-                            .setVersionPostFix("")
+                            .setVersionMid(vm)
+                            .setVersionLow(vl)
+                            .setVersionPostFix(vp)
                             .createXincoCoreLogServer();
                     log.write2DB();
                     int logId = log.getId();

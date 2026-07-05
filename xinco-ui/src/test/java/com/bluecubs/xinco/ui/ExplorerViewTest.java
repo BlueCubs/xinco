@@ -18,10 +18,12 @@ import com.bluecubs.xinco.ui.component.PropertyGrid;
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -453,6 +455,56 @@ class ExplorerViewTest {
           ((com.vaadin.flow.component.button.Button) clr.get(view)).isVisible(),
           "clear button visible");
     }
+  }
+
+  // ---- Checkin dialog version fields ----
+
+  @Test
+  void checkinDialog_opensWithVersionFields() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    when(mockData.getId()).thenReturn(0);
+    setField(view, "selectedData", mockData);
+    invoke(view, "openCheckinDialog");
+
+    Dialog dialog = _get(Dialog.class);
+    assertTrue(dialog.isOpened());
+    // DB load fails gracefully (id=0, no DB) → defaults: curHigh=1, major bump → Major=2
+    IntegerField majorField = _get(IntegerField.class, spec -> spec.withLabel("Major"));
+    IntegerField minorField = _get(IntegerField.class, spec -> spec.withLabel("Minor"));
+    IntegerField patchField = _get(IntegerField.class, spec -> spec.withLabel("Patch"));
+    assertNotNull(majorField, "Major field present");
+    assertNotNull(minorField, "Minor field present");
+    assertNotNull(patchField, "Patch field present");
+    assertEquals(2, majorField.getValue(), "major bump default: curHigh(1)+1");
+    assertEquals(0, minorField.getValue(), "minor default: 0");
+    assertEquals(0, patchField.getValue(), "patch default: 0");
+  }
+
+  @Test
+  void checkinDialog_minorBumpCheckbox_updatesVersionFields() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    when(mockData.getId()).thenReturn(0);
+    setField(view, "selectedData", mockData);
+    invoke(view, "openCheckinDialog");
+
+    Checkbox minorBump = _get(Checkbox.class, spec -> spec.withLabel("Minor bump"));
+    IntegerField majorField = _get(IntegerField.class, spec -> spec.withLabel("Major"));
+    IntegerField minorField = _get(IntegerField.class, spec -> spec.withLabel("Minor"));
+
+    minorBump.setValue(true);
+    // curHigh=1 → major stays 1; curMid=0 → minor becomes 1
+    assertEquals(1, majorField.getValue(), "minor bump keeps major at curHigh");
+    assertEquals(1, minorField.getValue(), "minor bump increments minor");
+
+    minorBump.setValue(false);
+    assertEquals(2, majorField.getValue(), "back to major bump");
+    assertEquals(0, minorField.getValue(), "minor resets to 0");
   }
 
   @Test
