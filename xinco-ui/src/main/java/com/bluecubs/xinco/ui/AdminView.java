@@ -1,5 +1,7 @@
 package com.bluecubs.xinco.ui;
 
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
@@ -43,6 +45,9 @@ public class AdminView extends VerticalLayout {
   private Grid<XincoCoreUserServer> userGrid;
   private Grid<XincoCoreGroupServer> groupGrid;
   private Grid<XincoSettingServer> settingGrid;
+  private Grid<XincoCoreDataTypeServer> dataTypeGrid;
+  private Grid<XincoCoreDataTypeAttributeServer> attrGrid;
+  private XincoCoreDataTypeServer selectedDataType;
 
   public AdminView(UserSession session) {
     this.session = session;
@@ -54,6 +59,7 @@ public class AdminView extends VerticalLayout {
     tabs.add("Users", buildUsersTab());
     tabs.add("Groups", buildGroupsTab());
     tabs.add("Settings", buildSettingsTab());
+    tabs.add("Data Types", buildDataTypesTab());
 
     add(tabs);
   }
@@ -447,6 +453,282 @@ public class AdminView extends VerticalLayout {
   private List<XincoSettingServer> loadSettings() {
     try {
       return XincoSettingServer.getAllSettings();
+    } catch (Throwable t) {
+      return List.of();
+    }
+  }
+
+  private VerticalLayout buildDataTypesTab() {
+    dataTypeGrid = new Grid<>();
+    dataTypeGrid.setSizeFull();
+    dataTypeGrid.addColumn(XincoCoreDataTypeServer::getId).setHeader("ID").setWidth("60px").setFlexGrow(0);
+    dataTypeGrid.addColumn(XincoCoreDataTypeServer::getDesignation).setHeader("Designation");
+    dataTypeGrid.addColumn(XincoCoreDataTypeServer::getDescription).setHeader("Description");
+    dataTypeGrid.setItems(loadDataTypes());
+    dataTypeGrid.addSelectionListener(
+        e -> {
+          selectedDataType = e.getFirstSelectedItem().orElse(null);
+          if (selectedDataType != null) {
+            attrGrid.setItems(loadAttributes(selectedDataType.getId()));
+          } else {
+            attrGrid.setItems(List.of());
+          }
+        });
+
+    Button btnNew = new Button("New", e -> openDataTypeDialog(null));
+    Button btnEdit =
+        new Button(
+            "Edit",
+            e ->
+                dataTypeGrid
+                    .asSingleSelect()
+                    .getOptionalValue()
+                    .ifPresent(this::openDataTypeDialog));
+    Button btnDelete =
+        new Button(
+            "Delete",
+            e ->
+                dataTypeGrid
+                    .asSingleSelect()
+                    .getOptionalValue()
+                    .ifPresent(this::confirmDeleteDataType));
+    btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+    HorizontalLayout dtToolbar = new HorizontalLayout(btnNew, btnEdit, btnDelete);
+    dtToolbar.setPadding(true);
+
+    attrGrid = new Grid<>();
+    attrGrid.setSizeFull();
+    attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getAttributeId).setHeader("#").setWidth("50px").setFlexGrow(0);
+    attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getDesignation).setHeader("Name");
+    attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getDataType).setHeader("Data Type").setWidth("120px").setFlexGrow(0);
+    attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getSize).setHeader("Size").setWidth("80px").setFlexGrow(0);
+
+    Button btnAddAttr = new Button("Add Attribute", e -> openAttributeDialog());
+    Button btnRemoveAttr =
+        new Button(
+            "Remove",
+            e ->
+                attrGrid
+                    .asSingleSelect()
+                    .getOptionalValue()
+                    .ifPresent(this::confirmRemoveAttribute));
+    btnRemoveAttr.addThemeVariants(ButtonVariant.LUMO_ERROR);
+    HorizontalLayout attrToolbar = new HorizontalLayout(btnAddAttr, btnRemoveAttr);
+    attrToolbar.setPadding(true);
+
+    VerticalLayout layout =
+        new VerticalLayout(dtToolbar, dataTypeGrid, new Span("Attributes"), attrToolbar, attrGrid);
+    layout.setSizeFull();
+    layout.setFlexGrow(2, dataTypeGrid);
+    layout.setFlexGrow(1, attrGrid);
+    layout.setPadding(false);
+    layout.setSpacing(false);
+    return layout;
+  }
+
+  void openDataTypeDialog(XincoCoreDataTypeServer existing) {
+    boolean isNew = existing == null;
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(isNew ? "New Data Type" : "Edit Data Type");
+    dialog.setWidth("420px");
+
+    TextField designation = new TextField("Designation");
+    designation.setRequired(true);
+    TextField description = new TextField("Description");
+
+    if (!isNew) {
+      designation.setValue(nvl(existing.getDesignation()));
+      description.setValue(nvl(existing.getDescription()));
+    }
+
+    dialog.add(new FormLayout(designation, description));
+
+    Button save =
+        new Button(
+            "Save",
+            e -> {
+              if (designation.isEmpty()) {
+                designation.setErrorMessage("Required");
+                designation.setInvalid(true);
+                return;
+              }
+              try {
+                XincoCoreDataTypeServer dt =
+                    isNew
+                        ? new XincoCoreDataTypeServer(
+                            0,
+                            designation.getValue().trim(),
+                            description.getValue().trim(),
+                            new ArrayList<>())
+                        : existing;
+                if (!isNew) {
+                  dt.setDesignation(designation.getValue().trim());
+                  dt.setDescription(description.getValue().trim());
+                }
+                dt.setChangerID(adminId());
+                dt.write2DB();
+                dialog.close();
+                refreshDataTypes();
+                showSuccess(isNew ? "Data type created." : "Data type updated.");
+              } catch (Exception ex) {
+                logger.log(Level.SEVERE, "Save data type failed", ex);
+                showError("Save failed: " + ex.getMessage());
+              }
+            });
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    Button cancel = new Button("Cancel", e -> dialog.close());
+    dialog.getFooter().add(cancel, save);
+    dialog.open();
+  }
+
+  private void confirmDeleteDataType(XincoCoreDataTypeServer dt) {
+    ConfirmDialog confirm = new ConfirmDialog();
+    confirm.setHeader("Delete Data Type");
+    confirm.setText(
+        "Delete data type \""
+            + dt.getDesignation()
+            + "\"? This will fail if any data items use this type.");
+    confirm.setCancelable(true);
+    confirm.setConfirmText("Delete");
+    confirm.setConfirmButtonTheme("error primary");
+    confirm.addConfirmListener(
+        e -> {
+          int result = XincoCoreDataTypeServer.deleteFromDB(dt);
+          if (result == 0) {
+            selectedDataType = null;
+            attrGrid.setItems(List.of());
+            refreshDataTypes();
+            showSuccess("Data type deleted.");
+          } else {
+            showError("Cannot delete: data items may exist for this type.");
+          }
+        });
+    confirm.open();
+  }
+
+  void openAttributeDialog() {
+    if (selectedDataType == null) {
+      showError("Select a data type first.");
+      return;
+    }
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle("Add Attribute");
+    dialog.setWidth("400px");
+
+    TextField name = new TextField("Name");
+    name.setRequired(true);
+
+    Select<String> dataType = new Select<>();
+    dataType.setLabel("Data Type");
+    dataType.setItems("varchar", "int", "unsigned int", "double", "text", "date");
+    dataType.setValue("varchar");
+
+    IntegerField size = new IntegerField("Size");
+    size.setValue(255);
+    size.setMin(0);
+
+    dialog.add(new FormLayout(name, dataType, size));
+
+    Button save =
+        new Button(
+            "Save",
+            e -> {
+              if (name.isEmpty()) {
+                name.setErrorMessage("Required");
+                name.setInvalid(true);
+                return;
+              }
+              try {
+                List<XincoCoreDataTypeAttributeServer> existing =
+                    loadAttributes(selectedDataType.getId());
+                int nextId =
+                    existing.stream()
+                            .mapToInt(XincoCoreDataTypeAttributeServer::getAttributeId)
+                            .max()
+                            .orElse(0)
+                        + 1;
+                XincoCoreDataTypeAttributeServer attr =
+                    new XincoCoreDataTypeAttributeServer(
+                        selectedDataType.getId(),
+                        nextId,
+                        name.getValue().trim(),
+                        dataType.getValue(),
+                        size.getValue() != null ? size.getValue() : 0);
+                attr.setChangerID(adminId());
+                attr.write2DB();
+                dialog.close();
+                refreshAttributes();
+                showSuccess("Attribute added.");
+              } catch (Exception ex) {
+                logger.log(Level.SEVERE, "Add attribute failed", ex);
+                showError("Save failed: " + ex.getMessage());
+              }
+            });
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    Button cancel = new Button("Cancel", e -> dialog.close());
+    dialog.getFooter().add(cancel, save);
+    dialog.open();
+  }
+
+  private void confirmRemoveAttribute(XincoCoreDataTypeAttributeServer attr) {
+    ConfirmDialog confirm = new ConfirmDialog();
+    confirm.setHeader("Remove Attribute");
+    confirm.setText(
+        "Remove attribute \""
+            + attr.getDesignation()
+            + "\"? All stored values for this attribute will also be deleted.");
+    confirm.setCancelable(true);
+    confirm.setConfirmText("Remove");
+    confirm.setConfirmButtonTheme("error primary");
+    confirm.addConfirmListener(
+        e -> {
+          try {
+            XincoCoreDataTypeAttributeServer.deleteFromDB(attr, adminId());
+            refreshAttributes();
+            showSuccess("Attribute removed.");
+          } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Remove attribute failed", ex);
+            showError("Cannot remove: " + ex.getMessage());
+          }
+        });
+    confirm.open();
+  }
+
+  private void refreshDataTypes() {
+    dataTypeGrid.setItems(loadDataTypes());
+  }
+
+  private void refreshAttributes() {
+    if (selectedDataType != null) {
+      attrGrid.setItems(loadAttributes(selectedDataType.getId()));
+    }
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private List<XincoCoreDataTypeServer> loadDataTypes() {
+    try {
+      ArrayList raw = XincoCoreDataTypeServer.getXincoCoreDataTypes();
+      if (raw == null) return List.of();
+      List<XincoCoreDataTypeServer> types = new ArrayList<>();
+      for (Object obj : raw) {
+        if (obj instanceof XincoCoreDataTypeServer s) types.add(s);
+      }
+      return types;
+    } catch (Throwable t) {
+      return List.of();
+    }
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private List<XincoCoreDataTypeAttributeServer> loadAttributes(int dataTypeId) {
+    try {
+      ArrayList raw = XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(dataTypeId);
+      if (raw == null) return List.of();
+      List<XincoCoreDataTypeAttributeServer> attrs = new ArrayList<>();
+      for (Object obj : raw) {
+        if (obj instanceof XincoCoreDataTypeAttributeServer a) attrs.add(a);
+      }
+      return attrs;
     } catch (Throwable t) {
       return List.of();
     }

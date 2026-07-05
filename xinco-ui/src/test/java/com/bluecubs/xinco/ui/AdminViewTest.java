@@ -1,9 +1,12 @@
 package com.bluecubs.xinco.ui;
 
+import static com.github.mvysny.kaributesting.v10.LocatorJ._find;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
@@ -212,6 +215,52 @@ class AdminViewTest {
     assertEquals("password.attempts", keyField.getValue());
   }
 
+  // ---- Data Types tab ----
+
+  @Test
+  void adminView_dataTypesTab_hasToolbarWithThreeButtons() throws Exception {
+    HorizontalLayout toolbar = getDataTypesToolbar();
+    assertNotNull(toolbar);
+    assertEquals(3, toolbar.getComponentCount(), "New / Edit / Delete");
+    assertEquals("New", ((Button) toolbar.getComponentAt(0)).getText());
+    assertEquals("Edit", ((Button) toolbar.getComponentAt(1)).getText());
+    assertEquals("Delete", ((Button) toolbar.getComponentAt(2)).getText());
+  }
+
+  @Test
+  void openDataTypeDialog_null_opensCreateDialog() throws Exception {
+    invokeOpenDataTypeDialog(null);
+    Dialog dialog = _get(Dialog.class);
+    assertNotNull(dialog);
+    assertTrue(dialog.isOpened());
+    assertEquals("New Data Type", dialog.getHeaderTitle());
+  }
+
+  @Test
+  void openDataTypeDialog_existing_opensEditDialog() throws Exception {
+    XincoCoreDataTypeServer dt = mock(XincoCoreDataTypeServer.class);
+    when(dt.getDesignation()).thenReturn("MyType");
+    when(dt.getDescription()).thenReturn("A custom type");
+    invokeOpenDataTypeDialog(dt);
+    Dialog dialog = _get(Dialog.class);
+    assertTrue(dialog.isOpened());
+    assertEquals("Edit Data Type", dialog.getHeaderTitle());
+    TextField desig = _get(TextField.class, spec -> spec.withLabel("Designation"));
+    assertEquals("MyType", desig.getValue());
+  }
+
+  @Test
+  void openAttributeDialog_noSelectionShowsNothing() throws Exception {
+    // selectedDataType is null by default; openAttributeDialog should show an error notification
+    // rather than a dialog
+    _get(TabSheet.class).setSelectedIndex(3);
+    Method m = AdminView.class.getDeclaredMethod("openAttributeDialog");
+    m.setAccessible(true);
+    m.invoke(view);
+    // No dialog should appear when no data type is selected
+    assertTrue(_find(Dialog.class).isEmpty(), "no dialog without a selected data type");
+  }
+
   // ---- helpers ----
 
   private HorizontalLayout getUserToolbar() {
@@ -227,6 +276,11 @@ class AdminViewTest {
   private HorizontalLayout getSettingsToolbar() {
     _get(TabSheet.class).setSelectedIndex(2);
     return findToolbarWithCount(view, 1);
+  }
+
+  private HorizontalLayout getDataTypesToolbar() {
+    _get(TabSheet.class).setSelectedIndex(3);
+    return findToolbarWithCount(view, 3);
   }
 
   private HorizontalLayout findToolbarWithCount(Component root, int count) {
@@ -268,6 +322,13 @@ class AdminViewTest {
     Method m = AdminView.class.getDeclaredMethod("openSettingDialog", XincoSettingServer.class);
     m.setAccessible(true);
     m.invoke(view, setting);
+  }
+
+  private void invokeOpenDataTypeDialog(XincoCoreDataTypeServer dt) throws Exception {
+    Method m =
+        AdminView.class.getDeclaredMethod("openDataTypeDialog", XincoCoreDataTypeServer.class);
+    m.setAccessible(true);
+    m.invoke(view, dt);
   }
 
   private TextField findUsernameField() {
