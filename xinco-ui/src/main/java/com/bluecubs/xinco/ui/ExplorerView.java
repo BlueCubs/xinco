@@ -60,6 +60,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeFactory;
@@ -99,6 +100,11 @@ public class ExplorerView extends VerticalLayout
   private final TextField searchField = new TextField();
   private Span searchStatusLabel;
   private Button clearSearchBtn;
+
+  // Package-private: allows tests to inject search results without static mocking XincoIndexer.
+  @SuppressWarnings("unchecked")
+  Function<String, java.util.ArrayList> searcher =
+      query -> XincoIndexer.findXincoCoreData(query, 0);
 
   public ExplorerView() {
     this(resolveSession());
@@ -414,7 +420,7 @@ public class ExplorerView extends VerticalLayout
     String query = searchField.getValue().trim();
     if (query.isEmpty()) return;
 
-    java.util.ArrayList raw = XincoIndexer.findXincoCoreData(query, 0);
+    java.util.ArrayList raw = searcher.apply(query);
     if (raw == null) {
       error("Search unavailable — index may not exist yet.");
       return;

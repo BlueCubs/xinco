@@ -10,7 +10,6 @@ import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
-import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.server.service.XincoCoreData;
 import com.bluecubs.xinco.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.server.service.XincoCoreLanguage;
@@ -35,6 +34,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.function.Function;
 import org.mockito.MockedStatic;
 
 class ExplorerViewTest {
@@ -411,18 +411,17 @@ class ExplorerViewTest {
   void search_indexUnavailable_showsError() throws Exception {
     ExplorerView view = new ExplorerView(new UserSession());
     addView(view);
+    // Inject a searcher that simulates an unavailable index (returns null).
+    injectSearcher(view, q -> null);
+
     Field sf = ExplorerView.class.getDeclaredField("searchField");
     sf.setAccessible(true);
     ((com.vaadin.flow.component.textfield.TextField) sf.get(view)).setValue("report");
+    invoke(view, "doSearch");
 
-    try (MockedStatic<XincoIndexer> mocked = mockStatic(XincoIndexer.class)) {
-      mocked.when(() -> XincoIndexer.findXincoCoreData(any(), anyInt())).thenReturn(null);
-      invoke(view, "doSearch");
-      // statusLabel should still be hidden (error path, no results)
-      Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
-      sl.setAccessible(true);
-      assertFalse(((com.vaadin.flow.component.html.Span) sl.get(view)).isVisible());
-    }
+    Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
+    sl.setAccessible(true);
+    assertFalse(((com.vaadin.flow.component.html.Span) sl.get(view)).isVisible());
   }
 
   @Test
@@ -430,9 +429,6 @@ class ExplorerViewTest {
   void search_withResults_populatesDataGridAndShowsStatus() throws Exception {
     ExplorerView view = new ExplorerView(new UserSession());
     addView(view);
-    Field sf = ExplorerView.class.getDeclaredField("searchField");
-    sf.setAccessible(true);
-    ((com.vaadin.flow.component.textfield.TextField) sf.get(view)).setValue("report");
 
     XincoCoreDataServer hit = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
     when(hit.getXincoCoreDataType().getId()).thenReturn(1);
@@ -440,23 +436,26 @@ class ExplorerViewTest {
     java.util.ArrayList results = new java.util.ArrayList();
     results.add(hit);
 
-    try (MockedStatic<XincoIndexer> mocked = mockStatic(XincoIndexer.class)) {
-      mocked.when(() -> XincoIndexer.findXincoCoreData(any(), anyInt())).thenReturn(results);
-      invoke(view, "doSearch");
+    // Inject a searcher that returns a known result list — avoids mockStatic on XincoIndexer.
+    injectSearcher(view, q -> results);
 
-      Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
-      sl.setAccessible(true);
-      com.vaadin.flow.component.html.Span label =
-          (com.vaadin.flow.component.html.Span) sl.get(view);
-      assertTrue(label.isVisible(), "status label visible after search");
-      assertTrue(label.getText().contains("1"), "label shows result count");
+    Field sf = ExplorerView.class.getDeclaredField("searchField");
+    sf.setAccessible(true);
+    ((com.vaadin.flow.component.textfield.TextField) sf.get(view)).setValue("report");
+    invoke(view, "doSearch");
 
-      Field clr = ExplorerView.class.getDeclaredField("clearSearchBtn");
-      clr.setAccessible(true);
-      assertTrue(
-          ((com.vaadin.flow.component.button.Button) clr.get(view)).isVisible(),
-          "clear button visible");
-    }
+    Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
+    sl.setAccessible(true);
+    com.vaadin.flow.component.html.Span label =
+        (com.vaadin.flow.component.html.Span) sl.get(view);
+    assertTrue(label.isVisible(), "status label visible after search");
+    assertTrue(label.getText().contains("1"), "label shows result count");
+
+    Field clr = ExplorerView.class.getDeclaredField("clearSearchBtn");
+    clr.setAccessible(true);
+    assertTrue(
+        ((com.vaadin.flow.component.button.Button) clr.get(view)).isVisible(),
+        "clear button visible");
   }
 
   // ---- Archive dialog ----
@@ -575,19 +574,25 @@ class ExplorerViewTest {
     assertEquals(0, minorField.getValue(), "minor resets to 0");
   }
 
+  @SuppressWarnings("unchecked")
+  private static void injectSearcher(
+      ExplorerView view, Function<String, java.util.ArrayList> searcher) throws Exception {
+    Field f = ExplorerView.class.getDeclaredField("searcher");
+    f.setAccessible(true);
+    f.set(view, searcher);
+  }
+
   @Test
   void clearSearch_hidesStatusAndClearButton() throws Exception {
     ExplorerView view = new ExplorerView(new UserSession());
     addView(view);
+
+    // Simulate a successful search by injecting a searcher with empty results.
+    injectSearcher(view, q -> new java.util.ArrayList());
     Field sf = ExplorerView.class.getDeclaredField("searchField");
     sf.setAccessible(true);
     ((com.vaadin.flow.component.textfield.TextField) sf.get(view)).setValue("anything");
-
-    java.util.ArrayList results = new java.util.ArrayList();
-    try (MockedStatic<XincoIndexer> mocked = mockStatic(XincoIndexer.class)) {
-      mocked.when(() -> XincoIndexer.findXincoCoreData(any(), anyInt())).thenReturn(results);
-      invoke(view, "doSearch");
-    }
+    invoke(view, "doSearch");
 
     invoke(view, "clearSearch");
 
