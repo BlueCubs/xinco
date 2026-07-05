@@ -21,8 +21,10 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import java.lang.reflect.Field;
@@ -455,6 +457,72 @@ class ExplorerViewTest {
           ((com.vaadin.flow.component.button.Button) clr.get(view)).isVisible(),
           "clear button visible");
     }
+  }
+
+  // ---- Archive dialog ----
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void archiveDialog_opensWithModeSelector() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    XincoCoreDataType mockType = mock(XincoCoreDataType.class);
+    when(mockData.getId()).thenReturn(0);
+    when(mockData.getDesignation()).thenReturn("test.pdf");
+    when(mockData.getXincoCoreDataType()).thenReturn(mockType);
+    when(mockType.getId()).thenReturn(1);
+    when(mockData.getXincoAddAttributes()).thenReturn(new java.util.ArrayList<>());
+
+    Method m = ExplorerView.class.getDeclaredMethod("openArchiveDialog", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    m.invoke(view, mockData);
+
+    Dialog dialog = _get(Dialog.class);
+    assertTrue(dialog.isOpened());
+    assertTrue(dialog.getHeaderTitle().contains("Archive"));
+
+    Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive mode"));
+    assertNotNull(modelSelect, "Archive mode selector present");
+    assertEquals(0, modelSelect.getValue(), "defaults to None");
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void archiveDialog_modeSelection_enablesCorrectField() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    XincoCoreDataType mockType = mock(XincoCoreDataType.class);
+    when(mockData.getId()).thenReturn(0);
+    when(mockData.getDesignation()).thenReturn("test.pdf");
+    when(mockData.getXincoCoreDataType()).thenReturn(mockType);
+    when(mockType.getId()).thenReturn(1);
+    when(mockData.getXincoAddAttributes()).thenReturn(new java.util.ArrayList<>());
+
+    Method m = ExplorerView.class.getDeclaredMethod("openArchiveDialog", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    m.invoke(view, mockData);
+
+    Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive mode"));
+    DatePicker archiveDate = _get(DatePicker.class, spec -> spec.withLabel("Archive on"));
+    IntegerField archiveDays = _get(IntegerField.class, spec -> spec.withLabel("Archive after (days)"));
+
+    // Default: None — both disabled
+    assertFalse(archiveDate.isEnabled(), "date disabled in None mode");
+    assertFalse(archiveDays.isEnabled(), "days disabled in None mode");
+
+    // Select Date mode
+    modelSelect.setValue(1);
+    assertTrue(archiveDate.isEnabled(), "date enabled in Date mode");
+    assertFalse(archiveDays.isEnabled(), "days disabled in Date mode");
+
+    // Select Days mode
+    modelSelect.setValue(2);
+    assertFalse(archiveDate.isEnabled(), "date disabled in Days mode");
+    assertTrue(archiveDays.isEnabled(), "days enabled in Days mode");
   }
 
   // ---- Checkin dialog version fields ----

@@ -17,9 +17,11 @@ import com.bluecubs.xinco.ui.component.PropertyGrid;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
@@ -52,6 +54,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
@@ -85,6 +88,7 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miUndoCheckOut;
   private com.vaadin.flow.component.contextmenu.MenuItem miLock;
   private com.vaadin.flow.component.contextmenu.MenuItem miPublish;
+  private com.vaadin.flow.component.contextmenu.MenuItem miArchive;
   private com.vaadin.flow.component.contextmenu.MenuItem miManageAcl;
 
   // UI components
@@ -177,6 +181,8 @@ public class ExplorerView extends VerticalLayout
     fileSub.add(new com.vaadin.flow.component.html.Hr());
     miLock = fileSub.addItem(getTranslation("menu.edit.lockdata"), e -> lockSelected());
     miPublish = fileSub.addItem(getTranslation("menu.edit.publishdata"), e -> publishSelected());
+    fileSub.add(new com.vaadin.flow.component.html.Hr());
+    miArchive = fileSub.addItem("Archive…", e -> archiveSelected());
 
     // View menu
     menuBar.addItem("Viewer", e -> getUI().ifPresent(ui -> ui.navigate(ViewerView.class)));
@@ -206,6 +212,7 @@ public class ExplorerView extends VerticalLayout
     miUndoCheckOut.setEnabled(canWriteData && isFile && isCheckedOut);
     miLock.setEnabled(canWriteData && (dataStatus == 1 || dataStatus == 5));
     miPublish.setEnabled(canWriteData && dataStatus == 1);
+    miArchive.setEnabled(canWriteData && isFile && dataStatus != 3 && dataStatus != 4);
     boolean canAdminNode = loggedIn && nodeSelected && hasAdminAccess(selectedNode);
     boolean canAdminData = loggedIn && dataSelected && hasAdminAccess(selectedData);
     miManageAcl.setEnabled(canAdminNode || canAdminData);
@@ -315,6 +322,8 @@ public class ExplorerView extends VerticalLayout
         return "Active";
       case 2:
         return "Locked";
+      case 3:
+        return "Archived";
       case 4:
         return "Checked Out";
       case 5:
@@ -1070,6 +1079,119 @@ public class ExplorerView extends VerticalLayout
           }
         });
     confirm.open();
+  }
+
+  private void archiveSelected() {
+    if (selectedData == null || selectedData.getXincoCoreDataType().getId() != 1) return;
+    try {
+      XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+      openArchiveDialog(data);
+    } catch (Throwable ex) {
+      error("Could not load data: " + ex.getMessage());
+    }
+  }
+
+  void openArchiveDialog(XincoCoreDataServer data) {
+    // Pre-populate from existing addAttributes (attributeId 5=model, 6=date, 7=days)
+    int currentModel = 0;
+    LocalDate currentDate = LocalDate.now().plusDays(30);
+    int currentDays = 30;
+    for (var attr : data.getXincoAddAttributes()) {
+      if (attr.getAttributeId() == 5) currentModel = (int) attr.getAttribUnsignedint();
+      if (attr.getAttributeId() == 6 && attr.getAttribDatetime() != null) {
+        try {
+          currentDate =
+              attr.getAttribDatetime().toGregorianCalendar().toZonedDateTime().toLocalDate();
+        } catch (Exception ignored) {
+        }
+      }
+      if (attr.getAttributeId() == 7) currentDays = Math.max(1, (int) attr.getAttribUnsignedint());
+    }
+
+    Select<Integer> modelSelect = new Select<>();
+    modelSelect.setLabel("Archive mode");
+    modelSelect.setItems(0, 1, 2);
+    modelSelect.setItemLabelGenerator(
+        m ->
+            switch (m) {
+              case 1 -> "Archive on date";
+              case 2 -> "Archive after N days";
+              default -> "None (no scheduled archiving)";
+            });
+    modelSelect.setValue(currentModel);
+
+    DatePicker archiveDate = new DatePicker("Archive on");
+    archiveDate.setValue(currentDate);
+    archiveDate.setEnabled(currentModel == 1);
+
+    IntegerField archiveDays = new IntegerField("Archive after (days)");
+    archiveDays.setValue(currentDays);
+    archiveDays.setMin(1);
+    archiveDays.setEnabled(currentModel == 2);
+
+    modelSelect.addValueChangeListener(
+        ev -> {
+          archiveDate.setEnabled(ev.getValue() == 1);
+          archiveDays.setEnabled(ev.getValue() == 2);
+        });
+
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle("Archive — " + data.getDesignation());
+    dialog.setWidth("420px");
+    dialog.add(new VerticalLayout(modelSelect, archiveDate, archiveDays));
+
+    Button save =
+        new Button(
+            "Save",
+            e -> {
+              try {
+                XMLGregorianCalendar now =
+                    DatatypeFactory.newInstance()
+                        .newXMLGregorianCalendar(new GregorianCalendar());
+                int model = modelSelect.getValue();
+                new XincoAddAttributeServer(data.getId(), 5, 0, (long) model, 0.0, "", "", now)
+                    .write2DB();
+                if (model == 1) {
+                  LocalDate ld =
+                      archiveDate.getValue() != null
+                          ? archiveDate.getValue()
+                          : LocalDate.now().plusDays(30);
+                  GregorianCalendar gc =
+                      new GregorianCalendar(ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
+                  new XincoAddAttributeServer(
+                          data.getId(),
+                          6,
+                          0,
+                          0L,
+                          0.0,
+                          "",
+                          "",
+                          DatatypeFactory.newInstance().newXMLGregorianCalendar(gc))
+                      .write2DB();
+                } else if (model == 2) {
+                  int days =
+                      archiveDays.getValue() != null ? archiveDays.getValue() : 30;
+                  new XincoAddAttributeServer(
+                          data.getId(), 7, 0, (long) days, 0.0, "", "", now)
+                      .write2DB();
+                }
+                dialog.close();
+                String msg =
+                    switch (model) {
+                      case 1 -> "Archiving scheduled for " + archiveDate.getValue() + ".";
+                      case 2 -> "Archiving scheduled after " + archiveDays.getValue() + " days.";
+                      default -> "Archive schedule cleared.";
+                    };
+                Notification.show(msg).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+              } catch (Exception ex) {
+                LOG.log(Level.SEVERE, "Archive schedule failed", ex);
+                error("Archive failed: " + ex.getMessage());
+              }
+            });
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    Button cancel = new Button(getTranslation("general.cancel"), e -> dialog.close());
+    dialog.getFooter().add(cancel, save);
+    dialog.open();
   }
 
   private void refreshDataGrid() {
