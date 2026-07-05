@@ -16,12 +16,12 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.hibernate.envers.AuditReaderFactory;
 
 /**
- * Verifies V1_3 migration logic: legacy _t table data is correctly imported
- * into Envers *_AUD tables and is queryable via AuditReader.
+ * Verifies V1_3 migration logic: legacy _t table data is correctly imported into Envers *_AUD
+ * tables and is queryable via AuditReader.
  *
- * <p>Uses H2-compatible SQL to simulate the MySQL V1_3 migration script in the
- * test environment. The @rev_base user-variable pattern is not portable, so the
- * revision base offset is computed in Java and injected into the SQL strings.
+ * <p>Uses H2-compatible SQL to simulate the MySQL V1_3 migration script in the test environment.
+ * The @rev_base user-variable pattern is not portable, so the revision base offset is computed in
+ * Java and injected into the SQL strings.
  */
 public class AuditHistoryMigrationTest extends AbstractXincoDataBaseTestCase {
 
@@ -39,7 +39,8 @@ public class AuditHistoryMigrationTest extends AbstractXincoDataBaseTestCase {
     ds.setUser("root");
     ds.setURL("jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
 
-    try (Connection conn = ds.getConnection(); Statement stmt = conn.createStatement()) {
+    try (Connection conn = ds.getConnection();
+        Statement stmt = conn.createStatement()) {
 
       // --- Create legacy tables (stubs equivalent to V1_3 CREATE TABLE IF NOT EXISTS) ---
       stmt.executeUpdate(
@@ -88,8 +89,7 @@ public class AuditHistoryMigrationTest extends AbstractXincoDataBaseTestCase {
 
       // --- Step 2: compute rev base ---
       int revBase;
-      try (ResultSet rs =
-          stmt.executeQuery("SELECT IFNULL(MAX(id), 0) FROM xinco_revisioninfo")) {
+      try (ResultSet rs = stmt.executeQuery("SELECT IFNULL(MAX(id), 0) FROM xinco_revisioninfo")) {
         rs.next();
         revBase = rs.getInt(1);
       }
@@ -133,9 +133,7 @@ public class AuditHistoryMigrationTest extends AbstractXincoDataBaseTestCase {
     }
   }
 
-  /**
-   * Verifies that V1_3 is a no-op when the legacy _t tables are empty (fresh installation).
-   */
+  /** Verifies that V1_3 is a no-op when the legacy _t tables are empty (fresh installation). */
   public void testNoOpOnFreshInstallation() throws Exception {
     JdbcDataSource ds = new JdbcDataSource();
     ds.setPassword("xinco");
