@@ -170,7 +170,7 @@ public class ExplorerView extends VerticalLayout
     var editMenu = menuBar.addItem("Edit");
     var editSub = editMenu.getSubMenu();
     miDelete = editSub.addItem(getTranslation("general.delete"), e -> confirmDelete());
-    editSub.add(new com.vaadin.flow.component.html.Hr());
+    editSub.addSeparator();
     miManageAcl = editSub.addItem("Manage ACL…", e -> openAclDialog());
 
     // File menu
@@ -178,16 +178,16 @@ public class ExplorerView extends VerticalLayout
     var fileSub = fileMenu.getSubMenu();
     miDownload =
         fileSub.addItem(getTranslation("menu.repository.downloadfile"), e -> downloadSelected());
-    fileSub.add(new com.vaadin.flow.component.html.Hr());
+    fileSub.addSeparator();
     miCheckOut = fileSub.addItem(getTranslation("menu.edit.checkoutfile"), e -> checkoutSelected());
     miCheckIn =
         fileSub.addItem(getTranslation("menu.edit.checkinfile") + "…", e -> openCheckinDialog());
     miUndoCheckOut =
         fileSub.addItem(getTranslation("menu.edit.undocheckout"), e -> undoCheckoutSelected());
-    fileSub.add(new com.vaadin.flow.component.html.Hr());
+    fileSub.addSeparator();
     miLock = fileSub.addItem(getTranslation("menu.edit.lockdata"), e -> lockSelected());
     miPublish = fileSub.addItem(getTranslation("menu.edit.publishdata"), e -> publishSelected());
-    fileSub.add(new com.vaadin.flow.component.html.Hr());
+    fileSub.addSeparator();
     miArchive = fileSub.addItem("Archive…", e -> archiveSelected());
 
     // View menu

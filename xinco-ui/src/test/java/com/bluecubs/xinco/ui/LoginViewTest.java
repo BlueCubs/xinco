@@ -2,7 +2,6 @@ package com.bluecubs.xinco.ui;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
-import static com.github.mvysny.kaributesting.v10.LocatorJ._setValue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.github.mvysny.kaributesting.v10.MockVaadin;
@@ -45,8 +44,8 @@ class LoginViewTest {
 
   @Test
   void loginView_emptyCredentials_showsNotification() {
-    _setValue(_get(TextField.class, spec -> spec.withLabel("Username")), "");
-    _setValue(_get(PasswordField.class, spec -> spec.withLabel("Password")), "");
+    _get(TextField.class, spec -> spec.withLabel("Username")).setValue("");
+    _get(PasswordField.class, spec -> spec.withLabel("Password")).setValue("");
     _click(_get(Button.class, spec -> spec.withText("Login")));
     // Invalid credentials produce a notification, not a crash
   }

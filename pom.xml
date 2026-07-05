@@ -300,8 +300,8 @@
                   <version>3.3.9</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>[25,)</version>
-                  <message>This project requires JDK 25 LTS or newer.</message>
+                  <version>[25,26)</version>
+                  <message>This project requires JDK 25. JDK 26+ breaks Vaadin's build-frontend ASM scanner and JaCoCo. Use: export JAVA_HOME=/Users/javierortiz/Library/Java/JavaVirtualMachines/openjdk-25.0.2/Contents/Home &amp;&amp; export PATH=$JAVA_HOME/bin:$PATH</message>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -443,6 +443,15 @@
   </repositories>
   <profiles>
     <profile>
+      <!-- Production builds must run under JDK 21; Vaadin's bundled ASM (< 9.7) cannot
+           scan JDK 25 runtime module classes (class file version 69). Skip the JDK-25
+           enforcer rule so the build doesn't reject JDK 21. -->
+      <id>production</id>
+      <properties>
+        <enforcer.skip>true</enforcer.skip>
+      </properties>
+    </profile>
+    <profile>
       <!-- Vaadin pre-release repositories -->
       <id>vaadin-prerelease</id>
       <activation>
@@ -484,7 +493,6 @@
   </profiles>
   <modules>
     <module>xinco-core</module>
-    <module>Xinco</module>
     <module>xinco-ui</module>
   </modules>
 </project>

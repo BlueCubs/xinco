@@ -261,23 +261,25 @@ class AdminViewTest {
   // ---- helpers ----
 
   private HorizontalLayout getUserToolbar() {
-    return findToolbarWithCount(view, 4);
+    return getTabToolbar(0, 4);
   }
 
   private HorizontalLayout getGroupToolbar() {
-    // Groups tab is lazy-rendered; select it first so its content appears in the tree.
-    _get(TabSheet.class).setSelectedIndex(1);
-    return findToolbarWithCount(view, 3);
+    return getTabToolbar(1, 3);
   }
 
   private HorizontalLayout getSettingsToolbar() {
-    _get(TabSheet.class).setSelectedIndex(2);
-    return findToolbarWithCount(view, 1);
+    return getTabToolbar(2, 1);
   }
 
   private HorizontalLayout getDataTypesToolbar() {
-    _get(TabSheet.class).setSelectedIndex(3);
-    return findToolbarWithCount(view, 3);
+    return getTabToolbar(3, 3);
+  }
+
+  private HorizontalLayout getTabToolbar(int tabIndex, int buttonCount) {
+    TabSheet ts = _get(TabSheet.class);
+    Component content = ts.getComponent(ts.getTabAt(tabIndex));
+    return findToolbarWithCount(content, buttonCount);
   }
 
   private HorizontalLayout findToolbarWithCount(Component root, int count) {
