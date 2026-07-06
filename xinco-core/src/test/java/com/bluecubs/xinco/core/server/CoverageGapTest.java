@@ -19,6 +19,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
+import com.bluecubs.xinco.core.server.persistence.XincoDependencyBehavior;
 import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
 import com.bluecubs.xinco.core.server.persistence.XincoSetting;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
@@ -449,6 +450,109 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
     try {
       new XincoCoreACEServer(aceId);
       fail("Expected XincoException for removed ACE");
+    } catch (XincoException e) {
+      assertNotNull(e);
+    }
+  }
+
+  // ---- XincoSettingServer.getAllSettings() + getSettingType() ----
+
+  public void testSetting_getAllSettingsAndGetType() {
+    List<XincoSettingServer> all = XincoSettingServer.getAllSettings();
+    assertFalse("seed DB should have at least one setting", all.isEmpty());
+    assertNotNull(all.get(0).getSettingType());
+  }
+
+  // ---- XincoDependencyBehavior.setId(Integer) ----
+
+  public void testDependencyBehavior_setId() {
+    XincoDependencyBehavior b = new XincoDependencyBehavior(10);
+    b.setId(20);
+    assertEquals(Integer.valueOf(20), b.getId());
+  }
+
+  // ---- XincoCoreACEServer.getXincoCoreACL() catch block ----
+  // Passing a non-existent JPQL field name causes the query to throw; the catch
+  // block clears and returns the empty list (10 instr covered).
+
+  public void testACL_getXincoCoreACL_invalidField_hitsCatchBlock() {
+    java.util.ArrayList result = XincoCoreACEServer.getXincoCoreACL(1, "INVALID__NO_SUCH_FIELD");
+    assertTrue("catch block should return empty list on bad query", result.isEmpty());
+  }
+
+  // ---- XincoSettingServer.getSetting(String) else branch ----
+  // Non-existent description throws XincoException from the else path (6 instr).
+
+  public void testSetting_getSetting_notFound_throwsException() {
+    try {
+      XincoSettingServer.getSetting("nonexistent.key.cov.xyz");
+      fail("Expected XincoException for unknown setting key");
+    } catch (XincoException e) {
+      assertNotNull(e);
+    }
+  }
+
+  // ---- XincoSettingServer(int) constructor else branch ----
+  // Non-existent ID returns null from the JPA controller, triggering the else
+  // throw path (6 instr).
+
+  public void testSetting_constructor_notFound_throwsException() {
+    try {
+      new XincoSettingServer(99999);
+      fail("Expected XincoException for non-existent setting ID");
+    } catch (XincoException e) {
+      assertNotNull(e);
+    }
+  }
+
+  // ---- XincoSettingServer(6-arg) else-if (stringVal != null) branch ----
+  // Covers the branch body where settingType is set to TYPE_STRING (8 instr).
+
+  public void testSetting_6argConstructor_stringValBranch() {
+    XincoSettingServer s = new XincoSettingServer(0, "cov.str.setting", null, "strVal", false, 0L);
+    assertEquals(XincoSettingServer.TYPE_STRING, s.getSettingType());
+    assertEquals("strVal", s.getStringValue());
+  }
+
+  // ---- XincoSettingServer.write2DB() else branch (create path) ----
+  // Using id=0 takes the else branch that calls controller.create() (12 instr).
+
+  public void testSetting_write2DB_createPath() throws Exception {
+    XincoSettingServer s = new XincoSettingServer(0, "cov.create.setting", null, null, true, 0L);
+    s.write2DB();
+    assertTrue("write2DB() should assign a new id > 0", s.getId() > 0);
+  }
+
+  // ---- XincoDependencyBehavior.hashCode() null-id path (1 instr) ----
+  // ---- XincoDependencyBehavior.equals() this.id==null && other.id!=null path (3 instr) ----
+
+  public void testDependencyBehavior_nullId_hashCodeAndEquals() {
+    XincoDependencyBehavior nullId = new XincoDependencyBehavior();
+    nullId.hashCode();
+    assertFalse(nullId.equals(new XincoDependencyBehavior(5)));
+  }
+
+  // ---- XincoSettingServer.getSetting(user,desc,bool) else { return null; } (2 instr) ----
+  // Invalid credentials → validCredentials() returns false → else branch runs.
+
+  public void testSetting_getSetting_invalidCredentials_returnsNull() throws Exception {
+    com.bluecubs.xinco.server.service.XincoCoreUser invalidUser =
+        new com.bluecubs.xinco.server.service.XincoCoreUser();
+    invalidUser.setUsername("completely_invalid_user_xyz_cov");
+    invalidUser.setUserpassword("wrong_pw_cov");
+    assertNull(XincoSettingServer.getSetting(invalidUser, "some.setting", false));
+  }
+
+  // ---- XincoSettingServer.deleteFromDB() NonexistentEntityException catch block (5 instr) ----
+  // destroy(99999) throws NonexistentEntityException → catch re-throws as XincoException.
+
+  public void testSetting_deleteFromDB_nonExistentThrows() {
+    com.bluecubs.xinco.server.service.XincoSetting nonExistent =
+        new com.bluecubs.xinco.server.service.XincoSetting();
+    nonExistent.setId(99999);
+    try {
+      XincoSettingServer.deleteFromDB(nonExistent);
+      fail("Expected XincoException for nonexistent setting");
     } catch (XincoException e) {
       assertNotNull(e);
     }
