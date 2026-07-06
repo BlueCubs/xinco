@@ -407,6 +407,34 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
     }
   }
 
+  // ---- XincoCoreDataServer.deleteFromDB() instance: addAttribute + log loop bodies ----
+
+  public void testData_deleteFromDB_instanceMethod() throws Exception {
+    XincoCoreDataServer data = new XincoCoreDataServer(0, 1, 1, 3, "delDBInst.cov", 1);
+    data.setChangerID(1);
+    int id = data.write2DB();
+    new XincoAddAttributeServer(id, 1, 0, 0L, 0.0, "http://example.com", "", null).write2DB();
+    XincoCoreLogServer logEntry = new XincoCoreLogServer(id, 1, 1, null, "cov log", 1, 0, 0, "");
+    logEntry.write2DB();
+    XincoCoreDataServer loaded = new XincoCoreDataServer(id);
+    assertEquals(0, loaded.deleteFromDB());
+  }
+
+  // ---- XincoCoreLanguageServer: forEach lambda body + inner isLanguageUsed branch ----
+
+  public void testLanguage_getXincoCoreLanguages_nonEmpty() {
+    List<XincoCoreLanguageServer> langs = XincoCoreLanguageServer.getXincoCoreLanguages();
+    assertNotNull(langs);
+    assertFalse("seed DB should have at least one language", langs.isEmpty());
+  }
+
+  public void testLanguage_isUsed_unusedLanguage() {
+    com.bluecubs.xinco.server.service.XincoCoreLanguage lang =
+        new com.bluecubs.xinco.server.service.XincoCoreLanguage();
+    lang.setId(9999);
+    assertFalse(XincoCoreLanguageServer.isLanguageUsed(lang));
+  }
+
   // ---- XincoCoreACEServer: group-level ACE covers groupId branch + edit path + removeFromDB ----
 
   public void testAce_groupLevelAndEditAndRemove() throws Exception {
