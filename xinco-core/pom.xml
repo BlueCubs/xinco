@@ -186,6 +186,8 @@
               <!-- CXF-generated WSDL stubs and LibreOffice-dependent rendering excluded -->
               <!-- XincoDemoResetThread: demo-only utility -->
               <!-- Environment-specific classes: JNDI, filesystem, background threads -->
+              <!-- XincoIdGenerator: JPA @PrePersist lifecycle callback, invoked by JPA runtime -->
+              <!-- XincoDBManager$1: anonymous DataSource impl for embedded H2; interface boilerplate -->
               <excludes>
                 <exclude>com/bluecubs/xinco/server/service/**</exclude>
                 <exclude>com/bluecubs/xinco/core/server/rendering/**</exclude>
@@ -198,6 +200,8 @@
                 <exclude>com/bluecubs/xinco/core/server/JPAEclipseLinkSessionCustomizer.class</exclude>
                 <exclude>com/bluecubs/xinco/tools/XincoFileIconManager.class</exclude>
                 <exclude>com/bluecubs/xinco/core/server/service/XincoFileService.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/XincoIdGenerator.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/XincoDBManager$1.class</exclude>
               </excludes>
               <rules>
                 <rule>
