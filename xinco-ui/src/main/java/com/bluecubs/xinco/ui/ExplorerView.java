@@ -60,6 +60,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -738,50 +739,51 @@ public class ExplorerView extends VerticalLayout
 
   private void checkoutSelected() {
     if (selectedData == null) return;
-    try {
-      XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
-      XincoCoreLogServer lastLog =
-          data.getXincoCoreLogs().isEmpty()
-              ? null
-              : (XincoCoreLogServer)
-                  data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
-      int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() : 1;
-      int vm = lastLog != null ? lastLog.getVersion().getVersionMid() : 0;
-      int vl = lastLog != null ? lastLog.getVersion().getVersionLow() : 0;
-      String vp =
-          lastLog != null && lastLog.getVersion().getVersionPostfix() != null
-              ? lastLog.getVersion().getVersionPostfix()
-              : "";
+    showReasonDialog(
+        getTranslation("menu.edit.checkoutfile"),
+        getTranslation("menu.edit.checkoutfile"),
+        reason -> {
+          try {
+            XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+            XincoCoreLogServer lastLog =
+                data.getXincoCoreLogs().isEmpty()
+                    ? null
+                    : (XincoCoreLogServer)
+                        data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
+            int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() : 1;
+            int vm = lastLog != null ? lastLog.getVersion().getVersionMid() : 0;
+            int vl = lastLog != null ? lastLog.getVersion().getVersionLow() : 0;
+            String vp =
+                lastLog != null && lastLog.getVersion().getVersionPostfix() != null
+                    ? lastLog.getVersion().getVersionPostfix()
+                    : "";
 
-      var log =
-          new XincoCoreLogServerBuilder()
-              .setXincoCoreDataId(data.getId())
-              .setXincoCoreUserId(session.getUser().getId())
-              .setOpCode(OPCode.CHECKOUT.ordinal() + 1)
-              .setOperationDescription(
-                  getTranslation("menu.edit.checkoutfile")
-                      + " (user: "
-                      + session.getUser().getUsername()
-                      + ")")
-              .setVersionHigh(vh)
-              .setVersionMid(vm)
-              .setVersionLow(vl)
-              .setVersionPostFix(vp)
-              .createXincoCoreLogServer();
-      log.write2DB();
+            var log =
+                new XincoCoreLogServerBuilder()
+                    .setXincoCoreDataId(data.getId())
+                    .setXincoCoreUserId(session.getUser().getId())
+                    .setOpCode(OPCode.CHECKOUT.ordinal() + 1)
+                    .setOperationDescription(reason)
+                    .setVersionHigh(vh)
+                    .setVersionMid(vm)
+                    .setVersionLow(vl)
+                    .setVersionPostFix(vp)
+                    .createXincoCoreLogServer();
+            log.write2DB();
 
-      data.setStatusNumber(4);
-      data.write2DB();
+            data.setStatusNumber(4);
+            data.write2DB();
 
-      selectedData = data;
-      downloadSelected();
-      refreshDataGrid();
-      Notification.show(getTranslation("menu.edit.checkoutfile") + " OK")
-          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-    } catch (Exception ex) {
-      LOG.log(Level.SEVERE, "Checkout failed", ex);
-      error("Checkout failed: " + ex.getMessage());
-    }
+            selectedData = data;
+            downloadSelected();
+            refreshDataGrid();
+            Notification.show(getTranslation("menu.edit.checkoutfile") + " OK")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+          } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Checkout failed", ex);
+            error("Checkout failed: " + ex.getMessage());
+          }
+        });
   }
 
   private void openCheckinDialog() {
@@ -995,12 +997,10 @@ public class ExplorerView extends VerticalLayout
 
   private void lockSelected() {
     if (selectedData == null) return;
-    ConfirmDialog confirm = new ConfirmDialog();
-    confirm.setHeader(getTranslation("menu.edit.lockdata") + "?");
-    confirm.setCancelable(true);
-    confirm.setConfirmText(getTranslation("menu.edit.lockdata"));
-    confirm.addConfirmListener(
-        e -> {
+    showReasonDialog(
+        getTranslation("menu.edit.lockdata"),
+        getTranslation("menu.edit.lockdata"),
+        reason -> {
           try {
             XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
             XincoCoreLogServer lastLog =
@@ -1021,7 +1021,7 @@ public class ExplorerView extends VerticalLayout
                     .setXincoCoreDataId(data.getId())
                     .setXincoCoreUserId(session.getUser().getId())
                     .setOpCode(OPCode.LOCK_COMMENT.ordinal() + 1)
-                    .setOperationDescription(getTranslation("menu.edit.lockdata"))
+                    .setOperationDescription(reason)
                     .setVersionHigh(vh)
                     .setVersionMid(vm)
                     .setVersionLow(vl)
@@ -1040,17 +1040,14 @@ public class ExplorerView extends VerticalLayout
             error("Lock failed: " + ex.getMessage());
           }
         });
-    confirm.open();
   }
 
   private void publishSelected() {
     if (selectedData == null) return;
-    ConfirmDialog confirm = new ConfirmDialog();
-    confirm.setHeader(getTranslation("menu.edit.publishdata") + "?");
-    confirm.setCancelable(true);
-    confirm.setConfirmText(getTranslation("menu.edit.publishdata"));
-    confirm.addConfirmListener(
-        e -> {
+    showReasonDialog(
+        getTranslation("menu.edit.publishdata"),
+        getTranslation("menu.edit.publishdata"),
+        reason -> {
           try {
             XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
             XincoCoreLogServer lastLog =
@@ -1071,7 +1068,7 @@ public class ExplorerView extends VerticalLayout
                     .setXincoCoreDataId(data.getId())
                     .setXincoCoreUserId(session.getUser().getId())
                     .setOpCode(OPCode.PUBLISH_COMMENT.ordinal() + 1)
-                    .setOperationDescription(getTranslation("menu.edit.publishdata"))
+                    .setOperationDescription(reason)
                     .setVersionHigh(vh)
                     .setVersionMid(vm)
                     .setVersionLow(vl)
@@ -1090,7 +1087,28 @@ public class ExplorerView extends VerticalLayout
             error("Publish failed: " + ex.getMessage());
           }
         });
-    confirm.open();
+  }
+
+  private void showReasonDialog(String title, String confirmText, Consumer<String> onConfirm) {
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(title);
+    TextField reasonField = new TextField(getTranslation("general.reason"));
+    reasonField.setWidthFull();
+    Button cancel = new Button(getTranslation("general.cancel"), e -> dialog.close());
+    Button confirm = new Button(confirmText);
+    confirm.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    confirm.addClickListener(
+        e -> {
+          if (reasonField.getValue().isBlank()) {
+            Notification.show(getTranslation("message.warning.reason"));
+            return;
+          }
+          dialog.close();
+          onConfirm.accept(reasonField.getValue());
+        });
+    dialog.add(new VerticalLayout(reasonField));
+    dialog.getFooter().add(cancel, confirm);
+    dialog.open();
   }
 
   private void archiveSelected() {

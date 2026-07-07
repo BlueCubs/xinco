@@ -937,9 +937,14 @@ class ExplorerViewTest {
                   when(m.write2DB()).thenReturn(1);
                 })) {
       invoke(view, "lockSelected");
-      ConfirmDialog confirm = _get(ConfirmDialog.class);
-      assertTrue(confirm.isOpened());
-      ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+      Dialog dialog = _get(Dialog.class, spec -> spec.withPredicate(d -> d.isOpened()));
+      assertTrue(dialog.isOpened());
+      _get(TextField.class, spec -> spec.withLabel("Reason")).setValue("Lock reason");
+      Button confirmBtn = _find(Button.class).stream()
+          .filter(b -> "Lock Data".equals(b.getText()))
+          .findFirst()
+          .orElseThrow();
+      ComponentUtil.fireEvent(confirmBtn, new com.vaadin.flow.component.ClickEvent<>(confirmBtn));
     }
   }
 
@@ -970,9 +975,14 @@ class ExplorerViewTest {
                   when(m.write2DB()).thenReturn(1);
                 })) {
       invoke(view, "publishSelected");
-      ConfirmDialog confirm = _get(ConfirmDialog.class);
-      assertTrue(confirm.isOpened());
-      ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+      Dialog dialog = _get(Dialog.class, spec -> spec.withPredicate(d -> d.isOpened()));
+      assertTrue(dialog.isOpened());
+      _get(TextField.class, spec -> spec.withLabel("Reason")).setValue("Publish reason");
+      Button confirmBtn = _find(Button.class).stream()
+          .filter(b -> "Publish Data".equals(b.getText()))
+          .findFirst()
+          .orElseThrow();
+      ComponentUtil.fireEvent(confirmBtn, new com.vaadin.flow.component.ClickEvent<>(confirmBtn));
     }
   }
 
@@ -1765,7 +1775,6 @@ class ExplorerViewTest {
   }
 
   @Test
-  @Disabled("gap: checkout/lock/publish must prompt for a mandatory reason comment per §2.6/§2.13")
   void checkout_shouldPromptForReasonComment() throws Exception {
     // §2.6 / §2.13: every modification must prompt for a reason; reason cannot be empty.
     // Currently checkout sets status=4 and logs immediately with a hard-coded description.
