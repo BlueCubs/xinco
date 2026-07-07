@@ -137,7 +137,6 @@ public class ControllerEditAndFindTest extends AbstractXincoDataBaseTestCase {
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new java.util.Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

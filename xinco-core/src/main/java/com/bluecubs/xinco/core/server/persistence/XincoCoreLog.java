@@ -36,10 +36,12 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
 @Table(name = "xinco_core_log")
 @XmlRootElement

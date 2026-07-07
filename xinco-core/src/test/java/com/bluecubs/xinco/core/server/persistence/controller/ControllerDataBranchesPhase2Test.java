@@ -385,7 +385,6 @@ public class ControllerDataBranchesPhase2Test extends AbstractXincoDataBaseTestC
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

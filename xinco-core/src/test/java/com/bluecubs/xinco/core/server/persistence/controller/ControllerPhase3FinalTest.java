@@ -273,44 +273,6 @@ public class ControllerPhase3FinalTest extends AbstractXincoDataBaseTestCase {
   // -------------------------------------------------------------------------
 
   /**
-   * Edit user U (which has a UMR record) with empty UMR list. Covers edit() lines 224-232: UMR in
-   * old list but not in new → IllegalOrphanException.
-   */
-  public void testUser_editOrphanCheckUmr() throws Exception {
-    XincoCoreUserJpaController userCtrl = new XincoCoreUserJpaController(getEntityManagerFactory());
-    XincoCoreUserModifiedRecordJpaController umrCtrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-
-    XincoCoreUser user = buildUser(userCtrl, "user.orphan.umr");
-
-    XincoCoreUserModifiedRecord umr = new XincoCoreUserModifiedRecord();
-    XincoCoreUserModifiedRecordPK umrPK = new XincoCoreUserModifiedRecordPK();
-    umrPK.setId(user.getId());
-    umrPK.setRecordId(8801);
-    umr.setXincoCoreUserModifiedRecordPK(umrPK);
-    umr.setXincoCoreUser(userCtrl.findXincoCoreUser(user.getId()));
-    umr.setModTime(new Date());
-    umr.setModReason("orphan-check test");
-    umrCtrl.create(umr);
-
-    // Edit user with empty UMR list → UMR orphan-check body fires
-    XincoCoreUser toEdit = userCtrl.findXincoCoreUser(user.getId());
-    toEdit.setXincoCoreUserModifiedRecordList(new ArrayList<>());
-    toEdit.setXincoCoreLogList(new ArrayList<>());
-    toEdit.setXincoCoreAceList(new ArrayList<>());
-    toEdit.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
-    try {
-      userCtrl.edit(toEdit);
-      fail("Expected IllegalOrphanException for UMR orphan check");
-    } catch (IllegalOrphanException e) {
-      // expected
-    }
-
-    umrCtrl.destroy(umrPK);
-    userCtrl.destroy(user.getId());
-  }
-
-  /**
    * Edit user U (which has a log record) with empty log list. Covers edit() lines 235-243: log in
    * old list but not in new → IllegalOrphanException.
    */
@@ -337,7 +299,6 @@ public class ControllerPhase3FinalTest extends AbstractXincoDataBaseTestCase {
 
     // Edit user with empty log list → log orphan-check body fires
     XincoCoreUser toEdit = userCtrl.findXincoCoreUser(user.getId());
-    toEdit.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     toEdit.setXincoCoreLogList(new ArrayList<>());
     toEdit.setXincoCoreAceList(new ArrayList<>());
     toEdit.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -379,7 +340,6 @@ public class ControllerPhase3FinalTest extends AbstractXincoDataBaseTestCase {
 
     // Edit user with empty UHG list → UHG orphan-check body fires
     XincoCoreUser toEdit = userCtrl.findXincoCoreUser(user.getId());
-    toEdit.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     toEdit.setXincoCoreLogList(new ArrayList<>());
     toEdit.setXincoCoreAceList(new ArrayList<>());
     toEdit.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -478,7 +438,6 @@ public class ControllerPhase3FinalTest extends AbstractXincoDataBaseTestCase {
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

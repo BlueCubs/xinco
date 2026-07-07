@@ -37,10 +37,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
 @Table(
     name = "xinco_dependency_behavior",

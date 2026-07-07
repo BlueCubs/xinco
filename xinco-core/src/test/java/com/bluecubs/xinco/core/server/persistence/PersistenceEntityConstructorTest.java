@@ -80,26 +80,6 @@ public class PersistenceEntityConstructorTest {
   }
 
   @Test
-  public void testXincoDependencyTypeT_recordIdConstructor() {
-    XincoDependencyTypeT dt = new XincoDependencyTypeT(55);
-    assertEquals(55, (int) dt.getRecordId());
-  }
-
-  @Test
-  public void testXincoDependencyBehaviorT_recordIdConstructor() {
-    XincoDependencyBehaviorT bt = new XincoDependencyBehaviorT(66);
-    assertEquals(66, (int) bt.getRecordId());
-  }
-
-  @Test
-  public void testXincoDependencyBehaviorT_fullConstructor() {
-    XincoDependencyBehaviorT bt = new XincoDependencyBehaviorT(77, 100, "TestBehavior");
-    assertEquals(77, (int) bt.getRecordId());
-    assertEquals(100, (int) bt.getId());
-    assertEquals("TestBehavior", bt.getDesignation());
-  }
-
-  @Test
   public void testXincoCoreNode_idConstructor() {
     XincoCoreNode node = new XincoCoreNode(99);
     assertEquals(99, (int) node.getId());
@@ -115,25 +95,6 @@ public class PersistenceEntityConstructorTest {
   public void testXincoCoreGroup_idConstructor() {
     XincoCoreGroup group = new XincoCoreGroup(3);
     assertEquals(3, (int) group.getId());
-  }
-
-  @Test
-  public void testXincoCoreUserModifiedRecord_pkConstructor() {
-    XincoCoreUserModifiedRecordPK pk = new XincoCoreUserModifiedRecordPK(1, 100);
-    XincoCoreUserModifiedRecord record = new XincoCoreUserModifiedRecord(pk);
-    assertEquals(pk, record.getXincoCoreUserModifiedRecordPK());
-  }
-
-  @Test
-  public void testXincoCoreUserHasXincoCoreGroupT_recordIdConstructor() {
-    XincoCoreUserHasXincoCoreGroupT t = new XincoCoreUserHasXincoCoreGroupT(88);
-    assertEquals(88, (int) t.getRecordId());
-  }
-
-  @Test
-  public void testXincoCoreDataHasDependencyT_recordIdConstructor() {
-    XincoCoreDataHasDependencyT t = new XincoCoreDataHasDependencyT(99);
-    assertEquals(99, (int) t.getRecordId());
   }
 
   @Test

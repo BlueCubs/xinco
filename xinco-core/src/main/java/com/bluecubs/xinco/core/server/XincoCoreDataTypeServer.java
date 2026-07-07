@@ -41,9 +41,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalO
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -144,23 +142,24 @@ public final class XincoCoreDataTypeServer extends XincoCoreDataType {
         xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
         xcdt.setDescription(getDescription().replaceAll("'", "\\\\'"));
         xcdt.setId(getId());
-        xcdt.setModificationReason("audit.general.modified");
-        xcdt.setModifierId(getChangerID());
-        xcdt.setModificationTime(new Timestamp(new Date().getTime()));
+        XincoRevisionListener.MOD_REASON.set("audit.general.modified");
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
         controller.edit(xcdt);
       } else {
         xcdt = new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType();
         xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
         xcdt.setDescription(getDescription().replaceAll("'", "\\\\'"));
-        xcdt.setModificationReason("audit.general.created");
-        xcdt.setModifierId(getChangerID());
-        xcdt.setModificationTime(new Timestamp(new Date().getTime()));
+        XincoRevisionListener.MOD_REASON.set("audit.general.created");
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
         controller.create(xcdt);
       }
       setId(xcdt.getId());
     } catch (Exception e) {
       getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(SEVERE, null, e);
       throw new XincoException(e.getMessage());
+    } finally {
+      XincoRevisionListener.MOD_REASON.remove();
+      XincoRevisionListener.MODIFIER_ID.remove();
     }
     return getId();
   }

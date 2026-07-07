@@ -31,10 +31,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
 @Table(name = "xinco_core_user_has_xinco_core_group")
 @XmlRootElement

@@ -264,24 +264,6 @@ public class ControllerOrphanAndNonExistentTest extends AbstractXincoDataBaseTes
   }
 
   /**
-   * Covers XincoCoreUserModifiedRecordJpaController destroy() EntityNotFoundException catch (~9
-   * instr).
-   */
-  public void testUmr_destroyNonExistent() {
-    XincoCoreUserModifiedRecordJpaController umrCtrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    XincoCoreUserModifiedRecordPK fakePK = new XincoCoreUserModifiedRecordPK();
-    fakePK.setId(99999);
-    fakePK.setRecordId(99999);
-    try {
-      umrCtrl.destroy(fakePK);
-      fail("Expected exception for non-existent UMR pk");
-    } catch (Exception e) {
-      // expected
-    }
-  }
-
-  /**
    * Covers XincoCoreDataHasDependencyJpaController destroy() EntityNotFoundException catch (~9
    * instr).
    */
@@ -374,7 +356,6 @@ public class ControllerOrphanAndNonExistentTest extends AbstractXincoDataBaseTes
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

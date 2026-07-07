@@ -170,7 +170,7 @@ public class ExplorerView extends VerticalLayout
     var editMenu = menuBar.addItem("Edit");
     var editSub = editMenu.getSubMenu();
     miDelete = editSub.addItem(getTranslation("general.delete"), e -> confirmDelete());
-    editSub.add(new com.vaadin.flow.component.html.Hr());
+    editSub.addSeparator();
     miManageAcl = editSub.addItem("Manage ACL…", e -> openAclDialog());
 
     // File menu
@@ -178,16 +178,16 @@ public class ExplorerView extends VerticalLayout
     var fileSub = fileMenu.getSubMenu();
     miDownload =
         fileSub.addItem(getTranslation("menu.repository.downloadfile"), e -> downloadSelected());
-    fileSub.add(new com.vaadin.flow.component.html.Hr());
+    fileSub.addSeparator();
     miCheckOut = fileSub.addItem(getTranslation("menu.edit.checkoutfile"), e -> checkoutSelected());
     miCheckIn =
         fileSub.addItem(getTranslation("menu.edit.checkinfile") + "…", e -> openCheckinDialog());
     miUndoCheckOut =
         fileSub.addItem(getTranslation("menu.edit.undocheckout"), e -> undoCheckoutSelected());
-    fileSub.add(new com.vaadin.flow.component.html.Hr());
+    fileSub.addSeparator();
     miLock = fileSub.addItem(getTranslation("menu.edit.lockdata"), e -> lockSelected());
     miPublish = fileSub.addItem(getTranslation("menu.edit.publishdata"), e -> publishSelected());
-    fileSub.add(new com.vaadin.flow.component.html.Hr());
+    fileSub.addSeparator();
     miArchive = fileSub.addItem("Archive…", e -> archiveSelected());
 
     // View menu
@@ -544,103 +544,98 @@ public class ExplorerView extends VerticalLayout
     Button addBtn =
         new Button(
             "Add",
-            e -> {
-              String name = designationField.getValue().trim();
-              if (name.isEmpty()) {
-                designationField.setErrorMessage("Name is required");
-                designationField.setInvalid(true);
-                return;
-              }
-              if (buffer.getFileName() == null || buffer.getFileName().isEmpty()) {
-                error("Please upload a file first.");
-                return;
-              }
-              XincoCoreLanguageServer lang =
-                  langSelect.getValue() != null && !finalLanguages.isEmpty()
-                      ? langSelect.getValue()
-                      : null;
-              if (lang == null) {
-                error("Please select a language.");
-                return;
-              }
-              try {
-                // 1. Persist the data record
-                XincoCoreDataServer newData =
-                    new XincoCoreDataServer(0, selectedNode.getId(), lang.getId(), 1, name, 1);
-                newData.write2DB();
-                int dataId = newData.getId();
-
-                // 2. Create CREATION log entry (versionHigh=1, versionMid=0 for major version)
-                var log =
-                    new XincoCoreLogServerBuilder()
-                        .setXincoCoreDataId(dataId)
-                        .setXincoCoreUserId(session.getUser().getId())
-                        .setOpCode(OPCode.CREATION.ordinal() + 1)
-                        .setOperationDescription("Initial upload")
-                        .setVersionHigh(1)
-                        .setVersionMid(0)
-                        .setVersionLow(0)
-                        .setVersionPostFix("")
-                        .createXincoCoreLogServer();
-                log.write2DB();
-                int logId = log.getId();
-
-                // 3. Write file bytes to repository path {id}-{logId}
-                String repoPath =
-                    XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.CONFIG.fileRepositoryPath, dataId, dataId + "-" + logId);
-                File repoFile = new File(repoPath);
-                repoFile.getParentFile().mkdirs();
-                try (InputStream in = buffer.getInputStream()) {
-                  Files.copy(in, repoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
-                // Also write to base path {id} so checkout/checkin operations have a working copy
-                String basePath =
-                    XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.CONFIG.fileRepositoryPath, dataId, "" + dataId);
-                Files.copy(
-                    repoFile.toPath(),
-                    new File(basePath).toPath(),
-                    StandardCopyOption.REPLACE_EXISTING);
-
-                // 4. Write add attributes for data type 1 (12 attributes)
-                XMLGregorianCalendar now =
-                    DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
-                String filename = buffer.getFileName();
-                long filesize = repoFile.length();
-                // attr 1: filename (varchar)
-                new XincoAddAttributeServer(dataId, 1, 0, 0L, 0.0, filename, "", now).write2DB();
-                // attr 2: filesize (unsignedint)
-                new XincoAddAttributeServer(dataId, 2, 0, filesize, 0.0, "", "", now).write2DB();
-                // attr 3: checksum (varchar, empty)
-                new XincoAddAttributeServer(dataId, 3, 0, 0L, 0.0, "", "", now).write2DB();
-                // attr 4: revision model = 1
-                new XincoAddAttributeServer(dataId, 4, 0, 1L, 0.0, "", "", now).write2DB();
-                // attr 5-12: defaults
-                for (int i = 5; i <= 12; i++) {
-                  new XincoAddAttributeServer(dataId, i, 0, 0L, 0.0, "", "", now).write2DB();
-                }
-
-                dialog.close();
-                // Refresh data grid for current node
-                selectedNode.fillXincoCoreData();
-                dataGrid.setItems(
-                    selectedNode.getXincoCoreData().stream()
-                        .filter(o -> o instanceof XincoCoreDataServer)
-                        .map(o -> (XincoCoreDataServer) o)
-                        .toList());
-                Notification.show("'" + name + "' added.")
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-              } catch (Exception ex) {
-                LOG.log(Level.SEVERE, "Add data failed", ex);
-                error("Failed to add data: " + ex.getMessage());
-              }
-            });
+            e ->
+                doAddData(
+                    designationField,
+                    buffer,
+                    langSelect.getValue() != null && !finalLanguages.isEmpty()
+                        ? langSelect.getValue()
+                        : null,
+                    dialog));
 
     dialog
         .getFooter()
         .add(new Button(getTranslation("general.cancel"), e -> dialog.close()), addBtn);
     dialog.open();
+  }
+
+  void doAddData(
+      TextField designationField,
+      MemoryBuffer buffer,
+      XincoCoreLanguageServer lang,
+      Dialog dialog) {
+    String name = designationField.getValue().trim();
+    if (name.isEmpty()) {
+      designationField.setErrorMessage("Name is required");
+      designationField.setInvalid(true);
+      return;
+    }
+    if (buffer.getFileName() == null || buffer.getFileName().isEmpty()) {
+      error("Please upload a file first.");
+      return;
+    }
+    if (lang == null) {
+      error("Please select a language.");
+      return;
+    }
+    try {
+      XincoCoreDataServer newData =
+          new XincoCoreDataServer(0, selectedNode.getId(), lang.getId(), 1, name, 1);
+      newData.write2DB();
+      int dataId = newData.getId();
+
+      var log =
+          new XincoCoreLogServerBuilder()
+              .setXincoCoreDataId(dataId)
+              .setXincoCoreUserId(session.getUser().getId())
+              .setOpCode(OPCode.CREATION.ordinal() + 1)
+              .setOperationDescription("Initial upload")
+              .setVersionHigh(1)
+              .setVersionMid(0)
+              .setVersionLow(0)
+              .setVersionPostFix("")
+              .createXincoCoreLogServer();
+      log.write2DB();
+      int logId = log.getId();
+
+      String repoPath =
+          XincoCoreDataServer.getXincoCoreDataPath(
+              XincoDBManager.CONFIG.fileRepositoryPath, dataId, dataId + "-" + logId);
+      File repoFile = new File(repoPath);
+      repoFile.getParentFile().mkdirs();
+      try (InputStream in = buffer.getInputStream()) {
+        Files.copy(in, repoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      }
+      String basePath =
+          XincoCoreDataServer.getXincoCoreDataPath(
+              XincoDBManager.CONFIG.fileRepositoryPath, dataId, "" + dataId);
+      Files.copy(
+          repoFile.toPath(), new File(basePath).toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+      XMLGregorianCalendar now =
+          DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
+      String filename = buffer.getFileName();
+      long filesize = repoFile.length();
+      new XincoAddAttributeServer(dataId, 1, 0, 0L, 0.0, filename, "", now).write2DB();
+      new XincoAddAttributeServer(dataId, 2, 0, filesize, 0.0, "", "", now).write2DB();
+      new XincoAddAttributeServer(dataId, 3, 0, 0L, 0.0, "", "", now).write2DB();
+      new XincoAddAttributeServer(dataId, 4, 0, 1L, 0.0, "", "", now).write2DB();
+      for (int i = 5; i <= 12; i++) {
+        new XincoAddAttributeServer(dataId, i, 0, 0L, 0.0, "", "", now).write2DB();
+      }
+
+      dialog.close();
+      selectedNode.fillXincoCoreData();
+      dataGrid.setItems(
+          selectedNode.getXincoCoreData().stream()
+              .filter(o -> o instanceof XincoCoreDataServer)
+              .map(o -> (XincoCoreDataServer) o)
+              .toList());
+      Notification.show("'" + name + "' added.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Add data failed", ex);
+      error("Failed to add data: " + ex.getMessage());
+    }
   }
 
   private void openNewFolderDialog() {
@@ -656,34 +651,30 @@ public class ExplorerView extends VerticalLayout
         .getFooter()
         .add(
             new Button(getTranslation("general.cancel"), e -> dialog.close()),
-            new Button(
-                getTranslation("general.create"),
-                e -> {
-                  String name = nameField.getValue().trim();
-                  if (name.isEmpty()) {
-                    nameField.setErrorMessage("Name is required");
-                    nameField.setInvalid(true);
-                    return;
-                  }
-                  try {
-                    XincoCoreNodeServer newNode =
-                        new XincoCoreNodeServer(
-                            0,
-                            selectedNode.getId(),
-                            selectedNode.getXincoCoreLanguage().getId(),
-                            name,
-                            1);
-                    newNode.write2DB();
-                    dialog.close();
-                    loadRootNodes();
-                    Notification.show("Folder '" + name + "' created.")
-                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                  } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, "Create folder failed", ex);
-                    error("Could not create folder: " + ex.getMessage());
-                  }
-                }));
+            new Button(getTranslation("general.create"), e -> doCreateFolder(nameField, dialog)));
     dialog.open();
+  }
+
+  void doCreateFolder(TextField nameField, Dialog dialog) {
+    String name = nameField.getValue().trim();
+    if (name.isEmpty()) {
+      nameField.setErrorMessage("Name is required");
+      nameField.setInvalid(true);
+      return;
+    }
+    try {
+      XincoCoreNodeServer newNode =
+          new XincoCoreNodeServer(
+              0, selectedNode.getId(), selectedNode.getXincoCoreLanguage().getId(), name, 1);
+      newNode.write2DB();
+      dialog.close();
+      loadRootNodes();
+      Notification.show("Folder '" + name + "' created.")
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (XincoException ex) {
+      LOG.log(Level.SEVERE, "Create folder failed", ex);
+      error("Could not create folder: " + ex.getMessage());
+    }
   }
 
   private void confirmDelete() {
@@ -842,7 +833,8 @@ public class ExplorerView extends VerticalLayout
           }
         });
 
-    HorizontalLayout versionRow = new HorizontalLayout(majorField, minorField, patchField, postfixField);
+    HorizontalLayout versionRow =
+        new HorizontalLayout(majorField, minorField, patchField, postfixField);
     versionRow.setAlignItems(FlexComponent.Alignment.END);
 
     Dialog dialog = new Dialog();
@@ -857,82 +849,75 @@ public class ExplorerView extends VerticalLayout
             new Button(
                 getTranslation("menu.edit.checkinfile"),
                 e -> {
-                  if (buffer.getFileName() == null || buffer.getFileName().isEmpty()) {
-                    error("Please upload the revised file first.");
-                    return;
-                  }
                   int vh = majorField.getValue() != null ? majorField.getValue() : basHigh + 1;
                   int vm = minorField.getValue() != null ? minorField.getValue() : 0;
                   int vl = patchField.getValue() != null ? patchField.getValue() : 0;
                   String vp = postfixField.getValue().trim();
-                  try {
-                    XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
-                    String desc =
-                        descField.getValue().trim().isEmpty()
-                            ? getTranslation("menu.edit.checkinfile")
-                            : descField.getValue().trim();
-
-                    var log =
-                        new XincoCoreLogServerBuilder()
-                            .setXincoCoreDataId(data.getId())
-                            .setXincoCoreUserId(session.getUser().getId())
-                            .setOpCode(OPCode.CHECKIN.ordinal() + 1)
-                            .setOperationDescription(desc)
-                            .setVersionHigh(vh)
-                            .setVersionMid(vm)
-                            .setVersionLow(vl)
-                            .setVersionPostFix(vp)
-                            .createXincoCoreLogServer();
-                    log.write2DB();
-                    int logId = log.getId();
-
-                    // Write new bytes to base path {id}
-                    String base =
-                        XincoCoreDataServer.getXincoCoreDataPath(
-                            XincoDBManager.CONFIG.fileRepositoryPath,
-                            data.getId(),
-                            "" + data.getId());
-                    File baseFile = new File(base);
-                    baseFile.getParentFile().mkdirs();
-                    try (InputStream in = buffer.getInputStream()) {
-                      Files.copy(in, baseFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    }
-
-                    // Archive versioned copy {id}-{logId}
-                    String versionPath =
-                        XincoCoreDataServer.getXincoCoreDataPath(
-                            XincoDBManager.CONFIG.fileRepositoryPath,
-                            data.getId(),
-                            data.getId() + "-" + logId);
-                    Files.copy(
-                        baseFile.toPath(),
-                        new File(versionPath).toPath(),
-                        StandardCopyOption.REPLACE_EXISTING);
-
-                    // Update filename and filesize add attributes
-                    XMLGregorianCalendar now =
-                        DatatypeFactory.newInstance()
-                            .newXMLGregorianCalendar(new GregorianCalendar());
-                    new XincoAddAttributeServer(
-                            data.getId(), 1, 0, 0L, 0.0, buffer.getFileName(), "", now)
-                        .write2DB();
-                    new XincoAddAttributeServer(
-                            data.getId(), 2, 0, baseFile.length(), 0.0, "", "", now)
-                        .write2DB();
-
-                    data.setStatusNumber(1);
-                    data.write2DB();
-
-                    dialog.close();
-                    refreshDataGrid();
-                    Notification.show(getTranslation("menu.edit.checkinfile") + " OK")
-                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                  } catch (Exception ex) {
-                    LOG.log(Level.SEVERE, "Checkin failed", ex);
-                    error("Checkin failed: " + ex.getMessage());
-                  }
+                  String desc =
+                      descField.getValue().trim().isEmpty()
+                          ? getTranslation("menu.edit.checkinfile")
+                          : descField.getValue().trim();
+                  doCheckin(buffer, vh, vm, vl, vp, desc, dialog);
                 }));
     dialog.open();
+  }
+
+  void doCheckin(
+      MemoryBuffer buffer, int vh, int vm, int vl, String vp, String desc, Dialog dialog) {
+    if (buffer.getFileName() == null || buffer.getFileName().isEmpty()) {
+      error("Please upload the revised file first.");
+      return;
+    }
+    try {
+      XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+
+      var log =
+          new XincoCoreLogServerBuilder()
+              .setXincoCoreDataId(data.getId())
+              .setXincoCoreUserId(session.getUser().getId())
+              .setOpCode(OPCode.CHECKIN.ordinal() + 1)
+              .setOperationDescription(desc)
+              .setVersionHigh(vh)
+              .setVersionMid(vm)
+              .setVersionLow(vl)
+              .setVersionPostFix(vp)
+              .createXincoCoreLogServer();
+      log.write2DB();
+      int logId = log.getId();
+
+      String base =
+          XincoCoreDataServer.getXincoCoreDataPath(
+              XincoDBManager.CONFIG.fileRepositoryPath, data.getId(), "" + data.getId());
+      File baseFile = new File(base);
+      baseFile.getParentFile().mkdirs();
+      try (InputStream in = buffer.getInputStream()) {
+        Files.copy(in, baseFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      }
+
+      String versionPath =
+          XincoCoreDataServer.getXincoCoreDataPath(
+              XincoDBManager.CONFIG.fileRepositoryPath, data.getId(), data.getId() + "-" + logId);
+      Files.copy(
+          baseFile.toPath(), new File(versionPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+      XMLGregorianCalendar now =
+          DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
+      new XincoAddAttributeServer(data.getId(), 1, 0, 0L, 0.0, buffer.getFileName(), "", now)
+          .write2DB();
+      new XincoAddAttributeServer(data.getId(), 2, 0, baseFile.length(), 0.0, "", "", now)
+          .write2DB();
+
+      data.setStatusNumber(1);
+      data.write2DB();
+
+      dialog.close();
+      refreshDataGrid();
+      Notification.show(getTranslation("menu.edit.checkinfile") + " OK")
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Checkin failed", ex);
+      error("Checkin failed: " + ex.getMessage());
+    }
   }
 
   private void undoCheckoutSelected() {
@@ -1152,8 +1137,7 @@ public class ExplorerView extends VerticalLayout
             e -> {
               try {
                 XMLGregorianCalendar now =
-                    DatatypeFactory.newInstance()
-                        .newXMLGregorianCalendar(new GregorianCalendar());
+                    DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
                 int model = modelSelect.getValue();
                 new XincoAddAttributeServer(data.getId(), 5, 0, (long) model, 0.0, "", "", now)
                     .write2DB();
@@ -1163,7 +1147,8 @@ public class ExplorerView extends VerticalLayout
                           ? archiveDate.getValue()
                           : LocalDate.now().plusDays(30);
                   GregorianCalendar gc =
-                      new GregorianCalendar(ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
+                      new GregorianCalendar(
+                          ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
                   new XincoAddAttributeServer(
                           data.getId(),
                           6,
@@ -1175,10 +1160,8 @@ public class ExplorerView extends VerticalLayout
                           DatatypeFactory.newInstance().newXMLGregorianCalendar(gc))
                       .write2DB();
                 } else if (model == 2) {
-                  int days =
-                      archiveDays.getValue() != null ? archiveDays.getValue() : 30;
-                  new XincoAddAttributeServer(
-                          data.getId(), 7, 0, (long) days, 0.0, "", "", now)
+                  int days = archiveDays.getValue() != null ? archiveDays.getValue() : 30;
+                  new XincoAddAttributeServer(data.getId(), 7, 0, (long) days, 0.0, "", "", now)
                       .write2DB();
                 }
                 dialog.close();
@@ -1392,28 +1375,28 @@ public class ExplorerView extends VerticalLayout
     content.setPadding(false);
     dialog.add(content);
 
-    Button saveBtn =
-        new Button(
-            "Save",
-            ev -> {
-              try {
-                for (XincoCoreACEServer d : deletedAces) {
-                  if (d.getId() > 0) {
-                    XincoCoreACEServer.removeFromDB(d, session.getUser().getId());
-                  }
-                }
-                for (XincoCoreACEServer a : acl) {
-                  a.write2DB();
-                }
-                dialog.close();
-                Notification.show("ACL saved.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-              } catch (Exception ex) {
-                LOG.log(Level.SEVERE, "ACL save failed", ex);
-                error("ACL save failed: " + ex.getMessage());
-              }
-            });
+    Button saveBtn = new Button("Save", ev -> doSaveAcl(deletedAces, acl, dialog));
     dialog.getFooter().add(new Button("Close", ev -> dialog.close()), saveBtn);
     dialog.open();
+  }
+
+  void doSaveAcl(
+      List<XincoCoreACEServer> deletedAces, List<XincoCoreACEServer> acl, Dialog dialog) {
+    try {
+      for (XincoCoreACEServer d : deletedAces) {
+        if (d.getId() > 0) {
+          XincoCoreACEServer.removeFromDB(d, session.getUser().getId());
+        }
+      }
+      for (XincoCoreACEServer a : acl) {
+        a.write2DB();
+      }
+      dialog.close();
+      Notification.show("ACL saved.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "ACL save failed", ex);
+      error("ACL save failed: " + ex.getMessage());
+    }
   }
 
   private void error(String msg) {

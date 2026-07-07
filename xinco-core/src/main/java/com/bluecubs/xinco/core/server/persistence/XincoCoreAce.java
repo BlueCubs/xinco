@@ -29,19 +29,18 @@ package com.bluecubs.xinco.core.server.persistence;
 
 import static jakarta.persistence.GenerationType.TABLE;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
+@Audited
 @Entity
 @Table(name = "xinco_core_ace")
-@EntityListeners(AuditedEntityListener.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(name = "XincoCoreAce.findAll", query = "SELECT x FROM XincoCoreAce x"),
@@ -61,7 +60,7 @@ import java.io.Serializable;
       name = "XincoCoreAce.findByAdminPermission",
       query = "SELECT x FROM XincoCoreAce x WHERE x.adminPermission = :adminPermission")
 })
-public class XincoCoreAce extends XincoAuditedObject implements Serializable {
+public class XincoCoreAce implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

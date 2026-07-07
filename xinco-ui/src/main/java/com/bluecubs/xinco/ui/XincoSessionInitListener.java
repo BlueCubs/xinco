@@ -35,10 +35,7 @@ public class XincoSessionInitListener implements VaadinServiceInitListener {
         .getSource()
         .addSessionInitListener(
             initEvent ->
-                initEvent
-                    .getSession()
-                    .getSession()
-                    .setMaxInactiveInterval(timeoutMinutes * 60));
+                initEvent.getSession().getSession().setMaxInactiveInterval(timeoutMinutes * 60));
   }
 
   int getTimeoutMinutes() {

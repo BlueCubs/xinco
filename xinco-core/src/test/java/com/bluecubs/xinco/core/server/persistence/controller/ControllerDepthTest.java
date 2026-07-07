@@ -48,50 +48,6 @@ public class ControllerDepthTest extends AbstractXincoDataBaseTestCase {
     assertNull(ctrl.findXincoCoreDataHasDependency(pk));
   }
 
-  // ---- XincoCoreDataHasDependencyTJpaController edit ----
-
-  public void testDataHasDependencyTController_edit() throws Exception {
-    XincoCoreDataHasDependencyTJpaController ctrl =
-        new XincoCoreDataHasDependencyTJpaController(getEntityManagerFactory());
-    XincoCoreDataHasDependencyT entity = new XincoCoreDataHasDependencyT();
-    entity.setRecordId(9940);
-    entity.setXincoCoreDataParentId(1);
-    entity.setXincoCoreDataChildrenId(2);
-    entity.setDependencyTypeId(1);
-    ctrl.create(entity);
-    Integer rid = entity.getRecordId();
-    assertNotNull(rid);
-
-    entity.setDependencyTypeId(2);
-    ctrl.edit(entity);
-    assertEquals(2, (int) ctrl.findXincoCoreDataHasDependencyT(rid).getDependencyTypeId());
-
-    ctrl.destroy(rid);
-    assertNull(ctrl.findXincoCoreDataHasDependencyT(rid));
-  }
-
-  // ---- XincoCoreUserHasXincoCoreGroupTJpaController edit ----
-
-  public void testUserHasGroupTController_edit() throws Exception {
-    XincoCoreUserHasXincoCoreGroupTJpaController ctrl =
-        new XincoCoreUserHasXincoCoreGroupTJpaController(getEntityManagerFactory());
-    XincoCoreUserHasXincoCoreGroupT entity = new XincoCoreUserHasXincoCoreGroupT();
-    entity.setRecordId(9941);
-    entity.setXincoCoreUserId(1);
-    entity.setXincoCoreGroupId(1);
-    entity.setStatusNumber(1);
-    ctrl.create(entity);
-    Integer rid = entity.getRecordId();
-    assertNotNull(rid);
-
-    entity.setStatusNumber(2);
-    ctrl.edit(entity);
-    assertEquals(2, (int) ctrl.findXincoCoreUserHasXincoCoreGroupT(rid).getStatusNumber());
-
-    ctrl.destroy(rid);
-    assertNull(ctrl.findXincoCoreUserHasXincoCoreGroupT(rid));
-  }
-
   // ---- XincoIdJpaController ----
 
   public void testXincoIdController_findAllAndCount() {

@@ -4,10 +4,18 @@ import static com.github.mvysny.kaributesting.v10.LocatorJ._find;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
+import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
+import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.server.service.XincoCoreData;
@@ -16,7 +24,9 @@ import com.bluecubs.xinco.server.service.XincoCoreLanguage;
 import com.bluecubs.xinco.ui.component.PropertyGrid;
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.contextmenu.MenuItem;
@@ -25,16 +35,28 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.server.VaadinSession;
+import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.function.Function;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 
 class ExplorerViewTest {
@@ -446,8 +468,7 @@ class ExplorerViewTest {
 
     Field sl = ExplorerView.class.getDeclaredField("searchStatusLabel");
     sl.setAccessible(true);
-    com.vaadin.flow.component.html.Span label =
-        (com.vaadin.flow.component.html.Span) sl.get(view);
+    com.vaadin.flow.component.html.Span label = (com.vaadin.flow.component.html.Span) sl.get(view);
     assertTrue(label.isVisible(), "status label visible after search");
     assertTrue(label.getText().contains("1"), "label shows result count");
 
@@ -507,7 +528,8 @@ class ExplorerViewTest {
 
     Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive mode"));
     DatePicker archiveDate = _get(DatePicker.class, spec -> spec.withLabel("Archive on"));
-    IntegerField archiveDays = _get(IntegerField.class, spec -> spec.withLabel("Archive after (days)"));
+    IntegerField archiveDays =
+        _get(IntegerField.class, spec -> spec.withLabel("Archive after (days)"));
 
     // Default: None — both disabled
     assertFalse(archiveDate.isEnabled(), "date disabled in None mode");
@@ -572,6 +594,1034 @@ class ExplorerViewTest {
     minorBump.setValue(false);
     assertEquals(2, majorField.getValue(), "back to major bump");
     assertEquals(0, minorField.getValue(), "minor resets to 0");
+  }
+
+  // ---- ACL Dialog coverage ----
+
+  @Test
+  void openAclDialog_withNodeSelected_coversMethodBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getDesignation()).thenReturn("Root");
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreACEServer> msAce = mockStatic(XincoCoreACEServer.class);
+        MockedStatic<XincoCoreUserServer> msUser = mockStatic(XincoCoreUserServer.class);
+        MockedStatic<XincoCoreGroupServer> msGroup = mockStatic(XincoCoreGroupServer.class)) {
+      msAce
+          .when(() -> XincoCoreACEServer.getXincoCoreACL(anyInt(), anyString()))
+          .thenReturn(new ArrayList<>());
+      msUser.when(XincoCoreUserServer::getXincoCoreUsers).thenReturn(new ArrayList<>());
+      msGroup.when(XincoCoreGroupServer::getXincoCoreGroups).thenReturn(new ArrayList<>());
+      invoke(view, "openAclDialog");
+      assertTrue(_get(Dialog.class).isOpened());
+    }
+  }
+
+  @Test
+  void openAclDialog_withDataSelected_coversIsDataBranches() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    when(mockData.getId()).thenReturn(2);
+    when(mockData.getDesignation()).thenReturn("file.txt");
+    setField(view, "selectedData", mockData);
+
+    try (MockedStatic<XincoCoreACEServer> msAce = mockStatic(XincoCoreACEServer.class);
+        MockedStatic<XincoCoreUserServer> msUser = mockStatic(XincoCoreUserServer.class);
+        MockedStatic<XincoCoreGroupServer> msGroup = mockStatic(XincoCoreGroupServer.class)) {
+      msAce
+          .when(() -> XincoCoreACEServer.getXincoCoreACL(anyInt(), anyString()))
+          .thenReturn(new ArrayList<>());
+      msUser.when(XincoCoreUserServer::getXincoCoreUsers).thenReturn(new ArrayList<>());
+      msGroup.when(XincoCoreGroupServer::getXincoCoreGroups).thenReturn(new ArrayList<>());
+      invoke(view, "openAclDialog");
+      assertTrue(_get(Dialog.class).isOpened());
+    }
+  }
+
+  @Test
+  void openAclDialog_saveButton_emptyAcl_coversEmptySaveLambda() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getDesignation()).thenReturn("Root");
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreACEServer> msAce = mockStatic(XincoCoreACEServer.class);
+        MockedStatic<XincoCoreUserServer> msUser = mockStatic(XincoCoreUserServer.class);
+        MockedStatic<XincoCoreGroupServer> msGroup = mockStatic(XincoCoreGroupServer.class)) {
+      msAce
+          .when(() -> XincoCoreACEServer.getXincoCoreACL(anyInt(), anyString()))
+          .thenReturn(new ArrayList<>());
+      msUser.when(XincoCoreUserServer::getXincoCoreUsers).thenReturn(new ArrayList<>());
+      msGroup.when(XincoCoreGroupServer::getXincoCoreGroups).thenReturn(new ArrayList<>());
+      invoke(view, "openAclDialog");
+      Dialog dialog = _get(Dialog.class);
+      assertTrue(dialog.isOpened(), "Dialog should be open");
+      List<Button> saveBtns = _find(Button.class, spec -> spec.withText("Save"));
+      assertFalse(saveBtns.isEmpty(), "Save button must be present");
+      saveBtns.get(0).click();
+      // If the click triggered the real save lambda, dialog.close() would have been called
+      assertFalse(dialog.isOpened(), "Dialog should close after real save lambda executes");
+    }
+  }
+
+  @Test
+  void openAclDialog_withUserAce_coversAceLoopAndDeleteSave() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getDesignation()).thenReturn("Root");
+    setField(view, "selectedNode", mockNode);
+
+    XincoCoreACEServer mockAce = mock(XincoCoreACEServer.class);
+    when(mockAce.getId()).thenReturn(5);
+    when(mockAce.getXincoCoreUserId()).thenReturn(1);
+    when(mockAce.getXincoCoreGroupId()).thenReturn(0);
+    when(mockAce.isAdminPermission()).thenReturn(false);
+    when(mockAce.isReadPermission()).thenReturn(true);
+    when(mockAce.isWritePermission()).thenReturn(false);
+    when(mockAce.isExecutePermission()).thenReturn(false);
+
+    XincoCoreUserServer mockUser = mock(XincoCoreUserServer.class);
+    when(mockUser.getId()).thenReturn(1);
+    when(mockUser.getUsername()).thenReturn("admin");
+
+    try (MockedStatic<XincoCoreACEServer> msAce = mockStatic(XincoCoreACEServer.class);
+        MockedStatic<XincoCoreUserServer> msUser = mockStatic(XincoCoreUserServer.class);
+        MockedStatic<XincoCoreGroupServer> msGroup = mockStatic(XincoCoreGroupServer.class)) {
+      msAce
+          .when(() -> XincoCoreACEServer.getXincoCoreACL(anyInt(), anyString()))
+          .thenReturn(new ArrayList<>(List.of(mockAce)));
+      msAce.when(() -> XincoCoreACEServer.removeFromDB(any(), anyInt())).thenReturn(0);
+      msUser
+          .when(XincoCoreUserServer::getXincoCoreUsers)
+          .thenReturn(new ArrayList<>(List.of(mockUser)));
+      msGroup.when(XincoCoreGroupServer::getXincoCoreGroups).thenReturn(new ArrayList<>());
+
+      invoke(view, "openAclDialog");
+
+      // Click "×" to move ACE into deletedAces, then Save → removeFromDB called
+      List<Button> delBtns = _find(Button.class, spec -> spec.withText("×"));
+      if (!delBtns.isEmpty()) {
+        delBtns.get(0).click();
+      }
+      List<Button> saveBtns = _find(Button.class, spec -> spec.withText("Save"));
+      assertFalse(saveBtns.isEmpty());
+      saveBtns.get(0).click();
+    }
+  }
+
+  // ---- Add Data Dialog coverage ----
+
+  @Test
+  void openAddDataDialog_withNode_coversMethodBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreLanguageServer> msLang = mockStatic(XincoCoreLanguageServer.class)) {
+      msLang.when(XincoCoreLanguageServer::getXincoCoreLanguages).thenReturn(new ArrayList<>());
+      invoke(view, "openAddDataDialog");
+      assertTrue(_get(Dialog.class).isOpened());
+    }
+  }
+
+  @Test
+  void openAddDataDialog_submitEmptyName_coversNameValidation() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreLanguageServer> msLang = mockStatic(XincoCoreLanguageServer.class)) {
+      msLang.when(XincoCoreLanguageServer::getXincoCoreLanguages).thenReturn(new ArrayList<>());
+      invoke(view, "openAddDataDialog");
+      // Click Add with empty name → designationField.isEmpty() → validation branch
+      List<Button> addBtns = _find(Button.class, spec -> spec.withText("Add"));
+      if (!addBtns.isEmpty()) {
+        addBtns.get(0).click();
+      }
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void openAddDataDialog_fullSubmit_coversLambdaBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    Path tempDir = Files.createTempDirectory("xinco-test-adddata");
+    try (MockedStatic<XincoCoreLanguageServer> msLang = mockStatic(XincoCoreLanguageServer.class);
+        MockedStatic<XincoCoreDataServer> msDataS = mockStatic(XincoCoreDataServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class,
+                (m, ctx) -> {
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+
+      XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+      when(mockLang.getId()).thenReturn(1);
+      when(mockLang.getSign()).thenReturn("EN");
+      when(mockLang.getDesignation()).thenReturn("English");
+      msLang
+          .when(XincoCoreLanguageServer::getXincoCoreLanguages)
+          .thenReturn(new ArrayList<>(List.of(mockLang)));
+
+      Path file1 = tempDir.resolve("data-1-1.bin");
+      Path file2 = tempDir.resolve("data-1.bin");
+      final int[] callCount = {0};
+      msDataS
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenAnswer(
+              inv -> {
+                callCount[0]++;
+                return callCount[0] == 1 ? file1.toString() : file2.toString();
+              });
+
+      invoke(view, "openAddDataDialog");
+
+      // Simulate file upload
+      Upload upload = _get(Upload.class);
+      MemoryBuffer buffer = (MemoryBuffer) upload.getReceiver();
+      try (OutputStream out = buffer.receiveUpload("test.txt", "text/plain")) {
+        out.write("hello test content".getBytes());
+      }
+
+      // Fill in designation
+      _find(TextField.class, spec -> spec.withLabel("File Name")).stream()
+          .findFirst()
+          .ifPresent(f -> f.setValue("Test Document"));
+
+      // Click Add button
+      List<Button> addBtns = _find(Button.class, spec -> spec.withText("Add"));
+      if (!addBtns.isEmpty()) {
+        addBtns.get(0).click();
+      }
+    } finally {
+      try {
+        Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+      } catch (Exception ignored) {
+      }
+    }
+  }
+
+  // ---- Download Selected coverage ----
+
+  @Test
+  void downloadSelected_withNullPath_coversNullBranch() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    when(mockData.getId()).thenReturn(1);
+    setField(view, "selectedData", mockData);
+
+    try (MockedStatic<XincoCoreDataServer> ms = mockStatic(XincoCoreDataServer.class)) {
+      ms.when(() -> XincoCoreDataServer.getLastMajorVersionDataPath(anyInt())).thenReturn(null);
+      invoke(view, "downloadSelected");
+    }
+  }
+
+  @Test
+  void downloadSelected_withRealFile_coversHappyPath() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    when(mockData.getId()).thenReturn(1);
+    when(mockData.getDesignation()).thenReturn("file.txt");
+    setField(view, "selectedData", mockData);
+
+    Path tempFile = Files.createTempFile("xinco-dl-test", ".txt");
+    Files.writeString(tempFile, "test content");
+    try (MockedStatic<XincoCoreDataServer> ms = mockStatic(XincoCoreDataServer.class)) {
+      ms.when(() -> XincoCoreDataServer.getLastMajorVersionDataPath(anyInt()))
+          .thenReturn(tempFile.toString());
+      invoke(view, "downloadSelected");
+    } finally {
+      Files.deleteIfExists(tempFile);
+    }
+  }
+
+  // ---- Checkout Selected coverage ----
+
+  @Test
+  void checkoutSelected_withMockedDb_coversTryBlock() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      // getLastMajorVersionDataPath returns null → downloadSelected error branch
+      msData.when(() -> XincoCoreDataServer.getLastMajorVersionDataPath(anyInt())).thenReturn(null);
+      invoke(view, "checkoutSelected");
+    }
+  }
+
+  // ---- Lock / Publish / Undo Checkout lambda coverage ----
+
+  @Test
+  void lockSelected_confirmTriggered_coversLambdaBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      invoke(view, "lockSelected");
+      ConfirmDialog confirm = _get(ConfirmDialog.class);
+      assertTrue(confirm.isOpened());
+      ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+    }
+  }
+
+  @Test
+  void publishSelected_confirmTriggered_coversLambdaBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      invoke(view, "publishSelected");
+      ConfirmDialog confirm = _get(ConfirmDialog.class);
+      assertTrue(confirm.isOpened());
+      ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+    }
+  }
+
+  @Test
+  void undoCheckoutSelected_confirmTriggered_coversLambdaBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      invoke(view, "undoCheckoutSelected");
+      ConfirmDialog confirm = _get(ConfirmDialog.class);
+      assertTrue(confirm.isOpened());
+      ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+    }
+  }
+
+  // ---- Confirm Delete coverage ----
+
+  @Test
+  void confirmDelete_withDataStatusCheckedOut_coversEarlyReturnBranch() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    when(mockData.getStatusNumber()).thenReturn(4);
+    when(mockData.getDesignation()).thenReturn("file.txt");
+    setField(view, "selectedData", mockData);
+
+    invoke(view, "confirmDelete");
+    ConfirmDialog confirm = _get(ConfirmDialog.class);
+    assertTrue(confirm.isOpened());
+    ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+  }
+
+  @Test
+  void confirmDelete_withDataStatusOk_coversDeleteDataPath() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    when(mockData.getStatusNumber()).thenReturn(1);
+    when(mockData.getDesignation()).thenReturn("file.txt");
+    setField(view, "selectedData", mockData);
+
+    invoke(view, "confirmDelete");
+    ConfirmDialog confirm = _get(ConfirmDialog.class);
+    assertTrue(confirm.isOpened());
+    ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+  }
+
+  @Test
+  void confirmDelete_withNode_coversDeleteNodePath() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getDesignation()).thenReturn("Folder");
+    setField(view, "selectedNode", mockNode);
+
+    invoke(view, "confirmDelete");
+    ConfirmDialog confirm = _get(ConfirmDialog.class);
+    assertTrue(confirm.isOpened());
+    ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+  }
+
+  // ---- Check-in Dialog full submit ----
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void openCheckinDialog_fullSubmit_coversLambdaBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    Path tempDir = Files.createTempDirectory("xinco-test-checkin");
+    try (MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class,
+                (m, ctx) -> {
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      Path baseFile = tempDir.resolve("base.bin");
+      Path versionFile = tempDir.resolve("version.bin");
+      final int[] cnt = {0};
+      msData
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenAnswer(
+              inv -> {
+                cnt[0]++;
+                return cnt[0] == 1 ? baseFile.toString() : versionFile.toString();
+              });
+
+      invoke(view, "openCheckinDialog");
+
+      Upload upload = _get(Upload.class);
+      MemoryBuffer buffer = (MemoryBuffer) upload.getReceiver();
+      try (OutputStream out = buffer.receiveUpload("revised.txt", "text/plain")) {
+        out.write("revised content".getBytes());
+      }
+
+      List<Button> btns = _find(Button.class, spec -> spec.withText("Checkin File"));
+      if (!btns.isEmpty()) {
+        btns.get(0).click();
+      }
+    } finally {
+      try {
+        Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+      } catch (Exception ignored) {
+      }
+    }
+  }
+
+  // ---- New Folder Dialog ----
+
+  @Test
+  void openNewFolderDialog_emptyName_coversValidationBranch() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+
+    invoke(view, "openNewFolderDialog");
+
+    List<Button> createBtns = _find(Button.class, spec -> spec.withText("Create"));
+    if (!createBtns.isEmpty()) {
+      createBtns.get(0).click();
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void openNewFolderDialog_withName_coversCreatePath() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    XincoCoreLanguage mockLang = mock(XincoCoreLanguage.class);
+    when(mockLang.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreLanguage()).thenReturn(mockLang);
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedConstruction<XincoCoreNodeServer> mcNode =
+        mockConstruction(
+            XincoCoreNodeServer.class,
+            (m, ctx) -> {
+              when(m.write2DB()).thenReturn(1);
+            })) {
+      invoke(view, "openNewFolderDialog");
+
+      _find(TextField.class, spec -> spec.withLabel("Folder")).stream()
+          .findFirst()
+          .ifPresent(f -> f.setValue("New Folder"));
+
+      List<Button> createBtns = _find(Button.class, spec -> spec.withText("Create"));
+      if (!createBtns.isEmpty()) {
+        createBtns.get(0).click();
+      }
+    }
+  }
+
+  @Test
+  void diagnostic_buttonClickInDialogFooterFiresListener() throws Exception {
+    // Confirms whether button.click() works for buttons in dialog footers
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreACEServer> msAce = mockStatic(XincoCoreACEServer.class);
+        MockedStatic<XincoCoreUserServer> msUser = mockStatic(XincoCoreUserServer.class);
+        MockedStatic<XincoCoreGroupServer> msGroup = mockStatic(XincoCoreGroupServer.class)) {
+      msAce
+          .when(() -> XincoCoreACEServer.getXincoCoreACL(anyInt(), anyString()))
+          .thenReturn(new ArrayList<>());
+      msUser.when(XincoCoreUserServer::getXincoCoreUsers).thenReturn(new ArrayList<>());
+      msGroup.when(XincoCoreGroupServer::getXincoCoreGroups).thenReturn(new ArrayList<>());
+      invoke(view, "openAclDialog");
+
+      List<Button> saveBtns = _find(Button.class, spec -> spec.withText("Save"));
+      assertFalse(saveBtns.isEmpty(), "Save button must be findable");
+      Button foundBtn = saveBtns.get(0);
+
+      // Attach a probe listener to verify click() fires on this instance
+      boolean[] probeHit = {false};
+      foundBtn.addClickListener(e -> probeHit[0] = true);
+      foundBtn.click();
+
+      assertTrue(probeHit[0], "button.click() must fire listeners on the found button instance");
+    }
+  }
+
+  // ---- doCreateFolder direct tests ----
+
+  @Test
+  void doCreateFolder_emptyName_setsFieldInvalid() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    TextField nameField = new TextField();
+    nameField.setValue("");
+    Dialog dialog = new Dialog();
+    view.doCreateFolder(nameField, dialog);
+    assertTrue(nameField.isInvalid(), "empty name should mark field invalid");
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void doCreateFolder_exception_coversExceptionBranch() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    XincoCoreLanguage mockLang = mock(XincoCoreLanguage.class);
+    when(mockLang.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreLanguage()).thenReturn(mockLang);
+    setField(view, "selectedNode", mockNode);
+
+    Dialog dialog = new Dialog();
+    dialog.open();
+    TextField nameField = new TextField();
+    nameField.setValue("TestFolder");
+
+    try (MockedConstruction<XincoCoreNodeServer> mc =
+        mockConstruction(
+            XincoCoreNodeServer.class,
+            (m, ctx) -> {
+              doThrow(new XincoException("DB error")).when(m).write2DB();
+              when(m.getDesignation()).thenReturn("Root");
+              when(m.getXincoCoreNodes()).thenReturn(new ArrayList<>());
+            })) {
+      assertDoesNotThrow(() -> view.doCreateFolder(nameField, dialog));
+    }
+  }
+
+  // ---- doSaveAcl direct tests ----
+
+  @Test
+  void doSaveAcl_emptyLists_closesDialog() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    Dialog dialog = new Dialog();
+    dialog.open();
+    view.doSaveAcl(new ArrayList<>(), new ArrayList<>(), dialog);
+    assertFalse(dialog.isOpened(), "dialog should close after successful save");
+  }
+
+  @Test
+  void doSaveAcl_withDeletableAce_callsRemoveFromDB() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreACEServer mockAce = mock(XincoCoreACEServer.class);
+    when(mockAce.getId()).thenReturn(5);
+    Dialog dialog = new Dialog();
+    dialog.open();
+    try (MockedStatic<XincoCoreACEServer> ms = mockStatic(XincoCoreACEServer.class)) {
+      view.doSaveAcl(List.of(mockAce), new ArrayList<>(), dialog);
+      ms.verify(() -> XincoCoreACEServer.removeFromDB(eq(mockAce), anyInt()));
+    }
+    assertFalse(dialog.isOpened());
+  }
+
+  @Test
+  void doSaveAcl_withIdZeroAce_skipsRemoveFromDB() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreACEServer mockAce = mock(XincoCoreACEServer.class);
+    when(mockAce.getId()).thenReturn(0);
+    Dialog dialog = new Dialog();
+    dialog.open();
+    try (MockedStatic<XincoCoreACEServer> ms = mockStatic(XincoCoreACEServer.class)) {
+      view.doSaveAcl(List.of(mockAce), new ArrayList<>(), dialog);
+      ms.verify(() -> XincoCoreACEServer.removeFromDB(any(), anyInt()), never());
+    }
+    assertFalse(dialog.isOpened());
+  }
+
+  @Test
+  void doSaveAcl_withWritableAce_callsWrite2DB() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreACEServer mockAce = mock(XincoCoreACEServer.class);
+    Dialog dialog = new Dialog();
+    dialog.open();
+    try (MockedStatic<XincoCoreACEServer> ms = mockStatic(XincoCoreACEServer.class)) {
+      view.doSaveAcl(new ArrayList<>(), List.of(mockAce), dialog);
+      verify(mockAce).write2DB();
+    }
+    assertFalse(dialog.isOpened());
+  }
+
+  @Test
+  void doSaveAcl_writeThrows_dialogStaysOpen() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreACEServer mockAce = mock(XincoCoreACEServer.class);
+    doThrow(new RuntimeException("write failed")).when(mockAce).write2DB();
+    Dialog dialog = new Dialog();
+    dialog.open();
+    try (MockedStatic<XincoCoreACEServer> ms = mockStatic(XincoCoreACEServer.class)) {
+      assertDoesNotThrow(() -> view.doSaveAcl(new ArrayList<>(), List.of(mockAce), dialog));
+    }
+    assertTrue(dialog.isOpened(), "dialog stays open when save fails");
+  }
+
+  // ---- doCheckin direct tests ----
+
+  @Test
+  void doCheckin_emptyBuffer_showsError() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    Dialog dialog = new Dialog();
+    dialog.open();
+    MemoryBuffer emptyBuffer = new MemoryBuffer();
+    view.doCheckin(emptyBuffer, 1, 0, 0, "", "desc", dialog);
+    assertTrue(dialog.isOpened(), "dialog stays open when no file uploaded");
+  }
+
+  @Test
+  void doCheckin_exception_caught() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockSelected = mock(XincoCoreDataServer.class);
+    when(mockSelected.getId()).thenReturn(1);
+    setField(view, "selectedData", mockSelected);
+
+    Dialog dialog = new Dialog();
+    dialog.open();
+    MemoryBuffer buffer = mock(MemoryBuffer.class);
+    when(buffer.getFileName()).thenReturn("file.txt");
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(XincoCoreDataServer.class, (m, ctx) -> when(m.getId()).thenReturn(1));
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(XincoCoreLogServer.class, (m, ctx) -> when(m.getId()).thenReturn(1));
+        MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class)) {
+      msData
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenThrow(new RuntimeException("path error"));
+      assertDoesNotThrow(() -> view.doCheckin(buffer, 1, 0, 0, "", "desc", dialog));
+    }
+    assertTrue(dialog.isOpened(), "dialog stays open on error");
+  }
+
+  // ---- doAddData direct tests ----
+
+  @Test
+  void doAddData_emptyName_setsFieldInvalid() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    TextField designField = new TextField();
+    designField.setValue("");
+    Dialog dialog = new Dialog();
+    view.doAddData(designField, new MemoryBuffer(), mock(XincoCoreLanguageServer.class), dialog);
+    assertTrue(designField.isInvalid(), "empty name should mark field invalid");
+  }
+
+  @Test
+  void doAddData_nullFileName_showsError() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    TextField designField = new TextField();
+    designField.setValue("My File");
+    MemoryBuffer emptyBuffer = new MemoryBuffer();
+    Dialog dialog = new Dialog();
+    assertDoesNotThrow(
+        () ->
+            view.doAddData(designField, emptyBuffer, mock(XincoCoreLanguageServer.class), dialog));
+  }
+
+  @Test
+  void doAddData_nullLang_showsError() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    TextField designField = new TextField();
+    designField.setValue("My File");
+    MemoryBuffer buffer = mock(MemoryBuffer.class);
+    when(buffer.getFileName()).thenReturn("file.txt");
+    Dialog dialog = new Dialog();
+    assertDoesNotThrow(() -> view.doAddData(designField, buffer, null, dialog));
+  }
+
+  @Test
+  void doAddData_exception_caught() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+
+    TextField designField = new TextField();
+    designField.setValue("My File");
+    MemoryBuffer buffer = mock(MemoryBuffer.class);
+    when(buffer.getFileName()).thenReturn("file.txt");
+    XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+    when(mockLang.getId()).thenReturn(1);
+    Dialog dialog = new Dialog();
+    dialog.open();
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(XincoCoreDataServer.class, (m, ctx) -> when(m.getId()).thenReturn(1));
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(XincoCoreLogServer.class, (m, ctx) -> when(m.getId()).thenReturn(1));
+        MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class)) {
+      msData
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenThrow(new RuntimeException("path error"));
+      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, dialog));
+    }
+    assertTrue(dialog.isOpened(), "dialog stays open on error");
+  }
+
+  // ---- beforeEnter / afterNavigation / getChildNodes / archiveSelected ----
+
+  @Test
+  void beforeEnter_noSession_reroutesToLogin() {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    VaadinSession.getCurrent().setAttribute(UserSession.class, null);
+    BeforeEnterEvent mockEvent = mock(BeforeEnterEvent.class);
+    view.beforeEnter(mockEvent);
+    verify(mockEvent).rerouteTo(LoginView.class);
+  }
+
+  @Test
+  void beforeEnter_withLoggedInSession_setsSession() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    UserSession loggedIn = loggedInSession();
+    VaadinSession.getCurrent().setAttribute(UserSession.class, loggedIn);
+    BeforeEnterEvent mockEvent = mock(BeforeEnterEvent.class);
+    view.beforeEnter(mockEvent);
+    Field f = ExplorerView.class.getDeclaredField("session");
+    f.setAccessible(true);
+    assertSame(loggedIn, f.get(view));
+  }
+
+  @Test
+  void afterNavigation_callsLoadRootNodes() {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    AfterNavigationEvent mockEvent = mock(AfterNavigationEvent.class);
+    assertDoesNotThrow(() -> view.afterNavigation(mockEvent));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void getChildNodes_withMockedParent_returnsNodeChildren() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreNodeServer mockChild = mock(XincoCoreNodeServer.class);
+    XincoCoreNodeServer mockParent = mock(XincoCoreNodeServer.class);
+    when(mockParent.getXincoCoreNodes()).thenReturn(new ArrayList<>(List.of(mockChild)));
+    Method m = ExplorerView.class.getDeclaredMethod("getChildNodes", XincoCoreNodeServer.class);
+    m.setAccessible(true);
+    List<XincoCoreNodeServer> children = (List<XincoCoreNodeServer>) m.invoke(view, mockParent);
+    assertEquals(1, children.size());
+    assertSame(mockChild, children.get(0));
+  }
+
+  @Test
+  void archiveSelected_nullData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    invoke(view, "archiveSelected");
+    assertTrue(_find(Dialog.class).isEmpty(), "no dialog when selectedData is null");
+  }
+
+  @Test
+  void archiveSelected_nonFileData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(2);
+    setField(view, "selectedData", mockData);
+    invoke(view, "archiveSelected");
+    assertTrue(_find(Dialog.class).isEmpty(), "no dialog for non-file data type");
+  }
+
+  @Test
+  void archiveSelected_fileData_constructionFails_coversExceptionBranch() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockSelected = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockSelected.getXincoCoreDataType().getId()).thenReturn(1);
+    when(mockSelected.getId()).thenReturn(1);
+    setField(view, "selectedData", mockSelected);
+    invoke(view, "archiveSelected");
+  }
+
+  @Test
+  void archiveSelected_fileData_mockedConstruction_opensDialog() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockSelected = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockSelected.getXincoCoreDataType().getId()).thenReturn(1);
+    when(mockSelected.getId()).thenReturn(1);
+    when(mockSelected.getDesignation()).thenReturn("file.txt");
+    setField(view, "selectedData", mockSelected);
+
+    try (MockedConstruction<XincoCoreDataServer> mc =
+        mockConstruction(
+            XincoCoreDataServer.class,
+            (m, ctx) -> {
+              when(m.getXincoAddAttributes()).thenReturn(new ArrayList<>());
+              when(m.getDesignation()).thenReturn("file.txt");
+            })) {
+      invoke(view, "archiveSelected");
+      assertFalse(_find(Dialog.class).isEmpty(), "archive dialog should open");
+    }
+  }
+
+  @Test
+  void doAddData_success_closesDialog() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    TextField designField = new TextField();
+    designField.setValue("TestFile.txt");
+    Dialog dialog = new Dialog();
+    dialog.open();
+
+    MemoryBuffer buffer = mock(MemoryBuffer.class);
+    when(buffer.getFileName()).thenReturn("upload.txt");
+    when(buffer.getInputStream()).thenReturn(new ByteArrayInputStream("content".getBytes()));
+
+    XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+    when(mockLang.getId()).thenReturn(1);
+
+    Path tempDir = Files.createTempDirectory("xinco-success-adddata");
+    try (MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class, (m, ctx) -> when(m.write2DB()).thenReturn(1))) {
+      Path repo = tempDir.resolve("1-1.bin");
+      Path base = tempDir.resolve("1.bin");
+      int[] cnt = {0};
+      msData
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenAnswer(inv -> cnt[0]++ == 0 ? repo.toString() : base.toString());
+
+      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, dialog));
+      assertFalse(dialog.isOpened(), "dialog should close on success");
+    } finally {
+      Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+    }
+  }
+
+  @Test
+  void doCheckin_success_closesDialog() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    MemoryBuffer buffer = mock(MemoryBuffer.class);
+    when(buffer.getFileName()).thenReturn("revised.txt");
+    when(buffer.getInputStream()).thenReturn(new ByteArrayInputStream("revised".getBytes()));
+
+    Dialog dialog = new Dialog();
+    dialog.open();
+
+    Path tempDir = Files.createTempDirectory("xinco-success-checkin");
+    try (MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class, (m, ctx) -> when(m.write2DB()).thenReturn(1))) {
+      Path base = tempDir.resolve("base.bin");
+      Path version = tempDir.resolve("version.bin");
+      int[] cnt = {0};
+      msData
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenAnswer(inv -> cnt[0]++ == 0 ? base.toString() : version.toString());
+
+      assertDoesNotThrow(() -> view.doCheckin(buffer, 1, 0, 0, "", "Test checkin", dialog));
+      assertFalse(dialog.isOpened(), "dialog should close on success");
+    } finally {
+      Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+    }
   }
 
   @SuppressWarnings("unchecked")

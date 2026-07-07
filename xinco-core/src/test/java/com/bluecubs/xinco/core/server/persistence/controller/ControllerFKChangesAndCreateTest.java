@@ -613,7 +613,6 @@ public class ControllerFKChangesAndCreateTest extends AbstractXincoDataBaseTestC
     u2.setStatusNumber(1);
     u2.setAttempts(0);
     u2.setLastModified(new Date());
-    u2.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     u2.setXincoCoreAceList(Arrays.asList(aceCtrl.findXincoCoreAce(aceId)));
     u2.setXincoCoreLogList(new ArrayList<>());
     u2.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -649,7 +648,6 @@ public class ControllerFKChangesAndCreateTest extends AbstractXincoDataBaseTestC
 
     // Edit user with EMPTY ace list: ace.setXincoCoreUser(null) runs
     XincoCoreUser toEdit = userCtrl.findXincoCoreUser(userId);
-    toEdit.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     toEdit.setXincoCoreAceList(new ArrayList<>());
     toEdit.setXincoCoreLogList(new ArrayList<>());
     toEdit.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -681,7 +679,6 @@ public class ControllerFKChangesAndCreateTest extends AbstractXincoDataBaseTestC
 
     // Edit U2 with ace (from U1): ace's old user = U1 != U2 → inner IF runs
     XincoCoreUser toEdit = userCtrl.findXincoCoreUser(u2.getId());
-    toEdit.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     toEdit.setXincoCoreAceList(Arrays.asList(aceCtrl.findXincoCoreAce(aceId)));
     toEdit.setXincoCoreLogList(new ArrayList<>());
     toEdit.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -741,7 +738,6 @@ public class ControllerFKChangesAndCreateTest extends AbstractXincoDataBaseTestC
 
     // Edit U2 with log (from U1): log's old user = U1 != U2 → inner IF runs
     XincoCoreUser toEdit = userCtrl.findXincoCoreUser(u2.getId());
-    toEdit.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     toEdit.setXincoCoreAceList(new ArrayList<>());
     toEdit.setXincoCoreLogList(Arrays.asList(logCtrl.findXincoCoreLog(logId)));
     toEdit.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -813,7 +809,6 @@ public class ControllerFKChangesAndCreateTest extends AbstractXincoDataBaseTestC
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

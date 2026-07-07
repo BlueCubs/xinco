@@ -166,55 +166,6 @@ public class ControllerCompositePKCatchTest extends AbstractXincoDataBaseTestCas
   }
 
   // =========================================================================
-  // XincoCoreUserModifiedRecordJpaController
-  // =========================================================================
-
-  /** Covers UMR create() catch — PK violation → PreexistingEntityException (~16 instr). */
-  public void testUmr_createDuplicate() throws Exception {
-    XincoCoreUserModifiedRecordJpaController ctrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    XincoCoreUserJpaController userCtrl = new XincoCoreUserJpaController(getEntityManagerFactory());
-
-    XincoCoreUser user = buildUser(userCtrl, "umr.dup");
-    XincoCoreUserModifiedRecord umr = buildUmr(ctrl, user, 9901);
-    XincoCoreUserModifiedRecordPK umrPK = umr.getXincoCoreUserModifiedRecordPK();
-
-    try {
-      ctrl.create(umr);
-      fail("Expected PreexistingEntityException");
-    } catch (PreexistingEntityException e) {
-      // expected
-    }
-
-    ctrl.destroy(umrPK);
-    getEntityManagerFactory().getCache().evictAll();
-    userCtrl.destroy(user.getId());
-  }
-
-  /** Covers UMR edit() catch — em.find=null → NPE → rethrow (~11 instr). */
-  public void testUmr_editCatch() throws Exception {
-    XincoCoreUserModifiedRecordJpaController ctrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    XincoCoreUserJpaController userCtrl = new XincoCoreUserJpaController(getEntityManagerFactory());
-
-    XincoCoreUser user = buildUser(userCtrl, "umr.edit");
-    XincoCoreUserModifiedRecord umr = buildUmr(ctrl, user, 9902);
-    XincoCoreUserModifiedRecordPK umrPK = umr.getXincoCoreUserModifiedRecordPK();
-
-    ctrl.destroy(umrPK);
-    getEntityManagerFactory().getCache().evictAll();
-
-    try {
-      ctrl.edit(umr);
-      fail("Expected exception from edit on destroyed UMR");
-    } catch (Exception e) {
-      // expected: em.find returns null → NPE caught → rethrow
-    }
-
-    userCtrl.destroy(user.getId());
-  }
-
-  // =========================================================================
   // XincoAddAttributeJpaController
   // =========================================================================
 
@@ -395,7 +346,6 @@ public class ControllerCompositePKCatchTest extends AbstractXincoDataBaseTestCas
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -423,21 +373,6 @@ public class ControllerCompositePKCatchTest extends AbstractXincoDataBaseTestCas
     uhg.setStatusNumber(1);
     ctrl.create(uhg);
     return uhg;
-  }
-
-  private XincoCoreUserModifiedRecord buildUmr(
-      XincoCoreUserModifiedRecordJpaController ctrl, XincoCoreUser user, int recordId)
-      throws Exception {
-    XincoCoreUserModifiedRecord umr = new XincoCoreUserModifiedRecord();
-    XincoCoreUserModifiedRecordPK pk = new XincoCoreUserModifiedRecordPK();
-    pk.setId(user.getId());
-    pk.setRecordId(recordId);
-    umr.setXincoCoreUserModifiedRecordPK(pk);
-    umr.setXincoCoreUser(user);
-    umr.setModTime(new Date());
-    umr.setModReason("dup-test");
-    ctrl.create(umr);
-    return umr;
   }
 
   private XincoCoreDataType buildDataType(XincoCoreDataTypeJpaController ctrl, String designation)
