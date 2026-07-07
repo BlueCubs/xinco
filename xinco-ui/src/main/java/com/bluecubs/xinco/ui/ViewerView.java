@@ -121,7 +121,9 @@ public class ViewerView extends VerticalLayout
                               .filter(o -> o instanceof XincoCoreDataServer)
                               .map(o -> (XincoCoreDataServer) o)
                               .toList());
-                      clearViewer();
+                      viewerPane.removeAll();
+                      propertyGrid.setNode(node);
+                      viewerPane.add(propertyGrid);
                     }));
   }
 

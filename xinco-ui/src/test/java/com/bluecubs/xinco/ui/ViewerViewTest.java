@@ -461,7 +461,6 @@ class ViewerViewTest {
   // ── Gap documentation tests ────────────────────────────────────────────────
 
   @Test
-  @Disabled("gap: selecting a folder should show its properties in the viewer pane, not stay blank")
   @SuppressWarnings("unchecked")
   void nodeSelected_viewerPaneShouldShowFolderProperties() throws Exception {
     // §2.3: "A table displaying details about the currently selected object (right)."
