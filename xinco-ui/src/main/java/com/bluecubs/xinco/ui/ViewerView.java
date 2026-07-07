@@ -210,12 +210,34 @@ public class ViewerView extends VerticalLayout
 
   void showPreview(XincoCoreDataServer data) {
     viewerPane.removeAll();
-    if (data.getXincoCoreDataType().getId() == 1) {
+    int typeId = data.getXincoCoreDataType().getId();
+    if (typeId == 1) {
       showFilePreview(data);
+    } else if (typeId == 3) {
+      showUrlPreview(data);
     } else {
       propertyGrid.setData(data);
       viewerPane.add(propertyGrid);
     }
+  }
+
+  private void showUrlPreview(XincoCoreDataServer data) {
+    String url =
+        data.getXincoAddAttributes().stream()
+            .filter(a -> a.getAttributeId() == 1)
+            .map(a -> a.getAttribVarchar())
+            .filter(v -> v != null && !v.isBlank())
+            .findFirst()
+            .orElse(null);
+    if (url == null) {
+      propertyGrid.setData(data);
+      viewerPane.add(propertyGrid);
+      return;
+    }
+    Anchor link = new Anchor(url, url);
+    link.setTarget("_blank");
+    link.getStyle().set("word-break", "break-all");
+    viewerPane.add(link);
   }
 
   private void showFilePreview(XincoCoreDataServer data) {

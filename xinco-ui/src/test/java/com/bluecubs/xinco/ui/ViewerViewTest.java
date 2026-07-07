@@ -494,20 +494,26 @@ class ViewerViewTest {
   }
 
   @Test
-  @Disabled("gap: clicking a URL data item should open the URL in a new browser tab per §2.10")
   void urlDataItem_shouldOpenInBrowser() throws Exception {
-    // §2.10: "URLs are links to external resources … They can be opened directly with
-    // your system's default web browser."
-    // Currently selecting a non-file data item shows a PropertyGrid but does not
-    // open URLs or provide a clickable link.
-    // When URL support is implemented, the viewerPane should render an Anchor
-    // pointing to the stored URL value (addAttribute attrib_varchar for type=3).
-    ViewerView view =
-        new ViewerView(mock(UserSession.class, withSettings().defaultAnswer(RETURNS_DEFAULTS)));
+    // §2.10: selecting a URL data item renders an Anchor in viewerPane (type=3, attrib id=1).
+    ViewerView view = new ViewerView(new UserSession());
     addView(view);
-    // Expect at least one anchor element in the viewer pane after a URL item is selected
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    XincoCoreDataType mockType = mock(XincoCoreDataType.class);
+    when(mockType.getId()).thenReturn(3);
+    when(mockData.getXincoCoreDataType()).thenReturn(mockType);
+
+    com.bluecubs.xinco.server.service.XincoAddAttribute attr =
+        mock(com.bluecubs.xinco.server.service.XincoAddAttribute.class);
+    when(attr.getAttributeId()).thenReturn(1);
+    when(attr.getAttribVarchar()).thenReturn("https://example.com");
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(attr)));
+
+    view.showPreview(mockData);
+
     assertFalse(
         _find(com.vaadin.flow.component.html.Anchor.class).isEmpty(),
-        "viewerPane must contain a clickable link when a URL data item is selected");
+        "viewerPane must contain a clickable Anchor when a URL data item is selected");
   }
 }
