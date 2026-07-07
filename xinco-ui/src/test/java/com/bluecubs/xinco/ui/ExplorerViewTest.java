@@ -532,8 +532,7 @@ class ExplorerViewTest {
 
     Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive Model"));
     DatePicker archiveDate = _get(DatePicker.class, spec -> spec.withLabel("Archiving Date"));
-    IntegerField archiveDays =
-        _get(IntegerField.class, spec -> spec.withLabel("Archiving Days"));
+    IntegerField archiveDays = _get(IntegerField.class, spec -> spec.withLabel("Archiving Days"));
 
     // Default: None — both disabled
     assertFalse(archiveDate.isEnabled(), "date disabled in None mode");
@@ -940,10 +939,11 @@ class ExplorerViewTest {
       Dialog dialog = _get(Dialog.class, spec -> spec.withPredicate(d -> d.isOpened()));
       assertTrue(dialog.isOpened());
       _get(TextField.class, spec -> spec.withLabel("Reason")).setValue("Lock reason");
-      Button confirmBtn = _find(Button.class).stream()
-          .filter(b -> "Lock Data".equals(b.getText()))
-          .findFirst()
-          .orElseThrow();
+      Button confirmBtn =
+          _find(Button.class).stream()
+              .filter(b -> "Lock Data".equals(b.getText()))
+              .findFirst()
+              .orElseThrow();
       ComponentUtil.fireEvent(confirmBtn, new com.vaadin.flow.component.ClickEvent<>(confirmBtn));
     }
   }
@@ -978,10 +978,11 @@ class ExplorerViewTest {
       Dialog dialog = _get(Dialog.class, spec -> spec.withPredicate(d -> d.isOpened()));
       assertTrue(dialog.isOpened());
       _get(TextField.class, spec -> spec.withLabel("Reason")).setValue("Publish reason");
-      Button confirmBtn = _find(Button.class).stream()
-          .filter(b -> "Publish Data".equals(b.getText()))
-          .findFirst()
-          .orElseThrow();
+      Button confirmBtn =
+          _find(Button.class).stream()
+              .filter(b -> "Publish Data".equals(b.getText()))
+              .findFirst()
+              .orElseThrow();
       ComponentUtil.fireEvent(confirmBtn, new com.vaadin.flow.component.ClickEvent<>(confirmBtn));
     }
   }
