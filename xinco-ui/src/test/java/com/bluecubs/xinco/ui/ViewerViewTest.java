@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.ui;
 
+import static com.github.mvysny.kaributesting.v10.LocatorJ._find;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -17,6 +18,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.VaadinSession;
@@ -25,9 +27,11 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -451,5 +455,59 @@ class ViewerViewTest {
 
   private static void addView(ViewerView view) {
     UI.getCurrent().add(view);
+  }
+
+  // ── Gap documentation tests ────────────────────────────────────────────────
+
+  @Test
+  @Disabled("gap: selecting a folder should show its properties in the viewer pane, not stay blank")
+  @SuppressWarnings("unchecked")
+  void nodeSelected_viewerPaneShouldShowFolderProperties() throws Exception {
+    // §2.3: "A table displaying details about the currently selected object (right)."
+    // Currently selecting a node fills only the data grid; the right viewerPane stays
+    // as the placeholder Span "Select a file to preview it here."
+    UserSession session = mock(UserSession.class);
+    when(session.isLoggedIn()).thenReturn(true);
+    ViewerView view = new ViewerView(session);
+    addView(view);
+
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(5);
+    when(mockNode.getDesignation()).thenReturn("Reports");
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+
+    com.vaadin.flow.component.treegrid.TreeGrid<XincoCoreNodeServer> tree =
+        (com.vaadin.flow.component.treegrid.TreeGrid<XincoCoreNodeServer>) _get(TreeGrid.class);
+    tree.setItems(List.of(mockNode), n -> List.of());
+    tree.asSingleSelect().setValue(mockNode);
+
+    Field f = ViewerView.class.getDeclaredField("viewerPane");
+    f.setAccessible(true);
+    Div viewerPane = (Div) f.get(view);
+
+    // After node selection viewerPane should contain folder info — not the static placeholder.
+    boolean hasOnlyPlaceholder =
+        viewerPane.getComponentCount() == 1
+            && viewerPane.getComponentAt(0) instanceof Span sp
+            && sp.getText().contains("Select a file");
+    assertFalse(hasOnlyPlaceholder, "viewerPane must show folder details when a node is selected");
+  }
+
+  @Test
+  @Disabled("gap: clicking a URL data item should open the URL in a new browser tab per §2.10")
+  void urlDataItem_shouldOpenInBrowser() throws Exception {
+    // §2.10: "URLs are links to external resources … They can be opened directly with
+    // your system's default web browser."
+    // Currently selecting a non-file data item shows a PropertyGrid but does not
+    // open URLs or provide a clickable link.
+    // When URL support is implemented, the viewerPane should render an Anchor
+    // pointing to the stored URL value (addAttribute attrib_varchar for type=3).
+    ViewerView view =
+        new ViewerView(mock(UserSession.class, withSettings().defaultAnswer(RETURNS_DEFAULTS)));
+    addView(view);
+    // Expect at least one anchor element in the viewer pane after a URL item is selected
+    assertFalse(
+        _find(com.vaadin.flow.component.html.Anchor.class).isEmpty(),
+        "viewerPane must contain a clickable link when a URL data item is selected");
   }
 }

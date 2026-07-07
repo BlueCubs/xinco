@@ -55,6 +55,7 @@ import java.util.function.Function;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -1654,5 +1655,131 @@ class ExplorerViewTest {
     clr.setAccessible(true);
     assertFalse(
         ((com.vaadin.flow.component.button.Button) clr.get(view)).isVisible(), "clear hidden");
+  }
+
+  // ── Gap documentation tests ────────────────────────────────────────────────
+  // Each @Disabled test documents expected behaviour that is not yet present.
+  // Enable and flip assertions when the feature is implemented.
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void nodeSelected_propertyGridShouldShowNodeProperties() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(42);
+    when(mockNode.getDesignation()).thenReturn("MyFolder");
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    when(mockNode.getXincoCoreAcl()).thenReturn(List.of());
+
+    com.vaadin.flow.component.treegrid.TreeGrid<XincoCoreNodeServer> tree =
+        (com.vaadin.flow.component.treegrid.TreeGrid<XincoCoreNodeServer>) _get(TreeGrid.class);
+    tree.setItems(List.of(mockNode), n -> List.of());
+    tree.asSingleSelect().setValue(mockNode);
+
+    PropertyGrid pg = _get(PropertyGrid.class);
+    assertTrue(
+        pg.getListDataView().getItemCount() > 0,
+        "PropertyGrid must show folder details when a node is selected");
+  }
+
+  @Test
+  void delete_shouldMoveToTrashNotPermanentlyRemove() throws Exception {
+    // §2.7.5: users move data to the Trash folder; an admin then empties it permanently.
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(7);
+    when(selectedDataMock.getDesignation()).thenReturn("report.pdf");
+    when(selectedDataMock.getStatusNumber()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(7);
+                  when(m.write2DB()).thenReturn(7);
+                });
+        MockedConstruction<XincoCoreNodeServer> mcNode =
+            mockConstruction(
+                XincoCoreNodeServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getXincoCoreNodes()).thenReturn(new ArrayList<>());
+                })) {
+      invoke(view, "confirmDelete");
+      ConfirmDialog confirm = _get(ConfirmDialog.class);
+      assertTrue(confirm.isOpened());
+      ComponentUtil.fireEvent(confirm, new ConfirmDialog.ConfirmEvent(confirm, false));
+
+      // Original selectedData must never have deleteFromDB() called
+      verify(selectedDataMock, never()).deleteFromDB();
+
+      // The freshly constructed XincoCoreDataServer must have parentId set to Trash (2)
+      XincoCoreDataServer freshInstance = mcData.constructed().get(0);
+      verify(freshInstance).setXincoCoreNodeId(2);
+      verify(freshInstance).write2DB();
+    }
+  }
+
+  @Test
+  @Disabled("gap: Add Data dialog should offer data-type selection: File, Text, URL, Contact")
+  void addDataDialog_shouldOfferDataTypeSelection() throws Exception {
+    // §2.4: four data types must be selectable when adding a data item.
+    // Currently the dialog skips type selection and always creates type=1 (File).
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedNode", mockNode);
+
+    invoke(view, "openAddDataDialog");
+
+    assertFalse(
+        _find(com.vaadin.flow.component.select.Select.class).stream()
+            .filter(s -> s.getLabel() != null && s.getLabel().toLowerCase().contains("type"))
+            .toList()
+            .isEmpty(),
+        "Add Data dialog must contain a data-type selector (File / Text / URL / Contact)");
+  }
+
+  @Test
+  @Disabled("gap: search bar should include a language filter per §2.12")
+  void searchBar_shouldHaveLanguageFilter() {
+    // §2.12: language can optionally be added to a search query.
+    addView(new ExplorerView(loggedInSession()));
+
+    assertFalse(
+        _find(com.vaadin.flow.component.select.Select.class).stream()
+            .filter(s -> s.getLabel() != null && s.getLabel().toLowerCase().contains("language"))
+            .toList()
+            .isEmpty(),
+        "Search bar must contain a language filter selector");
+  }
+
+  @Test
+  @Disabled("gap: checkout/lock/publish must prompt for a mandatory reason comment per §2.6/§2.13")
+  void checkout_shouldPromptForReasonComment() throws Exception {
+    // §2.6 / §2.13: every modification must prompt for a reason; reason cannot be empty.
+    // Currently checkout sets status=4 and logs immediately with a hard-coded description.
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getId()).thenReturn(3);
+    when(mockData.getStatusNumber()).thenReturn(1);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(1);
+    when(mockData.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedData", mockData);
+
+    invoke(view, "checkoutSelected");
+
+    assertTrue(
+        _find(Dialog.class).stream().anyMatch(d -> d.isOpened()),
+        "Checkout must open a reason/comment dialog before writing the log entry");
   }
 }

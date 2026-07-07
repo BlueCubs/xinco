@@ -23,6 +23,15 @@ bd close <id>         # Complete work
 bd dolt push          # Push beads data to remote
 ```
 
+## Internationalization (i18n)
+
+All user-facing text in `xinco-ui` (labels, column headers, button text, menu items, dialog titles, notifications, tooltips) **must** use `getTranslation(key)` — never hardcoded strings.
+
+- The bundle is `XincoMessages.properties` in `xinco-core/src/main/resources/com/bluecubs/xinco/messages/`
+- The provider is `XincoI18NProvider`; `getTranslation(key)` is available on any Vaadin `Component` subclass
+- **Do not add new keys.** The existing bundle covers all required UI text. Map to the closest existing key rather than introducing new ones.
+- `getTranslation()` does not support format parameters — build dynamic strings by concatenating `getTranslation(key)` with Java values (e.g. `getTranslation("general.user") + ": " + username`)
+
 ## Non-Interactive Shell Commands
 
 **ALWAYS use non-interactive flags** with file operations to avoid hanging on confirmation prompts.

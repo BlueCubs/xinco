@@ -55,3 +55,25 @@ Published as Open Source Software and adopted by blueCubs.com, xinco DMS™ will
 Supporting the blueCubs vision, visit [blueCubs.org](http://blueCubs.org)
 
 Part of the blueCubs Network: [blueCubs.com](http://bluecubs.com) | [blueCubs.org](http://blueCubs.org) | [xinco.org](http://xinco.org)
+
+## AI Agent Configuration
+
+Project-wide agent instructions live in [`AGENTS.md`](AGENTS.md). All agents should read this file before starting work — it covers task tracking (Beads), git policy, i18n conventions, and session close protocol.
+
+### Claude Code
+
+Add the following to your Claude Code settings (`~/.claude/settings.json` or via **Claude Code → Settings**) so that `AGENTS.md` is automatically included in every session for this repository:
+
+```json
+{
+  "includeFiles": ["AGENTS.md"]
+}
+```
+
+Alternatively, reference it in your project-level `CLAUDE.md`:
+
+```markdown
+See [AGENTS.md](AGENTS.md) for agent instructions shared across all AI tools.
+```
+
+Claude Code also reads `CLAUDE.md` at the repository root automatically — no extra configuration needed if the reference above is present.

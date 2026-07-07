@@ -34,6 +34,7 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -900,6 +901,70 @@ class AdminViewTest {
     Method m = AdminView.class.getDeclaredMethod("toggleUserLock", XincoCoreUserServer.class);
     m.setAccessible(true);
     assertDoesNotThrow(() -> m.invoke(view, user));
+  }
+
+  // ── Gap documentation tests ────────────────────────────────────────────────
+
+  @Test
+  @Disabled(
+      "gap: AdminView should have a Languages tab to manage XincoCoreLanguage records per §3.2")
+  void adminView_shouldHaveLanguagesTab() {
+    // §3.2: "The system administrator manages languages from the admin panel."
+    // The current TabSheet has Users, Groups, Settings, Data Types — no Languages tab.
+    TabSheet tabSheet = _get(TabSheet.class);
+    long languageTabCount =
+        tabSheet
+            .getChildren()
+            .filter(
+                c ->
+                    c instanceof com.vaadin.flow.component.tabs.Tab t
+                        && t.getLabel().equalsIgnoreCase("Languages"))
+            .count();
+    assertTrue(languageTabCount > 0, "AdminView must have a Languages tab");
+  }
+
+  @Test
+  @Disabled(
+      "gap: AdminView should have an 'Empty Trash' action to purge the Trash folder (node ID=2)")
+  void adminView_shouldHaveEmptyTrashAction() {
+    // The legacy Xinco admin panel had an 'Empty Trash' button that permanently deleted
+    // all items moved to the Trash folder (node ID=2). The new UI has no such action.
+    long trashButtonCount =
+        _find(com.vaadin.flow.component.button.Button.class).stream()
+            .filter(b -> b.getText().toLowerCase().contains("trash"))
+            .count();
+    assertTrue(trashButtonCount > 0, "AdminView must have an Empty Trash button");
+  }
+
+  @Test
+  @Disabled("gap: AdminView should have a 'Rebuild Index' / 'Rebuild Search Index' action per §3.x")
+  void adminView_shouldHaveRebuildIndexAction() {
+    // The legacy admin panel had a 'Rebuild Index' action that re-indexes all documents
+    // for full-text search. The new UI has no such action.
+    long rebuildButtonCount =
+        _find(com.vaadin.flow.component.button.Button.class).stream()
+            .filter(b -> b.getText().toLowerCase().contains("index"))
+            .count();
+    assertTrue(rebuildButtonCount > 0, "AdminView must have a Rebuild Index button");
+  }
+
+  @Test
+  @Disabled(
+      "gap: AdminView should have an Audit Trail tab for viewing Envers revision history per §3.x")
+  void adminView_shouldHaveAuditTrailTab() {
+    // The legacy admin panel displayed an audit trail of all modifications. In the new
+    // architecture audit records are stored in Envers revision tables, but no UI surfaces them.
+    TabSheet tabSheet = _get(TabSheet.class);
+    long auditTabCount =
+        tabSheet
+            .getChildren()
+            .filter(
+                c ->
+                    c instanceof com.vaadin.flow.component.tabs.Tab t
+                        && (t.getLabel().toLowerCase().contains("audit")
+                            || t.getLabel().toLowerCase().contains("history")))
+            .count();
+    assertTrue(auditTabCount > 0, "AdminView must have an Audit Trail / History tab");
   }
 
   // ---- new helpers ----

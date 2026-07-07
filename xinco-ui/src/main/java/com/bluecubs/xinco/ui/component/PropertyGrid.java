@@ -1,6 +1,7 @@
 package com.bluecubs.xinco.ui.component;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.server.service.XincoCoreLog;
 import com.bluecubs.xinco.server.service.XincoVersion;
 import com.vaadin.flow.component.grid.Grid;
@@ -15,6 +16,25 @@ public class PropertyGrid extends Grid<PropertyGrid.Row> {
     addColumn(Row::property).setHeader("Property");
     addColumn(Row::value).setHeader("Value");
     setSizeFull();
+  }
+
+  public void setNode(XincoCoreNodeServer node) {
+    if (node == null) {
+      setItems(List.of());
+      return;
+    }
+    List<Row> rows = new ArrayList<>();
+    rows.add(new Row("ID", String.valueOf(node.getId())));
+    rows.add(new Row("Name", node.getDesignation()));
+    if (node.getXincoCoreNodeId() > 0) {
+      rows.add(new Row("Parent ID", String.valueOf(node.getXincoCoreNodeId())));
+    }
+    if (node.getXincoCoreLanguage() != null) {
+      rows.add(new Row("Language", node.getXincoCoreLanguage().getSign()));
+    }
+    int itemCount = node.getXincoCoreData() != null ? node.getXincoCoreData().size() : 0;
+    rows.add(new Row("Items", String.valueOf(itemCount)));
+    setItems(rows);
   }
 
   public void setData(XincoCoreDataServer data) {

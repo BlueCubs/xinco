@@ -286,7 +286,7 @@ public class ExplorerView extends VerticalLayout
                               .filter(o -> o instanceof XincoCoreDataServer)
                               .map(o -> (XincoCoreDataServer) o)
                               .toList());
-                      propertyGrid.setData(null);
+                      propertyGrid.setNode(node);
                       updateMenuState();
                     }));
   }
@@ -677,6 +677,8 @@ public class ExplorerView extends VerticalLayout
     }
   }
 
+  private static final int TRASH_NODE_ID = 2;
+
   private void confirmDelete() {
     String target =
         selectedData != null
@@ -685,10 +687,11 @@ public class ExplorerView extends VerticalLayout
     if (target == null) return;
 
     ConfirmDialog confirm = new ConfirmDialog();
-    confirm.setHeader("Delete " + target + "?");
-    confirm.setText("This action cannot be undone.");
+    confirm.setHeader("Move " + target + " to Trash?");
+    confirm.setText(
+        "The item will be moved to the Trash folder and can be permanently removed by an administrator.");
     confirm.setCancelable(true);
-    confirm.setConfirmText("Delete");
+    confirm.setConfirmText("Move to Trash");
     confirm.setConfirmButtonTheme("error primary");
     confirm.addConfirmListener(
         e -> {
@@ -698,21 +701,34 @@ public class ExplorerView extends VerticalLayout
                 error("Cannot delete a checked-out item.");
                 return;
               }
-              selectedData.deleteFromDB();
+              moveDataToTrash(selectedData);
               selectedData = null;
             } else if (selectedNode != null) {
-              int userId = session.getUser() != null ? session.getUser().getId() : 0;
-              selectedNode.deleteFromDB(true, userId);
+              moveNodeToTrash(selectedNode);
               selectedNode = null;
             }
             loadRootNodes();
-            Notification.show("Deleted.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            Notification.show("Moved to Trash.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
           } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, "Delete failed", ex);
-            error("Delete failed: " + ex.getMessage());
+            LOG.log(Level.SEVERE, "Move to Trash failed", ex);
+            error("Move to Trash failed: " + ex.getMessage());
           }
         });
     confirm.open();
+  }
+
+  private void moveDataToTrash(XincoCoreDataServer data) throws XincoException {
+    XincoCoreDataServer fresh = new XincoCoreDataServer(data.getId());
+    fresh.setXincoCoreNodeId(TRASH_NODE_ID);
+    fresh.setChangerID(session.getUser() != null ? session.getUser().getId() : 1);
+    fresh.write2DB();
+  }
+
+  private void moveNodeToTrash(XincoCoreNodeServer node) throws XincoException {
+    XincoCoreNodeServer fresh = new XincoCoreNodeServer(node.getId());
+    fresh.setXincoCoreNodeId(TRASH_NODE_ID);
+    fresh.setChangerID(session.getUser() != null ? session.getUser().getId() : 1);
+    fresh.write2DB();
   }
 
   private void checkoutSelected() {
