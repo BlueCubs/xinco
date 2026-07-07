@@ -60,19 +60,19 @@ The project is a Maven multi-module build (`xinco-parent`):
 | Module | Role |
 |---|---|
 | `xinco-core` | Business logic, JPA entities, JAX-WS web service, service layer |
-| `Xinco` | Legacy WAR — Vaadin 6 UI, deployed to Tomcat (being retired) |
-| `xinco-ui-v25` | New UI — Vaadin 24/25 + Spring Boot 3, depends on `xinco-core` |
+| `Xinco` | Legacy WAR — Vaadin 6 UI, deployed to Tomcat (scheduled for removal) |
+| `xinco-ui` | New UI — Vaadin 25 + Spring Boot 3, depends on `xinco-core` |
 
 ### `xinco-core` internals
 - **`server/`** — server-side domain objects (`XincoCoreDataServer`, `XincoCoreUserServer`, `XincoCoreNodeServer`, etc.) and extracted service classes (`XincoActivityService`, `XincoFileService`, `XincoTreeService`)
 - **`server/service/`** — JAX-WS web service endpoint (`XincoWebService`) and new REST-style services; CXF generates client stubs from `src/main/resources/wsdl/XincoWebService/Xinco.wsdl` at build time into `target/generated-sources/cxf`
 - **`server/db/`** — `XincoDBManager`, Flyway migrations, H2 for tests, MySQL/PostgreSQL for production
-- **`server/persistence/`** — EclipseLink JPA entities
+- **`server/persistence/`** — Hibernate JPA entities with **Hibernate Envers** for audit history; legacy `*_T` shadow tables and hand-rolled audit controllers have been removed
 - Tests use H2 in-memory; `AbstractXincoDataBaseTestCase` is the base class for DB-backed tests
 
-### `xinco-ui-v25` internals
-- Entry point: `XincoV25Application` (Spring Boot)
-- Views: `LoginView`, `MainView`, `ExplorerView` (Vaadin `@Route`), `MainLayout`
+### `xinco-ui` internals
+- Entry point: `XincoApplication` (Spring Boot)
+- Views: `LoginView` → `ViewerView` (primary landing), `ExplorerView` (management), `AdminView`, `MainLayout` (Vaadin `@Route`)
 - Shared state: `UserSession`
 - Components: `PropertyGrid`, `CheckinDialog`
 

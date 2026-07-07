@@ -306,7 +306,7 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
     int id = u.write2DB();
     assertTrue(id > 0);
     try {
-      // Change password — old one is now only in XincoCoreUserT history.
+      // Change password — old one is now only in Envers revision history.
       // Use changerID=1 (admin) to avoid a self-reference in the audit trail
       // that would prevent destroy(id) in the finally block.
       XincoCoreUserServer u2 = new XincoCoreUserServer(id);
@@ -315,7 +315,7 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
       u2.setChangerID(1);
       u2.write2DB();
       // isPasswordUsable("oldPwHist1", false): current is "newPwHist1" → no early return
-      // XincoCoreUserT query finds "oldPwHist1" with epoch date → loop body runs
+      // Envers AuditReader finds "oldPwHist1" in revision history → loop body runs
       XincoCoreUserServer u3 = new XincoCoreUserServer(id);
       // Result depends on whether audit trail preserved epoch date; either way loop body executes
       u3.isPasswordUsable("oldPwHist1", false);

@@ -192,14 +192,13 @@ public final class XincoCoreACEServer extends XincoCoreACE {
     ArrayList<XincoCoreACEServer> core_acl = new ArrayList<>();
     try {
       result =
-          createdQuery("SELECT xca FROM XincoCoreAce xca WHERE xca." + attrT + "=" + attrID + "");
-      // TODO: Uncomment when bug is fixed
-      /**
-       * This is an eclipselink bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=294092 Leave
-       * commented while its fixed.
-       */
-      // ORDER BY xca.xincoCoreUserId.id, xca.xincoCoreGroupId.id, "
-      //                    + "xca.xincoCoreNodeId.id, xca.xincoCoreDataId.id
+          createdQuery(
+              "SELECT xca FROM XincoCoreAce xca WHERE xca."
+                  + attrT
+                  + "="
+                  + attrID
+                  + " ORDER BY xca.xincoCoreUser.id, xca.xincoCoreGroup.id,"
+                  + " xca.xincoCoreNode.id, xca.xincoCoreData.id");
       for (Object o : result) {
         com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace =
             (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) o;
