@@ -321,8 +321,8 @@ class ViewerViewTest {
   void detectMimeType_unknown_returnsOctetStream() throws Exception {
     Method m = ViewerView.class.getDeclaredMethod("detectMimeType", String.class, Path.class);
     m.setAccessible(true);
-    Path p = Path.of("/tmp/dummy.xyz");
-    assertEquals("application/octet-stream", m.invoke(null, "data.xyz", p));
+    Path p = Path.of("/tmp/dummy.xncounknown");
+    assertEquals("application/octet-stream", m.invoke(null, "data.xncounknown", p));
   }
 
   @Test
