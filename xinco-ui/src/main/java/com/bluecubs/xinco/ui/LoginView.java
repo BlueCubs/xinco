@@ -29,7 +29,7 @@ public class LoginView extends VerticalLayout {
     setJustifyContentMode(JustifyContentMode.CENTER);
 
     Select<Locale> langSelect = new Select<>();
-    langSelect.setLabel("Language");
+    langSelect.setLabel(getTranslation("general.language"));
     langSelect.setItems(XincoI18NProvider.PROVIDED_LOCALES);
     langSelect.setItemLabelGenerator(l -> l.getDisplayName(l));
     langSelect.setWidth("300px");
@@ -42,11 +42,11 @@ public class LoginView extends VerticalLayout {
 
     langSelect.addValueChangeListener(e -> getUI().ifPresent(ui -> ui.setLocale(e.getValue())));
 
-    TextField username = new TextField("Username");
+    TextField username = new TextField(getTranslation("general.username"));
     username.setWidth("300px");
-    PasswordField password = new PasswordField("Password");
+    PasswordField password = new PasswordField(getTranslation("general.password"));
     password.setWidth("300px");
-    Button login = new Button("Login");
+    Button login = new Button(getTranslation("general.login"));
     login.setWidth("300px");
 
     login.addClickListener(
@@ -74,6 +74,6 @@ public class LoginView extends VerticalLayout {
           }
         });
 
-    add(new H2("Xinco DMS"), langSelect, username, password, login);
+    add(new H2(getTranslation("general.clienttitle")), langSelect, username, password, login);
   }
 }

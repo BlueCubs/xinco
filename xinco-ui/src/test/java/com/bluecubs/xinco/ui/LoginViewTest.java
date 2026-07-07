@@ -27,7 +27,9 @@ class LoginViewTest {
   @BeforeEach
   void setup() {
     MockVaadin.setup(routes);
-    UI.getCurrent().navigate(LoginView.class);
+    ViewTestHelper.registerI18NProvider();
+    LoginView view = new LoginView();
+    UI.getCurrent().add(view);
   }
 
   @AfterEach

@@ -76,7 +76,7 @@ public class ViewerView extends VerticalLayout
 
     viewerPane.setSizeFull();
     viewerPane.getStyle().set("overflow", "auto").set("padding", "8px");
-    viewerPane.add(new Span("Select a file to preview it here."));
+    viewerPane.add(new Span(getTranslation("general.file.select")));
 
     VerticalLayout left = new VerticalLayout(nodeTree, dataGrid);
     left.setSizeFull();
@@ -98,13 +98,17 @@ public class ViewerView extends VerticalLayout
   private void buildMenuBar() {
     menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
     menuBar.setWidthFull();
-    menuBar.addItem("Explorer", e -> getUI().ifPresent(ui -> ui.navigate(ExplorerView.class)));
+    menuBar.addItem(
+        getTranslation("menu.repository"),
+        e -> getUI().ifPresent(ui -> ui.navigate(ExplorerView.class)));
   }
 
   // ── Tree ──────────────────────────────────────────────────────────────────
 
   private void buildNodeTree() {
-    nodeTree.addHierarchyColumn(XincoCoreNodeServer::getDesignation).setHeader("Folder");
+    nodeTree
+        .addHierarchyColumn(XincoCoreNodeServer::getDesignation)
+        .setHeader(getTranslation("general.folder"));
     nodeTree.setSizeFull();
     nodeTree.addSelectionListener(
         e ->
@@ -124,9 +128,15 @@ public class ViewerView extends VerticalLayout
   // ── Data Grid ─────────────────────────────────────────────────────────────
 
   private void buildDataGrid() {
-    dataGrid.addColumn(XincoCoreDataServer::getDesignation).setHeader("Name");
-    dataGrid.addColumn(d -> d.getXincoCoreLanguage().getSign()).setHeader("Language");
-    dataGrid.addColumn(d -> d.getXincoCoreDataType().getDesignation()).setHeader("Type");
+    dataGrid
+        .addColumn(XincoCoreDataServer::getDesignation)
+        .setHeader(getTranslation("general.name"));
+    dataGrid
+        .addColumn(d -> d.getXincoCoreLanguage().getSign())
+        .setHeader(getTranslation("general.language"));
+    dataGrid
+        .addColumn(d -> d.getXincoCoreDataType().getDesignation())
+        .setHeader(getTranslation("general.type"));
     dataGrid.setSizeFull();
     dataGrid.addSelectionListener(
         e ->
@@ -193,7 +203,7 @@ public class ViewerView extends VerticalLayout
 
   private void clearViewer() {
     viewerPane.removeAll();
-    viewerPane.add(new Span("Select a file to preview it here."));
+    viewerPane.add(new Span(getTranslation("general.file.select")));
   }
 
   void showPreview(XincoCoreDataServer data) {
@@ -210,12 +220,12 @@ public class ViewerView extends VerticalLayout
     try {
       String path = XincoCoreDataServer.getLastMajorVersionDataPath(data.getId());
       if (path == null) {
-        viewerPane.add(new Span("No file version found."));
+        viewerPane.add(new Span(getTranslation("datawizard.updatefailed")));
         return;
       }
       File file = new File(path);
       if (!file.exists()) {
-        viewerPane.add(new Span("File not found on server."));
+        viewerPane.add(new Span(getTranslation("datawizard.filedownloadfailed")));
         return;
       }
       String filename = getOriginalFilename(data);
@@ -250,7 +260,7 @@ public class ViewerView extends VerticalLayout
       }
     } catch (Exception e) {
       LOG.log(Level.SEVERE, "Preview failed", e);
-      viewerPane.add(new Span("Preview unavailable."));
+      viewerPane.add(new Span(getTranslation("general.error")));
     }
   }
 

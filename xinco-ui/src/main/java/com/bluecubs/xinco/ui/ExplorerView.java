@@ -73,6 +73,7 @@ public class ExplorerView extends VerticalLayout
     implements BeforeEnterObserver, AfterNavigationObserver {
 
   private static final Logger LOG = Logger.getLogger(ExplorerView.class.getName());
+  private static final int TRASH_NODE_ID = 2;
 
   // Data state
   private XincoCoreNodeServer selectedNode;
@@ -132,17 +133,18 @@ public class ExplorerView extends VerticalLayout
     buildNodeTree();
     buildDataGrid();
 
-    VerticalLayout left = new VerticalLayout(new Span("Folders"), nodeTree);
+    VerticalLayout left = new VerticalLayout(new Span(getTranslation("general.folder")), nodeTree);
     left.setWidth("28%");
     left.setPadding(false);
     left.setSpacing(false);
 
-    VerticalLayout center = new VerticalLayout(new Span("Data items"), dataGrid);
+    VerticalLayout center = new VerticalLayout(new Span(getTranslation("general.data")), dataGrid);
     center.setWidth("40%");
     center.setPadding(false);
     center.setSpacing(false);
 
-    VerticalLayout right = new VerticalLayout(new Span("Properties"), propertyGrid);
+    VerticalLayout right =
+        new VerticalLayout(new Span(getTranslation("general.details")), propertyGrid);
     right.setWidth("32%");
     right.setPadding(false);
     right.setSpacing(false);
@@ -167,14 +169,14 @@ public class ExplorerView extends VerticalLayout
     repoSub.addItem(getTranslation("menu.repository.refresh"), e -> loadRootNodes());
 
     // Edit menu
-    var editMenu = menuBar.addItem("Edit");
+    var editMenu = menuBar.addItem(getTranslation("general.edit"));
     var editSub = editMenu.getSubMenu();
     miDelete = editSub.addItem(getTranslation("general.delete"), e -> confirmDelete());
     editSub.addSeparator();
-    miManageAcl = editSub.addItem("Manage ACL…", e -> openAclDialog());
+    miManageAcl = editSub.addItem(getTranslation("menu.edit.acl") + "…", e -> openAclDialog());
 
     // File menu
-    var fileMenu = menuBar.addItem("File");
+    var fileMenu = menuBar.addItem(getTranslation("general.data.type.file"));
     var fileSub = fileMenu.getSubMenu();
     miDownload =
         fileSub.addItem(getTranslation("menu.repository.downloadfile"), e -> downloadSelected());
@@ -188,10 +190,11 @@ public class ExplorerView extends VerticalLayout
     miLock = fileSub.addItem(getTranslation("menu.edit.lockdata"), e -> lockSelected());
     miPublish = fileSub.addItem(getTranslation("menu.edit.publishdata"), e -> publishSelected());
     fileSub.addSeparator();
-    miArchive = fileSub.addItem("Archive…", e -> archiveSelected());
+    miArchive = fileSub.addItem(getTranslation("window.archive") + "…", e -> archiveSelected());
 
     // View menu
-    menuBar.addItem("Viewer", e -> getUI().ifPresent(ui -> ui.navigate(ViewerView.class)));
+    menuBar.addItem(
+        getTranslation("menu.view"), e -> getUI().ifPresent(ui -> ui.navigate(ViewerView.class)));
 
     updateMenuState();
   }
@@ -300,7 +303,9 @@ public class ExplorerView extends VerticalLayout
     dataGrid
         .addColumn(d -> d.getXincoCoreLanguage().getSign())
         .setHeader(getTranslation("general.language"));
-    dataGrid.addColumn(d -> statusLabel(d.getStatusNumber())).setHeader("Status");
+    dataGrid
+        .addColumn(d -> statusLabel(d.getStatusNumber()))
+        .setHeader(getTranslation("general.status"));
     dataGrid.setSizeFull();
     dataGrid.addSelectionListener(
         e ->
@@ -322,18 +327,18 @@ public class ExplorerView extends VerticalLayout
         });
   }
 
-  private static String statusLabel(int status) {
+  private String statusLabel(int status) {
     switch (status) {
       case 1:
-        return "Active";
+        return getTranslation("general.status.open");
       case 2:
-        return "Locked";
+        return getTranslation("general.status.locked");
       case 3:
-        return "Archived";
+        return getTranslation("general.status.archived");
       case 4:
-        return "Checked Out";
+        return getTranslation("general.status.checkedout");
       case 5:
-        return "Published";
+        return getTranslation("general.status.published");
       default:
         return "Unknown (" + status + ")";
     }
@@ -398,7 +403,7 @@ public class ExplorerView extends VerticalLayout
     searchBtn.setTooltipText(getTranslation("menu.search"));
 
     clearSearchBtn = new Button(VaadinIcon.CLOSE_SMALL.create(), e -> clearSearch());
-    clearSearchBtn.setTooltipText("Clear search");
+    clearSearchBtn.setTooltipText(getTranslation("general.reset"));
     clearSearchBtn.setVisible(false);
 
     searchStatusLabel = new Span();
@@ -543,7 +548,7 @@ public class ExplorerView extends VerticalLayout
     final List<XincoCoreLanguageServer> finalLanguages = languages;
     Button addBtn =
         new Button(
-            "Add",
+            getTranslation("general.add"),
             e ->
                 doAddData(
                     designationField,
@@ -631,7 +636,8 @@ public class ExplorerView extends VerticalLayout
               .filter(o -> o instanceof XincoCoreDataServer)
               .map(o -> (XincoCoreDataServer) o)
               .toList());
-      Notification.show("'" + name + "' added.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+      Notification.show(getTranslation("datawizard.fileuploadsuccess"))
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     } catch (Exception ex) {
       LOG.log(Level.SEVERE, "Add data failed", ex);
       error("Failed to add data: " + ex.getMessage());
@@ -669,15 +675,13 @@ public class ExplorerView extends VerticalLayout
       newNode.write2DB();
       dialog.close();
       loadRootNodes();
-      Notification.show("Folder '" + name + "' created.")
+      Notification.show(getTranslation("window.folder.updatesuccess"))
           .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     } catch (XincoException ex) {
       LOG.log(Level.SEVERE, "Create folder failed", ex);
       error("Could not create folder: " + ex.getMessage());
     }
   }
-
-  private static final int TRASH_NODE_ID = 2;
 
   private void confirmDelete() {
     String target =
@@ -687,24 +691,25 @@ public class ExplorerView extends VerticalLayout
     if (target == null) return;
 
     ConfirmDialog confirm = new ConfirmDialog();
-    confirm.setHeader("Move " + target + " to Trash?");
-    confirm.setText(
-        "The item will be moved to the Trash folder and can be permanently removed by an administrator.");
+    confirm.setHeader("Move to Trash?");
+    confirm.setText("Move " + target + " to the Trash folder?");
     confirm.setCancelable(true);
     confirm.setConfirmText("Move to Trash");
     confirm.setConfirmButtonTheme("error primary");
+    XincoCoreDataServer dataToDelete = selectedData;
+    XincoCoreNodeServer nodeToDelete = selectedNode;
     confirm.addConfirmListener(
         e -> {
           try {
-            if (selectedData != null) {
-              if (selectedData.getStatusNumber() == 4) {
+            if (dataToDelete != null) {
+              if (dataToDelete.getStatusNumber() == 4) {
                 error("Cannot delete a checked-out item.");
                 return;
               }
-              moveDataToTrash(selectedData);
+              moveDataToTrash(dataToDelete);
               selectedData = null;
-            } else if (selectedNode != null) {
-              moveNodeToTrash(selectedNode);
+            } else if (nodeToDelete != null) {
+              moveNodeToTrash(nodeToDelete);
               selectedNode = null;
             }
             loadRootNodes();
@@ -807,7 +812,7 @@ public class ExplorerView extends VerticalLayout
     upload.setMaxFiles(1);
     upload.setWidthFull();
 
-    TextField descField = new TextField("Change description");
+    TextField descField = new TextField(getTranslation("general.description"));
     descField.setWidthFull();
 
     // Version fields — default to major bump (high+1, mid=0, low=0)
@@ -817,7 +822,7 @@ public class ExplorerView extends VerticalLayout
     majorField.setStepButtonsVisible(true);
     majorField.setWidth("90px");
 
-    IntegerField minorField = new IntegerField("Minor");
+    IntegerField minorField = new IntegerField(getTranslation("general.minor"));
     minorField.setValue(0);
     minorField.setMin(0);
     minorField.setStepButtonsVisible(true);
@@ -829,11 +834,11 @@ public class ExplorerView extends VerticalLayout
     patchField.setStepButtonsVisible(true);
     patchField.setWidth("90px");
 
-    TextField postfixField = new TextField("Postfix");
+    TextField postfixField = new TextField(getTranslation("general.version.postfix"));
     postfixField.setValue(curPostfix);
     postfixField.setWidth("90px");
 
-    Checkbox minorBump = new Checkbox("Minor bump");
+    Checkbox minorBump = new Checkbox(getTranslation("general.minor"));
     minorBump.addValueChangeListener(
         ev -> {
           if (ev.getValue()) {
@@ -1116,22 +1121,22 @@ public class ExplorerView extends VerticalLayout
     }
 
     Select<Integer> modelSelect = new Select<>();
-    modelSelect.setLabel("Archive mode");
+    modelSelect.setLabel(getTranslation("general.archive.model"));
     modelSelect.setItems(0, 1, 2);
     modelSelect.setItemLabelGenerator(
         m ->
             switch (m) {
-              case 1 -> "Archive on date";
-              case 2 -> "Archive after N days";
-              default -> "None (no scheduled archiving)";
+              case 1 -> getTranslation("general.archive.date");
+              case 2 -> getTranslation("general.archive.days");
+              default -> getTranslation("window.archive.archivingmodel.none");
             });
     modelSelect.setValue(currentModel);
 
-    DatePicker archiveDate = new DatePicker("Archive on");
+    DatePicker archiveDate = new DatePicker(getTranslation("general.archive.date"));
     archiveDate.setValue(currentDate);
     archiveDate.setEnabled(currentModel == 1);
 
-    IntegerField archiveDays = new IntegerField("Archive after (days)");
+    IntegerField archiveDays = new IntegerField(getTranslation("general.archive.days"));
     archiveDays.setValue(currentDays);
     archiveDays.setMin(1);
     archiveDays.setEnabled(currentModel == 2);
@@ -1149,7 +1154,7 @@ public class ExplorerView extends VerticalLayout
 
     Button save =
         new Button(
-            "Save",
+            getTranslation("general.save"),
             e -> {
               try {
                 XMLGregorianCalendar now =
@@ -1243,7 +1248,7 @@ public class ExplorerView extends VerticalLayout
     aceRows.setWidthFull();
 
     Dialog dialog = new Dialog();
-    dialog.setHeaderTitle("ACL — " + designation);
+    dialog.setHeaderTitle(getTranslation("window.acl"));
     dialog.setWidth("700px");
 
     for (XincoCoreACEServer ace : new ArrayList<>(acl)) {
@@ -1251,7 +1256,8 @@ public class ExplorerView extends VerticalLayout
       if (ace.getXincoCoreUserId() > 0) {
         int uid = ace.getXincoCoreUserId();
         name =
-            "User: "
+            getTranslation("general.user")
+                + ": "
                 + allUsers.stream()
                     .filter(u -> u.getId() == uid)
                     .map(XincoCoreUserServer::getUsername)
@@ -1260,7 +1266,8 @@ public class ExplorerView extends VerticalLayout
       } else {
         int gid = ace.getXincoCoreGroupId();
         name =
-            "Group: "
+            getTranslation("general.group")
+                + ": "
                 + allGroups.stream()
                     .filter(g -> g.getId() == gid)
                     .map(XincoCoreGroupServer::getDesignation)
@@ -1268,13 +1275,17 @@ public class ExplorerView extends VerticalLayout
                     .orElse("#" + gid);
       }
 
-      Checkbox cbAdmin = new Checkbox("Admin", ace.isAdminPermission());
+      Checkbox cbAdmin =
+          new Checkbox(getTranslation("general.acl.adminpermission"), ace.isAdminPermission());
       cbAdmin.addValueChangeListener(ev -> ace.setAdminPermission(ev.getValue()));
-      Checkbox cbRead = new Checkbox("Read", ace.isReadPermission());
+      Checkbox cbRead =
+          new Checkbox(getTranslation("general.acl.readpermission"), ace.isReadPermission());
       cbRead.addValueChangeListener(ev -> ace.setReadPermission(ev.getValue()));
-      Checkbox cbWrite = new Checkbox("Write", ace.isWritePermission());
+      Checkbox cbWrite =
+          new Checkbox(getTranslation("general.acl.writepermission"), ace.isWritePermission());
       cbWrite.addValueChangeListener(ev -> ace.setWritePermission(ev.getValue()));
-      Checkbox cbExec = new Checkbox("Execute", ace.isExecutePermission());
+      Checkbox cbExec =
+          new Checkbox(getTranslation("general.acl.executepermission"), ace.isExecutePermission());
       cbExec.addValueChangeListener(ev -> ace.setExecutePermission(ev.getValue()));
 
       HorizontalLayout row = new HorizontalLayout();
@@ -1300,7 +1311,7 @@ public class ExplorerView extends VerticalLayout
     for (XincoCoreUserServer u : allUsers) {
       int uid = u.getId();
       if (acl.stream().noneMatch(a -> a.getXincoCoreUserId() == uid)) {
-        String label = "User: " + u.getUsername();
+        String label = getTranslation("general.user") + ": " + u.getUsername();
         subjects.add(label);
         subjectIds.put(label, new int[] {uid, 0});
       }
@@ -1308,21 +1319,21 @@ public class ExplorerView extends VerticalLayout
     for (XincoCoreGroupServer g : allGroups) {
       int gid = g.getId();
       if (acl.stream().noneMatch(a -> a.getXincoCoreGroupId() == gid)) {
-        String label = "Group: " + g.getDesignation();
+        String label = getTranslation("general.group") + ": " + g.getDesignation();
         subjects.add(label);
         subjectIds.put(label, new int[] {0, gid});
       }
     }
 
-    ComboBox<String> subjectBox = new ComboBox<>("Add entry");
+    ComboBox<String> subjectBox = new ComboBox<>(getTranslation("general.add"));
     subjectBox.setItems(subjects);
     subjectBox.setWidth("220px");
-    Checkbox newAdmin = new Checkbox("Admin");
-    Checkbox newRead = new Checkbox("Read", true);
-    Checkbox newWrite = new Checkbox("Write", true);
-    Checkbox newExec = new Checkbox("Execute");
+    Checkbox newAdmin = new Checkbox(getTranslation("general.acl.adminpermission"));
+    Checkbox newRead = new Checkbox(getTranslation("general.acl.readpermission"), true);
+    Checkbox newWrite = new Checkbox(getTranslation("general.acl.writepermission"), true);
+    Checkbox newExec = new Checkbox(getTranslation("general.acl.executepermission"));
 
-    Button addBtn = new Button("Add");
+    Button addBtn = new Button(getTranslation("general.add"));
     addBtn.addClickListener(
         ev -> {
           String sel = subjectBox.getValue();
@@ -1345,13 +1356,21 @@ public class ExplorerView extends VerticalLayout
                     newAdmin.getValue());
             acl.add(newAce);
 
-            Checkbox r1 = new Checkbox("Admin", newAce.isAdminPermission());
+            Checkbox r1 =
+                new Checkbox(
+                    getTranslation("general.acl.adminpermission"), newAce.isAdminPermission());
             r1.addValueChangeListener(e2 -> newAce.setAdminPermission(e2.getValue()));
-            Checkbox r2 = new Checkbox("Read", newAce.isReadPermission());
+            Checkbox r2 =
+                new Checkbox(
+                    getTranslation("general.acl.readpermission"), newAce.isReadPermission());
             r2.addValueChangeListener(e2 -> newAce.setReadPermission(e2.getValue()));
-            Checkbox r3 = new Checkbox("Write", newAce.isWritePermission());
+            Checkbox r3 =
+                new Checkbox(
+                    getTranslation("general.acl.writepermission"), newAce.isWritePermission());
             r3.addValueChangeListener(e2 -> newAce.setWritePermission(e2.getValue()));
-            Checkbox r4 = new Checkbox("Execute", newAce.isExecutePermission());
+            Checkbox r4 =
+                new Checkbox(
+                    getTranslation("general.acl.executepermission"), newAce.isExecutePermission());
             r4.addValueChangeListener(e2 -> newAce.setExecutePermission(e2.getValue()));
 
             HorizontalLayout newRow = new HorizontalLayout();
@@ -1391,8 +1410,11 @@ public class ExplorerView extends VerticalLayout
     content.setPadding(false);
     dialog.add(content);
 
-    Button saveBtn = new Button("Save", ev -> doSaveAcl(deletedAces, acl, dialog));
-    dialog.getFooter().add(new Button("Close", ev -> dialog.close()), saveBtn);
+    Button saveBtn =
+        new Button(getTranslation("general.save"), ev -> doSaveAcl(deletedAces, acl, dialog));
+    dialog
+        .getFooter()
+        .add(new Button(getTranslation("general.close"), ev -> dialog.close()), saveBtn);
     dialog.open();
   }
 
@@ -1408,7 +1430,8 @@ public class ExplorerView extends VerticalLayout
         a.write2DB();
       }
       dialog.close();
-      Notification.show("ACL saved.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+      Notification.show(getTranslation("datawizard.updatesuccess"))
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     } catch (Exception ex) {
       LOG.log(Level.SEVERE, "ACL save failed", ex);
       error("ACL save failed: " + ex.getMessage());

@@ -56,10 +56,10 @@ public class AdminView extends VerticalLayout {
 
     TabSheet tabs = new TabSheet();
     tabs.setSizeFull();
-    tabs.add("Users", buildUsersTab());
-    tabs.add("Groups", buildGroupsTab());
-    tabs.add("Settings", buildSettingsTab());
-    tabs.add("Data Types", buildDataTypesTab());
+    tabs.add(getTranslation("general.user"), buildUsersTab());
+    tabs.add(getTranslation("general.group"), buildGroupsTab());
+    tabs.add(getTranslation("menu.preferences"), buildSettingsTab());
+    tabs.add(getTranslation("general.datatype"), buildDataTypesTab());
 
     add(tabs);
   }
@@ -67,25 +67,40 @@ public class AdminView extends VerticalLayout {
   private VerticalLayout buildUsersTab() {
     userGrid = new Grid<>();
     userGrid.setSizeFull();
-    userGrid.addColumn(XincoCoreUserServer::getId).setHeader("ID").setWidth("60px").setFlexGrow(0);
-    userGrid.addColumn(XincoCoreUserServer::getUsername).setHeader("Username");
-    userGrid.addColumn(u -> u.getFirstName() + " " + u.getLastName()).setHeader("Name");
-    userGrid.addColumn(XincoCoreUserServer::getEmail).setHeader("Email");
-    userGrid.addColumn(u -> u.getStatusNumber() == 1 ? "Active" : "Locked").setHeader("Status");
+    userGrid
+        .addColumn(XincoCoreUserServer::getId)
+        .setHeader(getTranslation("general.id"))
+        .setWidth("60px")
+        .setFlexGrow(0);
+    userGrid
+        .addColumn(XincoCoreUserServer::getUsername)
+        .setHeader(getTranslation("general.username"));
+    userGrid
+        .addColumn(u -> u.getFirstName() + " " + u.getLastName())
+        .setHeader(getTranslation("general.name"));
+    userGrid.addColumn(XincoCoreUserServer::getEmail).setHeader(getTranslation("general.email"));
+    userGrid
+        .addColumn(
+            u ->
+                u.getStatusNumber() == 1
+                    ? getTranslation("general.status.open")
+                    : getTranslation("general.status.locked"))
+        .setHeader(getTranslation("general.status"));
     userGrid.setItems(loadUsers());
 
-    Button btnNew = new Button("New User", e -> openUserDialog(null));
+    Button btnNew =
+        new Button(getTranslation("message.admin.adminuser.add"), e -> openUserDialog(null));
     Button btnEdit =
         new Button(
-            "Edit",
+            getTranslation("general.edit"),
             e -> userGrid.asSingleSelect().getOptionalValue().ifPresent(this::openUserDialog));
     Button btnLock =
         new Button(
-            "Lock/Unlock",
+            getTranslation("general.lock"),
             e -> userGrid.asSingleSelect().getOptionalValue().ifPresent(this::toggleUserLock));
     Button btnDelete =
         new Button(
-            "Delete",
+            getTranslation("general.delete"),
             e -> userGrid.asSingleSelect().getOptionalValue().ifPresent(this::confirmDeleteUser));
     btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
@@ -105,20 +120,25 @@ public class AdminView extends VerticalLayout {
     groupGrid.setSizeFull();
     groupGrid
         .addColumn(XincoCoreGroupServer::getId)
-        .setHeader("ID")
+        .setHeader(getTranslation("general.id"))
         .setWidth("60px")
         .setFlexGrow(0);
-    groupGrid.addColumn(XincoCoreGroupServer::getDesignation).setHeader("Name");
+    groupGrid
+        .addColumn(XincoCoreGroupServer::getDesignation)
+        .setHeader(getTranslation("general.name"));
     groupGrid.setItems(loadGroups());
 
-    Button btnNew = new Button("New Group", e -> openGroupDialog(null));
+    Button btnNew =
+        new Button(
+            getTranslation("general.add") + " " + getTranslation("general.group"),
+            e -> openGroupDialog(null));
     Button btnEdit =
         new Button(
-            "Edit",
+            getTranslation("general.edit"),
             e -> groupGrid.asSingleSelect().getOptionalValue().ifPresent(this::openGroupDialog));
     Button btnDelete =
         new Button(
-            "Delete",
+            getTranslation("general.delete"),
             e -> groupGrid.asSingleSelect().getOptionalValue().ifPresent(this::confirmDeleteGroup));
     btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
@@ -136,24 +156,31 @@ public class AdminView extends VerticalLayout {
   void openUserDialog(XincoCoreUserServer existing) {
     boolean isNew = existing == null;
     Dialog dialog = new Dialog();
-    dialog.setHeaderTitle(isNew ? "New User" : "Edit User");
+    dialog.setHeaderTitle(
+        isNew
+            ? getTranslation("message.admin.adminuser.add")
+            : getTranslation("general.edit") + " " + getTranslation("general.user"));
     dialog.setWidth("500px");
 
-    TextField username = new TextField("Username");
+    TextField username = new TextField(getTranslation("general.username"));
     username.setRequired(true);
     username.setReadOnly(!isNew);
 
-    PasswordField password = new PasswordField(isNew ? "Password" : "Password (blank = keep)");
+    PasswordField password = new PasswordField(getTranslation("general.password"));
     password.setRequired(isNew);
 
-    TextField firstName = new TextField("First Name");
-    TextField lastName = new TextField("Last Name");
-    TextField email = new TextField("Email");
+    TextField firstName = new TextField(getTranslation("general.firstname"));
+    TextField lastName = new TextField(getTranslation("general.lastname"));
+    TextField email = new TextField(getTranslation("general.email"));
 
     Select<Integer> status = new Select<>();
-    status.setLabel("Status");
+    status.setLabel(getTranslation("general.status"));
     status.setItems(1, 2);
-    status.setItemLabelGenerator(s -> s == 1 ? "Active" : "Locked");
+    status.setItemLabelGenerator(
+        s ->
+            s == 1
+                ? getTranslation("general.status.open")
+                : getTranslation("general.status.locked"));
 
     List<XincoCoreGroupServer> allGroups = loadGroups();
     MultiSelectListBox<XincoCoreGroupServer> groupBox = new MultiSelectListBox<>();
@@ -178,13 +205,14 @@ public class AdminView extends VerticalLayout {
     form.setColspan(password, 2);
     form.setColspan(email, 2);
 
-    VerticalLayout content = new VerticalLayout(form, new Span("Groups:"), groupBox);
+    VerticalLayout content =
+        new VerticalLayout(form, new Span(getTranslation("general.group") + ":"), groupBox);
     content.setPadding(false);
     dialog.add(content);
 
     Button save =
         new Button(
-            "Save",
+            getTranslation("general.save"),
             e -> {
               if (username.isEmpty()) {
                 username.setErrorMessage("Required");
@@ -236,7 +264,7 @@ public class AdminView extends VerticalLayout {
               }
             });
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    Button cancel = new Button("Cancel", e -> dialog.close());
+    Button cancel = new Button(getTranslation("general.cancel"), e -> dialog.close());
     dialog.getFooter().add(cancel, save);
     dialog.open();
   }
@@ -258,10 +286,10 @@ public class AdminView extends VerticalLayout {
 
   private void confirmDeleteUser(XincoCoreUserServer user) {
     ConfirmDialog confirm = new ConfirmDialog();
-    confirm.setHeader("Delete User");
+    confirm.setHeader(getTranslation("general.delete") + " " + getTranslation("general.user"));
     confirm.setText("Delete user \"" + user.getUsername() + "\"? This cannot be undone.");
     confirm.setCancelable(true);
-    confirm.setConfirmText("Delete");
+    confirm.setConfirmText(getTranslation("general.delete"));
     confirm.setConfirmButtonTheme("error primary");
     confirm.addConfirmListener(
         e -> {
@@ -280,15 +308,22 @@ public class AdminView extends VerticalLayout {
   void openGroupDialog(XincoCoreGroupServer existing) {
     boolean isNew = existing == null;
     Dialog dialog = new Dialog();
-    dialog.setHeaderTitle(isNew ? "New Group" : "Edit Group");
+    dialog.setHeaderTitle(
+        isNew
+            ? getTranslation("general.add") + " " + getTranslation("general.group")
+            : getTranslation("general.edit") + " " + getTranslation("general.group"));
 
-    TextField name = new TextField("Name");
+    TextField name = new TextField(getTranslation("general.name"));
     name.setRequired(true);
 
     Select<Integer> status = new Select<>();
-    status.setLabel("Status");
+    status.setLabel(getTranslation("general.status"));
     status.setItems(1, 2);
-    status.setItemLabelGenerator(s -> s == 1 ? "Active" : "Inactive");
+    status.setItemLabelGenerator(
+        s ->
+            s == 1
+                ? getTranslation("general.status.open")
+                : getTranslation("general.status.locked"));
 
     if (!isNew) {
       name.setValue(nvl(existing.getDesignation()));
@@ -301,7 +336,7 @@ public class AdminView extends VerticalLayout {
 
     Button save =
         new Button(
-            "Save",
+            getTranslation("general.save"),
             e -> {
               if (name.isEmpty()) {
                 name.setErrorMessage("Required");
@@ -328,17 +363,17 @@ public class AdminView extends VerticalLayout {
               }
             });
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    Button cancel = new Button("Cancel", e -> dialog.close());
+    Button cancel = new Button(getTranslation("general.cancel"), e -> dialog.close());
     dialog.getFooter().add(cancel, save);
     dialog.open();
   }
 
   private void confirmDeleteGroup(XincoCoreGroupServer group) {
     ConfirmDialog confirm = new ConfirmDialog();
-    confirm.setHeader("Delete Group");
+    confirm.setHeader(getTranslation("general.delete") + " " + getTranslation("general.group"));
     confirm.setText("Delete group \"" + group.getDesignation() + "\"?");
     confirm.setCancelable(true);
-    confirm.setConfirmText("Delete");
+    confirm.setConfirmText(getTranslation("general.delete"));
     confirm.setConfirmButtonTheme("error primary");
     confirm.addConfirmListener(
         e -> {
@@ -356,14 +391,24 @@ public class AdminView extends VerticalLayout {
   private VerticalLayout buildSettingsTab() {
     settingGrid = new Grid<>();
     settingGrid.setSizeFull();
-    settingGrid.addColumn(XincoSettingServer::getDescription).setHeader("Key").setFlexGrow(2);
-    settingGrid.addColumn(this::settingType).setHeader("Type").setWidth("80px").setFlexGrow(0);
-    settingGrid.addColumn(this::settingValue).setHeader("Value").setFlexGrow(1);
+    settingGrid
+        .addColumn(XincoSettingServer::getDescription)
+        .setHeader(getTranslation("general.keyword"))
+        .setFlexGrow(2);
+    settingGrid
+        .addColumn(this::settingType)
+        .setHeader(getTranslation("general.type"))
+        .setWidth("80px")
+        .setFlexGrow(0);
+    settingGrid
+        .addColumn(this::settingValue)
+        .setHeader(getTranslation("general.details"))
+        .setFlexGrow(1);
     settingGrid.setItems(loadSettings());
 
     Button btnEdit =
         new Button(
-            "Edit",
+            getTranslation("general.edit"),
             e ->
                 settingGrid.asSingleSelect().getOptionalValue().ifPresent(this::openSettingDialog));
     HorizontalLayout toolbar = new HorizontalLayout(btnEdit);
@@ -379,19 +424,20 @@ public class AdminView extends VerticalLayout {
 
   void openSettingDialog(XincoSettingServer setting) {
     Dialog dialog = new Dialog();
-    dialog.setHeaderTitle("Edit Setting");
+    dialog.setHeaderTitle(
+        getTranslation("general.edit") + " " + getTranslation("menu.preferences"));
     dialog.setWidth("400px");
 
-    TextField keyField = new TextField("Key");
+    TextField keyField = new TextField(getTranslation("general.keyword"));
     keyField.setValue(nvl(setting.getDescription()));
     keyField.setReadOnly(true);
 
     String type = settingType(setting);
     FormLayout form = new FormLayout(keyField);
 
-    Checkbox boolField = new Checkbox("Value");
-    IntegerField intField = new IntegerField("Value");
-    TextField strField = new TextField("Value");
+    Checkbox boolField = new Checkbox(getTranslation("general.details"));
+    IntegerField intField = new IntegerField(getTranslation("general.details"));
+    TextField strField = new TextField(getTranslation("general.details"));
 
     if (XincoSettingServer.TYPE_BOOL.equals(type)) {
       boolField.setValue(setting.isBoolValue());
@@ -408,7 +454,7 @@ public class AdminView extends VerticalLayout {
 
     Button save =
         new Button(
-            "Save",
+            getTranslation("general.save"),
             e -> {
               try {
                 if (XincoSettingServer.TYPE_BOOL.equals(type)) {
@@ -429,7 +475,7 @@ public class AdminView extends VerticalLayout {
               }
             });
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    Button cancel = new Button("Cancel", e -> dialog.close());
+    Button cancel = new Button(getTranslation("general.cancel"), e -> dialog.close());
     dialog.getFooter().add(cancel, save);
     dialog.open();
   }
@@ -463,11 +509,15 @@ public class AdminView extends VerticalLayout {
     dataTypeGrid.setSizeFull();
     dataTypeGrid
         .addColumn(XincoCoreDataTypeServer::getId)
-        .setHeader("ID")
+        .setHeader(getTranslation("general.id"))
         .setWidth("60px")
         .setFlexGrow(0);
-    dataTypeGrid.addColumn(XincoCoreDataTypeServer::getDesignation).setHeader("Designation");
-    dataTypeGrid.addColumn(XincoCoreDataTypeServer::getDescription).setHeader("Description");
+    dataTypeGrid
+        .addColumn(XincoCoreDataTypeServer::getDesignation)
+        .setHeader(getTranslation("general.designation"));
+    dataTypeGrid
+        .addColumn(XincoCoreDataTypeServer::getDescription)
+        .setHeader(getTranslation("general.description"));
     dataTypeGrid.setItems(loadDataTypes());
     dataTypeGrid.addSelectionListener(
         e -> {
@@ -479,10 +529,10 @@ public class AdminView extends VerticalLayout {
           }
         });
 
-    Button btnNew = new Button("New", e -> openDataTypeDialog(null));
+    Button btnNew = new Button(getTranslation("general.create"), e -> openDataTypeDialog(null));
     Button btnEdit =
         new Button(
-            "Edit",
+            getTranslation("general.edit"),
             e ->
                 dataTypeGrid
                     .asSingleSelect()
@@ -490,7 +540,7 @@ public class AdminView extends VerticalLayout {
                     .ifPresent(this::openDataTypeDialog));
     Button btnDelete =
         new Button(
-            "Delete",
+            getTranslation("general.delete"),
             e ->
                 dataTypeGrid
                     .asSingleSelect()
@@ -507,22 +557,27 @@ public class AdminView extends VerticalLayout {
         .setHeader("#")
         .setWidth("50px")
         .setFlexGrow(0);
-    attrGrid.addColumn(XincoCoreDataTypeAttributeServer::getDesignation).setHeader("Name");
+    attrGrid
+        .addColumn(XincoCoreDataTypeAttributeServer::getDesignation)
+        .setHeader(getTranslation("general.name"));
     attrGrid
         .addColumn(XincoCoreDataTypeAttributeServer::getDataType)
-        .setHeader("Data Type")
+        .setHeader(getTranslation("general.datatype"))
         .setWidth("120px")
         .setFlexGrow(0);
     attrGrid
         .addColumn(XincoCoreDataTypeAttributeServer::getSize)
-        .setHeader("Size")
+        .setHeader(getTranslation("general.size"))
         .setWidth("80px")
         .setFlexGrow(0);
 
-    Button btnAddAttr = new Button("Add Attribute", e -> openAttributeDialog());
+    Button btnAddAttr =
+        new Button(
+            getTranslation("general.add") + " " + getTranslation("general.attribute"),
+            e -> openAttributeDialog());
     Button btnRemoveAttr =
         new Button(
-            "Remove",
+            getTranslation("general.delete"),
             e ->
                 attrGrid
                     .asSingleSelect()
@@ -533,7 +588,12 @@ public class AdminView extends VerticalLayout {
     attrToolbar.setPadding(true);
 
     VerticalLayout layout =
-        new VerticalLayout(dtToolbar, dataTypeGrid, new Span("Attributes"), attrToolbar, attrGrid);
+        new VerticalLayout(
+            dtToolbar,
+            dataTypeGrid,
+            new Span(getTranslation("general.attribute")),
+            attrToolbar,
+            attrGrid);
     layout.setSizeFull();
     layout.setFlexGrow(2, dataTypeGrid);
     layout.setFlexGrow(1, attrGrid);
@@ -545,12 +605,15 @@ public class AdminView extends VerticalLayout {
   void openDataTypeDialog(XincoCoreDataTypeServer existing) {
     boolean isNew = existing == null;
     Dialog dialog = new Dialog();
-    dialog.setHeaderTitle(isNew ? "New Data Type" : "Edit Data Type");
+    dialog.setHeaderTitle(
+        isNew
+            ? getTranslation("general.create") + " " + getTranslation("general.datatype")
+            : getTranslation("general.edit") + " " + getTranslation("general.datatype"));
     dialog.setWidth("420px");
 
-    TextField designation = new TextField("Designation");
+    TextField designation = new TextField(getTranslation("general.designation"));
     designation.setRequired(true);
-    TextField description = new TextField("Description");
+    TextField description = new TextField(getTranslation("general.description"));
 
     if (!isNew) {
       designation.setValue(nvl(existing.getDesignation()));
@@ -561,7 +624,7 @@ public class AdminView extends VerticalLayout {
 
     Button save =
         new Button(
-            "Save",
+            getTranslation("general.save"),
             e -> {
               if (designation.isEmpty()) {
                 designation.setErrorMessage("Required");
@@ -592,20 +655,20 @@ public class AdminView extends VerticalLayout {
               }
             });
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    Button cancel = new Button("Cancel", e -> dialog.close());
+    Button cancel = new Button(getTranslation("general.cancel"), e -> dialog.close());
     dialog.getFooter().add(cancel, save);
     dialog.open();
   }
 
   private void confirmDeleteDataType(XincoCoreDataTypeServer dt) {
     ConfirmDialog confirm = new ConfirmDialog();
-    confirm.setHeader("Delete Data Type");
+    confirm.setHeader(getTranslation("general.delete") + " " + getTranslation("general.datatype"));
     confirm.setText(
         "Delete data type \""
             + dt.getDesignation()
             + "\"? This will fail if any data items use this type.");
     confirm.setCancelable(true);
-    confirm.setConfirmText("Delete");
+    confirm.setConfirmText(getTranslation("general.delete"));
     confirm.setConfirmButtonTheme("error primary");
     confirm.addConfirmListener(
         e -> {
@@ -628,18 +691,19 @@ public class AdminView extends VerticalLayout {
       return;
     }
     Dialog dialog = new Dialog();
-    dialog.setHeaderTitle("Add Attribute");
+    dialog.setHeaderTitle(
+        getTranslation("general.add") + " " + getTranslation("general.attribute"));
     dialog.setWidth("400px");
 
-    TextField name = new TextField("Name");
+    TextField name = new TextField(getTranslation("general.name"));
     name.setRequired(true);
 
     Select<String> dataType = new Select<>();
-    dataType.setLabel("Data Type");
+    dataType.setLabel(getTranslation("general.datatype"));
     dataType.setItems("varchar", "int", "unsigned int", "double", "text", "date");
     dataType.setValue("varchar");
 
-    IntegerField size = new IntegerField("Size");
+    IntegerField size = new IntegerField(getTranslation("general.size"));
     size.setValue(255);
     size.setMin(0);
 
@@ -647,7 +711,7 @@ public class AdminView extends VerticalLayout {
 
     Button save =
         new Button(
-            "Save",
+            getTranslation("general.save"),
             e -> {
               if (name.isEmpty()) {
                 name.setErrorMessage("Required");
@@ -681,20 +745,20 @@ public class AdminView extends VerticalLayout {
               }
             });
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    Button cancel = new Button("Cancel", e -> dialog.close());
+    Button cancel = new Button(getTranslation("general.cancel"), e -> dialog.close());
     dialog.getFooter().add(cancel, save);
     dialog.open();
   }
 
   private void confirmRemoveAttribute(XincoCoreDataTypeAttributeServer attr) {
     ConfirmDialog confirm = new ConfirmDialog();
-    confirm.setHeader("Remove Attribute");
+    confirm.setHeader(getTranslation("general.delete") + " " + getTranslation("general.attribute"));
     confirm.setText(
         "Remove attribute \""
             + attr.getDesignation()
             + "\"? All stored values for this attribute will also be deleted.");
     confirm.setCancelable(true);
-    confirm.setConfirmText("Remove");
+    confirm.setConfirmText(getTranslation("general.delete"));
     confirm.setConfirmButtonTheme("error primary");
     confirm.addConfirmListener(
         e -> {

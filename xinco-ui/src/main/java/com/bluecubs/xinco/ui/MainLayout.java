@@ -31,7 +31,7 @@ public class MainLayout extends AppLayout {
 
   public MainLayout(UserSession session) {
     DrawerToggle toggle = new DrawerToggle();
-    H1 title = new H1("Xinco DMS");
+    H1 title = new H1(getTranslation("general.clienttitle"));
     title.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0");
 
     HorizontalLayout header = new HorizontalLayout(toggle, title);
@@ -40,15 +40,22 @@ public class MainLayout extends AppLayout {
     addToNavbar(header);
 
     SideNav nav = new SideNav();
-    nav.addItem(new SideNavItem("Explorer", ExplorerView.class, VaadinIcon.FOLDER_OPEN.create()));
+    nav.addItem(
+        new SideNavItem(
+            getTranslation("menu.repository"),
+            ExplorerView.class,
+            VaadinIcon.FOLDER_OPEN.create()));
 
     if (session.isLoggedIn()) {
-      Span userLabel = new Span("Logged in as: " + session.getUser().getUsername());
+      Span userLabel =
+          new Span(getTranslation("general.user") + ": " + session.getUser().getUsername());
       userLabel
           .getStyle()
           .set("font-size", "var(--lumo-font-size-s)")
           .set("padding", "var(--lumo-space-s)");
-      nav.addItem(new SideNavItem("Admin", AdminView.class, VaadinIcon.COG.create()));
+      nav.addItem(
+          new SideNavItem(
+              getTranslation("general.group.admin"), AdminView.class, VaadinIcon.COG.create()));
       nav.addItem(
           new SideNavItem(
               getTranslation("general.logout"), LoginView.class, VaadinIcon.SIGN_OUT.create()));

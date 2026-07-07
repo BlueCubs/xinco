@@ -48,6 +48,7 @@ class ViewerViewTest {
   @BeforeEach
   void setup() {
     MockVaadin.setup(routes);
+    ViewTestHelper.registerI18NProvider();
   }
 
   @AfterEach
@@ -66,8 +67,8 @@ class ViewerViewTest {
     addView(new ViewerView(new UserSession()));
     MenuBar menuBar = _get(MenuBar.class);
     assertTrue(
-        menuBar.getItems().stream().anyMatch(item -> "Explorer".equals(item.getText())),
-        "MenuBar should have an 'Explorer' item");
+        menuBar.getItems().stream().anyMatch(item -> "Repository".equals(item.getText())),
+        "MenuBar should have a 'Repository' item");
   }
 
   @Test
@@ -84,7 +85,7 @@ class ViewerViewTest {
             .getChildren()
             .filter(c -> c instanceof Span)
             .map(c -> (Span) c)
-            .anyMatch(s -> s.getText().contains("Select a file"));
+            .anyMatch(s -> s.getText().contains("Select file"));
     assertTrue(hasPlaceholder, "viewerPane should show placeholder text on load");
   }
 
@@ -146,8 +147,8 @@ class ViewerViewTest {
         pane.getChildren()
             .filter(c -> c instanceof Span)
             .map(c -> (Span) c)
-            .anyMatch(s -> s.getText().contains("No file version"));
-    assertTrue(hasNoVersionSpan, "Should show 'No file version found.' when path is null");
+            .anyMatch(s -> s.getText().contains("Updating/Accessing"));
+    assertTrue(hasNoVersionSpan, "Should show update-failed message when path is null");
   }
 
   @Test
@@ -176,8 +177,8 @@ class ViewerViewTest {
         pane.getChildren()
             .filter(c -> c instanceof Span)
             .map(c -> (Span) c)
-            .anyMatch(s -> s.getText().contains("File not found"));
-    assertTrue(hasNotFoundSpan, "Should show 'File not found' when file does not exist");
+            .anyMatch(s -> s.getText().contains("Downloading file"));
+    assertTrue(hasNotFoundSpan, "Should show download-failed message when file does not exist");
   }
 
   @Test

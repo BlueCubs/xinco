@@ -53,6 +53,7 @@ class AdminViewTest {
   @BeforeEach
   void setup() {
     MockVaadin.setup(routes);
+    ViewTestHelper.registerI18NProvider();
     session = mock(UserSession.class);
     when(session.isLoggedIn()).thenReturn(false);
     view = new AdminView(session);
@@ -89,14 +90,14 @@ class AdminViewTest {
   void adminView_userToolbar_firstButtonIsNewUser() throws Exception {
     HorizontalLayout toolbar = getUserToolbar();
     Button btn = (Button) toolbar.getComponentAt(0);
-    assertEquals("New User", btn.getText());
+    assertEquals("Add User", btn.getText());
   }
 
   @Test
   void adminView_groupToolbar_firstButtonIsNewGroup() throws Exception {
     HorizontalLayout toolbar = getGroupToolbar();
     Button btn = (Button) toolbar.getComponentAt(0);
-    assertEquals("New Group", btn.getText());
+    assertEquals("Add Group", btn.getText());
   }
 
   // ---- openUserDialog ----
@@ -107,7 +108,7 @@ class AdminViewTest {
     Dialog dialog = _get(Dialog.class);
     assertNotNull(dialog);
     assertTrue(dialog.isOpened());
-    assertEquals("New User", dialog.getHeaderTitle());
+    assertEquals("Add User", dialog.getHeaderTitle());
   }
 
   @Test
@@ -161,7 +162,7 @@ class AdminViewTest {
     Dialog dialog = _get(Dialog.class);
     assertNotNull(dialog);
     assertTrue(dialog.isOpened());
-    assertEquals("New Group", dialog.getHeaderTitle());
+    assertEquals("Add Group", dialog.getHeaderTitle());
   }
 
   @Test
@@ -213,14 +214,14 @@ class AdminViewTest {
     invokeOpenSettingDialog(setting);
     Dialog dialog = _get(Dialog.class);
     assertTrue(dialog.isOpened());
-    assertEquals("Edit Setting", dialog.getHeaderTitle());
+    assertEquals("Edit Preferences", dialog.getHeaderTitle());
   }
 
   @Test
   void openSettingDialog_keyFieldIsReadOnly() throws Exception {
     XincoSettingServer setting = new XincoSettingServer(1, "password.attempts", 5, null, false, 0L);
     invokeOpenSettingDialog(setting);
-    TextField keyField = findInDialog("Key");
+    TextField keyField = findInDialog("Keyword");
     assertNotNull(keyField);
     assertTrue(keyField.isReadOnly());
     assertEquals("password.attempts", keyField.getValue());
@@ -233,7 +234,7 @@ class AdminViewTest {
     HorizontalLayout toolbar = getDataTypesToolbar();
     assertNotNull(toolbar);
     assertEquals(3, toolbar.getComponentCount(), "New / Edit / Delete");
-    assertEquals("New", ((Button) toolbar.getComponentAt(0)).getText());
+    assertEquals("Create", ((Button) toolbar.getComponentAt(0)).getText());
     assertEquals("Edit", ((Button) toolbar.getComponentAt(1)).getText());
     assertEquals("Delete", ((Button) toolbar.getComponentAt(2)).getText());
   }
@@ -244,7 +245,7 @@ class AdminViewTest {
     Dialog dialog = _get(Dialog.class);
     assertNotNull(dialog);
     assertTrue(dialog.isOpened());
-    assertEquals("New Data Type", dialog.getHeaderTitle());
+    assertEquals("Create Data Type", dialog.getHeaderTitle());
   }
 
   @Test

@@ -72,6 +72,7 @@ class ExplorerViewTest {
   @BeforeEach
   void setup() {
     MockVaadin.setup(routes);
+    ViewTestHelper.registerI18NProvider();
   }
 
   @AfterEach
@@ -360,13 +361,15 @@ class ExplorerViewTest {
 
   @Test
   void statusLabel_returnsCorrectStrings() throws Exception {
+    ExplorerView instance = new ExplorerView(new UserSession());
+    addView(instance);
     Method m = ExplorerView.class.getDeclaredMethod("statusLabel", int.class);
     m.setAccessible(true);
-    assertEquals("Active", m.invoke(null, 1));
-    assertEquals("Locked", m.invoke(null, 2));
-    assertEquals("Checked Out", m.invoke(null, 4));
-    assertEquals("Published", m.invoke(null, 5));
-    String unknown = (String) m.invoke(null, 99);
+    assertEquals("Open", m.invoke(instance, 1));
+    assertEquals("Locked", m.invoke(instance, 2));
+    assertEquals("Checked out", m.invoke(instance, 4));
+    assertEquals("Published", m.invoke(instance, 5));
+    String unknown = (String) m.invoke(instance, 99);
     assertTrue(unknown.startsWith("Unknown"), "unknown status: " + unknown);
   }
 
@@ -504,8 +507,8 @@ class ExplorerViewTest {
     assertTrue(dialog.isOpened());
     assertTrue(dialog.getHeaderTitle().contains("Archive"));
 
-    Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive mode"));
-    assertNotNull(modelSelect, "Archive mode selector present");
+    Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive Model"));
+    assertNotNull(modelSelect, "Archive model selector present");
     assertEquals(0, modelSelect.getValue(), "defaults to None");
   }
 
@@ -527,10 +530,10 @@ class ExplorerViewTest {
     m.setAccessible(true);
     m.invoke(view, mockData);
 
-    Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive mode"));
-    DatePicker archiveDate = _get(DatePicker.class, spec -> spec.withLabel("Archive on"));
+    Select<Integer> modelSelect = _get(Select.class, spec -> spec.withLabel("Archive Model"));
+    DatePicker archiveDate = _get(DatePicker.class, spec -> spec.withLabel("Archiving Date"));
     IntegerField archiveDays =
-        _get(IntegerField.class, spec -> spec.withLabel("Archive after (days)"));
+        _get(IntegerField.class, spec -> spec.withLabel("Archiving Days"));
 
     // Default: None — both disabled
     assertFalse(archiveDate.isEnabled(), "date disabled in None mode");
@@ -583,7 +586,7 @@ class ExplorerViewTest {
     setField(view, "selectedData", mockData);
     invoke(view, "openCheckinDialog");
 
-    Checkbox minorBump = _get(Checkbox.class, spec -> spec.withLabel("Minor bump"));
+    Checkbox minorBump = _get(Checkbox.class, spec -> spec.withLabel("Minor"));
     IntegerField majorField = _get(IntegerField.class, spec -> spec.withLabel("Major"));
     IntegerField minorField = _get(IntegerField.class, spec -> spec.withLabel("Minor"));
 
