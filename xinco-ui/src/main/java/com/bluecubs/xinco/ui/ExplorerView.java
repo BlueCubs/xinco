@@ -606,7 +606,14 @@ public class ExplorerView extends VerticalLayout
               if (type == 1) {
                 doAddData(designationField, buffer, lang, dialog);
               } else {
-                doAddNonFileData(type, designationField, lang, dialog);
+                String content =
+                    switch (type) {
+                      case 2 -> textContent.getValue();
+                      case 3 -> urlField.getValue();
+                      case 4 -> contactNameField.getValue();
+                      default -> "";
+                    };
+                doAddNonFileData(type, designationField, lang, content, dialog);
               }
             });
 
@@ -617,7 +624,11 @@ public class ExplorerView extends VerticalLayout
   }
 
   void doAddNonFileData(
-      int typeId, TextField designationField, XincoCoreLanguageServer lang, Dialog dialog) {
+      int typeId,
+      TextField designationField,
+      XincoCoreLanguageServer lang,
+      String typeContent,
+      Dialog dialog) {
     String name = designationField.getValue().trim();
     if (name.isEmpty()) {
       designationField.setErrorMessage(getTranslation("message.missing.designation"));
@@ -632,9 +643,11 @@ public class ExplorerView extends VerticalLayout
       XincoCoreDataServer newData =
           new XincoCoreDataServer(0, selectedNode.getId(), lang.getId(), typeId, name, 1);
       newData.write2DB();
+      int dataId = newData.getId();
+
       var log =
           new XincoCoreLogServerBuilder()
-              .setXincoCoreDataId(newData.getId())
+              .setXincoCoreDataId(dataId)
               .setXincoCoreUserId(session.getUser().getId())
               .setOpCode(OPCode.CREATION.ordinal() + 1)
               .setOperationDescription(getTranslation("general.create"))
@@ -644,6 +657,17 @@ public class ExplorerView extends VerticalLayout
               .setVersionPostFix("")
               .createXincoCoreLogServer();
       log.write2DB();
+
+      XMLGregorianCalendar now =
+          DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
+      String content = typeContent != null ? typeContent : "";
+      // type=2 (Text): attribText; type=3 (URL): attribVarchar; type=4 (Contact): attribVarchar
+      if (typeId == 2) {
+        new XincoAddAttributeServer(dataId, 1, 0, 0L, 0.0, "", content, now).write2DB();
+      } else if (typeId == 3 || typeId == 4) {
+        new XincoAddAttributeServer(dataId, 1, 0, 0L, 0.0, content, "", now).write2DB();
+      }
+
       dialog.close();
       refreshDataGrid();
       Notification.show(getTranslation("general.save") + " OK")

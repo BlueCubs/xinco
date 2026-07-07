@@ -9,6 +9,7 @@ import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
@@ -213,12 +214,29 @@ public class ViewerView extends VerticalLayout
     int typeId = data.getXincoCoreDataType().getId();
     if (typeId == 1) {
       showFilePreview(data);
+    } else if (typeId == 2) {
+      showTextPreview(data);
     } else if (typeId == 3) {
       showUrlPreview(data);
     } else {
       propertyGrid.setData(data);
       viewerPane.add(propertyGrid);
     }
+  }
+
+  private void showTextPreview(XincoCoreDataServer data) {
+    String text =
+        data.getXincoAddAttributes().stream()
+            .filter(a -> a.getAttributeId() == 1)
+            .map(a -> a.getAttribText())
+            .filter(v -> v != null)
+            .findFirst()
+            .orElse("");
+    TextArea area = new TextArea();
+    area.setValue(text);
+    area.setReadOnly(true);
+    area.setSizeFull();
+    viewerPane.add(area);
   }
 
   private void showUrlPreview(XincoCoreDataServer data) {

@@ -494,6 +494,30 @@ class ViewerViewTest {
   }
 
   @Test
+  void showPreview_type2_showsTextArea() {
+    // §2.9: text items store attribText (attribute_id=1); viewer shows content inline.
+    ViewerView view = new ViewerView(new UserSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    XincoCoreDataType mockType = mock(XincoCoreDataType.class);
+    when(mockType.getId()).thenReturn(2);
+    when(mockData.getXincoCoreDataType()).thenReturn(mockType);
+
+    com.bluecubs.xinco.server.service.XincoAddAttribute attr =
+        mock(com.bluecubs.xinco.server.service.XincoAddAttribute.class);
+    when(attr.getAttributeId()).thenReturn(1);
+    when(attr.getAttribText()).thenReturn("Hello, world!");
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(attr)));
+
+    view.showPreview(mockData);
+
+    assertFalse(
+        _find(com.vaadin.flow.component.textfield.TextArea.class).isEmpty(),
+        "viewerPane must show a TextArea for type=2 text items");
+  }
+
+  @Test
   void urlDataItem_shouldOpenInBrowser() throws Exception {
     // §2.10: selecting a URL data item renders an Anchor in viewerPane (type=3, attrib id=1).
     ViewerView view = new ViewerView(new UserSession());
