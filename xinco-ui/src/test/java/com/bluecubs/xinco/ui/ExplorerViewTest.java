@@ -1739,7 +1739,6 @@ class ExplorerViewTest {
   }
 
   @Test
-  @Disabled("gap: Add Data dialog should offer data-type selection: File, Text, URL, Contact")
   void addDataDialog_shouldOfferDataTypeSelection() throws Exception {
     // §2.4: four data types must be selectable when adding a data item.
     // Currently the dialog skips type selection and always creates type=1 (File).

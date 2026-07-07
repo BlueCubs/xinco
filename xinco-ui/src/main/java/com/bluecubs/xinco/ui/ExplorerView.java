@@ -510,21 +510,26 @@ public class ExplorerView extends VerticalLayout
   private void openAddDataDialog() {
     if (selectedNode == null) return;
 
-    MemoryBuffer buffer = new MemoryBuffer();
-    Upload upload = new Upload(buffer);
-    upload.setMaxFiles(1);
-    upload.setWidthFull();
+    // ── Type selector ────────────────────────────────────────────────────────
+    Select<Integer> typeSelect = new Select<>();
+    typeSelect.setLabel(getTranslation("general.datatype"));
+    typeSelect.setItems(1, 2, 3, 4);
+    typeSelect.setItemLabelGenerator(
+        id ->
+            switch (id) {
+              case 1 -> getTranslation("general.data.type.file");
+              case 2 -> getTranslation("general.data.type.text");
+              case 3 -> getTranslation("general.data.type.URL");
+              case 4 -> getTranslation("general.data.type.contact");
+              default -> String.valueOf(id);
+            });
+    typeSelect.setValue(1);
+    typeSelect.setWidthFull();
 
+    // ── Shared fields ────────────────────────────────────────────────────────
     TextField designationField = new TextField(getTranslation("general.filename"));
     designationField.setWidthFull();
     designationField.setRequired(true);
-
-    upload.addSucceededListener(
-        e -> {
-          if (designationField.isEmpty()) {
-            designationField.setValue(e.getFileName());
-          }
-        });
 
     List<XincoCoreLanguageServer> languages;
     try {
@@ -541,28 +546,112 @@ public class ExplorerView extends VerticalLayout
       langSelect.setValue(languages.get(0));
     }
 
+    // ── Type-specific field sets ─────────────────────────────────────────────
+    MemoryBuffer buffer = new MemoryBuffer();
+    Upload upload = new Upload(buffer);
+    upload.setMaxFiles(1);
+    upload.setWidthFull();
+    upload.addSucceededListener(
+        e -> {
+          if (designationField.isEmpty()) {
+            designationField.setValue(e.getFileName());
+          }
+        });
+
+    com.vaadin.flow.component.textfield.TextArea textContent =
+        new com.vaadin.flow.component.textfield.TextArea(getTranslation("general.description"));
+    textContent.setWidthFull();
+    textContent.setHeight("120px");
+
+    TextField urlField = new TextField(getTranslation("general.data.type.URL"));
+    urlField.setWidthFull();
+    urlField.setPlaceholder("https://");
+
+    TextField contactNameField = new TextField(getTranslation("general.name"));
+    contactNameField.setWidthFull();
+    TextField contactEmailField = new TextField(getTranslation("general.email"));
+    contactEmailField.setWidthFull();
+
+    // ── Dynamic section ──────────────────────────────────────────────────────
+    VerticalLayout typeFields = new VerticalLayout(upload);
+    typeFields.setPadding(false);
+    typeFields.setSpacing(false);
+
+    typeSelect.addValueChangeListener(
+        e -> {
+          typeFields.removeAll();
+          switch (e.getValue()) {
+            case 1 -> typeFields.add(upload);
+            case 2 -> typeFields.add(textContent);
+            case 3 -> typeFields.add(urlField);
+            case 4 -> typeFields.add(contactNameField, contactEmailField);
+          }
+        });
+
     Dialog dialog = new Dialog();
     dialog.setHeaderTitle(getTranslation("menu.repository.adddata"));
     dialog.setWidth("480px");
-    dialog.add(new VerticalLayout(upload, designationField, langSelect));
+    dialog.add(new VerticalLayout(typeSelect, designationField, langSelect, typeFields));
 
     final List<XincoCoreLanguageServer> finalLanguages = languages;
     Button addBtn =
         new Button(
             getTranslation("general.add"),
-            e ->
-                doAddData(
-                    designationField,
-                    buffer,
-                    langSelect.getValue() != null && !finalLanguages.isEmpty()
-                        ? langSelect.getValue()
-                        : null,
-                    dialog));
+            e -> {
+              int type = typeSelect.getValue() != null ? typeSelect.getValue() : 1;
+              XincoCoreLanguageServer lang =
+                  langSelect.getValue() != null && !finalLanguages.isEmpty()
+                      ? langSelect.getValue()
+                      : null;
+              if (type == 1) {
+                doAddData(designationField, buffer, lang, dialog);
+              } else {
+                doAddNonFileData(type, designationField, lang, dialog);
+              }
+            });
 
     dialog
         .getFooter()
         .add(new Button(getTranslation("general.cancel"), e -> dialog.close()), addBtn);
     dialog.open();
+  }
+
+  void doAddNonFileData(
+      int typeId, TextField designationField, XincoCoreLanguageServer lang, Dialog dialog) {
+    String name = designationField.getValue().trim();
+    if (name.isEmpty()) {
+      designationField.setErrorMessage(getTranslation("message.missing.designation"));
+      designationField.setInvalid(true);
+      return;
+    }
+    if (lang == null) {
+      error(getTranslation("message.missing.language"));
+      return;
+    }
+    try {
+      XincoCoreDataServer newData =
+          new XincoCoreDataServer(0, selectedNode.getId(), lang.getId(), typeId, name, 1);
+      newData.write2DB();
+      var log =
+          new XincoCoreLogServerBuilder()
+              .setXincoCoreDataId(newData.getId())
+              .setXincoCoreUserId(session.getUser().getId())
+              .setOpCode(OPCode.CREATION.ordinal() + 1)
+              .setOperationDescription(getTranslation("general.create"))
+              .setVersionHigh(1)
+              .setVersionMid(0)
+              .setVersionLow(0)
+              .setVersionPostFix("")
+              .createXincoCoreLogServer();
+      log.write2DB();
+      dialog.close();
+      refreshDataGrid();
+      Notification.show(getTranslation("general.save") + " OK")
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Add data failed", ex);
+      error("Add data failed: " + ex.getMessage());
+    }
   }
 
   void doAddData(
@@ -572,7 +661,7 @@ public class ExplorerView extends VerticalLayout
       Dialog dialog) {
     String name = designationField.getValue().trim();
     if (name.isEmpty()) {
-      designationField.setErrorMessage("Name is required");
+      designationField.setErrorMessage(getTranslation("message.missing.designation"));
       designationField.setInvalid(true);
       return;
     }
@@ -665,7 +754,7 @@ public class ExplorerView extends VerticalLayout
   void doCreateFolder(TextField nameField, Dialog dialog) {
     String name = nameField.getValue().trim();
     if (name.isEmpty()) {
-      nameField.setErrorMessage("Name is required");
+      nameField.setErrorMessage(getTranslation("message.missing.designation"));
       nameField.setInvalid(true);
       return;
     }
