@@ -329,22 +329,116 @@
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
         <configuration>
+          <!-- optional: limit format enforcement to just the files changed by this feature branch -->
+          <ratchetFrom>origin/main</ratchetFrom>
+          <formats>
+            <!-- you can define as many formats as you want, each is independent -->
+            <format>
+              <!-- define the files to apply to -->
+              <includes>
+                <include>*.md</include>
+                <include>.gitignore</include>
+              </includes>
+              <!-- define the steps to apply to those files -->
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
+              <indent>
+                <tabs>true</tabs>
+                <spacesPerTab>4</spacesPerTab>
+              </indent>
+            </format>
+          </formats>
+          <!-- define a language-specific format -->
           <java>
+            <!-- no need to specify files, inferred automatically, but you can if you want -->
+            <cleanthat/>
+            <!-- apply a specific flavor of google-java-format and reflow long strings -->
             <googleJavaFormat>
+              <!--Last version for Java 17-->
               <version>1.35.0</version>
               <style>GOOGLE</style>
+              <reflowLongStrings>true</reflowLongStrings>
             </googleJavaFormat>
-            <removeUnusedImports/>
+            <expandWildcardImports/>
             <importOrder/>
+            <removeUnusedImports/>
+            <formatAnnotations/>
+            <licenseHeader>
+              <file>${project.build.directory}/test-classes/license.template</file>
+              <delimiter>package</delimiter>
+              <!-- content until first occurrence of the delimiter regex will be interpreted as header section -->
+            </licenseHeader>
           </java>
+          <groovy>
+            <!-- These are the defaults, you can override if you want -->
+            <includes>
+              <include>**/*.groovy</include>
+            </includes>
+            <importOrder/>
+          </groovy>
+          <pom>
+            <!-- These are the defaults, you can override if you want -->
+            <includes>
+              <include>pom.xml</include>
+            </includes>
+            <sortPom>
+              <encoding>UTF-8</encoding>
+              <!-- The encoding of the pom files -->
+              <lineSeparator>${line.separator}</lineSeparator>
+              <!-- line separator to use -->
+              <expandEmptyElements>false</expandEmptyElements>
+              <!-- Should empty elements be expanded-->
+              <spaceBeforeCloseEmptyElement>false</spaceBeforeCloseEmptyElement>
+              <!-- Should a space be added inside self-closing elements-->
+              <keepBlankLines>true</keepBlankLines>
+              <!-- Keep empty lines -->
+              <nrOfIndentSpace>2</nrOfIndentSpace>
+              <!-- Indentation -->
+              <indentBlankLines>false</indentBlankLines>
+              <!-- Should empty lines be indented -->
+              <indentSchemaLocation>false</indentSchemaLocation>
+              <!-- Should schema locations be indented -->
+              <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
+              <!-- Sort order of elements: https://github.com/Ekryd/sortpom/wiki/PredefinedSortOrderProfiles-->
+              <sortOrderFile/>
+              <!-- Custom sort order of elements: https://raw.githubusercontent.com/Ekryd/sortpom/master/sorter/src/main/resources/custom_1.xml -->
+              <sortDependencies/>
+              <!-- Sort dependencies: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
+              <sortDependencyExclusions/>
+              <!-- Sort dependency exclusions: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
+              <sortPlugins/>
+              <!-- Sort plugins: https://github.com/Ekryd/sortpom/wiki/SortPlugins -->
+              <sortProperties>true</sortProperties>
+              <!-- Sort properties -->
+              <sortModules>true</sortModules>
+              <!-- Sort modules -->
+              <sortExecutions>true</sortExecutions>
+              <!-- Sort plugin executions -->
+            </sortPom>
+          </pom>
+          <markdown>
+            <includes>
+              <!-- You have to set the target manually -->
+              <include>**/*.md</include>
+            </includes>
+          </markdown>
+          <json>
+            <includes>
+              <!-- You have to set the target manually -->
+              <include>**/*.json</include>
+            </includes>
+            <excludes>
+              <exclude>**/target/**</exclude>
+            </excludes>
+            <jackson/>
+          </json>
         </configuration>
         <executions>
           <execution>
-            <id>spotless-check</id>
-            <phase>verify</phase>
             <goals>
               <goal>check</goal>
             </goals>
+            <phase>compile</phase>
           </execution>
         </executions>
       </plugin>
