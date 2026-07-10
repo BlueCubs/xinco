@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xinco-parent</artifactId>
     <groupId>com.bluecubs.xinco</groupId>
+    <artifactId>xinco-parent</artifactId>
     <version>3.0.0-M10-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <artifactId>xinco-ui</artifactId>
-  <name>Xinco UI</name>
   <packaging>jar</packaging>
+  <name>Xinco UI</name>
+  <properties>
+    <maven.compiler.release>25</maven.compiler.release>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <!-- Vaadin 25.2.1 BOM manages JUnit 6; Spring Boot 3.4.7 is not JUnit-6-ready.
@@ -126,19 +129,6 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>jacoco-prepare</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>jacoco-report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-          <execution>
             <id>jacoco-check</id>
             <goals>
               <goal>check</goal>
@@ -158,6 +148,19 @@
               </rules>
             </configuration>
           </execution>
+          <execution>
+            <id>jacoco-prepare</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-report</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <phase>test</phase>
+          </execution>
         </executions>
       </plugin>
     </plugins>
@@ -166,10 +169,10 @@
     <profile>
       <id>production</id>
       <properties>
-        <vaadin.productionMode>true</vaadin.productionMode>
         <!-- Vaadin 24.7.x ASM scanner does not support Java 25 class files (major v69).
              Compile to Java 21 for production builds; JRE 25 runs them fine. -->
         <maven.compiler.release>21</maven.compiler.release>
+        <vaadin.productionMode>true</vaadin.productionMode>
       </properties>
       <build>
         <plugins>
@@ -189,7 +192,4 @@
       </build>
     </profile>
   </profiles>
-  <properties>
-    <maven.compiler.release>25</maven.compiler.release>
-  </properties>
 </project>
