@@ -1,10 +1,18 @@
 package com.bluecubs.xinco.ui;
 
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
+import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.server.XincoRevisionInfo;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -27,7 +35,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +58,9 @@ public class AdminView extends VerticalLayout {
   private Grid<XincoCoreDataTypeServer> dataTypeGrid;
   private Grid<XincoCoreDataTypeAttributeServer> attrGrid;
   private XincoCoreDataTypeServer selectedDataType;
+  private Grid<XincoCoreLanguageServer> languageGrid;
+
+  private record AuditEntry(int revision, long timestamp, int modifierId, String reason) {}
 
   public AdminView(UserSession session) {
     this.session = session;
@@ -60,6 +73,9 @@ public class AdminView extends VerticalLayout {
     tabs.add(getTranslation("general.group"), buildGroupsTab());
     tabs.add(getTranslation("menu.preferences"), buildSettingsTab());
     tabs.add(getTranslation("general.datatype"), buildDataTypesTab());
+    tabs.add(getTranslation("general.language"), buildLanguagesTab());
+    tabs.add(getTranslation("message.admin.overview"), buildMaintenanceTab());
+    tabs.add(getTranslation("general.audit.menu"), buildAuditTrailTab());
 
     add(tabs);
   }
@@ -890,5 +906,262 @@ public class AdminView extends VerticalLayout {
   private void showError(String msg) {
     Notification n = Notification.show(msg, 5000, Notification.Position.BOTTOM_END);
     n.addThemeVariants(NotificationVariant.LUMO_ERROR);
+  }
+
+  // ---- Languages tab ----
+
+  private VerticalLayout buildLanguagesTab() {
+    languageGrid = new Grid<>();
+    languageGrid.setSizeFull();
+    languageGrid
+        .addColumn(XincoCoreLanguageServer::getId)
+        .setHeader(getTranslation("general.id"))
+        .setWidth("60px")
+        .setFlexGrow(0);
+    languageGrid
+        .addColumn(XincoCoreLanguageServer::getSign)
+        .setHeader(getTranslation("general.sign"))
+        .setWidth("130px")
+        .setFlexGrow(0);
+    languageGrid
+        .addColumn(XincoCoreLanguageServer::getDesignation)
+        .setHeader(getTranslation("general.designation"));
+    languageGrid.setItems(loadLanguages());
+
+    Button btnNew =
+        new Button(getTranslation("general.add.language"), e -> openLanguageDialog(null));
+    Button btnEdit =
+        new Button(
+            getTranslation("general.edit"),
+            e ->
+                languageGrid
+                    .asSingleSelect()
+                    .getOptionalValue()
+                    .ifPresent(this::openLanguageDialog));
+    Button btnDelete =
+        new Button(
+            getTranslation("general.delete"),
+            e ->
+                languageGrid
+                    .asSingleSelect()
+                    .getOptionalValue()
+                    .ifPresent(this::confirmDeleteLanguage));
+    btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+    HorizontalLayout toolbar = new HorizontalLayout(btnNew, btnEdit, btnDelete);
+    toolbar.setPadding(true);
+
+    VerticalLayout layout = new VerticalLayout(toolbar, languageGrid);
+    layout.setSizeFull();
+    layout.setFlexGrow(1, languageGrid);
+    layout.setPadding(false);
+    layout.setSpacing(false);
+    return layout;
+  }
+
+  void openLanguageDialog(XincoCoreLanguageServer existing) {
+    boolean isNew = existing == null;
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(
+        isNew
+            ? getTranslation("general.add.language")
+            : getTranslation("general.edit") + " " + getTranslation("general.language"));
+    dialog.setWidth("400px");
+
+    TextField sign = new TextField(getTranslation("general.sign"));
+    sign.setRequired(true);
+    TextField designation = new TextField(getTranslation("general.designation"));
+    designation.setRequired(true);
+
+    if (!isNew) {
+      sign.setValue(nvl(existing.getSign()));
+      designation.setValue(nvl(existing.getDesignation()));
+    }
+
+    dialog.add(new FormLayout(sign, designation));
+
+    Button save =
+        new Button(
+            getTranslation("general.save"),
+            e -> {
+              if (sign.isEmpty()) {
+                sign.setErrorMessage("Required");
+                sign.setInvalid(true);
+                return;
+              }
+              if (designation.isEmpty()) {
+                designation.setErrorMessage("Required");
+                designation.setInvalid(true);
+                return;
+              }
+              try {
+                XincoCoreLanguageServer lang =
+                    isNew
+                        ? new XincoCoreLanguageServer(
+                            0, sign.getValue().trim(), designation.getValue().trim())
+                        : existing;
+                if (!isNew) {
+                  lang.setSign(sign.getValue().trim());
+                  lang.setDesignation(designation.getValue().trim());
+                }
+                lang.setChangerID(adminId());
+                lang.write2DB();
+                dialog.close();
+                refreshLanguages();
+                showSuccess(isNew ? "Language created." : "Language updated.");
+              } catch (Exception ex) {
+                logger.log(Level.SEVERE, "Save language failed", ex);
+                showError("Save failed: " + ex.getMessage());
+              }
+            });
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    Button cancel = new Button(getTranslation("general.cancel"), e -> dialog.close());
+    dialog.getFooter().add(cancel, save);
+    dialog.open();
+  }
+
+  private void confirmDeleteLanguage(XincoCoreLanguageServer lang) {
+    if (XincoCoreLanguageServer.isLanguageUsed(lang)) {
+      showError(getTranslation("error.language.delete.referenced"));
+      return;
+    }
+    ConfirmDialog confirm = new ConfirmDialog();
+    confirm.setHeader(getTranslation("general.delete") + " " + getTranslation("general.language"));
+    confirm.setText(getTranslation("general.delete") + " \"" + lang.getDesignation() + "\"?");
+    confirm.setCancelable(true);
+    confirm.setConfirmText(getTranslation("general.delete"));
+    confirm.setConfirmButtonTheme("error primary");
+    confirm.addConfirmListener(
+        e -> {
+          try {
+            XincoCoreLanguageServer.deleteFromDB(lang, adminId());
+            refreshLanguages();
+            showSuccess("Language deleted.");
+          } catch (XincoException ex) {
+            logger.log(Level.SEVERE, "Delete language failed", ex);
+            showError("Cannot delete: " + ex.getMessage());
+          }
+        });
+    confirm.open();
+  }
+
+  private void refreshLanguages() {
+    languageGrid.setItems(loadLanguages());
+  }
+
+  private List<XincoCoreLanguageServer> loadLanguages() {
+    try {
+      return XincoCoreLanguageServer.getXincoCoreLanguages();
+    } catch (Throwable t) {
+      return List.of();
+    }
+  }
+
+  // ---- Maintenance tab ----
+
+  private VerticalLayout buildMaintenanceTab() {
+    Span trashDesc = new Span(getTranslation("message.admin.trash.message"));
+    Button btnEmptyTrash =
+        new Button(getTranslation("message.admin.trash"), e -> confirmEmptyTrash());
+    btnEmptyTrash.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+    Button btnRebuildIndex =
+        new Button(getTranslation("message.admin.index"), e -> runRebuildIndex());
+    btnRebuildIndex.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+    VerticalLayout layout = new VerticalLayout(trashDesc, btnEmptyTrash, btnRebuildIndex);
+    layout.setPadding(true);
+    layout.setSpacing(true);
+    return layout;
+  }
+
+  private void confirmEmptyTrash() {
+    ConfirmDialog confirm = new ConfirmDialog();
+    confirm.setHeader(getTranslation("message.admin.trash"));
+    confirm.setText(getTranslation("message.admin.trash.message"));
+    confirm.setCancelable(true);
+    confirm.setConfirmText(getTranslation("general.ok"));
+    confirm.setConfirmButtonTheme("error primary");
+    confirm.addConfirmListener(
+        e -> {
+          try {
+            XincoCoreNodeServer trashNode = new XincoCoreNodeServer(2);
+            trashNode.deleteFromDB(false, adminId());
+            showSuccess("Trash emptied.");
+          } catch (XincoException ex) {
+            logger.log(Level.SEVERE, "Empty trash failed", ex);
+            showError("Failed: " + ex.getMessage());
+          }
+        });
+    confirm.open();
+  }
+
+  private void runRebuildIndex() {
+    try {
+      List<?> ids = createdQuery("SELECT x.id FROM XincoCoreData x");
+      for (Object obj : ids) {
+        try {
+          int id = ((Number) obj).intValue();
+          XincoCoreDataServer data = new XincoCoreDataServer(id);
+          XincoIndexer.indexXincoCoreData(data, true);
+        } catch (XincoException ex) {
+          logger.log(Level.WARNING, "Could not index data item " + obj, ex);
+        }
+      }
+      XincoIndexer.optimizeIndex();
+      showSuccess("Index rebuilt.");
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "Rebuild index failed", ex);
+      showError("Rebuild failed: " + ex.getMessage());
+    }
+  }
+
+  // ---- Audit Trail tab ----
+
+  private VerticalLayout buildAuditTrailTab() {
+    Grid<AuditEntry> auditGrid = new Grid<>();
+    auditGrid.setSizeFull();
+    auditGrid.addColumn(AuditEntry::revision).setHeader("Rev #").setWidth("80px").setFlexGrow(0);
+    auditGrid
+        .addColumn(e -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(e.timestamp())))
+        .setHeader(getTranslation("general.audit.modtime"));
+    auditGrid
+        .addColumn(AuditEntry::modifierId)
+        .setHeader(getTranslation("general.user"))
+        .setWidth("100px")
+        .setFlexGrow(0);
+    auditGrid.addColumn(AuditEntry::reason).setHeader(getTranslation("general.reason"));
+    auditGrid.setItems(loadAuditEntries());
+
+    Button btnRefresh =
+        new Button(
+            getTranslation("menu.repository.refresh"), e -> auditGrid.setItems(loadAuditEntries()));
+    HorizontalLayout toolbar = new HorizontalLayout(btnRefresh);
+    toolbar.setPadding(true);
+
+    VerticalLayout layout = new VerticalLayout(toolbar, auditGrid);
+    layout.setSizeFull();
+    layout.setFlexGrow(1, auditGrid);
+    layout.setPadding(false);
+    layout.setSpacing(false);
+    return layout;
+  }
+
+  private List<AuditEntry> loadAuditEntries() {
+    List<AuditEntry> entries = new ArrayList<>();
+    try {
+      List<?> results = createdQuery("SELECT r FROM XincoRevisionInfo r ORDER BY r.id DESC");
+      List<?> limited = results.subList(0, Math.min(200, results.size()));
+      for (Object obj : limited) {
+        if (obj instanceof XincoRevisionInfo r) {
+          entries.add(
+              new AuditEntry(
+                  r.getId(), r.getTimestamp(), r.getModifierId(), nvl(r.getModReason())));
+        }
+      }
+    } catch (Exception t) {
+      logger.log(Level.WARNING, "Could not load audit entries", t);
+    }
+    return entries;
   }
 }
