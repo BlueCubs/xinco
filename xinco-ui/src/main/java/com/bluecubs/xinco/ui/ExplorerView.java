@@ -111,10 +111,12 @@ public class ExplorerView extends VerticalLayout
   private Span searchStatusLabel;
   private Button clearSearchBtn;
 
+  private int searchLangId = 0;
+
   // Package-private: allows tests to inject search results without static mocking XincoIndexer.
   @SuppressWarnings("unchecked")
   Function<String, java.util.ArrayList> searcher =
-      query -> XincoIndexer.findXincoCoreData(query, 0);
+      query -> XincoIndexer.findXincoCoreData(query, searchLangId);
 
   public ExplorerView() {
     this(resolveSession());
@@ -488,6 +490,23 @@ public class ExplorerView extends VerticalLayout
     Button searchBtn = new Button(VaadinIcon.SEARCH.create(), e -> doSearch());
     searchBtn.setTooltipText(getTranslation("menu.search"));
 
+    Select<XincoCoreLanguageServer> langFilter = new Select<>();
+    langFilter.setLabel(getTranslation("general.language"));
+    langFilter.setWidth("160px");
+    try {
+      List<XincoCoreLanguageServer> langs =
+          XincoCoreLanguageServer.getXincoCoreLanguages().stream()
+              .filter(o -> o instanceof XincoCoreLanguageServer)
+              .map(o -> (XincoCoreLanguageServer) o)
+              .toList();
+      langFilter.setItems(langs);
+      langFilter.setItemLabelGenerator(XincoCoreLanguageServer::getDesignation);
+    } catch (Exception ex) {
+      LOG.log(Level.WARNING, "Could not load languages for search filter", ex);
+    }
+    langFilter.addValueChangeListener(
+        e -> searchLangId = e.getValue() != null ? e.getValue().getId() : 0);
+
     clearSearchBtn = new Button(VaadinIcon.CLOSE_SMALL.create(), e -> clearSearch());
     clearSearchBtn.setTooltipText(getTranslation("general.reset"));
     clearSearchBtn.setVisible(false);
@@ -500,7 +519,7 @@ public class ExplorerView extends VerticalLayout
     searchStatusLabel.setVisible(false);
 
     HorizontalLayout bar =
-        new HorizontalLayout(searchField, searchBtn, clearSearchBtn, searchStatusLabel);
+        new HorizontalLayout(searchField, langFilter, searchBtn, clearSearchBtn, searchStatusLabel);
     bar.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
     bar.setPadding(false);
     return bar;

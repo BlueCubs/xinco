@@ -67,7 +67,6 @@ import java.util.function.Function;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -1773,7 +1772,6 @@ class ExplorerViewTest {
   }
 
   @Test
-  @Disabled("gap: search bar should include a language filter per §2.12")
   void searchBar_shouldHaveLanguageFilter() {
     // §2.12: language can optionally be added to a search query.
     addView(new ExplorerView(loggedInSession()));
