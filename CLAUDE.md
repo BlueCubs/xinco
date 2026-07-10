@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Xinco DMS (eXtensible INformation COre) is a web-service-based Document Management System featuring ACLs, versioning, full-text search, and a tree-based data hierarchy. It is undergoing an active migration from a Vaadin 6 monolith to a Vaadin 25 / Spring Boot architecture.
+Xinco DMS (eXtensible INformation COre) is a web-service-based Document Management System featuring ACLs, versioning, full-text search, and a tree-based data hierarchy. The migration from a Vaadin 6 monolith to Vaadin 25 / Spring Boot is complete.
 
 ## Build & Development Commands
 
@@ -60,8 +60,7 @@ The project is a Maven multi-module build (`xinco-parent`):
 | Module | Role |
 |---|---|
 | `xinco-core` | Business logic, JPA entities, JAX-WS web service, service layer |
-| `Xinco` | Legacy WAR — Vaadin 6 UI, deployed to Tomcat (scheduled for removal) |
-| `xinco-ui` | New UI — Vaadin 25 + Spring Boot 3, depends on `xinco-core` |
+| `xinco-ui` | Vaadin 25 + Spring Boot 3 UI, depends on `xinco-core` |
 
 ### `xinco-core` internals
 - **`server/`** — server-side domain objects (`XincoCoreDataServer`, `XincoCoreUserServer`, `XincoCoreNodeServer`, etc.) and extracted service classes (`XincoActivityService`, `XincoFileService`, `XincoTreeService`)
@@ -76,15 +75,9 @@ The project is a Maven multi-module build (`xinco-parent`):
 - Shared state: `UserSession`
 - Components: `PropertyGrid`, `CheckinDialog`
 
-## Active Work: Vaadin Migration
+## Vaadin Migration: Complete
 
-Track: `conductor/tracks/vaadin_migration/plan.md`
-
-**Current phase status:**
-- Phases 1–3 are largely complete (logic extracted, new module bootstrapped, core views implemented).
-- Remaining tasks: enhance PropertyGrid metadata, verify admin feature parity, switch Docker to deploy `xinco-ui-v25`, remove legacy `Xinco` module.
-
-The `Xinco` (Vaadin 6) module is legacy and will be deleted once feature parity is confirmed.
+The Vaadin 6 `Xinco` module has been removed. The `xinco-ui` module (Vaadin 25 / Spring Boot) is the sole UI. Track history: `conductor/tracks/vaadin_migration/plan.md`.
 
 ## Workflow & Conventions
 
