@@ -1,6 +1,17 @@
 package com.bluecubs.xinco.core.server;
 
-import static com.bluecubs.xinco.core.server.XincoDBManager.*;
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.displayDBStatus;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getDBVersion;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getDemoResetPeriod;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getVersion;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getVersionNumber;
+import static com.bluecubs.xinco.core.server.XincoDBManager.isDemo;
+import static com.bluecubs.xinco.core.server.XincoDBManager.isLocked;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.nativeQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.setContents;
+import static com.bluecubs.xinco.core.server.XincoDBManager.setLocked;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 

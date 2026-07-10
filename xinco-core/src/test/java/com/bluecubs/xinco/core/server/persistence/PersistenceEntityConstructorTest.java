@@ -1,6 +1,8 @@
 package com.bluecubs.xinco.core.server.persistence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
 import junit.framework.JUnit4TestAdapter;

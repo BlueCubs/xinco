@@ -3,7 +3,9 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK;
+import com.bluecubs.xinco.core.server.persistence.XincoId;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

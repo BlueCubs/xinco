@@ -3,15 +3,17 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bluecubs.xinco</groupId>
   <artifactId>xinco-parent</artifactId>
-  <packaging>pom</packaging>
   <version>3.0.0-M10-SNAPSHOT</version>
+  <packaging>pom</packaging>
   <name>Xinco Parent</name>
   <description>The Core of Information and Document Management xinco DMS™ is a powerful Web-based Information and Document Management System (DMS) for files, text, URLs and contacts, featuring ACLs, version control, full text search and a fully web-based client.</description>
   <url>https://xinco.org</url>
-  <issueManagement>
-    <system>JIRA</system>
-    <url>https://xincoforge.atlassian.net</url>
-  </issueManagement>
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
   <developers>
     <developer>
       <id>javydreamercsw</id>
@@ -22,37 +24,85 @@
       </roles>
     </developer>
   </developers>
-  <licenses>
-    <license>
-      <name>Apache License 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-    </license>
-  </licenses>
+  <modules>
+    <module>xinco-core</module>
+    <module>xinco-ui</module>
+  </modules>
   <scm>
-    <url>https://github.com/BlueCubs/xinco</url>
     <connection>scm:git:git://github.com/BlueCubs/xinco.git</connection>
     <developerConnection>scm:git:git@github.com:BlueCubs/xinco.git</developerConnection>
     <tag>Xinco-3.0.0-M9</tag>
+    <url>https://github.com/BlueCubs/xinco</url>
   </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/BlueCubs/xinco/issues</url>
+  </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
     <url>https://xinco.ci.cloudbees.com/</url>
   </ciManagement>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <filter>true</filter>
-    <widgetset.path>src/main/webapp</widgetset.path>
-    <xinco.version>${project.version}</xinco.version>
     <context.xml.file>${basedir}/src/main/webapp/META-INF/context.xml</context.xml.file>
-    <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+    <filter>true</filter>
     <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
+    <maven.compiler.release>25</maven.compiler.release>
+    <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <!-- If addon submodule is not used, this can also be "fetch" or "cdn" -->
     <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.compiler.release>25</maven.compiler.release>
     <widgetset.path>src/main/webapp</widgetset.path>
+    <widgetset.path>src/main/webapp</widgetset.path>
+    <xinco.version>${project.version}</xinco.version>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.0.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.46</version>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>vaadin-snapshots</id>
+      <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+    </repository>
+    <repository>
+      <id>vaadin-addons</id>
+      <url>https://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+    <repository>
+      <id>EclipseLink Repo</id>
+      <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+    </repository>
+    <repository>
+      <id>project.local</id>
+      <name>project</name>
+      <url>file:${project.basedir}/repo</url>
+    </repository>
+    <repository>
+      <id>OW2 Repository</id>
+      <name>OW2 Repository</name>
+      <url>http://maven.ow2.org/maven2/</url>
+    </repository>
+  </repositories>
   <build>
     <pluginManagement>
       <plugins>
@@ -330,7 +380,7 @@
         <artifactId>spotless-maven-plugin</artifactId>
         <configuration>
           <!-- optional: limit format enforcement to just the files changed by this feature branch -->
-          <ratchetFrom>origin/main</ratchetFrom>
+          <ratchetFrom>origin/master</ratchetFrom>
           <formats>
             <!-- you can define as many formats as you want, each is independent -->
             <format>
@@ -363,11 +413,6 @@
             <importOrder/>
             <removeUnusedImports/>
             <formatAnnotations/>
-            <licenseHeader>
-              <file>${project.build.directory}/test-classes/license.template</file>
-              <delimiter>package</delimiter>
-              <!-- content until first occurrence of the delimiter regex will be interpreted as header section -->
-            </licenseHeader>
           </java>
           <groovy>
             <!-- These are the defaults, you can override if you want -->
@@ -449,14 +494,14 @@
         <executions>
           <execution>
             <id>install-spotless-hook</id>
-            <phase>initialize</phase>
             <goals>
               <goal>run</goal>
             </goals>
+            <phase>initialize</phase>
             <configuration>
               <target>
                 <mkdir dir="${project.basedir}/.git/hooks"/>
-                <echo file="${project.basedir}/.git/hooks/pre-commit" append="false">#!/bin/bash set -e REPO_ROOT="$(git rev-parse --show-toplevel)" cd "$REPO_ROOT" mvn spotless:apply -q git add -u</echo>
+                <echo append="false" file="${project.basedir}/.git/hooks/pre-commit">#!/bin/bash set -e REPO_ROOT="$(git rev-parse --show-toplevel)" cd "$REPO_ROOT" mvn spotless:apply -q git add -u</echo>
                 <chmod file="${project.basedir}/.git/hooks/pre-commit" perm="755"/>
               </target>
             </configuration>
@@ -480,61 +525,15 @@
           </execution>
           <execution>
             <id>report</id>
-            <phase>test</phase>
             <goals>
               <goal>report</goal>
             </goals>
+            <phase>test</phase>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>jakarta.servlet</groupId>
-        <artifactId>jakarta.servlet-api</artifactId>
-        <version>6.0.0</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.46</version>
-        <scope>provided</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <repositories>
-    <repository>
-      <id>vaadin-snapshots</id>
-      <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>vaadin-addons</id>
-      <url>https://maven.vaadin.com/vaadin-addons</url>
-    </repository>
-    <repository>
-      <id>EclipseLink Repo</id>
-      <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-    </repository>
-    <repository>
-      <id>project.local</id>
-      <name>project</name>
-      <url>file:${project.basedir}/repo</url>
-    </repository>
-    <repository>
-      <id>OW2 Repository</id>
-      <name>OW2 Repository</name>
-      <url>http://maven.ow2.org/maven2/</url>
-    </repository>
-  </repositories>
   <profiles>
     <profile>
       <!-- Production builds must run under JDK 21; Vaadin's bundled ASM (< 9.7) cannot
@@ -557,14 +556,14 @@
           <url>https://maven.vaadin.com/vaadin-prereleases</url>
         </repository>
         <repository>
-          <id>vaadin-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
           <releases>
             <enabled>false</enabled>
           </releases>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
+          <id>vaadin-snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
         </repository>
       </repositories>
       <pluginRepositories>
@@ -573,20 +572,16 @@
           <url>https://maven.vaadin.com/vaadin-prereleases</url>
         </pluginRepository>
         <pluginRepository>
-          <id>vaadin-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
           <releases>
             <enabled>false</enabled>
           </releases>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
+          <id>vaadin-snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
   </profiles>
-  <modules>
-    <module>xinco-core</module>
-    <module>xinco-ui</module>
-  </modules>
 </project>
