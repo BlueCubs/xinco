@@ -4,7 +4,11 @@ import static com.bluecubs.xinco.tools.MD5.encrypt;
 import static java.lang.System.out;
 import static org.junit.Assert.assertNotSame;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com

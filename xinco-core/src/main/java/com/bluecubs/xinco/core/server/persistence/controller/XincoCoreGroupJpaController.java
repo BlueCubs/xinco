@@ -261,7 +261,7 @@ public class XincoCoreGroupJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoCoreGroup.getId();
         if (findXincoCoreGroup(id) == null) {
           throw new NonexistentEntityException(
@@ -301,7 +301,8 @@ public class XincoCoreGroupJpaController implements Serializable {
                 + xincoCoreGroup
                 + ") cannot be destroyed since the XincoCoreUserHasXincoCoreGroup "
                 + xincoCoreUserHasXincoCoreGroupListOrphanCheckXincoCoreUserHasXincoCoreGroup
-                + " in its xincoCoreUserHasXincoCoreGroupList field has a non-nullable xincoCoreGroup field.");
+                + " in its xincoCoreUserHasXincoCoreGroupList field has a non-nullable"
+                + " xincoCoreGroup field.");
       }
       if (illegalOrphanMessages != null) {
         throw new IllegalOrphanException(illegalOrphanMessages);

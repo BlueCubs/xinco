@@ -30,7 +30,17 @@ package com.bluecubs.xinco.core.server.persistence;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.TABLE;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -68,8 +78,7 @@ public class XincoDependencyBehavior implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoDependencyBehaviorGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoDependencyBehaviorGen")
   @TableGenerator(
       name = "XincoDependencyBehaviorGen",
       table = "xinco_id",
@@ -82,13 +91,10 @@ public class XincoDependencyBehavior implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 45)
-  @Column(name = "designation")
+  @NotNull @Size(min = 1, max = 45) @Column(name = "designation")
   private String designation;
 
-  @Size(max = 45)
-  @Column(name = "description")
+  @Size(max = 45) @Column(name = "description")
   private String description;
 
   @OneToMany(cascade = ALL, mappedBy = "xincoDependencyBehavior")

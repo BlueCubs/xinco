@@ -345,7 +345,7 @@ public class XincoCoreNodeJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoCoreNode.getId();
         if (findXincoCoreNode(id) == null) {
           throw new NonexistentEntityException(

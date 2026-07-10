@@ -29,7 +29,17 @@ package com.bluecubs.xinco.core.server.persistence;
 
 import static jakarta.persistence.GenerationType.TABLE;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -66,8 +76,7 @@ public class XincoCoreAce implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoCoreACEGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreACEGen")
   @TableGenerator(
       name = "XincoCoreACEGen",
       table = "xinco_id",
@@ -80,23 +89,19 @@ public class XincoCoreAce implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "read_permission")
+  @NotNull @Column(name = "read_permission")
   private boolean readPermission;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "write_permission")
+  @NotNull @Column(name = "write_permission")
   private boolean writePermission;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "execute_permission")
+  @NotNull @Column(name = "execute_permission")
   private boolean executePermission;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "admin_permission")
+  @NotNull @Column(name = "admin_permission")
   private boolean adminPermission;
 
   @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id")

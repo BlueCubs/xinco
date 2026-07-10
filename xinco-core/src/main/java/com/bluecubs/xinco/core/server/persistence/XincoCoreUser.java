@@ -31,7 +31,18 @@ import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.TABLE;
 import static jakarta.persistence.TemporalType.DATE;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -87,8 +98,7 @@ public class XincoCoreUser implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoCoreUserGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreUserGen")
   @TableGenerator(
       name = "XincoCoreUserGen",
       table = "xinco_id",
@@ -101,28 +111,19 @@ public class XincoCoreUser implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "username")
-  @Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Invalid user name")
-  private String username;
+  @NotNull @Size(min = 1, max = 255) @Column(name = "username")
+  @Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Invalid user name") private String username;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "userpassword")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "userpassword")
   private String userpassword;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "last_name")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "last_name")
   private String lastName;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "first_name")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "first_name")
   private String firstName;
 
   @Pattern(
@@ -132,24 +133,19 @@ public class XincoCoreUser implements Serializable {
           "Invalid email") // if the field contains email address consider using this annotation to
   // enforce field validation
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "email")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "email")
   private String email;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "status_number")
+  @NotNull @Column(name = "status_number")
   private int statusNumber;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "attempts")
+  @NotNull @Column(name = "attempts")
   private int attempts;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "last_modified")
+  @NotNull @Column(name = "last_modified")
   @Temporal(DATE)
   private Date lastModified;
 

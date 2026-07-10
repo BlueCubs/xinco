@@ -75,7 +75,7 @@ public class XincoSettingJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (Exception ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoSetting.getId();
         if (findXincoSetting(id) == null) {
           throw new NonexistentEntityException(

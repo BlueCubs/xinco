@@ -42,15 +42,13 @@ import lombok.Setter;
 public class XincoAddAttributePK implements Serializable {
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "xinco_core_data_id")
   @Getter
   private int xincoCoreDataId;
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "attribute_id")
   @Getter
   private int attributeId;

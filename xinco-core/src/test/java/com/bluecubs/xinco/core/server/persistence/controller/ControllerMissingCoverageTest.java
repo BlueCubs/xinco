@@ -3,7 +3,8 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import java.util.ArrayList;
 import junit.framework.Test;
 import junit.framework.TestSuite;

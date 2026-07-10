@@ -42,15 +42,13 @@ import lombok.Setter;
 public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "xinco_core_user_id")
   @Getter
   private int xincoCoreUserId;
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "xinco_core_group_id")
   @Getter
   private int xincoCoreGroupId;
@@ -82,7 +80,8 @@ public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
 
   @Override
   public String toString() {
-    return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK[ xincoCoreUserId="
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK["
+        + " xincoCoreUserId="
         + xincoCoreUserId
         + ", xincoCoreGroupId="
         + xincoCoreGroupId

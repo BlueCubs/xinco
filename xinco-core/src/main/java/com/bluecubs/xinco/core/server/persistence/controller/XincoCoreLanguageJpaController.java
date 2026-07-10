@@ -238,7 +238,7 @@ public class XincoCoreLanguageJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoCoreLanguage.getId();
         if (findXincoCoreLanguage(id) == null) {
           throw new NonexistentEntityException(

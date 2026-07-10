@@ -29,7 +29,16 @@ package com.bluecubs.xinco.core.server.persistence;
 
 import static jakarta.persistence.GenerationType.TABLE;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -67,8 +76,7 @@ public class XincoSetting implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoSettingGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoSettingGen")
   @TableGenerator(
       name = "XincoSettingGen",
       table = "xinco_id",
@@ -81,17 +89,14 @@ public class XincoSetting implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 45)
-  @Column(name = "description")
+  @NotNull @Size(min = 1, max = 45) @Column(name = "description")
   private String description;
 
   @Column(name = "int_value")
   private Integer intValue;
 
   @Lob
-  @Size(max = 65_535)
-  @Column(name = "string_value")
+  @Size(max = 65_535) @Column(name = "string_value")
   private String stringValue;
 
   @Column(name = "bool_value")

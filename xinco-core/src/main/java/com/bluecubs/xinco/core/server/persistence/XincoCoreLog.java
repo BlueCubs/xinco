@@ -30,7 +30,18 @@ package com.bluecubs.xinco.core.server.persistence;
 import static jakarta.persistence.GenerationType.TABLE;
 import static jakarta.persistence.TemporalType.TIMESTAMP;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.persistence.Temporal;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -78,8 +89,7 @@ public class XincoCoreLog implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoCoreLogGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreLogGen")
   @TableGenerator(
       name = "XincoCoreLogGen",
       table = "xinco_id",
@@ -92,20 +102,16 @@ public class XincoCoreLog implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "op_code")
+  @NotNull @Column(name = "op_code")
   private int opCode;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "op_datetime")
+  @NotNull @Column(name = "op_datetime")
   @Temporal(TIMESTAMP)
   private Date opDatetime;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "op_description")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "op_description")
   private String opDescription;
 
   @Column(name = "version_high")
@@ -117,8 +123,7 @@ public class XincoCoreLog implements Serializable {
   @Column(name = "version_low")
   private Integer versionLow;
 
-  @Size(max = 255)
-  @Column(name = "version_postfix")
+  @Size(max = 255) @Column(name = "version_postfix")
   private String versionPostfix;
 
   @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id")

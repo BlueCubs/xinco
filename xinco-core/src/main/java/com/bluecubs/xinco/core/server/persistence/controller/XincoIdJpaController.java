@@ -75,7 +75,7 @@ public class XincoIdJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (Exception ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoId.getId();
         if (findXincoId(id) == null) {
           throw new NonexistentEntityException("The xincoId with id " + id + " no longer exists.");

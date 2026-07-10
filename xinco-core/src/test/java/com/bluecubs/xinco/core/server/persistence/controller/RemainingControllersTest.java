@@ -6,7 +6,6 @@ import static java.util.logging.Logger.getLogger;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

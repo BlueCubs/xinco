@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xinco-parent</artifactId>
     <groupId>com.bluecubs.xinco</groupId>
+    <artifactId>xinco-parent</artifactId>
     <version>3.0.0-M10-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <artifactId>xinco-core</artifactId>
-  <name>Xinco Core</name>
   <packaging>jar</packaging>
+  <name>Xinco Core</name>
+  <properties>
+    <maven.compiler.release>25</maven.compiler.release>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -154,6 +157,9 @@
         <executions>
           <execution>
             <id>generate-sources</id>
+            <goals>
+              <goal>wsdl2java</goal>
+            </goals>
             <phase>generate-sources</phase>
             <configuration>
               <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
@@ -163,9 +169,6 @@
                 </wsdlOption>
               </wsdlOptions>
             </configuration>
-            <goals>
-              <goal>wsdl2java</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
@@ -243,7 +246,4 @@
       </properties>
     </profile>
   </profiles>
-  <properties>
-    <maven.compiler.release>25</maven.compiler.release>
-  </properties>
 </project>

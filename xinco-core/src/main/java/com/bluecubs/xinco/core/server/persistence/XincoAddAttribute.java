@@ -29,7 +29,16 @@ package com.bluecubs.xinco.core.server.persistence;
 
 import static jakarta.persistence.TemporalType.TIMESTAMP;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -48,11 +57,13 @@ import org.hibernate.envers.Audited;
   @NamedQuery(
       name = "XincoAddAttribute.findByXincoCoreDataId",
       query =
-          "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId"),
+          "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.xincoCoreDataId ="
+              + " :xincoCoreDataId"),
   @NamedQuery(
       name = "XincoAddAttribute.findByAttributeId",
       query =
-          "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId = :attributeId"),
+          "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId ="
+              + " :attributeId"),
   @NamedQuery(
       name = "XincoAddAttribute.findByAttribInt",
       query = "SELECT x FROM XincoAddAttribute x WHERE x.attribInt = :attribInt"),
@@ -85,13 +96,11 @@ public class XincoAddAttribute implements Serializable {
   @Column(name = "attrib_double")
   private Double attribDouble;
 
-  @Size(max = 255)
-  @Column(name = "attrib_varchar")
+  @Size(max = 255) @Column(name = "attrib_varchar")
   private String attribVarchar;
 
   @Lob
-  @Size(max = 65_535)
-  @Column(name = "attrib_text")
+  @Size(max = 65_535) @Column(name = "attrib_text")
   private String attribText;
 
   @Column(name = "attrib_datetime")

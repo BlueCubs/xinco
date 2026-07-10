@@ -27,7 +27,10 @@
  */
 package com.bluecubs.xinco.core.server.persistence.controller;
 
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
@@ -326,7 +329,7 @@ public class XincoCoreUserJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoCoreUser.getId();
         if (findXincoCoreUser(id) == null) {
           throw new NonexistentEntityException(
@@ -378,7 +381,8 @@ public class XincoCoreUserJpaController implements Serializable {
                 + xincoCoreUser
                 + ") cannot be destroyed since the XincoCoreUserHasXincoCoreGroup "
                 + xincoCoreUserHasXincoCoreGroupListOrphanCheckXincoCoreUserHasXincoCoreGroup
-                + " in its xincoCoreUserHasXincoCoreGroupList field has a non-nullable xincoCoreUser field.");
+                + " in its xincoCoreUserHasXincoCoreGroupList field has a non-nullable"
+                + " xincoCoreUser field.");
       }
       if (illegalOrphanMessages != null) {
         throw new IllegalOrphanException(illegalOrphanMessages);

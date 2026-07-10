@@ -74,10 +74,11 @@ public class XincoCoreDataHasDependencyServerTest extends AbstractXincoDataBaseT
       parameters.put("dependencyTypeId", dependencyTypeId);
       result =
           createdQuery(
-              "SELECT x FROM XincoCoreDataHasDependency x WHERE "
-                  + "x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId "
-                  + "and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId = :xincoCoreDataChildrenId "
-                  + "and x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId",
+              "SELECT x FROM XincoCoreDataHasDependency x WHERE"
+                  + " x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId"
+                  + " and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId ="
+                  + " :xincoCoreDataChildrenId and x.xincoCoreDataHasDependencyPK.dependencyTypeId"
+                  + " = :dependencyTypeId",
               parameters);
       assertTrue(result.isEmpty());
     } catch (XincoException ex) {

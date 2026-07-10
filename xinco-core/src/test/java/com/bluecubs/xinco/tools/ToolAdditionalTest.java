@@ -1,6 +1,9 @@
 package com.bluecubs.xinco.tools;
 
-import static com.bluecubs.xinco.tools.Tool.*;
+import static com.bluecubs.xinco.tools.Tool.copyFile;
+import static com.bluecubs.xinco.tools.Tool.getFileSuffix;
+import static com.bluecubs.xinco.tools.Tool.getImageDim;
+import static com.bluecubs.xinco.tools.Tool.textHasContent;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;

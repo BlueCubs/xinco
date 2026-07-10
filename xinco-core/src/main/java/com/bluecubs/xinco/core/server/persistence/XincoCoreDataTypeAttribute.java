@@ -27,7 +27,15 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -48,11 +56,13 @@ import org.hibernate.envers.Audited;
   @NamedQuery(
       name = "XincoCoreDataTypeAttribute.findByXincoCoreDataTypeId",
       query =
-          "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+          "SELECT x FROM XincoCoreDataTypeAttribute x WHERE"
+              + " x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
   @NamedQuery(
       name = "XincoCoreDataTypeAttribute.findByAttributeId",
       query =
-          "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.attributeId = :attributeId"),
+          "SELECT x FROM XincoCoreDataTypeAttribute x WHERE"
+              + " x.xincoCoreDataTypeAttributePK.attributeId = :attributeId"),
   @NamedQuery(
       name = "XincoCoreDataTypeAttribute.findByDesignation",
       query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.designation = :designation"),
@@ -69,20 +79,15 @@ public class XincoCoreDataTypeAttribute implements Serializable {
   @EmbeddedId protected XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "designation")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
   private String designation;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "data_type")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "data_type")
   private String dataType;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "attr_size")
+  @NotNull @Column(name = "attr_size")
   private int attrSize;
 
   @JoinColumn(
@@ -179,7 +184,8 @@ public class XincoCoreDataTypeAttribute implements Serializable {
 
   @Override
   public String toString() {
-    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute[ xincoCoreDataTypeAttributePK="
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute["
+        + " xincoCoreDataTypeAttributePK="
         + xincoCoreDataTypeAttributePK
         + " ]";
   }

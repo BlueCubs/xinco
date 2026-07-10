@@ -42,15 +42,13 @@ import lombok.Setter;
 public class XincoCoreDataTypeAttributePK implements Serializable {
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "xinco_core_data_type_id")
   @Getter
   private int xincoCoreDataTypeId;
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "attribute_id")
   @Getter
   private int attributeId;
@@ -82,7 +80,8 @@ public class XincoCoreDataTypeAttributePK implements Serializable {
 
   @Override
   public String toString() {
-    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK[ xincoCoreDataTypeId="
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK["
+        + " xincoCoreDataTypeId="
         + xincoCoreDataTypeId
         + ", attributeId="
         + attributeId

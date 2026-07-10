@@ -155,7 +155,8 @@ public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAtt
           createdQuery(
               "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId ="
                   + attrCDTA.getAttributeId()
-                  + " and x.xincoAddAttributePK.xincoCoreDataId IN (Select xcd.id from XincoCoreData xcd where xcd.xincoCoreDataType.id="
+                  + " and x.xincoAddAttributePK.xincoCoreDataId IN (Select xcd.id from"
+                  + " XincoCoreData xcd where xcd.xincoCoreDataType.id="
                   + attrCDTA.getXincoCoreDataTypeId()
                   + ")");
       for (Object o : result) {
@@ -166,7 +167,8 @@ public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAtt
       }
       result =
           createdQuery(
-              "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId ="
+              "SELECT x FROM XincoCoreDataTypeAttribute x WHERE"
+                  + " x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId ="
                   + attrCDTA.getXincoCoreDataTypeId()
                   + " and x.xincoCoreDataTypeAttributePK.attributeId ="
                   + attrCDTA.getAttributeId());

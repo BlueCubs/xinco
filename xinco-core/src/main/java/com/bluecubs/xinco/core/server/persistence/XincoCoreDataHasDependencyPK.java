@@ -42,22 +42,19 @@ import lombok.Setter;
 public class XincoCoreDataHasDependencyPK implements Serializable {
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "xinco_core_data_parent_id")
   @Getter
   private int xincoCoreDataParentId;
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "xinco_core_data_children_id")
   @Getter
   private int xincoCoreDataChildrenId;
 
   @Basic(optional = false)
-  @NotNull
-  @Setter
+  @NotNull @Setter
   @Column(name = "dependency_type_id")
   @Getter
   private int dependencyTypeId;
@@ -96,7 +93,8 @@ public class XincoCoreDataHasDependencyPK implements Serializable {
 
   @Override
   public String toString() {
-    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK[ xincoCoreDataParentId="
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK["
+        + " xincoCoreDataParentId="
         + xincoCoreDataParentId
         + ", xincoCoreDataChildrenId="
         + xincoCoreDataChildrenId

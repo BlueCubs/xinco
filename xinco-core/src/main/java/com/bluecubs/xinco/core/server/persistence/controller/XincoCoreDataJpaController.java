@@ -27,7 +27,14 @@
  */
 package com.bluecubs.xinco.core.server.persistence.controller;
 
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
@@ -568,7 +575,7 @@ public class XincoCoreDataJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoCoreData.getId();
         if (findXincoCoreData(id) == null) {
           throw new NonexistentEntityException(
@@ -608,7 +615,8 @@ public class XincoCoreDataJpaController implements Serializable {
                 + xincoCoreData
                 + ") cannot be destroyed since the XincoCoreDataHasDependency "
                 + xincoCoreDataHasDependencyListOrphanCheckXincoCoreDataHasDependency
-                + " in its xincoCoreDataHasDependencyList field has a non-nullable xincoCoreData field.");
+                + " in its xincoCoreDataHasDependencyList field has a non-nullable xincoCoreData"
+                + " field.");
       }
       List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList1OrphanCheck =
           xincoCoreData.getXincoCoreDataHasDependencyList1();
@@ -623,7 +631,8 @@ public class XincoCoreDataJpaController implements Serializable {
                 + xincoCoreData
                 + ") cannot be destroyed since the XincoCoreDataHasDependency "
                 + xincoCoreDataHasDependencyList1OrphanCheckXincoCoreDataHasDependency
-                + " in its xincoCoreDataHasDependencyList1 field has a non-nullable xincoCoreData1 field.");
+                + " in its xincoCoreDataHasDependencyList1 field has a non-nullable xincoCoreData1"
+                + " field.");
       }
       List<XincoCoreLog> xincoCoreLogListOrphanCheck = xincoCoreData.getXincoCoreLogList();
       for (XincoCoreLog xincoCoreLogListOrphanCheckXincoCoreLog : xincoCoreLogListOrphanCheck) {

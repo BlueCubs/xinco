@@ -27,7 +27,15 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -47,11 +55,13 @@ import org.hibernate.envers.Audited;
   @NamedQuery(
       name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId",
       query =
-          "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId"),
+          "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE"
+              + " x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId"),
   @NamedQuery(
       name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreGroupId",
       query =
-          "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId"),
+          "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE"
+              + " x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId"),
   @NamedQuery(
       name = "XincoCoreUserHasXincoCoreGroup.findByStatusNumber",
       query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.statusNumber = :statusNumber")
@@ -62,8 +72,7 @@ public class XincoCoreUserHasXincoCoreGroup implements Serializable {
   @EmbeddedId protected XincoCoreUserHasXincoCoreGroupPK xincoCoreUserHasXincoCoreGroupPK;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "status_number")
+  @NotNull @Column(name = "status_number")
   private int statusNumber;
 
   @JoinColumn(
@@ -161,7 +170,8 @@ public class XincoCoreUserHasXincoCoreGroup implements Serializable {
 
   @Override
   public String toString() {
-    return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup[ xincoCoreUserHasXincoCoreGroupPK="
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup["
+        + " xincoCoreUserHasXincoCoreGroupPK="
         + xincoCoreUserHasXincoCoreGroupPK
         + " ]";
   }

@@ -2,7 +2,11 @@ package com.bluecubs.xinco.tools;
 
 import static org.junit.Assert.assertNull;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com

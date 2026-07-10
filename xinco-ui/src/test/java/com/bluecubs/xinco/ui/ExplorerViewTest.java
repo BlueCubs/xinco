@@ -1677,7 +1677,7 @@ class ExplorerViewTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  void nodeSelected_propertyGridShouldShowNodeProperties() throws Exception {
+  void nodeSelected_propertyGridShouldShowNodeProperties() {
     ExplorerView view = new ExplorerView(loggedInSession());
     addView(view);
 
@@ -1733,7 +1733,7 @@ class ExplorerViewTest {
       verify(selectedDataMock, never()).deleteFromDB();
 
       // The freshly constructed XincoCoreDataServer must have parentId set to Trash (2)
-      XincoCoreDataServer freshInstance = mcData.constructed().get(0);
+      XincoCoreDataServer freshInstance = mcData.constructed().getFirst();
       verify(freshInstance).setXincoCoreNodeId(2);
       verify(freshInstance).write2DB();
     }
@@ -1791,7 +1791,7 @@ class ExplorerViewTest {
     invoke(view, "checkoutSelected");
 
     assertTrue(
-        _find(Dialog.class).stream().anyMatch(d -> d.isOpened()),
+        _find(Dialog.class).stream().anyMatch(Dialog::isOpened),
         "Checkout must open a reason/comment dialog before writing the log entry");
   }
 }

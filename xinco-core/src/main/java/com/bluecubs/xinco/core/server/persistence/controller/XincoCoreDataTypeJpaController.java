@@ -266,7 +266,7 @@ public class XincoCoreDataTypeJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoCoreDataType.getId();
         if (findXincoCoreDataType(id) == null) {
           throw new NonexistentEntityException(
@@ -306,7 +306,8 @@ public class XincoCoreDataTypeJpaController implements Serializable {
                 + xincoCoreDataType
                 + ") cannot be destroyed since the XincoCoreDataTypeAttribute "
                 + xincoCoreDataTypeAttributeListOrphanCheckXincoCoreDataTypeAttribute
-                + " in its xincoCoreDataTypeAttributeList field has a non-nullable xincoCoreDataType field.");
+                + " in its xincoCoreDataTypeAttributeList field has a non-nullable"
+                + " xincoCoreDataType field.");
       }
       List<XincoCoreData> xincoCoreDataListOrphanCheck = xincoCoreDataType.getXincoCoreDataList();
       for (XincoCoreData xincoCoreDataListOrphanCheckXincoCoreData : xincoCoreDataListOrphanCheck) {

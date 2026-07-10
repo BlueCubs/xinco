@@ -172,7 +172,7 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoDependencyBehavior.getId();
         if (findXincoDependencyBehavior(id) == null) {
           throw new NonexistentEntityException(
@@ -211,7 +211,8 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
                 + xincoDependencyBehavior
                 + ") cannot be destroyed since the XincoDependencyType "
                 + xincoDependencyTypeListOrphanCheckXincoDependencyType
-                + " in its xincoDependencyTypeList field has a non-nullable xincoDependencyBehavior field.");
+                + " in its xincoDependencyTypeList field has a non-nullable xincoDependencyBehavior"
+                + " field.");
       }
       if (illegalOrphanMessages != null) {
         throw new IllegalOrphanException(illegalOrphanMessages);

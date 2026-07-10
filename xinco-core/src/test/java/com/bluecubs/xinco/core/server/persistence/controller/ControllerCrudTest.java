@@ -5,7 +5,11 @@ import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
+import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
+import com.bluecubs.xinco.core.server.persistence.XincoSetting;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import junit.framework.Test;

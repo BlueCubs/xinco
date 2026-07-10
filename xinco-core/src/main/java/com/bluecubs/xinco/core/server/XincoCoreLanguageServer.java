@@ -153,7 +153,8 @@ public final class XincoCoreLanguageServer extends XincoCoreLanguage {
       is_used =
           ((Long)
                   createdQuery(
-                          "select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguage.id = "
+                          "select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguage.id"
+                              + " = "
                               + xcl.getId())
                       .get(0))
               > 0;
@@ -161,7 +162,8 @@ public final class XincoCoreLanguageServer extends XincoCoreLanguage {
         is_used =
             ((Long)
                     createdQuery(
-                            "select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguage.id = "
+                            "select count(xcd) from XincoCoreData xcd where"
+                                + " xcd.xincoCoreLanguage.id = "
                                 + xcl.getId())
                         .get(0))
                 > 0;

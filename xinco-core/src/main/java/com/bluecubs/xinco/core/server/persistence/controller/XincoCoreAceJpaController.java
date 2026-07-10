@@ -27,7 +27,11 @@
  */
 package com.bluecubs.xinco.core.server.persistence.controller;
 
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import jakarta.persistence.EntityManager;
@@ -188,7 +192,7 @@ public class XincoCoreAceJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (Exception ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoCoreAce.getId();
         if (findXincoCoreAce(id) == null) {
           throw new NonexistentEntityException(

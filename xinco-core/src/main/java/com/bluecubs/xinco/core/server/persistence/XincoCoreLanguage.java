@@ -30,7 +30,17 @@ package com.bluecubs.xinco.core.server.persistence;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.TABLE;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -69,8 +79,7 @@ public class XincoCoreLanguage implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoCoreLanguageGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreLanguageGen")
   @TableGenerator(
       name = "XincoCoreLanguageGen",
       table = "xinco_id",
@@ -83,15 +92,11 @@ public class XincoCoreLanguage implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "sign")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "sign")
   private String sign;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "designation")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
   private String designation;
 
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreLanguage")
