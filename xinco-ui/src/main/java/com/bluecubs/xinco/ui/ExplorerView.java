@@ -336,6 +336,9 @@ public class ExplorerView extends VerticalLayout
                       data.loadAddAttributes();
                       propertyGrid.setData(data);
                       updateMenuState();
+                      if (searchStatusLabel.isVisible()) {
+                        navigateToNode(data.getXincoCoreNodeId(), data);
+                      }
                     }));
     // Double-click to download
     dataGrid.addItemDoubleClickListener(
@@ -409,6 +412,69 @@ public class ExplorerView extends VerticalLayout
         .filter(o -> o instanceof XincoCoreNodeServer)
         .map(o -> (XincoCoreNodeServer) o)
         .toList();
+  }
+
+  private void navigateToNode(int targetNodeId, XincoCoreDataServer dataToReselect) {
+    // Build path of node IDs from root's children down to targetNodeId
+    List<Integer> path = new ArrayList<>();
+    try {
+      int current = targetNodeId;
+      while (current > 1) {
+        path.add(0, current);
+        XincoCoreNodeServer n = new XincoCoreNodeServer(current);
+        current = n.getXincoCoreNodeId();
+      }
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Failed to build node path", ex);
+      return;
+    }
+
+    try {
+      XincoCoreNodeServer root = new XincoCoreNodeServer(1);
+      root.fillXincoCoreNodes();
+      nodeTree.setItems(List.of(root), this::getChildNodes);
+
+      // Walk path: after expanding a node, getChildNodes populates its getXincoCoreNodes()
+      XincoCoreNodeServer current = root;
+      for (int stepId : path) {
+        nodeTree.expand(List.of(current));
+        XincoCoreNodeServer child =
+            current.getXincoCoreNodes().stream()
+                .filter(o -> o instanceof XincoCoreNodeServer)
+                .map(o -> (XincoCoreNodeServer) o)
+                .filter(n -> n.getId() == stepId)
+                .findFirst()
+                .orElse(null);
+        if (child == null) return;
+        current = child;
+      }
+
+      // Select the target node — triggers tree selection listener which populates dataGrid
+      nodeTree.select(current);
+      selectedNode = current;
+
+      // Clear search mode now that we've navigated
+      searchStatusLabel.setVisible(false);
+      clearSearchBtn.setVisible(false);
+
+      // Re-select the originating data item in the now-refreshed data grid
+      if (dataToReselect != null) {
+        final int dataId = dataToReselect.getId();
+        current.getXincoCoreData().stream()
+            .filter(o -> o instanceof XincoCoreDataServer)
+            .map(o -> (XincoCoreDataServer) o)
+            .filter(d -> d.getId() == dataId)
+            .findFirst()
+            .ifPresent(
+                d -> {
+                  dataGrid.select(d);
+                  selectedData = d;
+                  updateMenuState();
+                });
+      }
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Navigation to node failed", ex);
+    }
   }
 
   // ── Search ────────────────────────────────────────────────────────────────
