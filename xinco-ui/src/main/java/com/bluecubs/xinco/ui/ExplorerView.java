@@ -93,6 +93,7 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miLock;
   private com.vaadin.flow.component.contextmenu.MenuItem miPublish;
   private com.vaadin.flow.component.contextmenu.MenuItem miArchive;
+  private com.vaadin.flow.component.contextmenu.MenuItem miVersionHistory;
   private com.vaadin.flow.component.contextmenu.MenuItem miManageAcl;
 
   // UI components
@@ -193,6 +194,9 @@ public class ExplorerView extends VerticalLayout
     miPublish = fileSub.addItem(getTranslation("menu.edit.publishdata"), e -> publishSelected());
     fileSub.addSeparator();
     miArchive = fileSub.addItem(getTranslation("window.archive") + "…", e -> archiveSelected());
+    fileSub.addSeparator();
+    miVersionHistory =
+        fileSub.addItem(getTranslation("window.revision") + "…", e -> openVersionHistoryDialog());
 
     // View menu
     menuBar.addItem(
@@ -224,6 +228,7 @@ public class ExplorerView extends VerticalLayout
     miLock.setEnabled(canWriteData && (dataStatus == 1 || dataStatus == 5));
     miPublish.setEnabled(canWriteData && dataStatus == 1);
     miArchive.setEnabled(canWriteData && isFile && dataStatus != 3 && dataStatus != 4);
+    miVersionHistory.setEnabled(dataSelected && isFile);
     boolean canAdminNode = loggedIn && nodeSelected && hasAdminAccess(selectedNode);
     boolean canAdminData = loggedIn && dataSelected && hasAdminAccess(selectedData);
     miManageAcl.setEnabled(canAdminNode || canAdminData);
@@ -466,6 +471,105 @@ public class ExplorerView extends VerticalLayout
   }
 
   // ── Actions ───────────────────────────────────────────────────────────────
+
+  private void openVersionHistoryDialog() {
+    if (selectedData == null) return;
+    XincoCoreDataServer data;
+    try {
+      data = new XincoCoreDataServer(selectedData.getId());
+    } catch (Throwable ex) {
+      error("Could not load data: " + ex.getMessage());
+      return;
+    }
+
+    record LogRow(
+        XincoCoreLogServer log,
+        String version,
+        String operation,
+        String description,
+        boolean hasFile) {}
+
+    List<LogRow> rows = new ArrayList<>();
+    for (Object obj : data.getXincoCoreLogs()) {
+      XincoCoreLogServer log = (XincoCoreLogServer) obj;
+      var v = log.getVersion();
+      String ver =
+          v.getVersionHigh()
+              + "."
+              + v.getVersionMid()
+              + "."
+              + v.getVersionLow()
+              + (v.getVersionPostfix() != null && !v.getVersionPostfix().isBlank()
+                  ? "-" + v.getVersionPostfix()
+                  : "");
+      String op =
+          log.getOpCode() > 0 && log.getOpCode() <= OPCode.values().length
+              ? getTranslation(OPCode.values()[log.getOpCode() - 1].getName())
+              : String.valueOf(log.getOpCode());
+      String path =
+          XincoCoreDataServer.getXincoCoreDataPath(
+              XincoDBManager.CONFIG.fileRepositoryPath,
+              data.getId(),
+              data.getId() + "-" + log.getId());
+      boolean hasFile = new File(path).exists();
+      rows.add(new LogRow(log, ver, op, log.getOpDescription(), hasFile));
+    }
+
+    Grid<LogRow> grid = new Grid<>();
+    grid.addColumn(LogRow::version).setHeader(getTranslation("general.version")).setAutoWidth(true);
+    grid.addColumn(LogRow::operation).setHeader("Op").setAutoWidth(true);
+    grid.addColumn(LogRow::description)
+        .setHeader(getTranslation("general.description"))
+        .setFlexGrow(1);
+    grid.addComponentColumn(
+            row -> {
+              if (!row.hasFile()) return new Span();
+              Button btn = new Button(getTranslation("menu.edit.downloadrevision"));
+              btn.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
+              btn.addClickListener(
+                  e -> downloadVersion(data.getId(), row.log().getId(), data.getDesignation()));
+              return btn;
+            })
+        .setHeader(getTranslation("menu.repository.downloadfile"))
+        .setAutoWidth(true);
+    grid.setItems(rows);
+    grid.setHeight("320px");
+
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(getTranslation("window.revision") + " — " + data.getDesignation());
+    dialog.setWidth("680px");
+    dialog.add(grid);
+    dialog.getFooter().add(new Button(getTranslation("general.cancel"), e -> dialog.close()));
+    dialog.open();
+  }
+
+  private void downloadVersion(int dataId, int logId, String designation) {
+    String path =
+        XincoCoreDataServer.getXincoCoreDataPath(
+            XincoDBManager.CONFIG.fileRepositoryPath, dataId, dataId + "-" + logId);
+    File file = new File(path);
+    if (!file.exists()) {
+      error("File not found on disk: " + path);
+      return;
+    }
+    StreamResource resource =
+        new StreamResource(
+            designation,
+            () -> {
+              try {
+                return new FileInputStream(file);
+              } catch (Exception ex) {
+                LOG.log(Level.SEVERE, "Version download stream error", ex);
+                return null;
+              }
+            });
+    Anchor anchor = new Anchor(resource, "");
+    anchor.getElement().setAttribute("download", true);
+    anchor.setVisible(false);
+    add(anchor);
+    anchor.getElement().callJsFunction("click");
+    UI.getCurrent().getPage().executeJs("setTimeout(() => $0.remove(), 5000)", anchor.getElement());
+  }
 
   private void downloadSelected() {
     if (selectedData == null) return;
