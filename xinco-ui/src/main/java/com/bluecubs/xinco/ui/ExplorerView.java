@@ -94,7 +94,13 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miPublish;
   private com.vaadin.flow.component.contextmenu.MenuItem miArchive;
   private com.vaadin.flow.component.contextmenu.MenuItem miVersionHistory;
+  private com.vaadin.flow.component.contextmenu.MenuItem miCut;
+  private com.vaadin.flow.component.contextmenu.MenuItem miPaste;
   private com.vaadin.flow.component.contextmenu.MenuItem miManageAcl;
+
+  // Clipboard: holds a cut node or data item
+  private XincoCoreNodeServer clipboardNode;
+  private XincoCoreDataServer clipboardData;
 
   // UI components
   private final TreeGrid<XincoCoreNodeServer> nodeTree = new TreeGrid<>();
@@ -176,6 +182,10 @@ public class ExplorerView extends VerticalLayout
     var editSub = editMenu.getSubMenu();
     miDelete = editSub.addItem(getTranslation("general.delete"), e -> confirmDelete());
     editSub.addSeparator();
+    miCut =
+        editSub.addItem(getTranslation("menu.edit.movefolderdatatoclipboard"), e -> cutSelected());
+    miPaste = editSub.addItem(getTranslation("menu.edit.insertfolderdata"), e -> pasteClipboard());
+    editSub.addSeparator();
     miManageAcl = editSub.addItem(getTranslation("menu.edit.acl") + "…", e -> openAclDialog());
 
     // File menu
@@ -229,6 +239,9 @@ public class ExplorerView extends VerticalLayout
     miPublish.setEnabled(canWriteData && dataStatus == 1);
     miArchive.setEnabled(canWriteData && isFile && dataStatus != 3 && dataStatus != 4);
     miVersionHistory.setEnabled(dataSelected && isFile);
+    miCut.setEnabled(loggedIn && (nodeSelected || dataSelected));
+    boolean hasClipboard = clipboardNode != null || clipboardData != null;
+    miPaste.setEnabled(loggedIn && hasClipboard && nodeSelected);
     boolean canAdminNode = loggedIn && nodeSelected && hasAdminAccess(selectedNode);
     boolean canAdminData = loggedIn && dataSelected && hasAdminAccess(selectedData);
     miManageAcl.setEnabled(canAdminNode || canAdminData);
@@ -569,6 +582,90 @@ public class ExplorerView extends VerticalLayout
     add(anchor);
     anchor.getElement().callJsFunction("click");
     UI.getCurrent().getPage().executeJs("setTimeout(() => $0.remove(), 5000)", anchor.getElement());
+  }
+
+  private void cutSelected() {
+    clipboardNode = null;
+    clipboardData = null;
+    if (selectedData != null) {
+      clipboardData = selectedData;
+    } else if (selectedNode != null) {
+      clipboardNode = selectedNode;
+    }
+    if (clipboardNode != null || clipboardData != null) {
+      Notification.show(getTranslation("menu.edit.movemessage"))
+          .addThemeVariants(NotificationVariant.LUMO_CONTRAST);
+    }
+    updateMenuState();
+  }
+
+  private void pasteClipboard() {
+    if (selectedNode == null) return;
+    int targetNodeId = selectedNode.getId();
+    int userId = session.getUser() != null ? session.getUser().getId() : 1;
+
+    if (clipboardData != null) {
+      XincoCoreDataServer toMove = clipboardData;
+      clipboardData = null;
+      try {
+        XincoCoreDataServer fresh = new XincoCoreDataServer(toMove.getId());
+        if (fresh.getXincoCoreNodeId() == targetNodeId) {
+          updateMenuState();
+          return;
+        }
+        fresh.setXincoCoreNodeId(targetNodeId);
+        fresh.setChangerID(userId);
+        fresh.write2DB();
+
+        XMLGregorianCalendar now =
+            DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
+        new XincoCoreLogServerBuilder()
+            .setXincoCoreDataId(fresh.getId())
+            .setXincoCoreUserId(userId)
+            .setOpCode(OPCode.DATA_MOVE.ordinal() + 1)
+            .setOperationDescription(getTranslation("datawizard.logging.move"))
+            .setVersionHigh(
+                fresh.getXincoCoreLogs().isEmpty()
+                    ? 1
+                    : ((XincoCoreLogServer)
+                            fresh.getXincoCoreLogs().get(fresh.getXincoCoreLogs().size() - 1))
+                        .getVersion()
+                        .getVersionHigh())
+            .setVersionMid(0)
+            .setVersionLow(0)
+            .setVersionPostFix("")
+            .createXincoCoreLogServer()
+            .write2DB();
+
+        refreshDataGrid();
+        Notification.show(getTranslation("menu.edit.movedatasuccess"))
+            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+      } catch (Exception ex) {
+        LOG.log(Level.SEVERE, "Move data failed", ex);
+        error(getTranslation("error.movedatafailed"));
+      }
+    } else if (clipboardNode != null) {
+      XincoCoreNodeServer toMove = clipboardNode;
+      clipboardNode = null;
+      try {
+        if (toMove.getId() == targetNodeId) {
+          updateMenuState();
+          return;
+        }
+        XincoCoreNodeServer fresh = new XincoCoreNodeServer(toMove.getId());
+        fresh.setXincoCoreNodeId(targetNodeId);
+        fresh.setChangerID(userId);
+        fresh.write2DB();
+
+        loadRootNodes();
+        Notification.show(getTranslation("menu.edit.movefoldersuccess"))
+            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+      } catch (Exception ex) {
+        LOG.log(Level.SEVERE, "Move folder failed", ex);
+        error(getTranslation("error.movefolderfailed"));
+      }
+    }
+    updateMenuState();
   }
 
   private void downloadSelected() {
