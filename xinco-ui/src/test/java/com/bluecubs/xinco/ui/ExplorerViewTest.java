@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,6 +64,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -1658,6 +1660,433 @@ class ExplorerViewTest {
     f.set(view, searcher);
   }
 
+  // ---- cutSelected ----
+
+  @Test
+  void cutSelected_withData_setsClipboardData() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(1);
+    when(mockData.getStatusNumber()).thenReturn(1);
+    when(mockData.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedData", mockData);
+
+    invoke(view, "cutSelected");
+
+    Field f = ExplorerView.class.getDeclaredField("clipboardData");
+    f.setAccessible(true);
+    assertSame(mockData, f.get(view), "clipboardData should be set to selectedData after cut");
+  }
+
+  @Test
+  void cutSelected_withNode_setsClipboardNode() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedNode", mockNode);
+
+    invoke(view, "cutSelected");
+
+    Field f = ExplorerView.class.getDeclaredField("clipboardNode");
+    f.setAccessible(true);
+    assertSame(mockNode, f.get(view), "clipboardNode should be set to selectedNode after cut");
+  }
+
+  @Test
+  void cutSelected_withNothingSelected_clipboardEmpty() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    invoke(view, "cutSelected");
+
+    Field fn = ExplorerView.class.getDeclaredField("clipboardNode");
+    fn.setAccessible(true);
+    Field fd = ExplorerView.class.getDeclaredField("clipboardData");
+    fd.setAccessible(true);
+    assertNull(fn.get(view));
+    assertNull(fd.get(view));
+  }
+
+  // ---- pasteClipboard ----
+
+  @Test
+  void pasteClipboard_withNullNode_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    // selectedNode is null → early return
+    invoke(view, "pasteClipboard");
+    // No exception should be thrown
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void pasteClipboard_withClipboardData_movesData() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreNodeServer mockTarget = mock(XincoCoreNodeServer.class);
+    when(mockTarget.getId()).thenReturn(5);
+    when(mockTarget.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockTarget);
+
+    XincoCoreDataServer mockClip = mock(XincoCoreDataServer.class);
+    when(mockClip.getId()).thenReturn(10);
+    setField(view, "clipboardData", mockClip);
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(10);
+                  when(m.getXincoCoreNodeId()).thenReturn(3); // different from target 5
+                  when(m.write2DB()).thenReturn(1);
+                  when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      assertDoesNotThrow(() -> invoke(view, "pasteClipboard"));
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void pasteClipboard_withClipboardNode_movesNode() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreNodeServer mockTarget = mock(XincoCoreNodeServer.class);
+    when(mockTarget.getId()).thenReturn(5);
+    setField(view, "selectedNode", mockTarget);
+
+    XincoCoreNodeServer mockClip = mock(XincoCoreNodeServer.class);
+    when(mockClip.getId()).thenReturn(10);
+    setField(view, "clipboardNode", mockClip);
+
+    try (MockedConstruction<XincoCoreNodeServer> mcNode =
+        mockConstruction(
+            XincoCoreNodeServer.class,
+            (m, ctx) -> {
+              when(m.getId()).thenReturn(ctx.arguments().isEmpty() ? 1 : 10);
+              when(m.write2DB()).thenReturn(1);
+              when(m.getXincoCoreNodes()).thenReturn(new ArrayList<>());
+              when(m.getDesignation()).thenReturn("Root");
+            })) {
+      assertDoesNotThrow(() -> invoke(view, "pasteClipboard"));
+    }
+  }
+
+  // ---- openVersionHistoryDialog ----
+
+  @Test
+  void openVersionHistoryDialog_nullData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    // selectedData is null → early return
+    invoke(view, "openVersionHistoryDialog");
+    assertTrue(_find(Dialog.class).isEmpty(), "no dialog when selectedData is null");
+  }
+
+  @Test
+  void openVersionHistoryDialog_withData_opensDialog() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreDataServer mockSel = mock(XincoCoreDataServer.class);
+    when(mockSel.getId()).thenReturn(1);
+    setField(view, "selectedData", mockSel);
+
+    try (MockedConstruction<XincoCoreDataServer> mc =
+        mockConstruction(
+            XincoCoreDataServer.class,
+            (m, ctx) -> {
+              when(m.getId()).thenReturn(1);
+              when(m.getDesignation()).thenReturn("test.pdf");
+              when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+            })) {
+      invoke(view, "openVersionHistoryDialog");
+      assertFalse(_find(Dialog.class).isEmpty(), "version history dialog should open");
+    }
+  }
+
+  @Test
+  void openVersionHistoryDialog_constructorThrows_showsError() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreDataServer mockSel = mock(XincoCoreDataServer.class);
+    when(mockSel.getId()).thenReturn(99);
+    setField(view, "selectedData", mockSel);
+
+    try (MockedConstruction<XincoCoreDataServer> mc =
+        mockConstruction(
+            XincoCoreDataServer.class,
+            (m, ctx) -> {
+              throw new RuntimeException("DB error");
+            })) {
+      assertDoesNotThrow(() -> invoke(view, "openVersionHistoryDialog"));
+    }
+    assertTrue(_find(Dialog.class).isEmpty(), "no dialog when constructor throws");
+  }
+
+  // ---- downloadVersion ----
+
+  @Test
+  void downloadVersion_fileNotFound_showsError() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    try (MockedStatic<XincoCoreDataServer> ms = mockStatic(XincoCoreDataServer.class)) {
+      ms.when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenReturn("/nonexistent/path/1-1");
+      Method m =
+          ExplorerView.class.getDeclaredMethod(
+              "downloadVersion", int.class, int.class, String.class);
+      m.setAccessible(true);
+      assertDoesNotThrow(() -> m.invoke(view, 1, 1, "file.pdf"));
+    }
+  }
+
+  // ---- doAddNonFileData ----
+
+  @Test
+  void doAddNonFileData_emptyName_setsFieldInvalid() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    TextField designField = new TextField();
+    designField.setValue("");
+    Dialog dialog = new Dialog();
+    view.doAddNonFileData(2, designField, mock(XincoCoreLanguageServer.class), "content", dialog);
+    assertTrue(designField.isInvalid(), "empty name should mark field invalid");
+  }
+
+  @Test
+  void doAddNonFileData_nullLang_showsError() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    TextField designField = new TextField();
+    designField.setValue("My Text");
+    Dialog dialog = new Dialog();
+    dialog.open();
+    assertDoesNotThrow(() -> view.doAddNonFileData(2, designField, null, "content", dialog));
+    assertTrue(dialog.isOpened(), "dialog stays open when lang is null");
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void doAddNonFileData_type2_success_closesDialog() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    TextField designField = new TextField();
+    designField.setValue("My Text Doc");
+    XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+    when(mockLang.getId()).thenReturn(1);
+    Dialog dialog = new Dialog();
+    dialog.open();
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class, (m, ctx) -> when(m.write2DB()).thenReturn(1))) {
+      assertDoesNotThrow(
+          () -> view.doAddNonFileData(2, designField, mockLang, "Hello World", dialog));
+      assertFalse(dialog.isOpened(), "dialog should close on success");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void doAddNonFileData_type3_success_closesDialog() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    TextField designField = new TextField();
+    designField.setValue("My URL");
+    XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+    when(mockLang.getId()).thenReturn(1);
+    Dialog dialog = new Dialog();
+    dialog.open();
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class, (m, ctx) -> when(m.write2DB()).thenReturn(1))) {
+      assertDoesNotThrow(
+          () -> view.doAddNonFileData(3, designField, mockLang, "https://example.com", dialog));
+      assertFalse(dialog.isOpened(), "dialog should close on success");
+    }
+  }
+
+  // ---- doAddContactData ----
+
+  @Test
+  void doAddContactData_emptyName_setsFieldInvalid() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    TextField designField = new TextField();
+    designField.setValue("");
+    Dialog dialog = new Dialog();
+    view.doAddContactData(designField, mock(XincoCoreLanguageServer.class), Map.of(), dialog);
+    assertTrue(designField.isInvalid(), "empty name should mark field invalid");
+  }
+
+  @Test
+  void doAddContactData_nullLang_showsError() {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    TextField designField = new TextField();
+    designField.setValue("John Doe");
+    Dialog dialog = new Dialog();
+    dialog.open();
+    assertDoesNotThrow(() -> view.doAddContactData(designField, null, Map.of(), dialog));
+    assertTrue(dialog.isOpened(), "dialog stays open when lang is null");
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void doAddContactData_success_closesDialog() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    TextField designField = new TextField();
+    designField.setValue("John Doe");
+    XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+    when(mockLang.getId()).thenReturn(1);
+    Dialog dialog = new Dialog();
+    dialog.open();
+
+    Map<Integer, String> attrs = new java.util.LinkedHashMap<>();
+    attrs.put(1, "Mr.");
+    attrs.put(2, "John");
+    attrs.put(4, "Doe");
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class, (m, ctx) -> when(m.write2DB()).thenReturn(1))) {
+      assertDoesNotThrow(() -> view.doAddContactData(designField, mockLang, attrs, dialog));
+      assertFalse(dialog.isOpened(), "dialog should close on success");
+    }
+  }
+
+  // ---- menuState: new menu items (versionHistory, cut, paste) ----
+
+  @Test
+  void menuState_loggedIn_fileSelected_versionHistoryEnabled() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(1);
+    when(mockData.getStatusNumber()).thenReturn(1);
+    when(mockData.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedData", mockData);
+
+    invoke(view, "updateMenuState");
+
+    assertTrue(menuItem(view, "miVersionHistory").isEnabled(), "versionHistory enabled for file");
+  }
+
+  @Test
+  void menuState_loggedIn_nodeSelected_cutEnabled() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedNode", mockNode);
+
+    invoke(view, "updateMenuState");
+
+    assertTrue(menuItem(view, "miCut").isEnabled(), "cut enabled when node selected and logged in");
+  }
+
+  @Test
+  void menuState_loggedIn_clipboardFull_nodeSelected_pasteEnabled() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedNode", mockNode);
+    setField(view, "clipboardData", mock(XincoCoreDataServer.class));
+
+    invoke(view, "updateMenuState");
+
+    assertTrue(
+        menuItem(view, "miPaste").isEnabled(),
+        "paste enabled when clipboard full and node selected");
+  }
+
+  @Test
+  void menuState_noLogin_cutAndPasteDisabled() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+
+    invoke(view, "updateMenuState");
+
+    assertFalse(menuItem(view, "miCut").isEnabled(), "cut disabled when not logged in");
+    assertFalse(menuItem(view, "miPaste").isEnabled(), "paste disabled when not logged in");
+  }
+
   @Test
   void clearSearch_hidesStatusAndClearButton() throws Exception {
     ExplorerView view = new ExplorerView(new UserSession());
@@ -1787,7 +2216,6 @@ class ExplorerViewTest {
   @Test
   void checkout_shouldPromptForReasonComment() throws Exception {
     // §2.6 / §2.13: every modification must prompt for a reason; reason cannot be empty.
-    // Currently checkout sets status=4 and logs immediately with a hard-coded description.
     ExplorerView view = new ExplorerView(loggedInSession());
     addView(view);
 
@@ -1803,5 +2231,228 @@ class ExplorerViewTest {
     assertTrue(
         _find(Dialog.class).stream().anyMatch(Dialog::isOpened),
         "Checkout must open a reason/comment dialog before writing the log entry");
+  }
+
+  // ---- checkout confirm lambda coverage ----
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void checkout_confirmWithReason_coversLambdaBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreDataServer mockSelected = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockSelected.getId()).thenReturn(3);
+    when(mockSelected.getXincoCoreDataType().getId()).thenReturn(1);
+    when(mockSelected.getStatusNumber()).thenReturn(1);
+    when(mockSelected.getXincoCoreAcl()).thenReturn(List.of());
+    when(mockSelected.getDesignation()).thenReturn("test.pdf");
+    setField(view, "selectedData", mockSelected);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(3);
+                  when(m.getDesignation()).thenReturn("test.pdf");
+                  when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      msData.when(() -> XincoCoreDataServer.getLastMajorVersionDataPath(anyInt())).thenReturn(null);
+
+      invoke(view, "checkoutSelected");
+
+      // Dialog is open — fill reason and click confirm
+      TextField reasonField = _get(TextField.class, spec -> spec.withLabel("Reason"));
+      reasonField.setValue("checkout for review");
+
+      // button text = getTranslation("menu.edit.checkoutfile") = "Checkout File"
+      List<Button> confirmBtns = _find(Button.class, spec -> spec.withText("Checkout File"));
+      if (!confirmBtns.isEmpty()) {
+        confirmBtns.get(0).click();
+      }
+    }
+  }
+
+  // ---- Add Data dialog: type-select listener + type 2 / 3 add button ----
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void openAddDataDialog_typeChange_toText_coversTypeListener() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreLanguageServer> msLang = mockStatic(XincoCoreLanguageServer.class)) {
+      XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+      when(mockLang.getId()).thenReturn(1);
+      when(mockLang.getSign()).thenReturn("EN");
+      when(mockLang.getDesignation()).thenReturn("English");
+      msLang
+          .when(XincoCoreLanguageServer::getXincoCoreLanguages)
+          .thenReturn(new ArrayList<>(List.of(mockLang)));
+
+      invoke(view, "openAddDataDialog");
+
+      // Change type selector to 2 (Text) — exercises the typeSelect change listener
+      Select<Integer> typeSelect =
+          _find(Select.class, spec -> spec.withLabel("Data Type")).stream()
+              .filter(s -> s.getValue() instanceof Integer)
+              .findFirst()
+              .map(s -> (Select<Integer>) s)
+              .orElse(null);
+      if (typeSelect != null) {
+        typeSelect.setValue(2);
+        typeSelect.setValue(3);
+        typeSelect.setValue(4);
+        typeSelect.setValue(1);
+      }
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void openAddDataDialog_type2_addClick_coversTextAddBranch() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreLanguageServer> msLang = mockStatic(XincoCoreLanguageServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class, (m, ctx) -> when(m.write2DB()).thenReturn(1))) {
+
+      XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+      when(mockLang.getId()).thenReturn(1);
+      when(mockLang.getSign()).thenReturn("EN");
+      when(mockLang.getDesignation()).thenReturn("English");
+      msLang
+          .when(XincoCoreLanguageServer::getXincoCoreLanguages)
+          .thenReturn(new ArrayList<>(List.of(mockLang)));
+
+      invoke(view, "openAddDataDialog");
+
+      // Change type to 2 (Text)
+      Select<Integer> typeSelect =
+          _find(Select.class, spec -> spec.withLabel("Data Type")).stream()
+              .filter(s -> s.getValue() instanceof Integer)
+              .findFirst()
+              .map(s -> (Select<Integer>) s)
+              .orElse(null);
+      if (typeSelect != null) typeSelect.setValue(2);
+
+      // Fill designation
+      _find(TextField.class, spec -> spec.withLabel("File Name")).stream()
+          .findFirst()
+          .ifPresent(f -> f.setValue("My Text Doc"));
+
+      // Click Add → exercises the else-if(type==4) branch skipped, falls to doAddNonFileData
+      List<Button> addBtns = _find(Button.class, spec -> spec.withText("Add"));
+      if (!addBtns.isEmpty()) addBtns.get(0).click();
+    }
+  }
+
+  // ---- openVersionHistoryDialog with log entries ----
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void openVersionHistoryDialog_withLogEntries_rendersRows() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+
+    XincoCoreDataServer mockSel = mock(XincoCoreDataServer.class);
+    when(mockSel.getId()).thenReturn(1);
+    setField(view, "selectedData", mockSel);
+
+    // Build a mock log entry with deep stubs to avoid resolving XincoVersion type
+    XincoCoreLogServer mockLog = mock(XincoCoreLogServer.class, RETURNS_DEEP_STUBS);
+    when(mockLog.getId()).thenReturn(1);
+    when(mockLog.getOpCode()).thenReturn(1); // CREATION
+    when(mockLog.getOpDescription()).thenReturn("initial creation");
+    when(mockLog.getVersion().getVersionHigh()).thenReturn(1);
+    when(mockLog.getVersion().getVersionMid()).thenReturn(0);
+    when(mockLog.getVersion().getVersionLow()).thenReturn(0);
+    when(mockLog.getVersion().getVersionPostfix()).thenReturn("");
+
+    java.util.ArrayList logList = new java.util.ArrayList();
+    logList.add(mockLog);
+
+    try (MockedConstruction<XincoCoreDataServer> mc =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getDesignation()).thenReturn("test.pdf");
+                  when(m.getXincoCoreLogs()).thenReturn(logList);
+                });
+        MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class)) {
+      msData
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenReturn("/nonexistent/path"); // hasFile = false → no download button
+
+      invoke(view, "openVersionHistoryDialog");
+      assertFalse(
+          _find(Dialog.class).isEmpty(), "version history dialog should open with log rows");
+    }
+  }
+
+  // ---- null-selectedData early-return branches ----
+
+  @Test
+  void checkoutSelected_nullData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    // selectedData defaults to null → covers the if (selectedData == null) return branch
+    assertDoesNotThrow(() -> invoke(view, "checkoutSelected"));
+  }
+
+  @Test
+  void lockSelected_nullData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    assertDoesNotThrow(() -> invoke(view, "lockSelected"));
+  }
+
+  // ---- clearSearch with selectedNode branch ----
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void clearSearch_withSelectedNode_refreshesDataGrid() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+    assertDoesNotThrow(() -> invoke(view, "clearSearch"));
   }
 }

@@ -528,6 +528,88 @@ class ViewerViewTest {
   }
 
   @Test
+  void showPreview_type4_withAttributes_showsContactForm() {
+    // Contact data type (id=4): attribVarchar per attribute ID → FormLayout with non-blank values
+    ViewerView view = new ViewerView(new UserSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    XincoCoreDataType mockType = mock(XincoCoreDataType.class);
+    when(mockType.getId()).thenReturn(4);
+    when(mockData.getXincoCoreDataType()).thenReturn(mockType);
+
+    com.bluecubs.xinco.server.service.XincoAddAttribute attr =
+        mock(com.bluecubs.xinco.server.service.XincoAddAttribute.class);
+    when(attr.getAttributeId()).thenReturn(2); // name field
+    when(attr.getAttribVarchar()).thenReturn("John");
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(attr)));
+
+    view.showPreview(mockData);
+
+    Field f;
+    try {
+      f = ViewerView.class.getDeclaredField("viewerPane");
+      f.setAccessible(true);
+      com.vaadin.flow.component.html.Div pane = (com.vaadin.flow.component.html.Div) f.get(view);
+      assertFalse(pane.getChildren().findAny().isEmpty(), "viewerPane should have contact form");
+    } catch (Exception e) {
+      fail("reflection failed: " + e.getMessage());
+    }
+  }
+
+  @Test
+  void showPreview_type4_emptyAttributes_fallsBackToPropertyGrid() throws Exception {
+    // All attributes are blank → fallback to PropertyGrid
+    ViewerView view = new ViewerView(new UserSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    XincoCoreDataType mockType = mock(XincoCoreDataType.class);
+    when(mockType.getId()).thenReturn(4);
+    when(mockData.getXincoCoreDataType()).thenReturn(mockType);
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>());
+    when(mockData.getDesignation()).thenReturn("Empty Contact");
+    XincoCoreLanguage mockLang = mock(XincoCoreLanguage.class);
+    when(mockLang.getSign()).thenReturn("EN");
+    when(mockData.getXincoCoreLanguage()).thenReturn(mockLang);
+    when(mockData.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+
+    view.showPreview(mockData);
+
+    Field f = ViewerView.class.getDeclaredField("viewerPane");
+    f.setAccessible(true);
+    com.vaadin.flow.component.html.Div pane = (com.vaadin.flow.component.html.Div) f.get(view);
+    assertFalse(
+        pane.getChildren().findAny().isEmpty(), "viewerPane shows PropertyGrid for empty contact");
+  }
+
+  @Test
+  void showPreview_type5_unknown_showsPropertyGrid() throws Exception {
+    // Covers the else branch in showPreview for unknown type IDs
+    ViewerView view = new ViewerView(new UserSession());
+    addView(view);
+
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class);
+    XincoCoreDataType mockType = mock(XincoCoreDataType.class);
+    when(mockType.getId()).thenReturn(5);
+    when(mockData.getXincoCoreDataType()).thenReturn(mockType);
+    XincoCoreLanguage mockLang = mock(XincoCoreLanguage.class);
+    when(mockLang.getSign()).thenReturn("EN");
+    when(mockData.getXincoCoreLanguage()).thenReturn(mockLang);
+    when(mockData.getDesignation()).thenReturn("unknown.dat");
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>());
+    when(mockData.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+
+    view.showPreview(mockData);
+
+    Field f = ViewerView.class.getDeclaredField("viewerPane");
+    f.setAccessible(true);
+    com.vaadin.flow.component.html.Div pane = (com.vaadin.flow.component.html.Div) f.get(view);
+    assertFalse(
+        pane.getChildren().findAny().isEmpty(), "viewerPane shows PropertyGrid for unknown type");
+  }
+
+  @Test
   void urlDataItem_shouldOpenInBrowser() throws Exception {
     // §2.10: selecting a URL data item renders an Anchor in viewerPane (type=3, attrib id=1).
     ViewerView view = new ViewerView(new UserSession());
