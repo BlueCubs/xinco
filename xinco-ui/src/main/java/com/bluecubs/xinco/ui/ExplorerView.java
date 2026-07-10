@@ -23,6 +23,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
@@ -567,10 +568,50 @@ public class ExplorerView extends VerticalLayout
     urlField.setWidthFull();
     urlField.setPlaceholder("https://");
 
-    TextField contactNameField = new TextField(getTranslation("general.name"));
-    contactNameField.setWidthFull();
-    TextField contactEmailField = new TextField(getTranslation("general.email"));
-    contactEmailField.setWidthFull();
+    TextField cSalutation = new TextField(getTranslation("general.salutation"));
+    TextField cFirstName = new TextField(getTranslation("general.name"));
+    TextField cMiddleName = new TextField(getTranslation("general.middle_name"));
+    TextField cLastName = new TextField(getTranslation("general.last_name"));
+    TextField cAffix = new TextField(getTranslation("general.name_affix"));
+    TextField cPhoneBusiness = new TextField(getTranslation("general.phone_business"));
+    TextField cPhonePrivate = new TextField(getTranslation("general.phone_private"));
+    TextField cPhoneMobile = new TextField(getTranslation("general.phone_mobile"));
+    TextField cFax = new TextField(getTranslation("general.fax"));
+    TextField cEmail = new TextField(getTranslation("general.email"));
+    TextField cWebsite = new TextField(getTranslation("general.website"));
+    TextField cStreet = new TextField(getTranslation("general.steet_address"));
+    TextField cPostal = new TextField(getTranslation("general.postal_code"));
+    TextField cCity = new TextField(getTranslation("general.city"));
+    TextField cState = new TextField(getTranslation("general.state_province"));
+    TextField cCountry = new TextField(getTranslation("general.country"));
+    TextField cCompany = new TextField(getTranslation("general.company_name"));
+    TextField cPosition = new TextField(getTranslation("general.position"));
+
+    FormLayout contactForm = new FormLayout();
+    contactForm.setResponsiveSteps(
+        new FormLayout.ResponsiveStep("0", 1), new FormLayout.ResponsiveStep("280px", 2));
+    contactForm.add(
+        cSalutation,
+        cFirstName,
+        cMiddleName,
+        cLastName,
+        cAffix,
+        cCompany,
+        cPosition,
+        cPhoneBusiness,
+        cPhonePrivate,
+        cPhoneMobile,
+        cFax);
+    contactForm.add(cEmail);
+    contactForm.setColspan(cEmail, 2);
+    contactForm.add(cWebsite);
+    contactForm.setColspan(cWebsite, 2);
+    contactForm.add(cStreet);
+    contactForm.setColspan(cStreet, 2);
+    contactForm.add(cPostal, cCity, cState, cCountry);
+    com.vaadin.flow.component.html.Div contactScroll =
+        new com.vaadin.flow.component.html.Div(contactForm);
+    contactScroll.getStyle().set("max-height", "260px").set("overflow-y", "auto");
 
     // ── Dynamic section ──────────────────────────────────────────────────────
     VerticalLayout typeFields = new VerticalLayout(upload);
@@ -584,7 +625,7 @@ public class ExplorerView extends VerticalLayout
             case 1 -> typeFields.add(upload);
             case 2 -> typeFields.add(textContent);
             case 3 -> typeFields.add(urlField);
-            case 4 -> typeFields.add(contactNameField, contactEmailField);
+            case 4 -> typeFields.add(contactScroll);
           }
         });
 
@@ -605,12 +646,32 @@ public class ExplorerView extends VerticalLayout
                       : null;
               if (type == 1) {
                 doAddData(designationField, buffer, lang, dialog);
+              } else if (type == 4) {
+                Map<Integer, String> attrs = new LinkedHashMap<>();
+                attrs.put(1, cSalutation.getValue());
+                attrs.put(2, cFirstName.getValue());
+                attrs.put(3, cMiddleName.getValue());
+                attrs.put(4, cLastName.getValue());
+                attrs.put(5, cAffix.getValue());
+                attrs.put(6, cPhoneBusiness.getValue());
+                attrs.put(7, cPhonePrivate.getValue());
+                attrs.put(8, cPhoneMobile.getValue());
+                attrs.put(9, cFax.getValue());
+                attrs.put(10, cEmail.getValue());
+                attrs.put(11, cWebsite.getValue());
+                attrs.put(12, cStreet.getValue());
+                attrs.put(13, cPostal.getValue());
+                attrs.put(14, cCity.getValue());
+                attrs.put(15, cState.getValue());
+                attrs.put(16, cCountry.getValue());
+                attrs.put(17, cCompany.getValue());
+                attrs.put(18, cPosition.getValue());
+                doAddContactData(designationField, lang, attrs, dialog);
               } else {
                 String content =
                     switch (type) {
                       case 2 -> textContent.getValue();
                       case 3 -> urlField.getValue();
-                      case 4 -> contactNameField.getValue();
                       default -> "";
                     };
                 doAddNonFileData(type, designationField, lang, content, dialog);
@@ -674,6 +735,57 @@ public class ExplorerView extends VerticalLayout
           .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     } catch (Exception ex) {
       LOG.log(Level.SEVERE, "Add data failed", ex);
+      error("Add data failed: " + ex.getMessage());
+    }
+  }
+
+  void doAddContactData(
+      TextField designationField,
+      XincoCoreLanguageServer lang,
+      Map<Integer, String> attrs,
+      Dialog dialog) {
+    String name = designationField.getValue().trim();
+    if (name.isEmpty()) {
+      designationField.setErrorMessage(getTranslation("message.missing.designation"));
+      designationField.setInvalid(true);
+      return;
+    }
+    if (lang == null) {
+      error(getTranslation("message.missing.language"));
+      return;
+    }
+    try {
+      XincoCoreDataServer newData =
+          new XincoCoreDataServer(0, selectedNode.getId(), lang.getId(), 4, name, 1);
+      newData.write2DB();
+      int dataId = newData.getId();
+
+      var log =
+          new XincoCoreLogServerBuilder()
+              .setXincoCoreDataId(dataId)
+              .setXincoCoreUserId(session.getUser().getId())
+              .setOpCode(OPCode.CREATION.ordinal() + 1)
+              .setOperationDescription(getTranslation("general.create"))
+              .setVersionHigh(1)
+              .setVersionMid(0)
+              .setVersionLow(0)
+              .setVersionPostFix("")
+              .createXincoCoreLogServer();
+      log.write2DB();
+
+      XMLGregorianCalendar now =
+          DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
+      for (Map.Entry<Integer, String> entry : attrs.entrySet()) {
+        new XincoAddAttributeServer(dataId, entry.getKey(), 0, 0L, 0.0, entry.getValue(), "", now)
+            .write2DB();
+      }
+
+      dialog.close();
+      refreshDataGrid();
+      Notification.show(getTranslation("general.save") + " OK")
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Add contact data failed", ex);
       error("Add data failed: " + ex.getMessage());
     }
   }

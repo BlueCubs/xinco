@@ -4,6 +4,7 @@ import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.ui.component.PropertyGrid;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -35,7 +37,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -218,10 +222,63 @@ public class ViewerView extends VerticalLayout
       showTextPreview(data);
     } else if (typeId == 3) {
       showUrlPreview(data);
+    } else if (typeId == 4) {
+      showContactPreview(data);
     } else {
       propertyGrid.setData(data);
       viewerPane.add(propertyGrid);
     }
+  }
+
+  private void showContactPreview(XincoCoreDataServer data) {
+    Map<Integer, String> labelKeys = new LinkedHashMap<>();
+    labelKeys.put(1, "general.salutation");
+    labelKeys.put(2, "general.name");
+    labelKeys.put(3, "general.middle_name");
+    labelKeys.put(4, "general.last_name");
+    labelKeys.put(5, "general.name_affix");
+    labelKeys.put(6, "general.phone_business");
+    labelKeys.put(7, "general.phone_private");
+    labelKeys.put(8, "general.phone_mobile");
+    labelKeys.put(9, "general.fax");
+    labelKeys.put(10, "general.email");
+    labelKeys.put(11, "general.website");
+    labelKeys.put(12, "general.steet_address");
+    labelKeys.put(13, "general.postal_code");
+    labelKeys.put(14, "general.city");
+    labelKeys.put(15, "general.state_province");
+    labelKeys.put(16, "general.country");
+    labelKeys.put(17, "general.company_name");
+    labelKeys.put(18, "general.position");
+
+    Map<Integer, String> values = new LinkedHashMap<>();
+    data.getXincoAddAttributes()
+        .forEach(
+            a -> {
+              String v = a.getAttribVarchar();
+              if (v != null && !v.isBlank()) values.put(a.getAttributeId(), v);
+            });
+
+    FormLayout form = new FormLayout();
+    form.setResponsiveSteps(
+        new FormLayout.ResponsiveStep("0", 1), new FormLayout.ResponsiveStep("320px", 2));
+    labelKeys.forEach(
+        (id, key) -> {
+          String value = values.get(id);
+          if (value != null) {
+            TextField field = new TextField(getTranslation(key));
+            field.setValue(value);
+            field.setReadOnly(true);
+            form.add(field);
+          }
+        });
+
+    if (form.getChildren().findAny().isEmpty()) {
+      propertyGrid.setData(data);
+      viewerPane.add(propertyGrid);
+      return;
+    }
+    viewerPane.add(form);
   }
 
   private void showTextPreview(XincoCoreDataServer data) {
