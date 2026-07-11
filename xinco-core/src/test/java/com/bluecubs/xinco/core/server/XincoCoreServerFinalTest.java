@@ -49,7 +49,6 @@ public class XincoCoreServerFinalTest extends AbstractXincoDataBaseTestCase {
   public void testXincoIdController_createAndDestroy() throws Exception {
     XincoIdJpaController ctrl = new XincoIdJpaController(getEntityManagerFactory());
     XincoId entity = new XincoId();
-    entity.setId(9997);
     entity.setTablename("test_table_coverage");
     entity.setLastId(9999);
     ctrl.create(entity);

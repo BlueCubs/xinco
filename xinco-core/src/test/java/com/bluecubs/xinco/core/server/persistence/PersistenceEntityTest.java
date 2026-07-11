@@ -24,7 +24,7 @@ class PersistenceEntityTest {
     assertThat(g.toString()).isNotNull();
     assertThat(g.hashCode()).isNotZero();
     assertThat(g.equals(g)).isTrue();
-    assertThat(g.equals(null)).isFalse();
+    assertThat(g == null).isFalse();
   }
 
   @Test
@@ -86,7 +86,6 @@ class PersistenceEntityTest {
     u.setStatusNumber(1);
     u.setAttempts(0);
     u.setLastModified(new Date());
-    u.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     u.setXincoCoreAceList(new ArrayList<>());
     u.setXincoCoreLogList(new ArrayList<>());
     u.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -96,7 +95,7 @@ class PersistenceEntityTest {
     assertThat(u.toString()).isNotNull();
     assertThat(u.hashCode()).isNotZero();
     assertThat(u.equals(u)).isTrue();
-    assertThat(u.equals(null)).isFalse();
+    assertThat(u == null).isFalse();
   }
 
   @Test
@@ -168,7 +167,7 @@ class PersistenceEntityTest {
     assertThat(pk.getXincoCoreDataParentId()).isEqualTo(3);
     assertThat(pk.hashCode()).isNotZero();
     assertThat(pk.equals(pk)).isTrue();
-    assertThat(pk.equals(null)).isFalse();
+    assertThat(pk == null).isFalse();
     assertThat(pk.toString()).isNotNull();
   }
 
@@ -212,7 +211,7 @@ class PersistenceEntityTest {
     assertThat(pk.getAttributeId()).isEqualTo(2);
     assertThat(pk.hashCode()).isNotZero();
     assertThat(pk.equals(pk)).isTrue();
-    assertThat(pk.equals(null)).isFalse();
+    assertThat(pk == null).isFalse();
     assertThat(pk.toString()).isNotNull();
 
     XincoAddAttribute attr = new XincoAddAttribute();
@@ -240,7 +239,7 @@ class PersistenceEntityTest {
     assertThat(pk.getXincoCoreUserId()).isEqualTo(3);
     assertThat(pk.hashCode()).isNotZero();
     assertThat(pk.equals(pk)).isTrue();
-    assertThat(pk.equals(null)).isFalse();
+    assertThat(pk == null).isFalse();
     assertThat(pk.toString()).isNotNull();
   }
 

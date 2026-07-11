@@ -41,9 +41,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJp
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
@@ -51,6 +49,7 @@ import javax.xml.datatype.DatatypeFactory;
 public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
 
   private static List result;
+
   // create data type attribute object for data structures
 
   public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2) throws XincoException {
@@ -107,13 +106,17 @@ public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAtt
       xcdta.setDesignation(getDesignation());
       xcdta.setDataType(getDataType());
       xcdta.setAttrSize(getSize());
-      xcdta.setModificationReason("audit.general.created");
-      xcdta.setModifierId(getChangerID());
-      xcdta.setModificationTime(new Timestamp(new Date().getTime()));
       xcdta.setXincoCoreDataType(
           new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType(
               getXincoCoreDataTypeId()));
-      new XincoCoreDataTypeAttributeJpaController(getEntityManagerFactory()).create(xcdta);
+      XincoRevisionListener.MOD_REASON.set("audit.general.created");
+      XincoRevisionListener.MODIFIER_ID.set(getChangerID());
+      try {
+        new XincoCoreDataTypeAttributeJpaController(getEntityManagerFactory()).create(xcdta);
+      } finally {
+        XincoRevisionListener.MOD_REASON.remove();
+        XincoRevisionListener.MODIFIER_ID.remove();
+      }
       result =
           createdQuery(
               "Select xcd from XincoCoreData xcd where xcd.xincoCoreDataType.id="
@@ -152,7 +155,8 @@ public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAtt
           createdQuery(
               "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId ="
                   + attrCDTA.getAttributeId()
-                  + " and x.xincoAddAttributePK.xincoCoreDataId IN (Select xcd.id from XincoCoreData xcd where xcd.xincoCoreDataType.id="
+                  + " and x.xincoAddAttributePK.xincoCoreDataId IN (Select xcd.id from"
+                  + " XincoCoreData xcd where xcd.xincoCoreDataType.id="
                   + attrCDTA.getXincoCoreDataTypeId()
                   + ")");
       for (Object o : result) {
@@ -163,7 +167,8 @@ public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAtt
       }
       result =
           createdQuery(
-              "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId ="
+              "SELECT x FROM XincoCoreDataTypeAttribute x WHERE"
+                  + " x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId ="
                   + attrCDTA.getXincoCoreDataTypeId()
                   + " and x.xincoCoreDataTypeAttributePK.attributeId ="
                   + attrCDTA.getAttributeId());

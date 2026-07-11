@@ -56,8 +56,7 @@ public class XincoDocument {
 
   private static final Logger LOG = getLogger(XincoDocument.class.getSimpleName());
 
-  public static Document getXincoDocument(XincoCoreData d, boolean indexContent)
-      throws java.io.FileNotFoundException {
+  public static Document getXincoDocument(XincoCoreData d, boolean indexContent) {
     int i, l;
     Document doc;
     int fileType;
@@ -67,12 +66,12 @@ public class XincoDocument {
     doc = new Document();
 
     // add XincoCoreData information
-    doc.add(new Field("id", (Integer.valueOf(d.getId())).toString(), YES, NOT_ANALYZED));
+    doc.add(new Field("id", Integer.valueOf(d.getId()).toString(), YES, NOT_ANALYZED));
     doc.add(new Field("designation", d.getDesignation(), YES, ANALYZED));
     doc.add(
         new Field(
             "language",
-            (Integer.valueOf(d.getXincoCoreLanguage().getId())).toString(),
+            Integer.valueOf(d.getXincoCoreLanguage().getId()).toString(),
             YES,
             NOT_ANALYZED));
 
@@ -87,19 +86,17 @@ public class XincoDocument {
               .lastIndexOf('.');
       if (file_extIndex == -1) {
         file_ext = "";
-      } else {
-        if (file_extIndex
-            >= ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0))
-                    .getAttribVarchar()
-                    .length()
-                - 1) {
-          file_ext = "";
-        } else {
-          file_ext =
-              ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0))
+      } else if (file_extIndex
+          >= ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0))
                   .getAttribVarchar()
-                  .substring(file_extIndex + 1);
-        }
+                  .length()
+              - 1) {
+        file_ext = "";
+      } else {
+        file_ext =
+            ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0))
+                .getAttribVarchar()
+                .substring(file_extIndex + 1);
       }
       // check which indexer to use for file extension
       fileType = 0; // default: index as TEXT

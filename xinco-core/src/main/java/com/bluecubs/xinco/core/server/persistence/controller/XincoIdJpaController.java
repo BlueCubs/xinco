@@ -29,16 +29,17 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 
 import com.bluecubs.xinco.core.server.persistence.XincoId;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoIdJpaController implements Serializable {
 
   public XincoIdJpaController(EntityManagerFactory emf) {
@@ -74,7 +75,7 @@ public class XincoIdJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (Exception ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoId.getId();
         if (findXincoId(id) == null) {
           throw new NonexistentEntityException("The xincoId with id " + id + " no longer exists.");
@@ -93,13 +94,10 @@ public class XincoIdJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoId xincoId;
-      try {
-        xincoId = em.getReference(XincoId.class, id);
-        xincoId.getId();
-      } catch (EntityNotFoundException enfe) {
-        throw new NonexistentEntityException(
-            "The xincoId with id " + id + " no longer exists.", enfe);
+      XincoId xincoId = em.find(XincoId.class, id);
+
+      if (xincoId == null) {
+        throw new NonexistentEntityException("The xincoId with id " + id + " no longer exists.");
       }
       em.remove(xincoId);
       em.getTransaction().commit();

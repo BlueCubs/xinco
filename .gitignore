@@ -22,3 +22,4 @@ nb-configuration.xml
 .beads-credential-key
 .beads/proxieddb/
 *.versionsBackup
+/.repowise/

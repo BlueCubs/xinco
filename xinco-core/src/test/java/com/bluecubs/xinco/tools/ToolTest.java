@@ -8,15 +8,19 @@ import static com.bluecubs.xinco.tools.Tool.isValidEmailAddress;
 import static java.lang.System.out;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Random;
-import org.junit.*;
+import org.junit.Test;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class ToolTest {
 
   public ToolTest() {}

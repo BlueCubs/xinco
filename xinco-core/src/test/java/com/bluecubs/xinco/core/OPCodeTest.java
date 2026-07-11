@@ -7,18 +7,24 @@ import static com.bluecubs.xinco.core.OPCode.values;
 import static java.lang.System.out;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class OPCodeTest {
 
   public OPCodeTest() {}
 
   @BeforeClass
-  public static void setUpClass() throws Exception {}
+  public static void setUpClass() {}
 
   @AfterClass
-  public static void tearDownClass() throws Exception {}
+  public static void tearDownClass() {}
 
   @Before
   public void setUp() {}

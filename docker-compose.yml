@@ -1,18 +1,19 @@
-version: '3.8'
-
 services:
   xinco:
     build: .
     ports:
-      - "8081:8080"
+      - "8081:8081"
     environment:
-      - MYSQL_HOST=db
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=xinco
-      - MYSQL_USER=xinco
-      - MYSQL_PASSWORD=xinco
+      - VAADIN_PRODUCTIONMODE=true
+      # XincoDBManager JNDI fallback: override persistence.xml localhost URL
+      - XINCO_JDBC_URL=jdbc:mysql://db:3306/xinco?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - XINCO_JDBC_USER=xinco
+      - XINCO_JDBC_PASSWORD=xinco
+      - FLYWAY_LOCATIONS=filesystem:/app/db/migration
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: on-failure
     networks:
       - xinco-net
 
@@ -27,6 +28,11 @@ services:
       - MYSQL_PASSWORD=xinco
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - xinco-net
 

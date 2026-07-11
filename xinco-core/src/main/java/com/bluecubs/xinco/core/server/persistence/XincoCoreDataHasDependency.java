@@ -27,11 +27,21 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.envers.Audited;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
+@Audited
 @Entity
 @Table(name = "xinco_core_data_has_dependency")
 @XmlRootElement
@@ -42,15 +52,19 @@ import javax.xml.bind.annotation.XmlRootElement;
   @NamedQuery(
       name = "XincoCoreDataHasDependency.findByXincoCoreDataParentId",
       query =
-          "SELECT x FROM XincoCoreDataHasDependency x WHERE x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId"),
+          "SELECT x FROM XincoCoreDataHasDependency x WHERE"
+              + " x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId"),
   @NamedQuery(
       name = "XincoCoreDataHasDependency.findByXincoCoreDataChildrenId",
       query =
-          "SELECT x FROM XincoCoreDataHasDependency x WHERE x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId = :xincoCoreDataChildrenId"),
+          "SELECT x FROM XincoCoreDataHasDependency x WHERE"
+              + " x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId ="
+              + " :xincoCoreDataChildrenId"),
   @NamedQuery(
       name = "XincoCoreDataHasDependency.findByDependencyTypeId",
       query =
-          "SELECT x FROM XincoCoreDataHasDependency x WHERE x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId")
+          "SELECT x FROM XincoCoreDataHasDependency x WHERE"
+              + " x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId")
 })
 public class XincoCoreDataHasDependency implements Serializable {
 
@@ -150,7 +164,8 @@ public class XincoCoreDataHasDependency implements Serializable {
 
   @Override
   public String toString() {
-    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency[ xincoCoreDataHasDependencyPK="
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency["
+        + " xincoCoreDataHasDependencyPK="
         + xincoCoreDataHasDependencyPK
         + " ]";
   }

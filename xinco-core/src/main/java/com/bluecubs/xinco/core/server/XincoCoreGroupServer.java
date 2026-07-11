@@ -41,9 +41,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaCo
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.server.service.XincoCoreGroup;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +50,7 @@ public final class XincoCoreGroupServer extends XincoCoreGroup {
 
   private static List result;
   private static HashMap parameters = new HashMap();
+
   // create group object for data structures
 
   public XincoCoreGroupServer(int attrID) throws XincoException {
@@ -97,22 +96,23 @@ public final class XincoCoreGroupServer extends XincoCoreGroup {
         xcg = controller.findXincoCoreGroup(getId());
         xcg.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
         xcg.setStatusNumber(getStatusNumber());
-        xcg.setModificationReason("audit.general.modified");
-        xcg.setModifierId(getChangerID());
-        xcg.setModificationTime(new Timestamp(new Date().getTime()));
+        XincoRevisionListener.MOD_REASON.set("audit.general.modified");
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
         controller.edit(xcg);
       } else {
-        xcg = new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup(getId());
+        xcg = new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup();
         xcg.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
         xcg.setStatusNumber(getStatusNumber());
-        xcg.setModificationReason("audit.general.create");
-        xcg.setModifierId(getChangerID());
-        xcg.setModificationTime(new Timestamp(new Date().getTime()));
+        XincoRevisionListener.MOD_REASON.set("audit.general.create");
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
         controller.create(xcg);
       }
       setId(xcg.getId());
     } catch (Exception e) {
       throw new XincoException(e.getMessage());
+    } finally {
+      XincoRevisionListener.MOD_REASON.remove();
+      XincoRevisionListener.MODIFIER_ID.remove();
     }
     return getId();
   }
@@ -154,5 +154,17 @@ public final class XincoCoreGroupServer extends XincoCoreGroup {
       users.add(new XincoCoreUserServer(xcuhg.getXincoCoreUser()));
     }
     return users;
+  }
+
+  public static List<XincoCoreGroupServer> getGroupsOfUser(int userId) {
+    parameters.clear();
+    parameters.put("xincoCoreUserId", userId);
+    result = namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
+    List<XincoCoreGroupServer> groups = new ArrayList<>();
+    for (Iterator it = result.iterator(); it.hasNext(); ) {
+      XincoCoreUserHasXincoCoreGroup uhg = (XincoCoreUserHasXincoCoreGroup) it.next();
+      groups.add(new XincoCoreGroupServer(uhg.getXincoCoreGroup()));
+    }
+    return groups;
   }
 }

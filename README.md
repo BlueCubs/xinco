@@ -1,4 +1,4 @@
-<p align="center"> 
+<p align="center">
 <img src="http://xinco.org/images/blueCubs.gif">
 </p>
 
@@ -12,16 +12,16 @@ xinco [eXtensibe INformation COre] is a powerful Web-Service based Information a
 
 For news and release announcements, join the community on: blueCubs.com
 
-## Benefits: 	
+## Benefits:
 
 - You know exactly WHERE your important Information is stored! (Tree + Search)
 - You know WHAT this Information is about! (Meta-Data)
 - You manage WHO has access to certain Information! (Access Control Lists)
 - You know WHO is doing WHAT with your Information! (Logging)
 
-You miss all of this on your File Server!? -> switch to a Document Management System (DMS)! 
+You miss all of this on your File Server!? -> switch to a Document Management System (DMS)!
 
-## Features: 	
+## Features:
 
 - Manages Documents / Files / Text / URLs / Contacts...
 - Full-Text Indexing and Search of Text, Adobe PDF, MS Word, MS Excel, HTML, ...
@@ -38,20 +38,42 @@ You miss all of this on your File Server!? -> switch to a Document Management Sy
 - Periodic File Archiving to external storage volumes
 - Fast and reliable MySQL or PostgreSQL database backend
 - Storage Location of Files and Search Index on different volumes to optimize use of Network Storage Devices (NAS, SAN)
-- xinco DMS™ is growing to be a feature-rich, professional DMS for managing your critical Business Information..... 
+- xinco DMS™ is growing to be a feature-rich, professional DMS for managing your critical Business Information.....
 
- 
-## Regulated Environments 	
+
+## Regulated Environments
 Are you going to use xinco DMS™ in a regulated environment? (FDA 21 CFR part 11, ...)
 Then you'll be glad to hear that xinco DMS™ Validation Packages and Validation Services are available.
 For further information contact our core developer [Javier Ortiz](https://github.com/javydreamercsw).
- 
-## About xinco DMS™	
+
+## About xinco DMS™
 xinco DMS™ has originally been developed by Alexander Manes at the University of Cooperative Education, Heidenheim, Germany (www.ba-heidenheim.de).
 
 Today, xinco DMS™ is led by [Javier Ortiz](https://github.com/javydreamercsw) who invites developers and users to code, test, translate and promote the project.
 Published as Open Source Software and adopted by blueCubs.com, xinco DMS™ will be growing to be one of the industries most advanced Information and Document Management Systems (DMS).
- 
+
 Supporting the blueCubs vision, visit [blueCubs.org](http://blueCubs.org)
 
 Part of the blueCubs Network: [blueCubs.com](http://bluecubs.com) | [blueCubs.org](http://blueCubs.org) | [xinco.org](http://xinco.org)
+
+## AI Agent Configuration
+
+Project-wide agent instructions live in [`AGENTS.md`](AGENTS.md). All agents should read this file before starting work — it covers task tracking (Beads), git policy, i18n conventions, and session close protocol.
+
+### Claude Code
+
+Add the following to your Claude Code settings (`~/.claude/settings.json` or via **Claude Code → Settings**) so that `AGENTS.md` is automatically included in every session for this repository:
+
+```json
+{
+"includeFiles": ["AGENTS.md"]
+}
+```
+
+Alternatively, reference it in your project-level `CLAUDE.md`:
+
+```markdown
+See [AGENTS.md](AGENTS.md) for agent instructions shared across all AI tools.
+```
+
+Claude Code also reads `CLAUDE.md` at the repository root automatically — no extra configuration needed if the reference above is present.

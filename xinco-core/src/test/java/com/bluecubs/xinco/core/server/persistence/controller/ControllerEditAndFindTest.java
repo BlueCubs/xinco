@@ -3,7 +3,13 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
+import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
 import java.util.ArrayList;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -137,7 +143,6 @@ public class ControllerEditAndFindTest extends AbstractXincoDataBaseTestCase {
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new java.util.Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

@@ -3,13 +3,14 @@ package com.bluecubs.xinco.core.server;
 import static java.util.Locale.getDefault;
 import static java.util.ResourceBundle.getBundle;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import lombok.Getter;
 
 /**
  * Extracts information from browser
@@ -22,14 +23,19 @@ public final class BrowserDataExtractor extends HttpServlet {
   HttpServletRequest request;
   HttpSession session;
   String userAgent;
-  String company;
-  String name;
-  String version;
-  String mainVersion;
-  String minorVersion;
-  String os;
-  String language = "en";
-  Locale locale;
+
+  public void setUserAgent(String ua) {
+    this.userAgent = ua != null ? ua.toLowerCase(getDefault()) : "";
+  }
+
+  @Getter String company;
+  @Getter String name;
+  @Getter String version;
+  @Getter String mainVersion;
+  @Getter String minorVersion;
+  @Getter String os;
+  @Getter String language = "en";
+  @Getter Locale locale;
   // Spracheinstellungen
   private HashMap<String, String> supportedLanguages;
 
@@ -62,10 +68,6 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
   }
 
-  public void setUserAgent(String httpUserAgent) {
-    this.userAgent = httpUserAgent.toLowerCase();
-  }
-
   private void setCompany() {
     if (userAgent.contains("msie")) {
       company = "Microsoft";
@@ -76,15 +78,6 @@ public final class BrowserDataExtractor extends HttpServlet {
     } else {
       company = "unknown";
     }
-  }
-
-  /**
-   * Get company.
-   *
-   * @return company
-   */
-  public String getCompany() {
-    return company;
   }
 
   private void setName() {
@@ -104,15 +97,6 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
   }
 
-  /**
-   * Get name.
-   *
-   * @return name
-   */
-  public String getName() {
-    return name;
-  }
-
   private void setVersion() {
     int tmpPos;
     String tmpString;
@@ -122,46 +106,19 @@ public final class BrowserDataExtractor extends HttpServlet {
       version = str.substring(0, str.indexOf(';'));
     } else {
       tmpString =
-          (userAgent.substring(
-                  tmpPos = (userAgent.indexOf('/')) + 1, tmpPos + userAgent.indexOf(' ')))
+          userAgent
+              .substring(tmpPos = (userAgent.indexOf('/')) + 1, tmpPos + userAgent.indexOf(' '))
               .trim();
       version = tmpString.substring(0, tmpString.indexOf(' '));
     }
-  }
-
-  /**
-   * Get version.
-   *
-   * @return version
-   */
-  public String getVersion() {
-    return version;
   }
 
   private void setMainVersion() {
     mainVersion = version.substring(0, version.indexOf('.'));
   }
 
-  /**
-   * Get main version.
-   *
-   * @return main version
-   */
-  public String getMainVersion() {
-    return mainVersion;
-  }
-
   private void setMinorVersion() {
     minorVersion = version.substring(version.indexOf('.') + 1).trim();
-  }
-
-  /**
-   * Get minor version.
-   *
-   * @return minor version
-   */
-  public String getMinorVersion() {
-    return minorVersion;
   }
 
   private void setOs() {
@@ -176,24 +133,15 @@ public final class BrowserDataExtractor extends HttpServlet {
         os = "Windows 3.x";
       }
 
-    } else if (userAgent.contains("Mac")) {
-      if (userAgent.contains("Mac_PowerPC") || userAgent.contains("Mac_PPC")) {
+    } else if (userAgent.contains("mac")) {
+      if (userAgent.contains("mac_powerppc") || userAgent.contains("mac_ppc")) {
         os = "Macintosh Power PC";
-      } else if (userAgent.contains("Macintosh")) {
+      } else if (userAgent.contains("macintosh")) {
         os = "Macintosh";
       } else {
         os = "Unknown Mac";
       }
     }
-  }
-
-  /**
-   * Get OS.
-   *
-   * @return OS
-   */
-  public String getOs() {
-    return os;
   }
 
   private void setLanguage() {
@@ -204,7 +152,7 @@ public final class BrowserDataExtractor extends HttpServlet {
       StringTokenizer st = new StringTokenizer(prefLanguage, ",");
 
       while (st.hasMoreTokens()) {
-        if (supportedLanguages.containsKey((language = st.nextToken()))) {
+        if (supportedLanguages.containsKey(language = st.nextToken())) {
           language = parseLocale(language);
         }
       }
@@ -228,25 +176,7 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
   }
 
-  /**
-   * Get language.
-   *
-   * @return language
-   */
-  public String getLanguage() {
-    return language;
-  }
-
   private void setLocale() {
     locale = new Locale(language, "");
-  }
-
-  /**
-   * Get locale
-   *
-   * @return locale
-   */
-  public Locale getLocale() {
-    return locale;
   }
 }

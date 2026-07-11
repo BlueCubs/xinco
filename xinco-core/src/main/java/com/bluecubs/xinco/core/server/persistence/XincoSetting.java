@@ -27,20 +27,30 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.GenerationType.TABLE;
+import static jakarta.persistence.GenerationType.TABLE;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.envers.Audited;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
+@Audited
 @Entity
 @Table(name = "xinco_setting")
-@EntityListeners(AuditedEntityListener.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(name = "XincoSetting.findAll", query = "SELECT x FROM XincoSetting x"),
@@ -60,14 +70,13 @@ import javax.xml.bind.annotation.XmlRootElement;
       name = "XincoSetting.findByLongValue",
       query = "SELECT x FROM XincoSetting x WHERE x.longValue = :longValue")
 })
-public class XincoSetting extends XincoAuditedObject implements Serializable {
+public class XincoSetting implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoSettingGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoSettingGen")
   @TableGenerator(
       name = "XincoSettingGen",
       table = "xinco_id",
@@ -80,17 +89,14 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 45)
-  @Column(name = "description")
+  @NotNull @Size(min = 1, max = 45) @Column(name = "description")
   private String description;
 
   @Column(name = "int_value")
   private Integer intValue;
 
   @Lob
-  @Size(max = 65_535)
-  @Column(name = "string_value")
+  @Size(max = 65_535) @Column(name = "string_value")
   private String stringValue;
 
   @Column(name = "bool_value")

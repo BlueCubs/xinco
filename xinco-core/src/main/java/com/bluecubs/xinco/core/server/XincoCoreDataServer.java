@@ -56,9 +56,7 @@ import com.bluecubs.xinco.server.service.XincoCoreLog;
 import com.bluecubs.xinco.server.service.XincoVersion;
 import java.io.File;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -69,6 +67,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
   private static HashMap<String, Object> parameters = new HashMap<String, Object>();
   private static List<Object> result;
   private static final Logger LOG = getLogger(XincoCoreDataServer.class.getName());
+
   // create data object for data structures
 
   /**
@@ -325,9 +324,8 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 namedQuery("XincoCoreLanguage.findById", parameters).get(0));
         xcd.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
         xcd.setStatusNumber(getStatusNumber());
-        xcd.setModificationReason("audit.data.change");
-        xcd.setModifierId(getChangerID());
-        xcd.setModificationTime(new Timestamp(new Date().getTime()));
+        XincoRevisionListener.MOD_REASON.set("audit.data.change");
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
         controller.edit(xcd);
       } else {
         xcd = new com.bluecubs.xinco.core.server.persistence.XincoCoreData();
@@ -348,9 +346,8 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 namedQuery("XincoCoreLanguage.findById", parameters).get(0));
         xcd.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
         xcd.setStatusNumber(getStatusNumber());
-        xcd.setModificationReason("audit.general.create");
-        xcd.setModifierId(getChangerID());
-        xcd.setModificationTime(new Timestamp(new Date().getTime()));
+        XincoRevisionListener.MOD_REASON.set("audit.general.create");
+        XincoRevisionListener.MODIFIER_ID.set(getChangerID());
         controller.create(xcd);
         setId(xcd.getId());
       }
@@ -389,6 +386,9 @@ public final class XincoCoreDataServer extends XincoCoreData {
     } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       throw new XincoException(e.getMessage());
+    } finally {
+      XincoRevisionListener.MOD_REASON.remove();
+      XincoRevisionListener.MODIFIER_ID.remove();
     }
     return getId();
   }

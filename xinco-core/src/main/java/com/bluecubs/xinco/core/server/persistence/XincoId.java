@@ -27,16 +27,23 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import com.bluecubs.xinco.core.server.XincoIdGenerator;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 @Entity
 @Table(name = "xinco_id")
-@EntityListeners(XincoIdGenerator.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(name = "XincoId.findAll", query = "SELECT x FROM XincoId x"),
@@ -53,15 +60,14 @@ public class XincoId implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @Basic(optional = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
 
   @Column(name = "last_id")
   private Integer lastId;
 
-  @Size(min = 1, max = 255)
-  @Column(name = "tablename")
+  @Size(min = 1, max = 255) @Column(name = "tablename")
   private String tablename;
 
   public XincoId() {}

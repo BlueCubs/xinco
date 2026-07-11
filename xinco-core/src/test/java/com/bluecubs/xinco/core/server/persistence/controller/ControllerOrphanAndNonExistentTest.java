@@ -3,7 +3,14 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -264,24 +271,6 @@ public class ControllerOrphanAndNonExistentTest extends AbstractXincoDataBaseTes
   }
 
   /**
-   * Covers XincoCoreUserModifiedRecordJpaController destroy() EntityNotFoundException catch (~9
-   * instr).
-   */
-  public void testUmr_destroyNonExistent() {
-    XincoCoreUserModifiedRecordJpaController umrCtrl =
-        new XincoCoreUserModifiedRecordJpaController(getEntityManagerFactory());
-    XincoCoreUserModifiedRecordPK fakePK = new XincoCoreUserModifiedRecordPK();
-    fakePK.setId(99999);
-    fakePK.setRecordId(99999);
-    try {
-      umrCtrl.destroy(fakePK);
-      fail("Expected exception for non-existent UMR pk");
-    } catch (Exception e) {
-      // expected
-    }
-  }
-
-  /**
    * Covers XincoCoreDataHasDependencyJpaController destroy() EntityNotFoundException catch (~9
    * instr).
    */
@@ -374,7 +363,6 @@ public class ControllerOrphanAndNonExistentTest extends AbstractXincoDataBaseTes
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());

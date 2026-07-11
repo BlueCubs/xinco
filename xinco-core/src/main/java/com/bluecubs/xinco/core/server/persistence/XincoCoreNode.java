@@ -27,23 +27,35 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.GenerationType.TABLE;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.GenerationType.TABLE;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.envers.Audited;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
+@Audited
 @Entity
 @Table(name = "xinco_core_node")
-@EntityListeners(AuditedEntityListener.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(name = "XincoCoreNode.findAll", query = "SELECT x FROM XincoCoreNode x"),
@@ -57,14 +69,13 @@ import javax.xml.bind.annotation.XmlTransient;
       name = "XincoCoreNode.findByStatusNumber",
       query = "SELECT x FROM XincoCoreNode x WHERE x.statusNumber = :statusNumber")
 })
-public class XincoCoreNode extends XincoAuditedObject implements Serializable {
+public class XincoCoreNode implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoCoreNodeGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreNodeGen")
   @TableGenerator(
       name = "XincoCoreNodeGen",
       table = "xinco_id",
@@ -77,14 +88,11 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "designation")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
   private String designation;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "status_number")
+  @NotNull @Column(name = "status_number")
   private int statusNumber;
 
   @JoinColumn(name = "xinco_core_language_id", referencedColumnName = "id")

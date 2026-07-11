@@ -31,17 +31,18 @@ import com.bluecubs.xinco.core.server.persistence.XincoDependencyBehavior;
 import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoDependencyBehaviorJpaController implements Serializable {
 
   public XincoDependencyBehaviorJpaController(EntityManagerFactory emf) {
@@ -67,7 +68,8 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
           xincoDependencyBehavior.getXincoDependencyTypeList()) {
         xincoDependencyTypeListXincoDependencyTypeToAttach =
             em.getReference(
-                xincoDependencyTypeListXincoDependencyTypeToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(
+                    xincoDependencyTypeListXincoDependencyTypeToAttach),
                 xincoDependencyTypeListXincoDependencyTypeToAttach.getId());
         attachedXincoDependencyTypeList.add(xincoDependencyTypeListXincoDependencyTypeToAttach);
       }
@@ -110,10 +112,14 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
           persistentXincoDependencyBehavior.getXincoDependencyTypeList();
       List<XincoDependencyType> xincoDependencyTypeListNew =
           xincoDependencyBehavior.getXincoDependencyTypeList();
+      boolean xincoDependencyTypeListNewInit =
+          org.hibernate.Hibernate.isInitialized(xincoDependencyTypeListNew);
       List<String> illegalOrphanMessages = null;
       for (XincoDependencyType xincoDependencyTypeListOldXincoDependencyType :
           xincoDependencyTypeListOld) {
-        if (!xincoDependencyTypeListNew.contains(xincoDependencyTypeListOldXincoDependencyType)) {
+        if (xincoDependencyTypeListNewInit
+            && !xincoDependencyTypeListNew.contains(
+                xincoDependencyTypeListOldXincoDependencyType)) {
           if (illegalOrphanMessages == null) {
             illegalOrphanMessages = new ArrayList<>();
           }
@@ -127,14 +133,17 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
         throw new IllegalOrphanException(illegalOrphanMessages);
       }
       List<XincoDependencyType> attachedXincoDependencyTypeListNew = new ArrayList<>();
-      for (XincoDependencyType xincoDependencyTypeListNewXincoDependencyTypeToAttach :
-          xincoDependencyTypeListNew) {
-        xincoDependencyTypeListNewXincoDependencyTypeToAttach =
-            em.getReference(
-                xincoDependencyTypeListNewXincoDependencyTypeToAttach.getClass(),
-                xincoDependencyTypeListNewXincoDependencyTypeToAttach.getId());
-        attachedXincoDependencyTypeListNew.add(
-            xincoDependencyTypeListNewXincoDependencyTypeToAttach);
+      if (xincoDependencyTypeListNewInit) {
+        for (XincoDependencyType xincoDependencyTypeListNewXincoDependencyTypeToAttach :
+            xincoDependencyTypeListNew) {
+          xincoDependencyTypeListNewXincoDependencyTypeToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(
+                      xincoDependencyTypeListNewXincoDependencyTypeToAttach),
+                  xincoDependencyTypeListNewXincoDependencyTypeToAttach.getId());
+          attachedXincoDependencyTypeListNew.add(
+              xincoDependencyTypeListNewXincoDependencyTypeToAttach);
+        }
       }
       xincoDependencyTypeListNew = attachedXincoDependencyTypeListNew;
       xincoDependencyBehavior.setXincoDependencyTypeList(xincoDependencyTypeListNew);
@@ -163,7 +172,7 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoDependencyBehavior.getId();
         if (findXincoDependencyBehavior(id) == null) {
           throw new NonexistentEntityException(
@@ -183,13 +192,11 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoDependencyBehavior xincoDependencyBehavior;
-      try {
-        xincoDependencyBehavior = em.getReference(XincoDependencyBehavior.class, id);
-        xincoDependencyBehavior.getId();
-      } catch (EntityNotFoundException enfe) {
+      XincoDependencyBehavior xincoDependencyBehavior = em.find(XincoDependencyBehavior.class, id);
+
+      if (xincoDependencyBehavior == null) {
         throw new NonexistentEntityException(
-            "The xincoDependencyBehavior with id " + id + " no longer exists.", enfe);
+            "The xincoDependencyBehavior with id " + id + " no longer exists.");
       }
       List<String> illegalOrphanMessages = null;
       List<XincoDependencyType> xincoDependencyTypeListOrphanCheck =
@@ -204,7 +211,8 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
                 + xincoDependencyBehavior
                 + ") cannot be destroyed since the XincoDependencyType "
                 + xincoDependencyTypeListOrphanCheckXincoDependencyType
-                + " in its xincoDependencyTypeList field has a non-nullable xincoDependencyBehavior field.");
+                + " in its xincoDependencyTypeList field has a non-nullable xincoDependencyBehavior"
+                + " field.");
       }
       if (illegalOrphanMessages != null) {
         throw new IllegalOrphanException(illegalOrphanMessages);

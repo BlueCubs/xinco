@@ -29,20 +29,29 @@
  */
 package com.bluecubs.xinco.core.server.filter;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.io.IOException;
-import javax.servlet.*;
 
-/** @author Leo-Fan.aq */
+/**
+ * @author Leo-Fan.aq
+ */
 public class SetCharacterEncodingFilter implements Filter {
   // ----------------------------------------------------- Instance Variables
 
   /** The default character encoding to set for requests that pass through this filter. */
   protected String encoding = null;
+
   /**
    * The filter configuration object we are associated with. If this value is null, this filter
    * instance is not currently configured.
    */
   protected FilterConfig filterConfig = null;
+
   /** Should a character encoding specified by the client be ignored? */
   protected boolean ignore = true;
 
@@ -85,7 +94,7 @@ public class SetCharacterEncodingFilter implements Filter {
    * Place this filter into service.
    *
    * @param filterConfig The filter configuration object
-   * @throws javax.servlet.ServletException on an error
+   * @throws jakarta.servlet.ServletException on an error
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
@@ -115,6 +124,6 @@ public class SetCharacterEncodingFilter implements Filter {
    * @return encoding
    */
   protected String selectEncoding(ServletRequest request) {
-    return (this.encoding);
+    return this.encoding;
   }
 }

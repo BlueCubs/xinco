@@ -34,7 +34,7 @@ import java.io.Reader;
 
 public interface XincoIndexFileType {
 
-  public Reader getFileContentReader(File f);
+  Reader getFileContentReader(File f);
 
-  public String getFileContentString(File f);
+  String getFileContentString(File f);
 }

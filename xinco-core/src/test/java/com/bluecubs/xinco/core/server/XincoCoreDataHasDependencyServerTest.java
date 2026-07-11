@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import org.junit.Test;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreDataHasDependencyServerTest extends AbstractXincoDataBaseTestCase {
 
   private static HashMap parameters = new HashMap();
@@ -72,10 +74,11 @@ public class XincoCoreDataHasDependencyServerTest extends AbstractXincoDataBaseT
       parameters.put("dependencyTypeId", dependencyTypeId);
       result =
           createdQuery(
-              "SELECT x FROM XincoCoreDataHasDependency x WHERE "
-                  + "x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId "
-                  + "and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId = :xincoCoreDataChildrenId "
-                  + "and x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId",
+              "SELECT x FROM XincoCoreDataHasDependency x WHERE"
+                  + " x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId"
+                  + " and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId ="
+                  + " :xincoCoreDataChildrenId and x.xincoCoreDataHasDependencyPK.dependencyTypeId"
+                  + " = :dependencyTypeId",
               parameters);
       assertTrue(result.isEmpty());
     } catch (XincoException ex) {

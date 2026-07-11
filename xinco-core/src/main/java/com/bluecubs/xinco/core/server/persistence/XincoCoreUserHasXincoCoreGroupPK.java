@@ -27,24 +27,30 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 @Embeddable
 public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
 
   @Basic(optional = false)
-  @NotNull
+  @NotNull @Setter
   @Column(name = "xinco_core_user_id")
+  @Getter
   private int xincoCoreUserId;
 
   @Basic(optional = false)
-  @NotNull
+  @NotNull @Setter
   @Column(name = "xinco_core_group_id")
+  @Getter
   private int xincoCoreGroupId;
 
   public XincoCoreUserHasXincoCoreGroupPK() {}
@@ -54,27 +60,9 @@ public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
     this.xincoCoreGroupId = xincoCoreGroupId;
   }
 
-  public int getXincoCoreUserId() {
-    return xincoCoreUserId;
-  }
-
-  public void setXincoCoreUserId(int xincoCoreUserId) {
-    this.xincoCoreUserId = xincoCoreUserId;
-  }
-
-  public int getXincoCoreGroupId() {
-    return xincoCoreGroupId;
-  }
-
-  public void setXincoCoreGroupId(int xincoCoreGroupId) {
-    this.xincoCoreGroupId = xincoCoreGroupId;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (int) xincoCoreUserId;
-    hash += (int) xincoCoreGroupId;
+    int hash = (0 + ((int) xincoCoreUserId)) + ((int) xincoCoreGroupId);
     return hash;
   }
 
@@ -87,15 +75,13 @@ public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
     if (this.xincoCoreUserId != other.xincoCoreUserId) {
       return false;
     }
-    if (this.xincoCoreGroupId != other.xincoCoreGroupId) {
-      return false;
-    }
-    return true;
+    return !(this.xincoCoreGroupId != other.xincoCoreGroupId);
   }
 
   @Override
   public String toString() {
-    return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK[ xincoCoreUserId="
+    return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK["
+        + " xincoCoreUserId="
         + xincoCoreUserId
         + ", xincoCoreGroupId="
         + xincoCoreGroupId

@@ -27,19 +27,30 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.GenerationType.TABLE;
+import static jakarta.persistence.GenerationType.TABLE;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.envers.Audited;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
+@Audited
 @Entity
 @Table(name = "xinco_core_ace")
-@EntityListeners(AuditedEntityListener.class)
 @XmlRootElement
 @NamedQueries({
   @NamedQuery(name = "XincoCoreAce.findAll", query = "SELECT x FROM XincoCoreAce x"),
@@ -59,14 +70,13 @@ import javax.xml.bind.annotation.XmlRootElement;
       name = "XincoCoreAce.findByAdminPermission",
       query = "SELECT x FROM XincoCoreAce x WHERE x.adminPermission = :adminPermission")
 })
-public class XincoCoreAce extends XincoAuditedObject implements Serializable {
+public class XincoCoreAce implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoCoreACEGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreACEGen")
   @TableGenerator(
       name = "XincoCoreACEGen",
       table = "xinco_id",
@@ -79,23 +89,19 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "read_permission")
+  @NotNull @Column(name = "read_permission")
   private boolean readPermission;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "write_permission")
+  @NotNull @Column(name = "write_permission")
   private boolean writePermission;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "execute_permission")
+  @NotNull @Column(name = "execute_permission")
   private boolean executePermission;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "admin_permission")
+  @NotNull @Column(name = "admin_permission")
   private boolean adminPermission;
 
   @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id")

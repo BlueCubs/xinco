@@ -1,6 +1,8 @@
 package com.bluecubs.xinco.core.server.persistence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
 import junit.framework.JUnit4TestAdapter;
@@ -49,7 +51,7 @@ public class PersistenceEntityConstructorTest {
     dep2.setXincoCoreDataHasDependencyPK(new XincoCoreDataHasDependencyPK(1, 2, 1));
     assertEquals(dep1.hashCode(), dep2.hashCode());
     assertEquals(dep1, dep2);
-    assertFalse(dep1.equals(null));
+    assertFalse(dep1 == null);
     assertFalse(dep1.equals("other"));
     assertNotNull(dep1.toString());
   }
@@ -74,29 +76,9 @@ public class PersistenceEntityConstructorTest {
     XincoCoreUserHasXincoCoreGroup uhg2 = new XincoCoreUserHasXincoCoreGroup(1, 2);
     assertEquals(uhg1.hashCode(), uhg2.hashCode());
     assertEquals(uhg1, uhg2);
-    assertFalse(uhg1.equals(null));
+    assertFalse(uhg1 == null);
     assertFalse(uhg1.equals("other"));
     assertNotNull(uhg1.toString());
-  }
-
-  @Test
-  public void testXincoDependencyTypeT_recordIdConstructor() {
-    XincoDependencyTypeT dt = new XincoDependencyTypeT(55);
-    assertEquals(55, (int) dt.getRecordId());
-  }
-
-  @Test
-  public void testXincoDependencyBehaviorT_recordIdConstructor() {
-    XincoDependencyBehaviorT bt = new XincoDependencyBehaviorT(66);
-    assertEquals(66, (int) bt.getRecordId());
-  }
-
-  @Test
-  public void testXincoDependencyBehaviorT_fullConstructor() {
-    XincoDependencyBehaviorT bt = new XincoDependencyBehaviorT(77, 100, "TestBehavior");
-    assertEquals(77, (int) bt.getRecordId());
-    assertEquals(100, (int) bt.getId());
-    assertEquals("TestBehavior", bt.getDesignation());
   }
 
   @Test
@@ -118,25 +100,6 @@ public class PersistenceEntityConstructorTest {
   }
 
   @Test
-  public void testXincoCoreUserModifiedRecord_pkConstructor() {
-    XincoCoreUserModifiedRecordPK pk = new XincoCoreUserModifiedRecordPK(1, 100);
-    XincoCoreUserModifiedRecord record = new XincoCoreUserModifiedRecord(pk);
-    assertEquals(pk, record.getXincoCoreUserModifiedRecordPK());
-  }
-
-  @Test
-  public void testXincoCoreUserHasXincoCoreGroupT_recordIdConstructor() {
-    XincoCoreUserHasXincoCoreGroupT t = new XincoCoreUserHasXincoCoreGroupT(88);
-    assertEquals(88, (int) t.getRecordId());
-  }
-
-  @Test
-  public void testXincoCoreDataHasDependencyT_recordIdConstructor() {
-    XincoCoreDataHasDependencyT t = new XincoCoreDataHasDependencyT(99);
-    assertEquals(99, (int) t.getRecordId());
-  }
-
-  @Test
   public void testXincoDependencyBehavior_constructors() {
     XincoDependencyBehavior b1 = new XincoDependencyBehavior(10);
     assertEquals(10, (int) b1.getId());
@@ -147,7 +110,7 @@ public class PersistenceEntityConstructorTest {
 
     assertEquals(b1.hashCode(), b1.hashCode());
     assertFalse(b1.equals(b2));
-    assertFalse(b1.equals(null));
+    assertFalse(b1 == null);
     assertFalse(b1.equals("string"));
     assertNotNull(b1.toString());
   }

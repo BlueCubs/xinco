@@ -6,7 +6,9 @@ import static com.bluecubs.xinco.core.server.XincoSettingServer.getSettings;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoSettingServerTest extends AbstractXincoDataBaseTestCase {
 
   public XincoSettingServerTest(String testName) {

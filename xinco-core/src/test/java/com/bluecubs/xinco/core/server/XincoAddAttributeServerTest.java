@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import org.junit.Test;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoAddAttributeServerTest extends AbstractXincoDataBaseTestCase {
 
   private static XincoCoreDataServer xcds;
@@ -39,7 +41,7 @@ public class XincoAddAttributeServerTest extends AbstractXincoDataBaseTestCase {
     xaa =
         new XincoAddAttributeServer(
             xcds.getId(),
-            (xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(0)).getAttributeId(),
+            xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(0).getAttributeId(),
             0,
             0,
             0,
@@ -50,7 +52,9 @@ public class XincoAddAttributeServerTest extends AbstractXincoDataBaseTestCase {
     assertTrue(
         new XincoAddAttributeServer(
                 xcds.getId(),
-                (xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(0))
+                xcds.getXincoCoreDataType()
+                    .getXincoCoreDataTypeAttributes()
+                    .get(0)
                     .getAttributeId())
             != null);
     assertTrue(getXincoAddAttributes(xaa.getAttributeId()) != null);

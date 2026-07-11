@@ -30,12 +30,12 @@ package com.bluecubs.xinco.server.service;
 import static com.bluecubs.xinco.core.OPCode.CHECKIN;
 import static com.bluecubs.xinco.core.OPCode.CREATION;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
+import static jakarta.xml.ws.soap.SOAPBinding.SOAP11HTTP_BINDING;
 import static java.util.Locale.getDefault;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static java.util.logging.Logger.getLogger;
-import static javax.xml.ws.soap.SOAPBinding.SOAP11HTTP_BINDING;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
@@ -54,6 +54,8 @@ import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.bluecubs.xinco.core.server.index.XincoIndexThread;
 import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.rendering.XincoRenderingThread;
+import jakarta.jws.WebService;
+import jakarta.xml.ws.BindingType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,10 +69,10 @@ import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
-import javax.jws.WebService;
-import javax.xml.ws.BindingType;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 @WebService(
     serviceName = "Xinco",
     portName = "XincoPort",

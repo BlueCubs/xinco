@@ -5,9 +5,9 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Logger.getLogger;
 
 import com.bluecubs.xinco.core.server.persistence.XincoId;
+import jakarta.persistence.PrePersist;
 import java.util.HashMap;
 import java.util.logging.Logger;
-import javax.persistence.PrePersist;
 
 /**
  * Work around issue with sequencing on H2 databases on Linux

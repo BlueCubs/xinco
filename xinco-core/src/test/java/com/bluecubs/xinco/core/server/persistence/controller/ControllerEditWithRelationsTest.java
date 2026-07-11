@@ -5,7 +5,18 @@ import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +71,6 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     userCtrl.create(user);
     int userId = user.getId();
     assertTrue(userId > 0);
@@ -139,6 +149,8 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     log.setVersionLow(0);
     log.setVersionPostfix("");
     log.setXincoCoreData(dataCtrl.findXincoCoreData(dataId));
+    log.setXincoCoreUser(
+        new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser(1));
     logCtrl.create(log);
     int logId = log.getId();
     assertTrue(logId > 0);
@@ -286,7 +298,6 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     user.setStatusNumber(1);
     user.setAttempts(0);
     user.setLastModified(new Date());
-    user.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     user.setXincoCoreAceList(new ArrayList<>());
     user.setXincoCoreLogList(new ArrayList<>());
     user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
@@ -311,7 +322,6 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
         Arrays.asList(uhgCtrl.findXincoCoreUserHasXincoCoreGroup(pk)));
     toEdit.setXincoCoreAceList(new ArrayList<>());
     toEdit.setXincoCoreLogList(new ArrayList<>());
-    toEdit.setXincoCoreUserModifiedRecordList(new ArrayList<>());
     userCtrl.edit(toEdit);
     assertEquals(2, (int) userCtrl.findXincoCoreUser(userId).getStatusNumber());
 
@@ -836,6 +846,8 @@ public class ControllerEditWithRelationsTest extends AbstractXincoDataBaseTestCa
     log.setVersionLow(0);
     log.setVersionPostfix("");
     log.setXincoCoreData(dataCtrl.findXincoCoreData(d1Id));
+    log.setXincoCoreUser(
+        new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser(1));
     logCtrl.create(log);
     int logId = log.getId();
 

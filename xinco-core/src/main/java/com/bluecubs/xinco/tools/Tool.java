@@ -9,7 +9,9 @@ import static javax.xml.datatype.DatatypeFactory.newInstance;
 
 import com.bluecubs.xinco.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.server.service.XincoCoreDataTypeAttribute;
-import java.awt.*;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,11 +27,11 @@ import java.util.logging.Logger;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class Tool {
 
   public static int MIN_PORT_NUMBER = 1;

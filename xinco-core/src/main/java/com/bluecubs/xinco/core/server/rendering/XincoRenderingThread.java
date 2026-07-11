@@ -63,7 +63,9 @@ import java.util.zip.CheckedInputStream;
 import org.jodconverter.office.OfficeException;
 import org.jodconverter.office.OfficeManager;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoRenderingThread extends Thread {
 
   private final XincoCoreData original;

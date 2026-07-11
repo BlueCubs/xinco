@@ -32,16 +32,17 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreDataTypeAttributeJpaController implements Serializable {
 
   public XincoCoreDataTypeAttributeJpaController(EntityManagerFactory emf) {
@@ -70,7 +71,8 @@ public class XincoCoreDataTypeAttributeJpaController implements Serializable {
       XincoCoreDataType xincoCoreDataType = xincoCoreDataTypeAttribute.getXincoCoreDataType();
       if (xincoCoreDataType != null) {
         xincoCoreDataType =
-            em.getReference(xincoCoreDataType.getClass(), xincoCoreDataType.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreDataType), xincoCoreDataType.getId());
         xincoCoreDataTypeAttribute.setXincoCoreDataType(xincoCoreDataType);
       }
       em.persist(xincoCoreDataTypeAttribute);
@@ -112,7 +114,9 @@ public class XincoCoreDataTypeAttributeJpaController implements Serializable {
       XincoCoreDataType xincoCoreDataTypeNew = xincoCoreDataTypeAttribute.getXincoCoreDataType();
       if (xincoCoreDataTypeNew != null) {
         xincoCoreDataTypeNew =
-            em.getReference(xincoCoreDataTypeNew.getClass(), xincoCoreDataTypeNew.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreDataTypeNew),
+                xincoCoreDataTypeNew.getId());
         xincoCoreDataTypeAttribute.setXincoCoreDataType(xincoCoreDataTypeNew);
       }
       xincoCoreDataTypeAttribute = em.merge(xincoCoreDataTypeAttribute);
@@ -127,7 +131,7 @@ public class XincoCoreDataTypeAttributeJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (Exception ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         XincoCoreDataTypeAttributePK id =
             xincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributePK();
         if (findXincoCoreDataTypeAttribute(id) == null) {
@@ -148,18 +152,16 @@ public class XincoCoreDataTypeAttributeJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreDataTypeAttribute xincoCoreDataTypeAttribute;
-      try {
-        xincoCoreDataTypeAttribute = em.getReference(XincoCoreDataTypeAttribute.class, id);
-        xincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributePK();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreDataTypeAttribute xincoCoreDataTypeAttribute =
+          em.find(XincoCoreDataTypeAttribute.class, id);
+
+      if (xincoCoreDataTypeAttribute == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreDataTypeAttribute with id " + id + " no longer exists.", enfe);
+            "The xincoCoreDataTypeAttribute with id " + id + " no longer exists.");
       }
       XincoCoreDataType xincoCoreDataType = xincoCoreDataTypeAttribute.getXincoCoreDataType();
       if (xincoCoreDataType != null) {
         xincoCoreDataType.getXincoCoreDataTypeAttributeList().remove(xincoCoreDataTypeAttribute);
-        xincoCoreDataType = em.merge(xincoCoreDataType);
       }
       em.remove(xincoCoreDataTypeAttribute);
       em.getTransaction().commit();

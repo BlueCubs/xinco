@@ -11,7 +11,9 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
   com.bluecubs.xinco.core.XincoExceptionTest.class,

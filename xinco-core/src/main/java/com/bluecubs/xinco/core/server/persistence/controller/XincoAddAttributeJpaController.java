@@ -32,16 +32,17 @@ import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoAddAttributeJpaController implements Serializable {
 
   public XincoAddAttributeJpaController(EntityManagerFactory emf) {
@@ -68,7 +69,8 @@ public class XincoAddAttributeJpaController implements Serializable {
       em.getTransaction().begin();
       XincoCoreData xincoCoreData = xincoAddAttribute.getXincoCoreData();
       if (xincoCoreData != null) {
-        xincoCoreData = em.getReference(xincoCoreData.getClass(), xincoCoreData.getId());
+        xincoCoreData =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreData), xincoCoreData.getId());
         xincoAddAttribute.setXincoCoreData(xincoCoreData);
       }
       em.persist(xincoAddAttribute);
@@ -104,7 +106,9 @@ public class XincoAddAttributeJpaController implements Serializable {
       XincoCoreData xincoCoreDataOld = persistentXincoAddAttribute.getXincoCoreData();
       XincoCoreData xincoCoreDataNew = xincoAddAttribute.getXincoCoreData();
       if (xincoCoreDataNew != null) {
-        xincoCoreDataNew = em.getReference(xincoCoreDataNew.getClass(), xincoCoreDataNew.getId());
+        xincoCoreDataNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreDataNew), xincoCoreDataNew.getId());
         xincoAddAttribute.setXincoCoreData(xincoCoreDataNew);
       }
       xincoAddAttribute = em.merge(xincoAddAttribute);
@@ -119,7 +123,7 @@ public class XincoAddAttributeJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (Exception ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         XincoAddAttributePK id = xincoAddAttribute.getXincoAddAttributePK();
         if (findXincoAddAttribute(id) == null) {
           throw new NonexistentEntityException(
@@ -139,18 +143,15 @@ public class XincoAddAttributeJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoAddAttribute xincoAddAttribute;
-      try {
-        xincoAddAttribute = em.getReference(XincoAddAttribute.class, id);
-        xincoAddAttribute.getXincoAddAttributePK();
-      } catch (EntityNotFoundException enfe) {
+      XincoAddAttribute xincoAddAttribute = em.find(XincoAddAttribute.class, id);
+
+      if (xincoAddAttribute == null) {
         throw new NonexistentEntityException(
-            "The xincoAddAttribute with id " + id + " no longer exists.", enfe);
+            "The xincoAddAttribute with id " + id + " no longer exists.");
       }
       XincoCoreData xincoCoreData = xincoAddAttribute.getXincoCoreData();
       if (xincoCoreData != null) {
         xincoCoreData.getXincoAddAttributeList().remove(xincoAddAttribute);
-        xincoCoreData = em.merge(xincoCoreData);
       }
       em.remove(xincoAddAttribute);
       em.getTransaction().commit();

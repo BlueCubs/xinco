@@ -6,18 +6,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoExceptionTest {
 
   public XincoExceptionTest() {}
 
   @BeforeClass
-  public static void setUpClass() throws Exception {}
+  public static void setUpClass() {}
 
   @AfterClass
-  public static void tearDownClass() throws Exception {}
+  public static void tearDownClass() {}
 
   @Before
   public void setUp() {}

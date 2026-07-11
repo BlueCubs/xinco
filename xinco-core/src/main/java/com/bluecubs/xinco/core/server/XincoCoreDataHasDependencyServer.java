@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public final class XincoCoreDataHasDependencyServer extends XincoCoreDataHasDependency {
 
   private static HashMap parameters = new HashMap();
@@ -35,10 +37,11 @@ public final class XincoCoreDataHasDependencyServer extends XincoCoreDataHasDepe
     parameters.put("dependencyTypeId", dependencyTypeId);
     result =
         createdQuery(
-            "SELECT x FROM XincoCoreDataHasDependency x WHERE "
-                + "x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId "
-                + "and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId = :xincoCoreDataChildrenId "
-                + "and x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId",
+            "SELECT x FROM XincoCoreDataHasDependency x WHERE"
+                + " x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId"
+                + " and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId ="
+                + " :xincoCoreDataChildrenId and x.xincoCoreDataHasDependencyPK.dependencyTypeId ="
+                + " :dependencyTypeId",
             parameters);
     if (!result.isEmpty()) {
       // Existing one
@@ -111,10 +114,11 @@ public final class XincoCoreDataHasDependencyServer extends XincoCoreDataHasDepe
       parameters.put("dependencyTypeId", dependencyTypeId);
       result =
           createdQuery(
-              "SELECT x FROM XincoCoreDataHasDependency x WHERE "
-                  + "x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId "
-                  + "and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId = :xincoCoreDataChildrenId "
-                  + "and x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId",
+              "SELECT x FROM XincoCoreDataHasDependency x WHERE"
+                  + " x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId"
+                  + " and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId ="
+                  + " :xincoCoreDataChildrenId and x.xincoCoreDataHasDependencyPK.dependencyTypeId"
+                  + " = :dependencyTypeId",
               parameters);
       if (!result.isEmpty()) {
         new XincoCoreDataHasDependencyJpaController(getEntityManagerFactory())

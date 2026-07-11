@@ -13,7 +13,9 @@ import java.util.GregorianCalendar;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreUserServerTest extends AbstractXincoDataBaseTestCase {
 
   private String originalPassword;
@@ -100,7 +102,7 @@ public class XincoCoreUserServerTest extends AbstractXincoDataBaseTestCase {
   public void testLogin() {
     try {
       XincoCoreUserServer instance = new XincoCoreUserServer("admin", "admin");
-      assertTrue((instance.getXincoCoreGroups()).size() >= 0);
+      assertTrue(instance.getXincoCoreGroups().size() >= 0);
     } catch (XincoException ex) {
       getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(SEVERE, null, ex);
       fail();

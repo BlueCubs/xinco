@@ -52,6 +52,7 @@ public final class XincoCoreACEServer extends XincoCoreACE {
   private HashMap parameters = new HashMap();
   private static List result;
   private static final Logger LOG = getLogger(XincoCoreACEServer.class.getSimpleName());
+
   // create single ace object for data structures
 
   public XincoCoreACEServer(int attrID) throws XincoException {
@@ -136,7 +137,7 @@ public final class XincoCoreACEServer extends XincoCoreACE {
         result = namedQuery("XincoCoreAce.findById", parameters);
         ace = (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) result.get(0);
       } else {
-        ace = new com.bluecubs.xinco.core.server.persistence.XincoCoreAce(getId());
+        ace = new com.bluecubs.xinco.core.server.persistence.XincoCoreAce();
         create = true;
       }
       if (getXincoCoreUserId() != 0) {
@@ -191,14 +192,13 @@ public final class XincoCoreACEServer extends XincoCoreACE {
     ArrayList<XincoCoreACEServer> core_acl = new ArrayList<>();
     try {
       result =
-          createdQuery("SELECT xca FROM XincoCoreAce xca WHERE xca." + attrT + "=" + attrID + "");
-      // TODO: Uncomment when bug is fixed
-      /**
-       * This is an eclipselink bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=294092 Leave
-       * commented while its fixed.
-       */
-      // ORDER BY xca.xincoCoreUserId.id, xca.xincoCoreGroupId.id, "
-      //                    + "xca.xincoCoreNodeId.id, xca.xincoCoreDataId.id
+          createdQuery(
+              "SELECT xca FROM XincoCoreAce xca WHERE xca."
+                  + attrT
+                  + "="
+                  + attrID
+                  + " ORDER BY xca.xincoCoreUser.id, xca.xincoCoreGroup.id,"
+                  + " xca.xincoCoreNode.id, xca.xincoCoreData.id");
       for (Object o : result) {
         com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace =
             (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) o;

@@ -23,6 +23,15 @@ bd close <id>         # Complete work
 bd dolt push          # Push beads data to remote
 ```
 
+## Internationalization (i18n)
+
+All user-facing text in `xinco-ui` (labels, column headers, button text, menu items, dialog titles, notifications, tooltips) **must** use `getTranslation(key)` — never hardcoded strings.
+
+- The bundle is `XincoMessages.properties` in `xinco-core/src/main/resources/com/bluecubs/xinco/messages/`
+- The provider is `XincoI18NProvider`; `getTranslation(key)` is available on any Vaadin `Component` subclass
+- **Do not add new keys.** The existing bundle covers all required UI text. Map to the closest existing key rather than introducing new ones.
+- `getTranslation()` does not support format parameters — build dynamic strings by concatenating `getTranslation(key)` with Java values (e.g. `getTranslation("general.user") + ": " + username`)
+
 ## Non-Interactive Shell Commands
 
 **ALWAYS use non-interactive flags** with file operations to avoid hanging on confirmation prompts.
@@ -85,16 +94,16 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **Update issue status** - Close finished work, update in-progress items
 4. **Handle git/sync by active profile**:
-   ```bash
-   # Conservative/minimal/default: report status and proposed commands; wait for approval.
-   git status
+```bash
+# Conservative/minimal/default: report status and proposed commands; wait for approval.
+git status
 
-   # Team-maintainer opt-in only, unless current instructions forbid it:
-   git pull --rebase
-   bd dolt push
-   git push
-   git status
-   ```
+# Team-maintainer opt-in only, unless current instructions forbid it:
+git pull --rebase
+bd dolt push
+git push
+git status
+```
 5. **Hand off** - Summarize changes, validation, issue status, and any blocked sync/commit/push step
 
 **Critical rules:**

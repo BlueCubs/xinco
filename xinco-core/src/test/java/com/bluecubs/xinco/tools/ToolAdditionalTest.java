@@ -1,9 +1,13 @@
 package com.bluecubs.xinco.tools;
 
-import static com.bluecubs.xinco.tools.Tool.*;
+import static com.bluecubs.xinco.tools.Tool.copyFile;
+import static com.bluecubs.xinco.tools.Tool.getFileSuffix;
+import static com.bluecubs.xinco.tools.Tool.getImageDim;
+import static com.bluecubs.xinco.tools.Tool.textHasContent;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

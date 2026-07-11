@@ -27,18 +27,34 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.GenerationType.TABLE;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.GenerationType.TABLE;
 
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.envers.Audited;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
+@Audited
 @Entity
 @Table(
     name = "xinco_dependency_type",
@@ -62,8 +78,7 @@ public class XincoDependencyType implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoDependencyTypeGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoDependencyTypeGen")
   @TableGenerator(
       name = "XincoDependencyTypeGen",
       table = "xinco_id",
@@ -76,13 +91,10 @@ public class XincoDependencyType implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 45)
-  @Column(name = "designation")
+  @NotNull @Size(min = 1, max = 45) @Column(name = "designation")
   private String designation;
 
-  @Size(max = 255)
-  @Column(name = "description")
+  @Size(max = 255) @Column(name = "description")
   private String description;
 
   @OneToMany(cascade = ALL, mappedBy = "xincoDependencyType")

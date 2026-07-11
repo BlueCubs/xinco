@@ -31,7 +31,9 @@
  */
 package com.bluecubs.xinco.core;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public enum OPCode {
   CREATION("datawizard.logging.creation"),
   MODIFICATION("datawizard.logging.modification"),
@@ -58,7 +60,9 @@ public enum OPCode {
     }
   }
 
-  /** @return the name */
+  /**
+   * @return the name
+   */
   public String getName() {
     return name;
   }

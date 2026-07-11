@@ -31,7 +31,15 @@ package com.bluecubs.xinco.core.server;
 
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
-import static java.util.Calendar.*;
+import static java.util.Calendar.DAY_OF_MONTH;
+import static java.util.Calendar.DST_OFFSET;
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MILLISECOND;
+import static java.util.Calendar.MINUTE;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.SECOND;
+import static java.util.Calendar.YEAR;
+import static java.util.Calendar.ZONE_OFFSET;
 import static java.util.TimeZone.getTimeZone;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
@@ -55,6 +63,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public final class XincoAddAttributeServer extends XincoAddAttribute {
 
   private static List result;
+
   // create add attribute object for data structures
 
   public XincoAddAttributeServer(int xincoCoreDataId, int attributeId) throws XincoException {
@@ -203,6 +212,7 @@ public final class XincoAddAttributeServer extends XincoAddAttribute {
     }
     return 1;
   }
+
   // create complete list of add attributes
 
   public static List<XincoAddAttribute> getXincoAddAttributes(int attrID) {

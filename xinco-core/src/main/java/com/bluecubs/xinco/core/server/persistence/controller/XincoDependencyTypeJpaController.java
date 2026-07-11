@@ -32,17 +32,18 @@ import com.bluecubs.xinco.core.server.persistence.XincoDependencyBehavior;
 import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoDependencyTypeJpaController implements Serializable {
 
   public XincoDependencyTypeJpaController(EntityManagerFactory emf) {
@@ -67,7 +68,9 @@ public class XincoDependencyTypeJpaController implements Serializable {
           xincoDependencyType.getXincoDependencyBehavior();
       if (xincoDependencyBehavior != null) {
         xincoDependencyBehavior =
-            em.getReference(xincoDependencyBehavior.getClass(), xincoDependencyBehavior.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoDependencyBehavior),
+                xincoDependencyBehavior.getId());
         xincoDependencyType.setXincoDependencyBehavior(xincoDependencyBehavior);
       }
       List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList = new ArrayList<>();
@@ -76,7 +79,8 @@ public class XincoDependencyTypeJpaController implements Serializable {
               xincoDependencyType.getXincoCoreDataHasDependencyList()) {
         xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach =
             em.getReference(
-                xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach.getClass(),
+                org.hibernate.Hibernate.getClass(
+                    xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach),
                 xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach
                     .getXincoCoreDataHasDependencyPK());
         attachedXincoCoreDataHasDependencyList.add(
@@ -131,11 +135,14 @@ public class XincoDependencyTypeJpaController implements Serializable {
           persistentXincoDependencyType.getXincoCoreDataHasDependencyList();
       List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyListNew =
           xincoDependencyType.getXincoCoreDataHasDependencyList();
+      boolean xincoCoreDataHasDependencyListNewInit =
+          org.hibernate.Hibernate.isInitialized(xincoCoreDataHasDependencyListNew);
       List<String> illegalOrphanMessages = null;
       for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency :
           xincoCoreDataHasDependencyListOld) {
-        if (!xincoCoreDataHasDependencyListNew.contains(
-            xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency)) {
+        if (xincoCoreDataHasDependencyListNewInit
+            && !xincoCoreDataHasDependencyListNew.contains(
+                xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency)) {
           if (illegalOrphanMessages == null) {
             illegalOrphanMessages = new ArrayList<>();
           }
@@ -151,21 +158,25 @@ public class XincoDependencyTypeJpaController implements Serializable {
       if (xincoDependencyBehaviorNew != null) {
         xincoDependencyBehaviorNew =
             em.getReference(
-                xincoDependencyBehaviorNew.getClass(), xincoDependencyBehaviorNew.getId());
+                org.hibernate.Hibernate.getClass(xincoDependencyBehaviorNew),
+                xincoDependencyBehaviorNew.getId());
         xincoDependencyType.setXincoDependencyBehavior(xincoDependencyBehaviorNew);
       }
       List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyListNew =
           new ArrayList<>();
-      for (XincoCoreDataHasDependency
-          xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach :
-              xincoCoreDataHasDependencyListNew) {
-        xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach =
-            em.getReference(
-                xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach.getClass(),
-                xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach
-                    .getXincoCoreDataHasDependencyPK());
-        attachedXincoCoreDataHasDependencyListNew.add(
-            xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach);
+      if (xincoCoreDataHasDependencyListNewInit) {
+        for (XincoCoreDataHasDependency
+            xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach :
+                xincoCoreDataHasDependencyListNew) {
+          xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach =
+              em.getReference(
+                  org.hibernate.Hibernate.getClass(
+                      xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach),
+                  xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach
+                      .getXincoCoreDataHasDependencyPK());
+          attachedXincoCoreDataHasDependencyListNew.add(
+              xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach);
+        }
       }
       xincoCoreDataHasDependencyListNew = attachedXincoCoreDataHasDependencyListNew;
       xincoDependencyType.setXincoCoreDataHasDependencyList(xincoCoreDataHasDependencyListNew);
@@ -208,7 +219,7 @@ public class XincoDependencyTypeJpaController implements Serializable {
       em.getTransaction().commit();
     } catch (IllegalOrphanException ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         Integer id = xincoDependencyType.getId();
         if (findXincoDependencyType(id) == null) {
           throw new NonexistentEntityException(
@@ -228,13 +239,11 @@ public class XincoDependencyTypeJpaController implements Serializable {
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoDependencyType xincoDependencyType;
-      try {
-        xincoDependencyType = em.getReference(XincoDependencyType.class, id);
-        xincoDependencyType.getId();
-      } catch (EntityNotFoundException enfe) {
+      XincoDependencyType xincoDependencyType = em.find(XincoDependencyType.class, id);
+
+      if (xincoDependencyType == null) {
         throw new NonexistentEntityException(
-            "The xincoDependencyType with id " + id + " no longer exists.", enfe);
+            "The xincoDependencyType with id " + id + " no longer exists.");
       }
       List<String> illegalOrphanMessages = null;
       List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyListOrphanCheck =
@@ -250,7 +259,8 @@ public class XincoDependencyTypeJpaController implements Serializable {
                 + xincoDependencyType
                 + ") cannot be destroyed since the XincoCoreDataHasDependency "
                 + xincoCoreDataHasDependencyListOrphanCheckXincoCoreDataHasDependency
-                + " in its xincoCoreDataHasDependencyList field has a non-nullable xincoDependencyType field.");
+                + " in its xincoCoreDataHasDependencyList field has a non-nullable"
+                + " xincoDependencyType field.");
       }
       if (illegalOrphanMessages != null) {
         throw new IllegalOrphanException(illegalOrphanMessages);
@@ -259,7 +269,6 @@ public class XincoDependencyTypeJpaController implements Serializable {
           xincoDependencyType.getXincoDependencyBehavior();
       if (xincoDependencyBehavior != null) {
         xincoDependencyBehavior.getXincoDependencyTypeList().remove(xincoDependencyType);
-        xincoDependencyBehavior = em.merge(xincoDependencyBehavior);
       }
       em.remove(xincoDependencyType);
       em.getTransaction().commit();

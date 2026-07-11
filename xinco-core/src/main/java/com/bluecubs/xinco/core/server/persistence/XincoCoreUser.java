@@ -27,22 +27,36 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.GenerationType.TABLE;
-import static javax.persistence.TemporalType.DATE;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.GenerationType.TABLE;
+import static jakarta.persistence.TemporalType.DATE;
 
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.envers.Audited;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
+@Audited
 @Entity
 @Table(
     name = "xinco_core_user",
@@ -78,14 +92,13 @@ import javax.xml.bind.annotation.XmlTransient;
       name = "XincoCoreUser.findByLastModified",
       query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")
 })
-public class XincoCoreUser extends XincoAuditedObject implements Serializable {
+public class XincoCoreUser implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @Basic(optional = false)
-  @NotNull
-  @GeneratedValue(strategy = TABLE, generator = "XincoCoreUserGen")
+  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreUserGen")
   @TableGenerator(
       name = "XincoCoreUserGen",
       table = "xinco_id",
@@ -98,28 +111,19 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "username")
-  @Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Invalid user name")
-  private String username;
+  @NotNull @Size(min = 1, max = 255) @Column(name = "username")
+  @Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Invalid user name") private String username;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "userpassword")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "userpassword")
   private String userpassword;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "last_name")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "last_name")
   private String lastName;
 
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "first_name")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "first_name")
   private String firstName;
 
   @Pattern(
@@ -129,29 +133,21 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
           "Invalid email") // if the field contains email address consider using this annotation to
   // enforce field validation
   @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "email")
+  @NotNull @Size(min = 1, max = 255) @Column(name = "email")
   private String email;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "status_number")
+  @NotNull @Column(name = "status_number")
   private int statusNumber;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "attempts")
+  @NotNull @Column(name = "attempts")
   private int attempts;
 
   @Basic(optional = false)
-  @NotNull
-  @Column(name = "last_modified")
+  @NotNull @Column(name = "last_modified")
   @Temporal(DATE)
   private Date lastModified;
-
-  @OneToMany(cascade = ALL, mappedBy = "xincoCoreUser")
-  private List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList;
 
   @OneToMany(mappedBy = "xincoCoreUser")
   private List<XincoCoreAce> xincoCoreAceList;
@@ -259,16 +255,6 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
 
   public void setLastModified(Date lastModified) {
     this.lastModified = lastModified;
-  }
-
-  @XmlTransient
-  public List<XincoCoreUserModifiedRecord> getXincoCoreUserModifiedRecordList() {
-    return xincoCoreUserModifiedRecordList;
-  }
-
-  public void setXincoCoreUserModifiedRecordList(
-      List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList) {
-    this.xincoCoreUserModifiedRecordList = xincoCoreUserModifiedRecordList;
   }
 
   @XmlTransient

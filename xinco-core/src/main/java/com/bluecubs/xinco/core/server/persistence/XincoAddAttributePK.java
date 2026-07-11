@@ -27,24 +27,30 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 @Embeddable
 public class XincoAddAttributePK implements Serializable {
 
   @Basic(optional = false)
-  @NotNull
+  @NotNull @Setter
   @Column(name = "xinco_core_data_id")
+  @Getter
   private int xincoCoreDataId;
 
   @Basic(optional = false)
-  @NotNull
+  @NotNull @Setter
   @Column(name = "attribute_id")
+  @Getter
   private int attributeId;
 
   public XincoAddAttributePK() {}
@@ -54,27 +60,9 @@ public class XincoAddAttributePK implements Serializable {
     this.attributeId = attributeId;
   }
 
-  public int getXincoCoreDataId() {
-    return xincoCoreDataId;
-  }
-
-  public void setXincoCoreDataId(int xincoCoreDataId) {
-    this.xincoCoreDataId = xincoCoreDataId;
-  }
-
-  public int getAttributeId() {
-    return attributeId;
-  }
-
-  public void setAttributeId(int attributeId) {
-    this.attributeId = attributeId;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (int) xincoCoreDataId;
-    hash += (int) attributeId;
+    int hash = (0 + ((int) xincoCoreDataId)) + ((int) attributeId);
     return hash;
   }
 
@@ -87,10 +75,7 @@ public class XincoAddAttributePK implements Serializable {
     if (this.xincoCoreDataId != other.xincoCoreDataId) {
       return false;
     }
-    if (this.attributeId != other.attributeId) {
-      return false;
-    }
-    return true;
+    return !(this.attributeId != other.attributeId);
   }
 
   @Override

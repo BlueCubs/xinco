@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Xinco DMS (eXtensible INformation COre) is a web-service-based Document Management System featuring ACLs, versioning, full-text search, and a tree-based data hierarchy. It is undergoing an active migration from a Vaadin 6 monolith to a Vaadin 25 / Spring Boot architecture.
+Xinco DMS (eXtensible INformation COre) is a web-service-based Document Management System featuring ACLs, versioning, full-text search, and a tree-based data hierarchy. The migration from a Vaadin 6 monolith to Vaadin 25 / Spring Boot is complete.
 
 ## Build & Development Commands
 
@@ -60,31 +60,24 @@ The project is a Maven multi-module build (`xinco-parent`):
 | Module | Role |
 |---|---|
 | `xinco-core` | Business logic, JPA entities, JAX-WS web service, service layer |
-| `Xinco` | Legacy WAR — Vaadin 6 UI, deployed to Tomcat (being retired) |
-| `xinco-ui-v25` | New UI — Vaadin 24/25 + Spring Boot 3, depends on `xinco-core` |
+| `xinco-ui` | Vaadin 25 + Spring Boot 3 UI, depends on `xinco-core` |
 
 ### `xinco-core` internals
 - **`server/`** — server-side domain objects (`XincoCoreDataServer`, `XincoCoreUserServer`, `XincoCoreNodeServer`, etc.) and extracted service classes (`XincoActivityService`, `XincoFileService`, `XincoTreeService`)
 - **`server/service/`** — JAX-WS web service endpoint (`XincoWebService`) and new REST-style services; CXF generates client stubs from `src/main/resources/wsdl/XincoWebService/Xinco.wsdl` at build time into `target/generated-sources/cxf`
 - **`server/db/`** — `XincoDBManager`, Flyway migrations, H2 for tests, MySQL/PostgreSQL for production
-- **`server/persistence/`** — EclipseLink JPA entities
+- **`server/persistence/`** — Hibernate JPA entities with **Hibernate Envers** for audit history; legacy `*_T` shadow tables and hand-rolled audit controllers have been removed
 - Tests use H2 in-memory; `AbstractXincoDataBaseTestCase` is the base class for DB-backed tests
 
-### `xinco-ui-v25` internals
-- Entry point: `XincoV25Application` (Spring Boot)
-- Views: `LoginView`, `MainView`, `ExplorerView` (Vaadin `@Route`), `MainLayout`
+### `xinco-ui` internals
+- Entry point: `XincoApplication` (Spring Boot)
+- Views: `LoginView` → `ViewerView` (primary landing), `ExplorerView` (management), `AdminView`, `MainLayout` (Vaadin `@Route`)
 - Shared state: `UserSession`
 - Components: `PropertyGrid`, `CheckinDialog`
 
-## Active Work: Vaadin Migration
+## Vaadin Migration: Complete
 
-Track: `conductor/tracks/vaadin_migration/plan.md`
-
-**Current phase status:**
-- Phases 1–3 are largely complete (logic extracted, new module bootstrapped, core views implemented).
-- Remaining tasks: enhance PropertyGrid metadata, verify admin feature parity, switch Docker to deploy `xinco-ui-v25`, remove legacy `Xinco` module.
-
-The `Xinco` (Vaadin 6) module is legacy and will be deleted once feature parity is confirmed.
+The Vaadin 6 `Xinco` module has been removed. The `xinco-ui` module (Vaadin 25 / Spring Boot) is the sole UI. Track history: `conductor/tracks/vaadin_migration/plan.md`.
 
 ## Workflow & Conventions
 
@@ -154,15 +147,15 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **Update issue status** - Close finished work, update in-progress items
 4. **Handle git/sync by active profile**:
-   ```bash
-   # Conservative/minimal/default: report status and proposed commands; wait for approval.
-   git status
+```bash
+# Conservative/minimal/default: report status and proposed commands; wait for approval.
+git status
 
-   # Team-maintainer opt-in only, unless current instructions forbid it:
-   git pull --rebase
-   git push
-   git status
-   ```
+# Team-maintainer opt-in only, unless current instructions forbid it:
+git pull --rebase
+git push
+git status
+```
 5. **Hand off** - Summarize changes, validation, issue status, and any blocked sync/commit/push step
 
 **Critical rules:**

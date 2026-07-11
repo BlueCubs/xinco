@@ -6,7 +6,6 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreGroupT;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
@@ -118,32 +117,22 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
    * Exercises write2DB() and its inner loop (which iterates data items of the type and their add
    * attributes) when data type 1 already has data items.
    */
-  public void testDataTypeAttr_write2DB_withExistingData() throws Exception {
+  public void testDataTypeAttr_write2DB_withExistingData() {
     // Use data type 1 (URL type) which has data items in H2 seed data
     // Attribute ID 77 is chosen to avoid conflicts with existing attributes (1-7 for URL type)
     XincoCoreDataTypeAttributeServer attr =
         new XincoCoreDataTypeAttributeServer(1, 77, "TestAttr77", "varchar", 200);
     attr.setChangerID(1);
-    try {
-      attr.write2DB();
-      // Cleanup: deleteFromDB removes the attribute AND any add attributes created
-      XincoCoreDataTypeAttributeServer.deleteFromDB(attr, 1);
-    } catch (Exception e) {
-      // deleteFromDB as fallback cleanup even on partial write failure
-      try {
-        XincoCoreDataTypeAttributeServer.deleteFromDB(attr, 1);
-      } catch (Exception ignored) {
-        // nothing to clean up
-      }
-      // Don't fail on exception — the code path was exercised
-    }
+    attr.write2DB();
+    // Cleanup: deleteFromDB removes the attribute AND any add attributes created
+    XincoCoreDataTypeAttributeServer.deleteFromDB(attr, 1);
   }
 
   /**
    * Exercises deleteFromDB() — the two-loop cleanup: deletes XincoAddAttribute rows then the
    * XincoCoreDataTypeAttribute row.
    */
-  public void testDataTypeAttr_deleteFromDB_isolated() throws Exception {
+  public void testDataTypeAttr_deleteFromDB_isolated() {
     // Use data type 2 which is unlikely to have data items in H2 seed (or has fewer)
     // Use attribute ID 88 to avoid conflicts
     XincoCoreDataTypeAttributeServer attr =
@@ -179,7 +168,7 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
    * Exercises XincoCoreDataServer(XincoCoreData) — the entity-based constructor covering the
    * xcd.getId()-based path.
    */
-  public void testData_entityConstructor() throws Exception {
+  public void testData_entityConstructor() {
     // Load via int constructor then get the underlying entity
     XincoCoreDataServer dataViaInt = new XincoCoreDataServer(1);
     assertNotNull(dataViaInt);
@@ -190,7 +179,7 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
    * Exercises getLastMajorVersion() — returns non-null if any log has versionMid==0, or null
    * otherwise.
    */
-  public void testData_getLastMajorVersion() throws Exception {
+  public void testData_getLastMajorVersion() {
     // Data item 1 has a log entry with versionMid=0 (creation log)
     // This exercises the loop and return paths in getLastMajorVersion
     try {
@@ -205,7 +194,7 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
    * Exercises getLastMajorVersion() return-null path (lines 175-176): a freshly created data item
    * has no logs, so the for-loop exhausts immediately and null is returned.
    */
-  public void testData_getLastMajorVersion_noLogs_returnsNull() throws Exception {
+  public void testData_getLastMajorVersion_noLogs_returnsNull() {
     XincoCoreDataServer data = new XincoCoreDataServer(0, 1, 1, 1, "noLogsForMajorVersion", 1);
     data.setChangerID(1);
     int id = data.write2DB();
@@ -223,7 +212,7 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
    * parent node containing a type-2 data item, then calls deleteFromDB(false) which iterates and
    * removes the child data item.
    */
-  public void testNode_deleteFromDB_childrenWithData() throws Exception {
+  public void testNode_deleteFromDB_childrenWithData() {
     XincoCoreNodeServer parent = new XincoCoreNodeServer(0, 1, 1, "parentWithDataTest", 1);
     int parentId = parent.write2DB();
     assertTrue(parentId > 0);
@@ -317,7 +306,7 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
     int id = u.write2DB();
     assertTrue(id > 0);
     try {
-      // Change password — old one is now only in XincoCoreUserT history.
+      // Change password — old one is now only in Envers revision history.
       // Use changerID=1 (admin) to avoid a self-reference in the audit trail
       // that would prevent destroy(id) in the finally block.
       XincoCoreUserServer u2 = new XincoCoreUserServer(id);
@@ -326,7 +315,7 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
       u2.setChangerID(1);
       u2.write2DB();
       // isPasswordUsable("oldPwHist1", false): current is "newPwHist1" → no early return
-      // XincoCoreUserT query finds "oldPwHist1" with epoch date → loop body runs
+      // Envers AuditReader finds "oldPwHist1" in revision history → loop body runs
       XincoCoreUserServer u3 = new XincoCoreUserServer(id);
       // Result depends on whether audit trail preserved epoch date; either way loop body executes
       u3.isPasswordUsable("oldPwHist1", false);
@@ -367,21 +356,6 @@ public class FinalCoverageTest extends AbstractXincoDataBaseTestCase {
     PropertyDTO dto = new PropertyDTO("k", "v");
     assertTrue("equals(self) should return true", dto.equals(dto));
     assertFalse("equals(non-PropertyDTO) should return false", dto.equals("not a dto"));
-  }
-
-  /**
-   * Exercises XincoCoreGroupT single-arg constructor (lines 83-85), hashCode null-recordId path
-   * (line 129), and equals differing-recordId path (lines 139-141).
-   */
-  public void testXincoCoreGroupT_coverage() {
-    XincoCoreGroupT t1 = new XincoCoreGroupT(42);
-    assertEquals(42, t1.getRecordId().intValue());
-    // null recordId in hashCode covers the ternary null branch (line 129)
-    XincoCoreGroupT nullRec = new XincoCoreGroupT();
-    nullRec.hashCode();
-    // different recordIds → equals returns false (line 141)
-    XincoCoreGroupT t2 = new XincoCoreGroupT(99);
-    assertFalse("different recordId should not be equal", t1.equals(t2));
   }
 
   /**

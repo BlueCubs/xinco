@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xinco-parent</artifactId>
     <groupId>com.bluecubs.xinco</groupId>
+    <artifactId>xinco-parent</artifactId>
     <version>3.0.0-M10-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <artifactId>xinco-core</artifactId>
-  <name>Xinco Core</name>
   <packaging>jar</packaging>
+  <name>Xinco Core</name>
+  <properties>
+    <maven.compiler.release>25</maven.compiler.release>
+  </properties>
   <dependencies>
     <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>2.0.1.Final</version>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>2.0.1.Final</version>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.6.15.Final</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>eclipselink</artifactId>
-      <version>2.7.16</version>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-envers</artifactId>
+      <version>6.6.15.Final</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>javax.persistence</artifactId>
-      <version>2.2.1</version>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -41,12 +41,18 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.3.7</version>
+      <version>4.0.3</version>
     </dependency>
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.5.0-b01</version>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>2.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-mail</artifactId>
+      <version>2.0.4</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
@@ -95,13 +101,13 @@
       <version>4.0.5</version>
       <scope>compile</scope>
     </dependency>
-    <!-- xml.ws module -->
-    <dependency>
-      <groupId>javax.xml.ws</groupId>
-      <artifactId>jaxws-api</artifactId>
-      <version>2.3.1</version>
-    </dependency>
     <!-- Testing -->
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>5.1.0</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -133,8 +139,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -147,10 +153,13 @@
       <plugin>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-codegen-plugin</artifactId>
-        <version>3.6.3</version>
+        <version>4.2.1</version>
         <executions>
           <execution>
             <id>generate-sources</id>
+            <goals>
+              <goal>wsdl2java</goal>
+            </goals>
             <phase>generate-sources</phase>
             <configuration>
               <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
@@ -160,9 +169,6 @@
                 </wsdlOption>
               </wsdlOptions>
             </configuration>
-            <goals>
-              <goal>wsdl2java</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
@@ -183,6 +189,8 @@
               <!-- CXF-generated WSDL stubs and LibreOffice-dependent rendering excluded -->
               <!-- XincoDemoResetThread: demo-only utility -->
               <!-- Environment-specific classes: JNDI, filesystem, background threads -->
+              <!-- XincoIdGenerator: JPA @PrePersist lifecycle callback, invoked by JPA runtime -->
+              <!-- XincoDBManager$1: anonymous DataSource impl for embedded H2; interface boilerplate -->
               <excludes>
                 <exclude>com/bluecubs/xinco/server/service/**</exclude>
                 <exclude>com/bluecubs/xinco/core/server/rendering/**</exclude>
@@ -195,6 +203,8 @@
                 <exclude>com/bluecubs/xinco/core/server/JPAEclipseLinkSessionCustomizer.class</exclude>
                 <exclude>com/bluecubs/xinco/tools/XincoFileIconManager.class</exclude>
                 <exclude>com/bluecubs/xinco/core/server/service/XincoFileService.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/XincoIdGenerator.class</exclude>
+                <exclude>com/bluecubs/xinco/core/server/XincoDBManager$1.class</exclude>
               </excludes>
               <rules>
                 <rule>
@@ -226,7 +236,14 @@
       </plugin>
     </plugins>
   </build>
-  <properties>
-    <maven.compiler.release>25</maven.compiler.release>
-  </properties>
+  <profiles>
+    <profile>
+      <id>production</id>
+      <properties>
+        <!-- Vaadin 24.7.x ASM scanner does not support Java 25 class files (major v69).
+             Compile to Java 21 for production builds; JRE 25 runs them fine. -->
+        <maven.compiler.release>21</maven.compiler.release>
+      </properties>
+    </profile>
+  </profiles>
 </project>

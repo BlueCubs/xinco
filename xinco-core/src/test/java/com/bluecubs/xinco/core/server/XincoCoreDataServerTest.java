@@ -17,7 +17,9 @@ import javax.xml.datatype.DatatypeFactory;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreDataServerTest extends AbstractXincoDataBaseTestCase {
 
   public XincoCoreDataServerTest(String testName) {
@@ -45,7 +47,10 @@ public class XincoCoreDataServerTest extends AbstractXincoDataBaseTestCase {
         xaa =
             new XincoAddAttributeServer(
                 instance.getId(),
-                (instance.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(i))
+                instance
+                    .getXincoCoreDataType()
+                    .getXincoCoreDataTypeAttributes()
+                    .get(i)
                     .getAttributeId(),
                 0,
                 0,

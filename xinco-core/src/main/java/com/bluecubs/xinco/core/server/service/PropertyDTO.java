@@ -25,8 +25,12 @@ public final class PropertyDTO implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof PropertyDTO)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof PropertyDTO)) {
+      return false;
+    }
     PropertyDTO that = (PropertyDTO) o;
     return Objects.equals(key, that.key) && Objects.equals(value, that.value);
   }

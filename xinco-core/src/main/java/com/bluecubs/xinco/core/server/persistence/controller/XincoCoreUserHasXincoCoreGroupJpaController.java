@@ -33,16 +33,17 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreUserHasXincoCoreGroupJpaController implements Serializable {
 
   public XincoCoreUserHasXincoCoreGroupJpaController(EntityManagerFactory emf) {
@@ -73,12 +74,15 @@ public class XincoCoreUserHasXincoCoreGroupJpaController implements Serializable
       em.getTransaction().begin();
       XincoCoreUser xincoCoreUser = xincoCoreUserHasXincoCoreGroup.getXincoCoreUser();
       if (xincoCoreUser != null) {
-        xincoCoreUser = em.getReference(xincoCoreUser.getClass(), xincoCoreUser.getId());
+        xincoCoreUser =
+            em.getReference(org.hibernate.Hibernate.getClass(xincoCoreUser), xincoCoreUser.getId());
         xincoCoreUserHasXincoCoreGroup.setXincoCoreUser(xincoCoreUser);
       }
       XincoCoreGroup xincoCoreGroup = xincoCoreUserHasXincoCoreGroup.getXincoCoreGroup();
       if (xincoCoreGroup != null) {
-        xincoCoreGroup = em.getReference(xincoCoreGroup.getClass(), xincoCoreGroup.getId());
+        xincoCoreGroup =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreGroup), xincoCoreGroup.getId());
         xincoCoreUserHasXincoCoreGroup.setXincoCoreGroup(xincoCoreGroup);
       }
       em.persist(xincoCoreUserHasXincoCoreGroup);
@@ -129,12 +133,15 @@ public class XincoCoreUserHasXincoCoreGroupJpaController implements Serializable
           persistentXincoCoreUserHasXincoCoreGroup.getXincoCoreGroup();
       XincoCoreGroup xincoCoreGroupNew = xincoCoreUserHasXincoCoreGroup.getXincoCoreGroup();
       if (xincoCoreUserNew != null) {
-        xincoCoreUserNew = em.getReference(xincoCoreUserNew.getClass(), xincoCoreUserNew.getId());
+        xincoCoreUserNew =
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreUserNew), xincoCoreUserNew.getId());
         xincoCoreUserHasXincoCoreGroup.setXincoCoreUser(xincoCoreUserNew);
       }
       if (xincoCoreGroupNew != null) {
         xincoCoreGroupNew =
-            em.getReference(xincoCoreGroupNew.getClass(), xincoCoreGroupNew.getId());
+            em.getReference(
+                org.hibernate.Hibernate.getClass(xincoCoreGroupNew), xincoCoreGroupNew.getId());
         xincoCoreUserHasXincoCoreGroup.setXincoCoreGroup(xincoCoreGroupNew);
       }
       xincoCoreUserHasXincoCoreGroup = em.merge(xincoCoreUserHasXincoCoreGroup);
@@ -165,7 +172,7 @@ public class XincoCoreUserHasXincoCoreGroupJpaController implements Serializable
       em.getTransaction().commit();
     } catch (Exception ex) {
       String msg = ex.getLocalizedMessage();
-      if (msg == null || msg.length() == 0) {
+      if (msg == null || msg.isEmpty()) {
         XincoCoreUserHasXincoCoreGroupPK id =
             xincoCoreUserHasXincoCoreGroup.getXincoCoreUserHasXincoCoreGroupPK();
         if (findXincoCoreUserHasXincoCoreGroup(id) == null) {
@@ -186,27 +193,24 @@ public class XincoCoreUserHasXincoCoreGroupJpaController implements Serializable
     try {
       em = getEntityManager();
       em.getTransaction().begin();
-      XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroup;
-      try {
-        xincoCoreUserHasXincoCoreGroup = em.getReference(XincoCoreUserHasXincoCoreGroup.class, id);
-        xincoCoreUserHasXincoCoreGroup.getXincoCoreUserHasXincoCoreGroupPK();
-      } catch (EntityNotFoundException enfe) {
+      XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroup =
+          em.find(XincoCoreUserHasXincoCoreGroup.class, id);
+
+      if (xincoCoreUserHasXincoCoreGroup == null) {
         throw new NonexistentEntityException(
-            "The xincoCoreUserHasXincoCoreGroup with id " + id + " no longer exists.", enfe);
+            "The xincoCoreUserHasXincoCoreGroup with id " + id + " no longer exists.");
       }
       XincoCoreUser xincoCoreUser = xincoCoreUserHasXincoCoreGroup.getXincoCoreUser();
       if (xincoCoreUser != null) {
         xincoCoreUser
             .getXincoCoreUserHasXincoCoreGroupList()
             .remove(xincoCoreUserHasXincoCoreGroup);
-        xincoCoreUser = em.merge(xincoCoreUser);
       }
       XincoCoreGroup xincoCoreGroup = xincoCoreUserHasXincoCoreGroup.getXincoCoreGroup();
       if (xincoCoreGroup != null) {
         xincoCoreGroup
             .getXincoCoreUserHasXincoCoreGroupList()
             .remove(xincoCoreUserHasXincoCoreGroup);
-        xincoCoreGroup = em.merge(xincoCoreGroup);
       }
       em.remove(xincoCoreUserHasXincoCoreGroup);
       em.getTransaction().commit();

@@ -2,9 +2,9 @@ package com.bluecubs.xinco.core.server.email;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
+import jakarta.mail.MessagingException;
 import java.util.Arrays;
 import java.util.List;
-import javax.mail.MessagingException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

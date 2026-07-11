@@ -32,7 +32,13 @@ package com.bluecubs.xinco.core.server.index.filetypes;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.logging.Logger;
 
 public class XincoIndexText implements XincoIndexFileType {

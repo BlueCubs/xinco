@@ -2,7 +2,8 @@ package com.bluecubs.xinco.core.server.index.filetypes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.*;
+import java.io.File;
+import java.io.Reader;
 import java.nio.file.Files;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

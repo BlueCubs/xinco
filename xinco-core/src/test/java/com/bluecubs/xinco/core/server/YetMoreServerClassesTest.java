@@ -16,13 +16,13 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
+import jakarta.persistence.EntityTransaction;
 import java.io.File;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.persistence.EntityTransaction;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -39,7 +39,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   // ---- XincoCoreNodeServer additional paths ----
 
   /** Node 2 has parent node 1 → covers the setXincoCoreNodeId() branch. */
-  public void testNode_loadById_nodeWithParent() throws Exception {
+  public void testNode_loadById_nodeWithParent() {
     XincoCoreNodeServer ns = new XincoCoreNodeServer(2);
     assertEquals(2, ns.getId());
     assertTrue("node 2 should have a parent", ns.getXincoCoreNodeId() > 0);
@@ -62,7 +62,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** deleteFromDB(false, userId) covers the recursive-children else branch. */
-  public void testNode_deleteFromDB_recursiveChildren() throws Exception {
+  public void testNode_deleteFromDB_recursiveChildren() {
     XincoCoreNodeServer parentSrv = new XincoCoreNodeServer(0, 1, 1, "test.delfal.parent", 1);
     int parentId = parentSrv.write2DB();
     assertTrue(parentId > 0);
@@ -91,7 +91,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   // ---- XincoCoreUserServer additional paths ----
 
   /** Entity-based constructor (persistence entity → server object). */
-  public void testUser_entityConstructor() throws Exception {
+  public void testUser_entityConstructor() {
     XincoCoreUserJpaController ctrl = new XincoCoreUserJpaController(getEntityManagerFactory());
     com.bluecubs.xinco.core.server.persistence.XincoCoreUser entity = ctrl.findXincoCoreUser(1);
     XincoCoreUserServer srv = new XincoCoreUserServer(entity);
@@ -101,7 +101,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** 8-arg constructor: covers the full-fields happy path and setHashPassword(true). */
-  public void testUser_fullFieldsConstructor() throws Exception {
+  public void testUser_fullFieldsConstructor() {
     XincoCoreUserServer u =
         new XincoCoreUserServer(
             0,
@@ -119,7 +119,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** Wrong password for a valid username exercises the increaseAttempts branch twice. */
-  public void testUser_login_wrongPassword() throws Exception {
+  public void testUser_login_wrongPassword() {
     XincoCoreUserServer adminBefore = new XincoCoreUserServer(1);
     int originalAttempts = adminBefore.getAttempts();
     try {
@@ -138,7 +138,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** statusNumber == 4 in write2DB() clears status to 1 (aged-password recovery). */
-  public void testUser_write2DB_status4Recovery() throws Exception {
+  public void testUser_write2DB_status4Recovery() {
     XincoCoreUserServer u = new XincoCoreUserServer(1);
     int originalStatus = u.getStatusNumber();
     u.setStatusNumber(4);
@@ -183,7 +183,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** isChange() == true in write2DB() updates the lastModified timestamp. */
-  public void testUser_write2DB_withChangeTrue() throws Exception {
+  public void testUser_write2DB_withChangeTrue() {
     XincoCoreUserServer u = new XincoCoreUserServer(1);
     u.setChange(true);
     u.setChangerID(1);
@@ -233,13 +233,13 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** md5('..') in a nativeQuery triggers the md5→encrypt substitution loop. */
-  public void testDB_nativeQuery_withMd5Replacement() throws Exception {
+  public void testDB_nativeQuery_withMd5Replacement() {
     // 'x'=md5('noop') → md5 is replaced with encrypt('noop'); affects 0 rows (id=-1)
     nativeQuery("UPDATE xinco_core_language SET sign=sign WHERE id=-1 AND 'x'=md5('noop')");
   }
 
   /** protectedCreatedQuery with locked param=true uses getProtectedEntityManager(). */
-  public void testDB_protectedCreatedQuery_lockedBranch() throws Exception {
+  public void testDB_protectedCreatedQuery_lockedBranch() {
     setLocked(true);
     try {
       List<Object> results = protectedCreatedQuery("select l from XincoCoreLanguage l", null, true);
@@ -250,7 +250,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** protectedNamedQuery with locked param=true uses getProtectedEntityManager(). */
-  public void testDB_protectedNamedQuery_lockedBranch() throws Exception {
+  public void testDB_protectedNamedQuery_lockedBranch() {
     setLocked(true);
     try {
       List<Object> results = protectedNamedQuery("XincoCoreLanguage.findAll", null, true);
@@ -261,7 +261,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** getTransaction() when isLocked()=true uses getProtectedEntityManager(). */
-  public void testDB_getTransaction_lockedBranch() throws Exception {
+  public void testDB_getTransaction_lockedBranch() {
     setLocked(true);
     try {
       EntityTransaction tx = getTransaction();
@@ -277,8 +277,8 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     try {
       createdQuery("select l from XincoCoreLanguage l");
       fail("Expected exception when DB is locked");
-    } catch (Exception e) {
-      // expected: MissingResourceException from lrb.getString("message.locked") or XincoException
+    } catch (XincoException expected) {
+      // expected — DB is locked
     } finally {
       setLocked(false);
     }
@@ -297,7 +297,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
   }
 
   /** reload(true) covers the close() call inside reload when close param is true. */
-  public void testDB_reload_withClose() throws Exception {
+  public void testDB_reload_withClose() {
     reload(true);
     assertFalse(isLocked());
   }
@@ -310,11 +310,7 @@ public class YetMoreServerClassesTest extends AbstractXincoDataBaseTestCase {
     XincoCoreUserHasXincoCoreGroupJpaController grpCtrl =
         new XincoCoreUserHasXincoCoreGroupJpaController(getEntityManagerFactory());
     for (Object o : memberships) {
-      try {
-        grpCtrl.destroy(((XincoCoreUserHasXincoCoreGroup) o).getXincoCoreUserHasXincoCoreGroupPK());
-      } catch (Exception ignored) {
-        // already gone
-      }
+      grpCtrl.destroy(((XincoCoreUserHasXincoCoreGroup) o).getXincoCoreUserHasXincoCoreGroupPK());
     }
     getEntityManagerFactory().getCache().evictAll();
   }

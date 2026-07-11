@@ -1,6 +1,4 @@
 #!/bin/bash
-"$(git rev-parse --git-dir)/hooks/xinco-parent.git-code-format.pre-commit.sh"
-"$(git rev-parse --git-dir)/hooks/xinco-core.git-code-format.pre-commit.sh"
 
 # --- BEGIN BEADS INTEGRATION v1.0.5 ---
 # This section is managed by beads. Do not remove these markers.

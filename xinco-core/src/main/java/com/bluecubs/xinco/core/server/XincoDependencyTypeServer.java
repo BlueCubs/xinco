@@ -15,7 +15,9 @@ import com.bluecubs.xinco.core.server.persistence.controller.exceptions.Nonexist
 import java.util.HashMap;
 import java.util.List;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public final class XincoDependencyTypeServer extends XincoDependencyType {
   private static final long serialVersionUID = 6505374676088261630L;
 

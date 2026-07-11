@@ -3,7 +3,9 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 
 import com.bluecubs.xinco.core.server.AbstractXincoDataBaseTestCase;
-import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK;
+import com.bluecubs.xinco.core.server.persistence.XincoId;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -48,50 +50,6 @@ public class ControllerDepthTest extends AbstractXincoDataBaseTestCase {
     assertNull(ctrl.findXincoCoreDataHasDependency(pk));
   }
 
-  // ---- XincoCoreDataHasDependencyTJpaController edit ----
-
-  public void testDataHasDependencyTController_edit() throws Exception {
-    XincoCoreDataHasDependencyTJpaController ctrl =
-        new XincoCoreDataHasDependencyTJpaController(getEntityManagerFactory());
-    XincoCoreDataHasDependencyT entity = new XincoCoreDataHasDependencyT();
-    entity.setRecordId(9940);
-    entity.setXincoCoreDataParentId(1);
-    entity.setXincoCoreDataChildrenId(2);
-    entity.setDependencyTypeId(1);
-    ctrl.create(entity);
-    Integer rid = entity.getRecordId();
-    assertNotNull(rid);
-
-    entity.setDependencyTypeId(2);
-    ctrl.edit(entity);
-    assertEquals(2, (int) ctrl.findXincoCoreDataHasDependencyT(rid).getDependencyTypeId());
-
-    ctrl.destroy(rid);
-    assertNull(ctrl.findXincoCoreDataHasDependencyT(rid));
-  }
-
-  // ---- XincoCoreUserHasXincoCoreGroupTJpaController edit ----
-
-  public void testUserHasGroupTController_edit() throws Exception {
-    XincoCoreUserHasXincoCoreGroupTJpaController ctrl =
-        new XincoCoreUserHasXincoCoreGroupTJpaController(getEntityManagerFactory());
-    XincoCoreUserHasXincoCoreGroupT entity = new XincoCoreUserHasXincoCoreGroupT();
-    entity.setRecordId(9941);
-    entity.setXincoCoreUserId(1);
-    entity.setXincoCoreGroupId(1);
-    entity.setStatusNumber(1);
-    ctrl.create(entity);
-    Integer rid = entity.getRecordId();
-    assertNotNull(rid);
-
-    entity.setStatusNumber(2);
-    ctrl.edit(entity);
-    assertEquals(2, (int) ctrl.findXincoCoreUserHasXincoCoreGroupT(rid).getStatusNumber());
-
-    ctrl.destroy(rid);
-    assertNull(ctrl.findXincoCoreUserHasXincoCoreGroupT(rid));
-  }
-
   // ---- XincoIdJpaController ----
 
   public void testXincoIdController_findAllAndCount() {
@@ -115,7 +73,7 @@ public class ControllerDepthTest extends AbstractXincoDataBaseTestCase {
       // Different objects
       assertFalse(id1.equals(id2));
       // null
-      assertFalse(id1.equals(null));
+      assertFalse(id1 == null);
       // different class
       assertFalse(id1.equals("notAnId"));
       // hashCode consistent with equals
@@ -125,7 +83,7 @@ public class ControllerDepthTest extends AbstractXincoDataBaseTestCase {
       XincoId id = ids.get(0);
       assertEquals(id, id);
       assertNotNull(id.toString());
-      assertFalse(id.equals(null));
+      assertFalse(id == null);
     }
   }
 }

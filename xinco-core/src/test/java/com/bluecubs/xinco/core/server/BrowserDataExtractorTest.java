@@ -1,10 +1,14 @@
 package com.bluecubs.xinco.core.server;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import junit.framework.JUnit4TestAdapter;
 import org.junit.Test;
 
@@ -108,5 +112,30 @@ public class BrowserDataExtractorTest {
   public void testIsLanguageSupported_unknown_false() {
     BrowserDataExtractor e = build(CHROME_UA, null);
     assertFalse(e.isLanguageSupported("zzz"));
+  }
+
+  @Test
+  public void testMacPpcUserAgent() {
+    BrowserDataExtractor e = build("mozilla/5.0 (mac_powerppc rv:91.0)", null);
+    assertEquals("Macintosh Power PC", e.getOs());
+  }
+
+  @Test
+  public void testMacintoshUserAgent() {
+    BrowserDataExtractor e = build("mozilla/5.0 (macintosh; intel mac os x)", null);
+    assertEquals("Macintosh", e.getOs());
+  }
+
+  @Test
+  public void testUnknownMacUserAgent() {
+    // "mac os" without "macintosh", "mac_powerppc", or "mac_ppc" hits the Unknown Mac branch
+    BrowserDataExtractor e = build("browser/1.0 (mac os x)", null);
+    assertEquals("Unknown Mac", e.getOs());
+  }
+
+  @Test
+  public void testWin16UserAgent() {
+    BrowserDataExtractor e = build("mozilla/4.0 (compatible; win16)", null);
+    assertEquals("Windows 3.x", e.getOs());
   }
 }

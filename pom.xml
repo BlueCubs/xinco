@@ -3,15 +3,17 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bluecubs.xinco</groupId>
   <artifactId>xinco-parent</artifactId>
-  <packaging>pom</packaging>
   <version>3.0.0-M10-SNAPSHOT</version>
+  <packaging>pom</packaging>
   <name>Xinco Parent</name>
   <description>The Core of Information and Document Management xinco DMS™ is a powerful Web-based Information and Document Management System (DMS) for files, text, URLs and contacts, featuring ACLs, version control, full text search and a fully web-based client.</description>
   <url>https://xinco.org</url>
-  <issueManagement>
-    <system>JIRA</system>
-    <url>https://xincoforge.atlassian.net</url>
-  </issueManagement>
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
   <developers>
     <developer>
       <id>javydreamercsw</id>
@@ -22,38 +24,85 @@
       </roles>
     </developer>
   </developers>
-  <licenses>
-    <license>
-      <name>Apache License 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-    </license>
-  </licenses>
+  <modules>
+    <module>xinco-core</module>
+    <module>xinco-ui</module>
+  </modules>
   <scm>
-    <url>https://github.com/BlueCubs/xinco</url>
     <connection>scm:git:git://github.com/BlueCubs/xinco.git</connection>
     <developerConnection>scm:git:git@github.com:BlueCubs/xinco.git</developerConnection>
     <tag>Xinco-3.0.0-M9</tag>
+    <url>https://github.com/BlueCubs/xinco</url>
   </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/BlueCubs/xinco/issues</url>
+  </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
     <url>https://xinco.ci.cloudbees.com/</url>
   </ciManagement>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <filter>true</filter>
-    <widgetset.path>src/main/webapp</widgetset.path>
-    <xinco.version>${project.version}</xinco.version>
     <context.xml.file>${basedir}/src/main/webapp/META-INF/context.xml</context.xml.file>
-    <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+    <filter>true</filter>
     <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
+    <maven.compiler.release>25</maven.compiler.release>
+    <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <!-- If addon submodule is not used, this can also be "fetch" or "cdn" -->
     <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.compiler.release>25</maven.compiler.release>
     <widgetset.path>src/main/webapp</widgetset.path>
-    <git-code-format-maven-plugin.version>2.7</git-code-format-maven-plugin.version>
+    <widgetset.path>src/main/webapp</widgetset.path>
+    <xinco.version>${project.version}</xinco.version>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.0.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.46</version>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>vaadin-snapshots</id>
+      <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+    </repository>
+    <repository>
+      <id>vaadin-addons</id>
+      <url>https://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+    <repository>
+      <id>EclipseLink Repo</id>
+      <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+    </repository>
+    <repository>
+      <id>project.local</id>
+      <name>project</name>
+      <url>file:${project.basedir}/repo</url>
+    </repository>
+    <repository>
+      <id>OW2 Repository</id>
+      <name>OW2 Repository</name>
+      <url>http://maven.ow2.org/maven2/</url>
+    </repository>
+  </repositories>
   <build>
     <pluginManagement>
       <plugins>
@@ -138,6 +187,15 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.13.0</version>
+          <configuration>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.46</version>
+              </path>
+            </annotationProcessorPaths>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -154,18 +212,6 @@
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>maven-jetty-plugin</artifactId>
           <version>6.1.26</version>
-        </plugin>
-        <!-- Plugin to generate JAXB classes and webservice interface -->
-        <plugin>
-          <groupId>org.jvnet.jax-ws-commons</groupId>
-          <artifactId>jaxws-maven-plugin</artifactId>
-          <version>2.3</version>
-          <configuration>
-            <!-- Needed with JAXP 1.5 -->
-            <vmArgs>
-              <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
-            </vmArgs>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -187,18 +233,100 @@
           <version>3.3.1</version>
         </plugin>
         <plugin>
-          <groupId>com.cosium.code</groupId>
-          <artifactId>git-code-format-maven-plugin</artifactId>
-          <version>${git-code-format-maven-plugin.version}</version>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>3.8.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
           <version>2.20.1</version>
         </plugin>
+        <plugin>
+          <groupId>org.openrewrite.maven</groupId>
+          <artifactId>rewrite-maven-plugin</artifactId>
+          <version>6.42.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.openrewrite.maven</groupId>
+        <artifactId>rewrite-maven-plugin</artifactId>
+        <configuration>
+          <failOnDryRunResults>true</failOnDryRunResults>
+          <exclusions>
+            <exclusion>**/*.groovy</exclusion>
+            <exclusion>**/*.yml</exclusion>
+          </exclusions>
+          <activeRecipes>
+            <recipe>org.openrewrite.staticanalysis.NeedBraces</recipe>
+            <recipe>org.openrewrite.java.migrate.lombok.UseLombokGetter</recipe>
+            <recipe>org.openrewrite.java.migrate.lombok.UseLombokSetter</recipe>
+            <recipe>org.openrewrite.groovy.format.AutoFormat</recipe>
+            <recipe>org.openrewrite.staticanalysis.NeedBraces</recipe>
+            <recipe>org.openrewrite.staticanalysis.RemoveUnusedLabels</recipe>
+            <recipe>org.openrewrite.staticanalysis.RemoveUnusedLocalVariables</recipe>
+            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateFields</recipe>
+            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>
+            <recipe>org.openrewrite.xml.style.AutodetectDebug</recipe>
+            <recipe>org.openrewrite.staticanalysis.UnnecessaryThrows</recipe>
+            <recipe>org.openrewrite.staticanalysis.UnnecessaryCatch</recipe>
+            <recipe>org.openrewrite.staticanalysis.UnnecessaryCloseInTryWithResources</recipe>
+            <recipe>org.openrewrite.staticanalysis.UnnecessaryExplicitTypeArguments</recipe>
+            <recipe>org.openrewrite.staticanalysis.UnnecessaryParentheses</recipe>
+            <recipe>org.openrewrite.staticanalysis.SillyEqualsCheck</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyArraysAsList</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyBooleanExpression</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyBooleanExpressionWithDeMorgan</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyBooleanReturn</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyCompoundStatement</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyConsecutiveAssignments</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyConstantIfBranchExecution</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyDurationCreationUnits</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyElseBranch</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyForLoopBoundaryComparison</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyTernaryRecipes</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyTernaryRecipes$SimplifyTernaryFalseTrueRecipe</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyTernaryRecipes$SimplifyTernaryTrueFalseRecipe</recipe>
+            <recipe>org.openrewrite.staticanalysis.SillyEqualsCheck</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyArraysAsList</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyBooleanExpression</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyBooleanExpressionWithDeMorgan</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyBooleanReturn</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyCompoundStatement</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyConsecutiveAssignments</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyConstantIfBranchExecution</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyDurationCreationUnits</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyElseBranch</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyForLoopBoundaryComparison</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyTernaryRecipes</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyTernaryRecipes$SimplifyTernaryFalseTrueRecipe</recipe>
+            <recipe>org.openrewrite.staticanalysis.SimplifyTernaryRecipes$SimplifyTernaryTrueFalseRecipe</recipe>
+            <recipe>org.openrewrite.java.RemoveUnusedImports</recipe>
+          </activeRecipes>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-static-analysis</artifactId>
+            <version>2.34.1</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-migrate-java</artifactId>
+            <version>3.34.0</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-java-lombok</artifactId>
+            <version>8.85.0</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
@@ -222,8 +350,8 @@
                   <version>3.3.9</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>[25,)</version>
-                  <message>This project requires JDK 25 LTS or newer.</message>
+                  <version>[25,26)</version>
+                  <message>This project requires JDK 25. JDK 26+ breaks Vaadin's build-frontend ASM scanner and JaCoCo. Use: export JAVA_HOME=/Users/javierortiz/Library/Java/JavaVirtualMachines/openjdk-25.0.2/Contents/Home &amp;&amp; export PATH=$JAVA_HOME/bin:$PATH</message>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -248,30 +376,137 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.cosium.code</groupId>
-        <artifactId>git-code-format-maven-plugin</artifactId>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <configuration>
+          <!-- optional: limit format enforcement to just the files changed by this feature branch -->
+          <ratchetFrom>origin/master</ratchetFrom>
+          <formats>
+            <!-- you can define as many formats as you want, each is independent -->
+            <format>
+              <!-- define the files to apply to -->
+              <includes>
+                <include>*.md</include>
+                <include>.gitignore</include>
+              </includes>
+              <!-- define the steps to apply to those files -->
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
+              <indent>
+                <tabs>true</tabs>
+                <spacesPerTab>4</spacesPerTab>
+              </indent>
+            </format>
+          </formats>
+          <!-- define a language-specific format -->
+          <java>
+            <!-- no need to specify files, inferred automatically, but you can if you want -->
+            <cleanthat/>
+            <!-- apply a specific flavor of google-java-format and reflow long strings -->
+            <googleJavaFormat>
+              <!--Last version for Java 17-->
+              <version>1.35.0</version>
+              <style>GOOGLE</style>
+              <reflowLongStrings>true</reflowLongStrings>
+            </googleJavaFormat>
+            <expandWildcardImports/>
+            <importOrder/>
+            <removeUnusedImports/>
+            <formatAnnotations/>
+          </java>
+          <groovy>
+            <!-- These are the defaults, you can override if you want -->
+            <includes>
+              <include>**/*.groovy</include>
+            </includes>
+            <importOrder/>
+          </groovy>
+          <pom>
+            <!-- These are the defaults, you can override if you want -->
+            <includes>
+              <include>pom.xml</include>
+            </includes>
+            <sortPom>
+              <encoding>UTF-8</encoding>
+              <!-- The encoding of the pom files -->
+              <lineSeparator>${line.separator}</lineSeparator>
+              <!-- line separator to use -->
+              <expandEmptyElements>false</expandEmptyElements>
+              <!-- Should empty elements be expanded-->
+              <spaceBeforeCloseEmptyElement>false</spaceBeforeCloseEmptyElement>
+              <!-- Should a space be added inside self-closing elements-->
+              <keepBlankLines>true</keepBlankLines>
+              <!-- Keep empty lines -->
+              <nrOfIndentSpace>2</nrOfIndentSpace>
+              <!-- Indentation -->
+              <indentBlankLines>false</indentBlankLines>
+              <!-- Should empty lines be indented -->
+              <indentSchemaLocation>false</indentSchemaLocation>
+              <!-- Should schema locations be indented -->
+              <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
+              <!-- Sort order of elements: https://github.com/Ekryd/sortpom/wiki/PredefinedSortOrderProfiles-->
+              <sortOrderFile/>
+              <!-- Custom sort order of elements: https://raw.githubusercontent.com/Ekryd/sortpom/master/sorter/src/main/resources/custom_1.xml -->
+              <sortDependencies/>
+              <!-- Sort dependencies: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
+              <sortDependencyExclusions/>
+              <!-- Sort dependency exclusions: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
+              <sortPlugins/>
+              <!-- Sort plugins: https://github.com/Ekryd/sortpom/wiki/SortPlugins -->
+              <sortProperties>true</sortProperties>
+              <!-- Sort properties -->
+              <sortModules>true</sortModules>
+              <!-- Sort modules -->
+              <sortExecutions>true</sortExecutions>
+              <!-- Sort plugin executions -->
+            </sortPom>
+          </pom>
+          <markdown>
+            <includes>
+              <!-- You have to set the target manually -->
+              <include>**/*.md</include>
+            </includes>
+          </markdown>
+          <json>
+            <includes>
+              <!-- You have to set the target manually -->
+              <include>**/*.json</include>
+            </includes>
+            <excludes>
+              <exclude>**/target/**</exclude>
+            </excludes>
+            <jackson/>
+          </json>
+        </configuration>
         <executions>
           <execution>
-            <id>install-formatter-hook</id>
             <goals>
-              <goal>install-hooks</goal>
+              <goal>check</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>validate-code-format</id>
-            <goals>
-              <goal>validate-code-format</goal>
-            </goals>
+            <phase>compile</phase>
           </execution>
         </executions>
-        <configuration>
-          <googleJavaFormatOptions>
-            <aosp>false</aosp>
-            <fixImportsOnly>false</fixImportsOnly>
-            <skipSortingImports>false</skipSortingImports>
-            <skipRemovingUnusedImports>false</skipRemovingUnusedImports>
-          </googleJavaFormatOptions>
-        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>install-spotless-hook</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <target>
+                <mkdir dir="${project.basedir}/.git/hooks"/>
+                <echo append="false" file="${project.basedir}/.git/hooks/pre-commit">#!/bin/bash set -e REPO_ROOT="$(git rev-parse --show-toplevel)" cd "$REPO_ROOT" mvn spotless:apply -q git add -u</echo>
+                <chmod file="${project.basedir}/.git/hooks/pre-commit" perm="755"/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
@@ -290,56 +525,25 @@
           </execution>
           <execution>
             <id>report</id>
-            <phase>test</phase>
             <goals>
               <goal>report</goal>
             </goals>
+            <phase>test</phase>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>4.0.1</version>
-        <scope>provided</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <repositories>
-    <repository>
-      <id>vaadin-snapshots</id>
-      <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>vaadin-addons</id>
-      <url>https://maven.vaadin.com/vaadin-addons</url>
-    </repository>
-    <repository>
-      <id>EclipseLink Repo</id>
-      <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-    </repository>
-    <repository>
-      <id>project.local</id>
-      <name>project</name>
-      <url>file:${project.basedir}/repo</url>
-    </repository>
-    <repository>
-      <id>OW2 Repository</id>
-      <name>OW2 Repository</name>
-      <url>http://maven.ow2.org/maven2/</url>
-    </repository>
-  </repositories>
   <profiles>
+    <profile>
+      <!-- Production builds must run under JDK 21; Vaadin's bundled ASM (< 9.7) cannot
+           scan JDK 25 runtime module classes (class file version 69). Skip the JDK-25
+           enforcer rule so the build doesn't reject JDK 21. -->
+      <id>production</id>
+      <properties>
+        <enforcer.skip>true</enforcer.skip>
+      </properties>
+    </profile>
     <profile>
       <!-- Vaadin pre-release repositories -->
       <id>vaadin-prerelease</id>
@@ -352,14 +556,14 @@
           <url>https://maven.vaadin.com/vaadin-prereleases</url>
         </repository>
         <repository>
-          <id>vaadin-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
           <releases>
             <enabled>false</enabled>
           </releases>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
+          <id>vaadin-snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
         </repository>
       </repositories>
       <pluginRepositories>
@@ -368,20 +572,16 @@
           <url>https://maven.vaadin.com/vaadin-prereleases</url>
         </pluginRepository>
         <pluginRepository>
-          <id>vaadin-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
           <releases>
             <enabled>false</enabled>
           </releases>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
+          <id>vaadin-snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
   </profiles>
-  <modules>
-    <module>xinco-core</module>
-    <module>Xinco</module>
-  </modules>
 </project>

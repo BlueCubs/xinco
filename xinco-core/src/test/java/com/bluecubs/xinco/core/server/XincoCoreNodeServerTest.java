@@ -10,7 +10,9 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreNodeJpaCon
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com */
+/**
+ * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
+ */
 public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
 
   public XincoCoreNodeServerTest(String testName) {
@@ -37,7 +39,7 @@ public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
   public void testFillXincoCoreNodes() {
     try {
       XincoCoreNodeServer instance = new XincoCoreNodeServer(1);
-      assertTrue((instance.getXincoCoreNodes()).size() > 0);
+      assertTrue(instance.getXincoCoreNodes().size() > 0);
     } catch (Exception e) {
       getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(SEVERE, null, e);
       fail();
