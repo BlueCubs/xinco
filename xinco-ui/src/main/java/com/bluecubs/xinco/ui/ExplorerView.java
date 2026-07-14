@@ -97,6 +97,7 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miPublish;
   private com.vaadin.flow.component.contextmenu.MenuItem miArchive;
   private com.vaadin.flow.component.contextmenu.MenuItem miVersionHistory;
+  private com.vaadin.flow.component.contextmenu.MenuItem miRename;
   private com.vaadin.flow.component.contextmenu.MenuItem miCut;
   private com.vaadin.flow.component.contextmenu.MenuItem miPaste;
   private com.vaadin.flow.component.contextmenu.MenuItem miManageAcl;
@@ -186,6 +187,7 @@ public class ExplorerView extends VerticalLayout
     var editMenu = menuBar.addItem(getTranslation("general.edit"));
     var editSub = editMenu.getSubMenu();
     miDelete = editSub.addItem(getTranslation("general.delete"), e -> confirmDelete());
+    miRename = editSub.addItem(getTranslation("general.rename") + "…", e -> openRenameDialog());
     editSub.addSeparator();
     miCut =
         editSub.addItem(getTranslation("menu.edit.movefolderdatatoclipboard"), e -> cutSelected());
@@ -236,6 +238,7 @@ public class ExplorerView extends VerticalLayout
     miNewFolder.setEnabled(canWriteNode);
     miAddData.setEnabled(canWriteNode);
     miDelete.setEnabled(canWriteNode || canWriteData);
+    miRename.setEnabled(canWriteNode || canWriteData);
     miDownload.setEnabled(dataSelected && isFile);
     miCheckOut.setEnabled(canWriteData && isFile && dataStatus == 1);
     miCheckIn.setEnabled(canWriteData && isFile && isCheckedOut);
@@ -1326,6 +1329,53 @@ public class ExplorerView extends VerticalLayout
     } catch (XincoException ex) {
       LOG.log(Level.SEVERE, "Create folder failed", ex);
       error("Could not create folder: " + ex.getMessage());
+    }
+  }
+
+  void openRenameDialog() {
+    if (selectedNode == null && selectedData == null) return;
+    String current =
+        selectedData != null ? selectedData.getDesignation() : selectedNode.getDesignation();
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(getTranslation("general.rename"));
+    TextField nameField = new TextField(getTranslation("general.designation"));
+    nameField.setValue(current);
+    nameField.setWidthFull();
+    nameField.setAutofocus(true);
+    dialog.add(nameField);
+    dialog
+        .getFooter()
+        .add(
+            new Button(getTranslation("general.cancel"), e -> dialog.close()),
+            new Button(getTranslation("general.save"), e -> doRename(nameField, dialog)));
+    dialog.open();
+  }
+
+  void doRename(TextField nameField, Dialog dialog) {
+    String name = nameField.getValue().trim();
+    if (name.isEmpty()) {
+      nameField.setInvalid(true);
+      return;
+    }
+    try {
+      if (selectedData != null) {
+        selectedData.setDesignation(name);
+        selectedData.write2DB();
+        nodeTree.getDataProvider().refreshItem(selectedData);
+        dataGrid.getDataProvider().refreshItem(selectedData);
+        propertyGrid.setData(selectedData);
+      } else {
+        selectedNode.setDesignation(name);
+        selectedNode.write2DB();
+        nodeTree.getDataProvider().refreshItem(selectedNode);
+        propertyGrid.setNode(selectedNode);
+      }
+      dialog.close();
+      Notification.show(getTranslation("window.folder.updatesuccess"))
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Rename failed", ex);
+      error("Rename failed: " + ex.getMessage());
     }
   }
 

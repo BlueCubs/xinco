@@ -1779,6 +1779,50 @@ class ExplorerViewTest {
     assertFalse(_find(com.vaadin.flow.component.dialog.Dialog.class).isEmpty());
   }
 
+  // ---- openRenameDialog / doRename ----
+
+  @Test
+  void openRenameDialog_nothingSelected_isNoop() {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    view.openRenameDialog();
+    assertTrue(_find(com.vaadin.flow.component.dialog.Dialog.class).isEmpty());
+  }
+
+  @Test
+  void openRenameDialog_nodeSelected_opensDialog() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreNodeServer n = mock(XincoCoreNodeServer.class);
+    when(n.getDesignation()).thenReturn("Folder");
+    setField(view, "selectedNode", n);
+    view.openRenameDialog();
+    assertFalse(_find(com.vaadin.flow.component.dialog.Dialog.class).isEmpty());
+  }
+
+  @Test
+  void openRenameDialog_dataSelected_opensDialog() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getDesignation()).thenReturn("file.txt");
+    setField(view, "selectedData", d);
+    view.openRenameDialog();
+    assertFalse(_find(com.vaadin.flow.component.dialog.Dialog.class).isEmpty());
+  }
+
+  @Test
+  void doRename_emptyName_keepsDialogOpen() {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    TextField nameField = new TextField();
+    nameField.setValue("");
+    com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
+    dialog.open();
+    view.doRename(nameField, dialog);
+    assertTrue(dialog.isOpened());
+  }
+
   @Test
   void archiveSelected_nullData_isNoop() throws Exception {
     ExplorerView view = new ExplorerView(new UserSession());
