@@ -1674,6 +1674,111 @@ class ExplorerViewTest {
     assertNotNull(m.invoke(view, d));
   }
 
+  // ---- openDataItem / openUrlInTab / openTextDialog / openContactDialog ----
+
+  @Test
+  void openDataItem_type2_opensTextDialog() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(2);
+    when(d.getDesignation()).thenReturn("My Note");
+    XincoAddAttributeServer attr = mock(XincoAddAttributeServer.class);
+    when(attr.getAttributeId()).thenReturn(1);
+    when(attr.getAttribText()).thenReturn("Hello world");
+    when(attr.getAttribVarchar()).thenReturn(null);
+    when(d.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(attr)));
+    Method m = ExplorerView.class.getDeclaredMethod("openDataItem", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    m.invoke(view, d);
+    assertFalse(_find(com.vaadin.flow.component.dialog.Dialog.class).isEmpty());
+  }
+
+  @Test
+  void openDataItem_type3_withUrl_doesNotShowError() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(3);
+    XincoAddAttributeServer attr = mock(XincoAddAttributeServer.class);
+    when(attr.getAttributeId()).thenReturn(1);
+    when(attr.getAttribVarchar()).thenReturn("https://example.com");
+    when(d.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(attr)));
+    Method m = ExplorerView.class.getDeclaredMethod("openDataItem", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertDoesNotThrow(() -> m.invoke(view, d));
+  }
+
+  @Test
+  void openDataItem_type4_opensContactDialog() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(4);
+    when(d.getDesignation()).thenReturn("John Doe");
+    XincoAddAttributeServer attr2 = mock(XincoAddAttributeServer.class);
+    when(attr2.getAttributeId()).thenReturn(2);
+    when(attr2.getAttribVarchar()).thenReturn("John");
+    when(attr2.getAttribText()).thenReturn(null);
+    when(d.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(attr2)));
+    Method m = ExplorerView.class.getDeclaredMethod("openDataItem", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    m.invoke(view, d);
+    assertFalse(_find(com.vaadin.flow.component.dialog.Dialog.class).isEmpty());
+  }
+
+  @Test
+  void openUrlInTab_noUrl_showsError() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoAddAttributes()).thenReturn(new ArrayList<>());
+    Method m = ExplorerView.class.getDeclaredMethod("openUrlInTab", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    m.invoke(view, d);
+    assertFalse(_find(com.vaadin.flow.component.notification.Notification.class).isEmpty());
+  }
+
+  @Test
+  void openUrlInTab_urlWithoutProtocol_doesNotThrow() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    XincoAddAttributeServer attr = mock(XincoAddAttributeServer.class);
+    when(attr.getAttributeId()).thenReturn(1);
+    when(attr.getAttribVarchar()).thenReturn("example.com");
+    when(d.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(attr)));
+    Method m = ExplorerView.class.getDeclaredMethod("openUrlInTab", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertDoesNotThrow(() -> m.invoke(view, d));
+  }
+
+  @Test
+  void openTextDialog_emptyText_opensDialog() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getDesignation()).thenReturn("Note");
+    when(d.getXincoAddAttributes()).thenReturn(new ArrayList<>());
+    Method m = ExplorerView.class.getDeclaredMethod("openTextDialog", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    m.invoke(view, d);
+    assertFalse(_find(com.vaadin.flow.component.dialog.Dialog.class).isEmpty());
+  }
+
+  @Test
+  void openContactDialog_emptyAttrs_opensDialog() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getDesignation()).thenReturn("Contact");
+    when(d.getXincoAddAttributes()).thenReturn(new ArrayList<>());
+    Method m = ExplorerView.class.getDeclaredMethod("openContactDialog", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    m.invoke(view, d);
+    assertFalse(_find(com.vaadin.flow.component.dialog.Dialog.class).isEmpty());
+  }
+
   @Test
   void archiveSelected_nullData_isNoop() throws Exception {
     ExplorerView view = new ExplorerView(new UserSession());

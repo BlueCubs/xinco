@@ -38,6 +38,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.component.upload.Upload;
@@ -323,6 +324,97 @@ public class ExplorerView extends VerticalLayout
                       }
                       updateMenuState();
                     }));
+    nodeTree.addItemDoubleClickListener(
+        e -> {
+          if (e.getItem() instanceof XincoCoreDataServer data) {
+            selectedData = data;
+            data.loadAddAttributes();
+            openDataItem(data);
+          }
+        });
+  }
+
+  private void openDataItem(XincoCoreDataServer data) {
+    int typeId = data.getXincoCoreDataType() != null ? data.getXincoCoreDataType().getId() : 1;
+    switch (typeId) {
+      case 2 -> openTextDialog(data);
+      case 3 -> openUrlInTab(data);
+      case 4 -> openContactDialog(data);
+      default -> downloadSelected();
+    }
+  }
+
+  private void openUrlInTab(XincoCoreDataServer data) {
+    String url =
+        data.getXincoAddAttributes().stream()
+            .filter(a -> a.getAttributeId() == 1 && a.getAttribVarchar() != null)
+            .map(a -> a.getAttribVarchar().trim())
+            .filter(s -> !s.isEmpty())
+            .findFirst()
+            .orElse(null);
+    if (url == null) {
+      error("No URL defined for this item.");
+      return;
+    }
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+    UI.getCurrent().getPage().open(url, "_blank");
+  }
+
+  private void openTextDialog(XincoCoreDataServer data) {
+    String text =
+        data.getXincoAddAttributes().stream()
+            .filter(a -> a.getAttributeId() == 1)
+            .map(a -> a.getAttribText() != null ? a.getAttribText() : a.getAttribVarchar())
+            .filter(s -> s != null)
+            .findFirst()
+            .orElse("");
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(data.getDesignation());
+    TextArea ta = new TextArea();
+    ta.setValue(text);
+    ta.setReadOnly(true);
+    ta.setWidthFull();
+    ta.setMinHeight("300px");
+    dialog.add(ta);
+    dialog.setWidth("600px");
+    dialog.getFooter().add(new Button(getTranslation("general.cancel"), e -> dialog.close()));
+    dialog.open();
+  }
+
+  private void openContactDialog(XincoCoreDataServer data) {
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(data.getDesignation());
+    FormLayout form = new FormLayout();
+    form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 2));
+    String[] labels = {
+      "Salutation", "Name", "Middle Name", "Last Name", "Affix",
+      "Phone (Business)", "Phone (Private)", "Mobile", "Fax", "Email",
+      "Website", "Address", "Postal Code", "City", "State/Province",
+      "Country", "Company", "Position"
+    };
+    data.getXincoAddAttributes().stream()
+        .filter(a -> a.getAttributeId() >= 1 && a.getAttributeId() <= 19)
+        .forEach(
+            a -> {
+              String value = a.getAttribText() != null ? a.getAttribText() : a.getAttribVarchar();
+              if (value == null || value.isBlank()) return;
+              int idx = a.getAttributeId() - 1;
+              String label = idx < labels.length ? labels[idx] : "Notes";
+              TextField tf = new TextField(label);
+              tf.setValue(value);
+              tf.setReadOnly(true);
+              tf.setWidthFull();
+              if (a.getAttributeId() == 19) {
+                form.setColspan(tf, 2);
+              }
+              form.add(tf);
+            });
+    dialog.add(form);
+    dialog.setWidth("640px");
+    dialog.getFooter().add(new Button(getTranslation("general.cancel"), e -> dialog.close()));
+    dialog.open();
   }
 
   private String itemDesignation(Object item) {
@@ -392,13 +484,11 @@ public class ExplorerView extends VerticalLayout
                         navigateToNode(data.getXincoCoreNodeId(), data);
                       }
                     }));
-    // Double-click to download
     dataGrid.addItemDoubleClickListener(
         e -> {
           selectedData = e.getItem();
-          if (selectedData.getXincoCoreDataType().getId() == 1) {
-            downloadSelected();
-          }
+          selectedData.loadAddAttributes();
+          openDataItem(selectedData);
         });
   }
 
