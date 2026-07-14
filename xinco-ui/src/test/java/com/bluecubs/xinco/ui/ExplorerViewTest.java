@@ -1488,11 +1488,190 @@ class ExplorerViewTest {
     XincoCoreNodeServer mockChild = mock(XincoCoreNodeServer.class);
     XincoCoreNodeServer mockParent = mock(XincoCoreNodeServer.class);
     when(mockParent.getXincoCoreNodes()).thenReturn(new ArrayList<>(List.of(mockChild)));
-    Method m = ExplorerView.class.getDeclaredMethod("getChildNodes", XincoCoreNodeServer.class);
+    Method m = ExplorerView.class.getDeclaredMethod("getChildNodes", Object.class);
     m.setAccessible(true);
-    List<XincoCoreNodeServer> children = (List<XincoCoreNodeServer>) m.invoke(view, mockParent);
+    List<Object> children = (List<Object>) m.invoke(view, mockParent);
     assertEquals(1, children.size());
     assertSame(mockChild, children.get(0));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void getChildNodes_nonNode_returnsEmptyList() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    Method m = ExplorerView.class.getDeclaredMethod("getChildNodes", Object.class);
+    m.setAccessible(true);
+    List<Object> result = (List<Object>) m.invoke(view, "notANode");
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  void itemDesignation_node() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreNodeServer n = mock(XincoCoreNodeServer.class);
+    when(n.getDesignation()).thenReturn("MyFolder");
+    Method m = ExplorerView.class.getDeclaredMethod("itemDesignation", Object.class);
+    m.setAccessible(true);
+    assertEquals("MyFolder", m.invoke(view, n));
+  }
+
+  @Test
+  void itemDesignation_data() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class);
+    when(d.getDesignation()).thenReturn("file.txt");
+    Method m = ExplorerView.class.getDeclaredMethod("itemDesignation", Object.class);
+    m.setAccessible(true);
+    assertEquals("file.txt", m.invoke(view, d));
+  }
+
+  @Test
+  void itemDesignation_unknown() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    Method m = ExplorerView.class.getDeclaredMethod("itemDesignation", Object.class);
+    m.setAccessible(true);
+    assertEquals("", m.invoke(view, Integer.valueOf(42)));
+  }
+
+  @Test
+  void buildTreeCell_node_returnsLayout() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreNodeServer n = mock(XincoCoreNodeServer.class);
+    when(n.getDesignation()).thenReturn("Folder");
+    Method m = ExplorerView.class.getDeclaredMethod("buildTreeCell", Object.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, n));
+  }
+
+  @Test
+  void buildTreeCell_data_returnsLayout() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getDesignation()).thenReturn("report.pdf");
+    when(d.getXincoCoreDataType().getId()).thenReturn(1);
+    Method m = ExplorerView.class.getDeclaredMethod("buildTreeCell", Object.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void buildTreeCell_unknown_returnsLayout() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    Method m = ExplorerView.class.getDeclaredMethod("buildTreeCell", Object.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, "unknown"));
+  }
+
+  @Test
+  void dataTypeIcon_type2_url() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(2);
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void dataTypeIcon_type3_text() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(3);
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void dataTypeIcon_type4_contact() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(4);
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void dataTypeIcon_imageExtension() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(1);
+    when(d.getDesignation()).thenReturn("photo.jpg");
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void dataTypeIcon_audioExtension() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(1);
+    when(d.getDesignation()).thenReturn("song.mp3");
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void dataTypeIcon_videoExtension() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(1);
+    when(d.getDesignation()).thenReturn("clip.mp4");
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void dataTypeIcon_archiveExtension() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(1);
+    when(d.getDesignation()).thenReturn("backup.zip");
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void dataTypeIcon_pdfExtension() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(1);
+    when(d.getDesignation()).thenReturn("doc.pdf");
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
+  }
+
+  @Test
+  void dataTypeIcon_defaultExtension() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(1);
+    when(d.getDesignation()).thenReturn("data.bin");
+    Method m = ExplorerView.class.getDeclaredMethod("dataTypeIcon", XincoCoreDataServer.class);
+    m.setAccessible(true);
+    assertNotNull(m.invoke(view, d));
   }
 
   @Test

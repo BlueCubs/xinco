@@ -27,6 +27,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
@@ -41,6 +42,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -103,7 +105,7 @@ public class ExplorerView extends VerticalLayout
   private XincoCoreDataServer clipboardData;
 
   // UI components
-  private final TreeGrid<XincoCoreNodeServer> nodeTree = new TreeGrid<>();
+  private final TreeGrid<Object> nodeTree = new TreeGrid<>();
   private final Grid<XincoCoreDataServer> dataGrid = new Grid<>(XincoCoreDataServer.class, false);
   private final PropertyGrid propertyGrid = new PropertyGrid();
   private final MenuBar menuBar = new MenuBar();
@@ -295,25 +297,73 @@ public class ExplorerView extends VerticalLayout
 
   private void buildNodeTree() {
     nodeTree
-        .addHierarchyColumn(XincoCoreNodeServer::getDesignation)
+        .addHierarchyColumn(this::itemDesignation)
+        .setRenderer(new ComponentRenderer<>(this::buildTreeCell))
         .setHeader(getTranslation("general.folder"));
     nodeTree.setSizeFull();
     nodeTree.addSelectionListener(
         e ->
             e.getFirstSelectedItem()
                 .ifPresent(
-                    node -> {
-                      selectedNode = node;
-                      selectedData = null;
-                      node.fillXincoCoreData();
-                      dataGrid.setItems(
-                          node.getXincoCoreData().stream()
-                              .filter(o -> o instanceof XincoCoreDataServer)
-                              .map(o -> (XincoCoreDataServer) o)
-                              .toList());
-                      propertyGrid.setNode(node);
+                    item -> {
+                      if (item instanceof XincoCoreNodeServer node) {
+                        selectedNode = node;
+                        selectedData = null;
+                        node.fillXincoCoreData();
+                        dataGrid.setItems(
+                            node.getXincoCoreData().stream()
+                                .filter(o -> o instanceof XincoCoreDataServer)
+                                .map(o -> (XincoCoreDataServer) o)
+                                .toList());
+                        propertyGrid.setNode(node);
+                      } else if (item instanceof XincoCoreDataServer data) {
+                        selectedData = data;
+                        data.loadAddAttributes();
+                        propertyGrid.setData(data);
+                      }
                       updateMenuState();
                     }));
+  }
+
+  private String itemDesignation(Object item) {
+    if (item instanceof XincoCoreNodeServer n) return n.getDesignation();
+    if (item instanceof XincoCoreDataServer d) return d.getDesignation();
+    return "";
+  }
+
+  private HorizontalLayout buildTreeCell(Object item) {
+    Icon icon;
+    String label;
+    if (item instanceof XincoCoreNodeServer node) {
+      icon = VaadinIcon.FOLDER.create();
+      icon.getStyle().set("color", "var(--lumo-primary-color)");
+      label = node.getDesignation();
+    } else if (item instanceof XincoCoreDataServer data) {
+      icon = dataTypeIcon(data);
+      label = data.getDesignation();
+    } else {
+      return new HorizontalLayout(new Span("?"));
+    }
+    icon.setSize("1em");
+    HorizontalLayout row = new HorizontalLayout(icon, new Span(label));
+    row.setAlignItems(FlexComponent.Alignment.CENTER);
+    row.getStyle().set("gap", "var(--lumo-space-xs)");
+    row.setSpacing(false);
+    return row;
+  }
+
+  private Icon dataTypeIcon(XincoCoreDataServer data) {
+    int typeId = data.getXincoCoreDataType() != null ? data.getXincoCoreDataType().getId() : 1;
+    if (typeId == 2) return VaadinIcon.GLOBE.create();
+    if (typeId == 3) return VaadinIcon.FILE_TEXT.create();
+    if (typeId == 4) return VaadinIcon.USER.create();
+    String name = data.getDesignation().toLowerCase();
+    if (name.matches(".*\\.(png|jpg|jpeg|gif|bmp|webp|svg)")) return VaadinIcon.PICTURE.create();
+    if (name.matches(".*\\.(mp3|wav|ogg|flac|m4a|aac)")) return VaadinIcon.MUSIC.create();
+    if (name.matches(".*\\.(mp4|avi|mov|mkv|webm|wmv)")) return VaadinIcon.FILM.create();
+    if (name.matches(".*\\.(zip|tar|gz|7z|rar|bz2)")) return VaadinIcon.ARCHIVE.create();
+    if (name.matches(".*\\.pdf")) return VaadinIcon.FILE_TEXT.create();
+    return VaadinIcon.FILE_O.create();
   }
 
   // ── Data Grid ─────────────────────────────────────────────────────────────
@@ -400,7 +450,7 @@ public class ExplorerView extends VerticalLayout
     try {
       XincoCoreNodeServer root = new XincoCoreNodeServer(1);
       root.fillXincoCoreNodes();
-      List<XincoCoreNodeServer> roots = new ArrayList<>();
+      List<Object> roots = new ArrayList<>();
       roots.add(root);
       nodeTree.setItems(roots, this::getChildNodes);
     } catch (Throwable e) {
@@ -408,12 +458,10 @@ public class ExplorerView extends VerticalLayout
     }
   }
 
-  private List<XincoCoreNodeServer> getChildNodes(XincoCoreNodeServer parent) {
+  private List<Object> getChildNodes(Object item) {
+    if (!(item instanceof XincoCoreNodeServer parent)) return List.of();
     parent.fillXincoCoreNodes();
-    return parent.getXincoCoreNodes().stream()
-        .filter(o -> o instanceof XincoCoreNodeServer)
-        .map(o -> (XincoCoreNodeServer) o)
-        .toList();
+    return new ArrayList<>(parent.getXincoCoreNodes());
   }
 
   private void navigateToNode(int targetNodeId, XincoCoreDataServer dataToReselect) {
@@ -434,12 +482,12 @@ public class ExplorerView extends VerticalLayout
     try {
       XincoCoreNodeServer root = new XincoCoreNodeServer(1);
       root.fillXincoCoreNodes();
-      nodeTree.setItems(List.of(root), this::getChildNodes);
+      nodeTree.setItems(new ArrayList<>(List.<Object>of(root)), this::getChildNodes);
 
       // Walk path: after expanding a node, getChildNodes populates its getXincoCoreNodes()
       XincoCoreNodeServer current = root;
       for (int stepId : path) {
-        nodeTree.expand(List.of(current));
+        nodeTree.expand(List.<Object>of(current));
         XincoCoreNodeServer child =
             current.getXincoCoreNodes().stream()
                 .filter(o -> o instanceof XincoCoreNodeServer)
@@ -1142,6 +1190,8 @@ public class ExplorerView extends VerticalLayout
               .filter(o -> o instanceof XincoCoreDataServer)
               .map(o -> (XincoCoreDataServer) o)
               .toList());
+      nodeTree.collapse(List.<Object>of(selectedNode));
+      nodeTree.expand(List.<Object>of(selectedNode));
       Notification.show(getTranslation("datawizard.fileuploadsuccess"))
           .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     } catch (Exception ex) {
