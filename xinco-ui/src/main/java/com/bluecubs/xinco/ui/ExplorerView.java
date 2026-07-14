@@ -757,10 +757,6 @@ public class ExplorerView extends VerticalLayout
     if (selectedData == null) return;
     try {
       String path = XincoCoreDataServer.getLastMajorVersionDataPath(selectedData.getId());
-      if (path == null) {
-        error("No file version found in repository.");
-        return;
-      }
       File file = new File(path);
       if (!file.exists()) {
         error("File not found on disk: " + path);

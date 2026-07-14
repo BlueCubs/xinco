@@ -31,6 +31,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -957,6 +958,24 @@ class AdminViewTest {
                     t.getLabel().toLowerCase().contains("audit")
                         || t.getLabel().toLowerCase().contains("history"));
     assertTrue(found, "AdminView must have an Audit Trail / History tab");
+  }
+
+  @Test
+  @SuppressWarnings("rawtypes")
+  void adminView_auditTrailTab_rendersGrid() {
+    // OQ 4: audit trail tab must contain a Grid that shows modification history
+    _get(TabSheet.class).setSelectedIndex(6);
+    assertFalse(_find(Grid.class).isEmpty(), "Audit Trail tab must render a Grid component");
+  }
+
+  @Test
+  void adminView_auditTrailTab_refreshButton_doesNotThrow() {
+    // OQ 4: clicking Refresh on the audit trail tab must reload entries without throwing
+    _get(TabSheet.class).setSelectedIndex(6);
+    _find(Button.class).stream()
+        .filter(b -> b.getText().toLowerCase().contains("refresh"))
+        .findFirst()
+        .ifPresent(Button::click);
   }
 
   // ---- openLanguageDialog coverage ----
