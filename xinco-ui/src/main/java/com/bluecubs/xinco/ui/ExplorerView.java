@@ -663,7 +663,7 @@ public class ExplorerView extends VerticalLayout
             });
     Anchor anchor = new Anchor(resource, "");
     anchor.getElement().setAttribute("download", true);
-    anchor.setVisible(false);
+    anchor.getStyle().set("position", "fixed").set("top", "-9999px").set("left", "-9999px");
     add(anchor);
     anchor.getElement().callJsFunction("click");
     UI.getCurrent().getPage().executeJs("setTimeout(() => $0.remove(), 5000)", anchor.getElement());
@@ -774,13 +774,11 @@ public class ExplorerView extends VerticalLayout
                   return null;
                 }
               });
-      // Add a hidden anchor and programmatically click it to trigger download
       Anchor anchor = new Anchor(resource, "");
       anchor.getElement().setAttribute("download", true);
-      anchor.setVisible(false);
+      anchor.getStyle().set("position", "fixed").set("top", "-9999px").set("left", "-9999px");
       add(anchor);
       anchor.getElement().callJsFunction("click");
-      // Clean up anchor after a short delay so it doesn't accumulate
       UI.getCurrent()
           .getPage()
           .executeJs("setTimeout(() => $0.remove(), 5000)", anchor.getElement());
