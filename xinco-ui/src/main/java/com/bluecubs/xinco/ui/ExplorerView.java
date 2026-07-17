@@ -97,6 +97,7 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miPublish;
   private com.vaadin.flow.component.contextmenu.MenuItem miArchive;
   private com.vaadin.flow.component.contextmenu.MenuItem miVersionHistory;
+  private com.vaadin.flow.component.contextmenu.MenuItem miComment;
   private com.vaadin.flow.component.contextmenu.MenuItem miRename;
   private com.vaadin.flow.component.contextmenu.MenuItem miCut;
   private com.vaadin.flow.component.contextmenu.MenuItem miPaste;
@@ -214,6 +215,8 @@ public class ExplorerView extends VerticalLayout
     fileSub.addSeparator();
     miVersionHistory =
         fileSub.addItem(getTranslation("window.revision") + "…", e -> openVersionHistoryDialog());
+    miComment =
+        fileSub.addItem(getTranslation("menu.edit.commentdata") + "…", e -> commentSelected());
 
     // View menu
     menuBar.addItem(
@@ -232,7 +235,7 @@ public class ExplorerView extends VerticalLayout
     boolean canWriteData = loggedIn && dataSelected && hasWriteAccess(selectedData);
 
     int dataStatus = dataSelected ? selectedData.getStatusNumber() : -1;
-    // statusNumber: 1=active, 2=locked, 4=checked-out, 5=published
+    // statusNumber DB values: 1=OPEN, 2=LOCKED, 3=ARCHIVED, 4=CHECKED_OUT, 5=PUBLISHED
     boolean isCheckedOut = dataStatus == 4;
 
     miNewFolder.setEnabled(canWriteNode);
@@ -247,6 +250,7 @@ public class ExplorerView extends VerticalLayout
     miPublish.setEnabled(canWriteData && dataStatus == 1);
     miArchive.setEnabled(canWriteData && isFile && dataStatus != 3 && dataStatus != 4);
     miVersionHistory.setEnabled(dataSelected && isFile);
+    miComment.setEnabled(canWriteData);
     miCut.setEnabled(loggedIn && (nodeSelected || dataSelected));
     boolean hasClipboard = clipboardNode != null || clipboardData != null;
     miPaste.setEnabled(loggedIn && hasClipboard && nodeSelected);
@@ -1477,6 +1481,47 @@ public class ExplorerView extends VerticalLayout
           } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Checkout failed", ex);
             error("Checkout failed: " + ex.getMessage());
+          }
+        });
+  }
+
+  void commentSelected() {
+    if (selectedData == null) return;
+    showReasonDialog(
+        getTranslation("menu.edit.commentdata"),
+        getTranslation("general.save"),
+        reason -> {
+          try {
+            XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+            XincoCoreLogServer lastLog =
+                data.getXincoCoreLogs().isEmpty()
+                    ? null
+                    : (XincoCoreLogServer)
+                        data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
+            int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() : 1;
+            int vm = lastLog != null ? lastLog.getVersion().getVersionMid() : 0;
+            int vl = lastLog != null ? lastLog.getVersion().getVersionLow() : 0;
+            String vp =
+                lastLog != null && lastLog.getVersion().getVersionPostfix() != null
+                    ? lastLog.getVersion().getVersionPostfix()
+                    : "";
+            new XincoCoreLogServerBuilder()
+                .setXincoCoreDataId(data.getId())
+                .setXincoCoreUserId(session.getUser().getId())
+                .setOpCode(OPCode.COMMENT.ordinal() + 1)
+                .setOperationDescription(reason)
+                .setVersionHigh(vh)
+                .setVersionMid(vm)
+                .setVersionLow(vl + 1)
+                .setVersionPostFix(vp)
+                .createXincoCoreLogServer()
+                .write2DB();
+            refreshDataGrid();
+            Notification.show(getTranslation("general.save") + " OK")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+          } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Comment failed", ex);
+            error("Comment failed: " + ex.getMessage());
           }
         });
   }

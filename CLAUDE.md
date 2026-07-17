@@ -71,7 +71,7 @@ The project is a Maven multi-module build (`xinco-parent`):
 
 ### `xinco-ui` internals
 - Entry point: `XincoApplication` (Spring Boot)
-- Views: `LoginView` → `ViewerView` (primary landing), `ExplorerView` (management), `AdminView`, `MainLayout` (Vaadin `@Route`)
+- Views: `LoginView` → `ViewerView` (primary landing), `ExplorerView` (management), `AdminView`, `PublisherView` (public, no auth), `MainLayout` (Vaadin `@Route`)
 - Shared state: `UserSession`
 - Components: `PropertyGrid`, `CheckinDialog`
 

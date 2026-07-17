@@ -290,6 +290,15 @@ public final class XincoConfigSingletonServer {
     this.fileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
   }
 
+  /**
+   * Whether the public publisher endpoint ({@code /publisher/[nodeId]}) is enabled.
+   *
+   * <p>When {@code false}, {@link com.bluecubs.xinco.ui.PublisherView} rejects all requests.
+   * Controlled by the {@code setting.allowpublisherlist} config record in the Xinco settings DB.
+   * Default: {@code true}.
+   *
+   * @return true if the publisher list is available to unauthenticated users
+   */
   public boolean isAllowPublisherList() {
     return allowPublisherList;
   }
