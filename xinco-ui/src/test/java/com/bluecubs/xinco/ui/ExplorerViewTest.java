@@ -102,6 +102,25 @@ class ExplorerViewTest {
   }
 
   @Test
+  void noArgConstructor_coversResolveSession() {
+    ExplorerView view = new ExplorerView();
+    addView(view);
+    assertNotNull(_get(TreeGrid.class));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void explorerView_treeDataItemSelection_coversDataBranch() {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    @SuppressWarnings("unchecked")
+    com.vaadin.flow.component.treegrid.TreeGrid<Object> tree =
+        (com.vaadin.flow.component.treegrid.TreeGrid<Object>) _get(TreeGrid.class);
+    tree.asSingleSelect().setValue(mockData);
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   void explorerView_treeSelection_populatesDataGrid() {
     addView(new ExplorerView(new UserSession()));
@@ -1821,6 +1840,133 @@ class ExplorerViewTest {
     dialog.open();
     view.doRename(nameField, dialog);
     assertTrue(dialog.isOpened());
+  }
+
+  @Test
+  void doRename_withData_coversDataBranch() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.write2DB()).thenReturn(1);
+    setField(view, "selectedData", mockData);
+    TextField nameField = new TextField();
+    nameField.setValue("NewName");
+    com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
+    dialog.open();
+    view.doRename(nameField, dialog);
+  }
+
+  @Test
+  void doRename_withNode_coversNodeBranch() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.write2DB()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+    TextField nameField = new TextField();
+    nameField.setValue("NewFolder");
+    com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
+    dialog.open();
+    view.doRename(nameField, dialog);
+  }
+
+  // ---- commentSelected ----
+
+  @Test
+  void commentSelected_nullData_isNoop() {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    view.commentSelected();
+    assertTrue(_find(Dialog.class).isEmpty(), "no dialog when selectedData is null");
+  }
+
+  @Test
+  void commentSelected_withData_opensReasonDialog() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer d = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(d.getXincoCoreDataType().getId()).thenReturn(1);
+    setField(view, "selectedData", d);
+    view.commentSelected();
+    assertFalse(_find(Dialog.class).isEmpty(), "reason dialog should open");
+  }
+
+  @Test
+  void commentSelected_confirmTriggered_coversLambdaBody() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getXincoCoreLogs()).thenReturn(new ArrayList<>());
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      view.commentSelected();
+      _get(TextField.class, spec -> spec.withLabel("Reason")).setValue("test comment");
+      Button confirmBtn =
+          _find(Button.class).stream()
+              .filter(b -> "Save".equals(b.getText()))
+              .findFirst()
+              .orElseThrow();
+      ComponentUtil.fireEvent(confirmBtn, new com.vaadin.flow.component.ClickEvent<>(confirmBtn));
+    }
+  }
+
+  @Test
+  void commentSelected_withNonNullLog_coversLogBranches() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer selectedDataMock = mock(XincoCoreDataServer.class);
+    when(selectedDataMock.getId()).thenReturn(1);
+    setField(view, "selectedData", selectedDataMock);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    XincoCoreLogServer existingLog = mock(XincoCoreLogServer.class, RETURNS_DEEP_STUBS);
+    when(existingLog.getVersion().getVersionHigh()).thenReturn(1);
+    when(existingLog.getVersion().getVersionMid()).thenReturn(0);
+    when(existingLog.getVersion().getVersionLow()).thenReturn(3);
+    when(existingLog.getVersion().getVersionPostfix()).thenReturn("beta");
+    List<Object> logs = new ArrayList<>();
+    logs.add(existingLog);
+
+    try (MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.getXincoCoreLogs()).thenReturn(logs);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.write2DB()).thenReturn(1);
+                })) {
+      view.commentSelected();
+      _get(TextField.class, spec -> spec.withLabel("Reason")).setValue("comment with log");
+      Button confirmBtn =
+          _find(Button.class).stream()
+              .filter(b -> "Save".equals(b.getText()))
+              .findFirst()
+              .orElseThrow();
+      ComponentUtil.fireEvent(confirmBtn, new com.vaadin.flow.component.ClickEvent<>(confirmBtn));
+    }
   }
 
   @Test
