@@ -188,6 +188,7 @@ class ExplorerViewTest {
     assertFalse(menuItem(view, "miLock").isEnabled(), "miLock");
     assertFalse(menuItem(view, "miPublish").isEnabled(), "miPublish");
     assertFalse(menuItem(view, "miManageAcl").isEnabled(), "miManageAcl");
+    assertFalse(menuItem(view, "miSendEmail").isEnabled(), "miSendEmail");
   }
 
   @Test
@@ -2029,6 +2030,52 @@ class ExplorerViewTest {
     }
   }
 
+  // ---- sendEmailSelected ----
+
+  @Test
+  void sendEmailSelected_nullData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    assertDoesNotThrow(() -> view.sendEmailSelected());
+    assertTrue(_find(Dialog.class).isEmpty());
+  }
+
+  @Test
+  void sendEmailSelected_nonContactData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(1);
+    setField(view, "selectedData", mockData);
+    assertDoesNotThrow(() -> view.sendEmailSelected());
+    assertTrue(_find(Dialog.class).isEmpty());
+  }
+
+  @Test
+  void sendEmailSelected_noEmailAttr_showsError() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(4);
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>());
+    setField(view, "selectedData", mockData);
+    assertDoesNotThrow(() -> view.sendEmailSelected());
+  }
+
+  @Test
+  void sendEmailSelected_withEmail_opensMailto() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(4);
+    XincoAddAttributeServer emailAttr = mock(XincoAddAttributeServer.class);
+    when(emailAttr.getAttributeId()).thenReturn(10);
+    when(emailAttr.getAttribVarchar()).thenReturn("test@example.com");
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(emailAttr)));
+    setField(view, "selectedData", mockData);
+    assertDoesNotThrow(() -> view.sendEmailSelected());
+  }
+
   @Test
   void doAddData_success_closesDialog() throws Exception {
     ExplorerView view = new ExplorerView(loggedInSession());
@@ -2680,6 +2727,32 @@ class ExplorerViewTest {
   }
 
   @Test
+  void menuState_contactDataSelected_sendEmailEnabled() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(4);
+    when(mockData.getStatusNumber()).thenReturn(1);
+    when(mockData.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedData", mockData);
+    invoke(view, "updateMenuState");
+    assertTrue(menuItem(view, "miSendEmail").isEnabled(), "sendEmail enabled for contact data");
+  }
+
+  @Test
+  void menuState_fileDataSelected_sendEmailDisabled() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(1);
+    when(mockData.getStatusNumber()).thenReturn(1);
+    when(mockData.getXincoCoreAcl()).thenReturn(List.of());
+    setField(view, "selectedData", mockData);
+    invoke(view, "updateMenuState");
+    assertFalse(menuItem(view, "miSendEmail").isEnabled(), "sendEmail disabled for file data");
+  }
+
+  @Test
   void clearSearch_hidesStatusAndClearButton() throws Exception {
     ExplorerView view = new ExplorerView(new UserSession());
     addView(view);
@@ -2912,6 +2985,82 @@ class ExplorerViewTest {
         typeSelect.setValue(4);
         typeSelect.setValue(1);
       }
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void openAddDataDialog_archiveSectionVisibleForFileType() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreLanguageServer> msLang = mockStatic(XincoCoreLanguageServer.class)) {
+      msLang.when(XincoCoreLanguageServer::getXincoCoreLanguages).thenReturn(new ArrayList<>());
+      invoke(view, "openAddDataDialog");
+
+      Select<Integer> archiveSelect =
+          _find(Select.class, spec -> spec.withLabel("Archive Model")).stream()
+              .filter(s -> s.getValue() instanceof Integer)
+              .findFirst()
+              .map(s -> (Select<Integer>) s)
+              .orElse(null);
+      assertNotNull(archiveSelect, "archive model select should be present");
+      assertTrue(
+          archiveSelect.getParent().map(p -> p.isVisible()).orElse(false),
+          "archive section visible when type=1 (file)");
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void openAddDataDialog_archiveSectionHiddenForNonFileTypes() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    setField(view, "selectedNode", mockNode);
+
+    try (MockedStatic<XincoCoreLanguageServer> msLang = mockStatic(XincoCoreLanguageServer.class)) {
+      msLang.when(XincoCoreLanguageServer::getXincoCoreLanguages).thenReturn(new ArrayList<>());
+      invoke(view, "openAddDataDialog");
+
+      Select<Integer> typeSelect =
+          _find(Select.class, spec -> spec.withLabel("Data Type")).stream()
+              .filter(s -> s.getValue() instanceof Integer)
+              .findFirst()
+              .map(s -> (Select<Integer>) s)
+              .orElse(null);
+      Select<Integer> archiveSelect =
+          _find(Select.class, spec -> spec.withLabel("Archive Model")).stream()
+              .filter(s -> s.getValue() instanceof Integer)
+              .findFirst()
+              .map(s -> (Select<Integer>) s)
+              .orElse(null);
+      assertNotNull(typeSelect, "type select present");
+      assertNotNull(archiveSelect, "archive model select present");
+
+      typeSelect.setValue(2);
+      assertFalse(
+          archiveSelect.getParent().map(p -> p.isVisible()).orElse(true),
+          "archive section hidden for type=2 (Text)");
+
+      typeSelect.setValue(3);
+      assertFalse(
+          archiveSelect.getParent().map(p -> p.isVisible()).orElse(true),
+          "archive section hidden for type=3 (URL)");
+
+      typeSelect.setValue(4);
+      assertFalse(
+          archiveSelect.getParent().map(p -> p.isVisible()).orElse(true),
+          "archive section hidden for type=4 (Contact)");
+
+      typeSelect.setValue(1);
+      assertTrue(
+          archiveSelect.getParent().map(p -> p.isVisible()).orElse(false),
+          "archive section re-appears when switching back to type=1 (File)");
     }
   }
 

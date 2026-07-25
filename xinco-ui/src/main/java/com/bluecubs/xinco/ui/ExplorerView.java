@@ -102,6 +102,7 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miCut;
   private com.vaadin.flow.component.contextmenu.MenuItem miPaste;
   private com.vaadin.flow.component.contextmenu.MenuItem miManageAcl;
+  private com.vaadin.flow.component.contextmenu.MenuItem miSendEmail;
 
   // Clipboard: holds a cut node or data item
   private XincoCoreNodeServer clipboardNode;
@@ -218,6 +219,13 @@ public class ExplorerView extends VerticalLayout
     miComment =
         fileSub.addItem(getTranslation("menu.edit.commentdata") + "…", e -> commentSelected());
 
+    // Contact menu
+    var contactMenu = menuBar.addItem(getTranslation("general.data.type.contact"));
+    var contactSub = contactMenu.getSubMenu();
+    miSendEmail =
+        contactSub.addItem(
+            getTranslation("menu.repository.emailcontact"), e -> sendEmailSelected());
+
     // View menu
     menuBar.addItem(
         getTranslation("menu.view"), e -> getUI().ifPresent(ui -> ui.navigate(ViewerView.class)));
@@ -255,6 +263,9 @@ public class ExplorerView extends VerticalLayout
     boolean hasClipboard = clipboardNode != null || clipboardData != null;
     miPaste.setEnabled(loggedIn && hasClipboard && nodeSelected);
     boolean canAdminNode = loggedIn && nodeSelected && hasAdminAccess(selectedNode);
+    boolean isContact = dataSelected && selectedData.getXincoCoreDataType().getId() == 4;
+    miSendEmail.setEnabled(isContact);
+
     boolean canAdminData = loggedIn && dataSelected && hasAdminAccess(selectedData);
     miManageAcl.setEnabled(canAdminNode || canAdminData);
   }
@@ -1933,6 +1944,22 @@ public class ExplorerView extends VerticalLayout
     dialog.add(new VerticalLayout(reasonField));
     dialog.getFooter().add(cancel, confirm);
     dialog.open();
+  }
+
+  void sendEmailSelected() {
+    if (selectedData == null || selectedData.getXincoCoreDataType().getId() != 4) return;
+    String email =
+        selectedData.getXincoAddAttributes().stream()
+            .filter(a -> a.getAttributeId() == 10)
+            .map(a -> a.getAttribVarchar())
+            .filter(s -> s != null && !s.isBlank())
+            .findFirst()
+            .orElse(null);
+    if (email == null) {
+      error(getTranslation("general.email") + " not found.");
+      return;
+    }
+    getUI().ifPresent(ui -> ui.getPage().open("mailto:" + email));
   }
 
   private void archiveSelected() {
