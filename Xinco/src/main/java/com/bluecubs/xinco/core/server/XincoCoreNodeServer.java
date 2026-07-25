@@ -290,7 +290,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
 
   public static Vector findXincoCoreNodes(String attrS, int attrLID, XincoDBManager DBM) {
 
-    Vector nodes = null;
+    Vector nodes = new Vector();
 
     try {
 

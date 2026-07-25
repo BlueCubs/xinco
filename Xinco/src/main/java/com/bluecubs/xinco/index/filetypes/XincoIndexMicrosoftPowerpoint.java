@@ -58,7 +58,9 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
       XincoIndexMicrosoftPowerpointPOIFSReaderListener ximpprl =
           new XincoIndexMicrosoftPowerpointPOIFSReaderListener();
       r.registerListener(ximpprl);
-      r.read(new FileInputStream(f));
+      try (FileInputStream fis = new FileInputStream(f)) {
+        r.read(fis);
+      }
       text = ximpprl.getEventText();
     } catch (Exception e) {
       text = null;
@@ -76,10 +78,8 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
 
     public void processPOIFSReaderEvent(POIFSReaderEvent event) {
       PropertySet ps = null;
-      try {
-        DocumentInputStream dis = null;
-        dis = event.getStream();
-        Reader EventReader = new BufferedReader(new InputStreamReader(dis));
+      try (DocumentInputStream dis = event.getStream();
+          Reader EventReader = new BufferedReader(new InputStreamReader(dis))) {
         int l = 0;
         char ca[] = new char[1024];
         while (true) {
