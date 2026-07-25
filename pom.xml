@@ -249,8 +249,8 @@
                 <include>.gitignore</include>
               </includes>
               <!-- define the steps to apply to those files -->
-              <trimTrailingWhitespace></trimTrailingWhitespace>
-              <endWithNewline></endWithNewline>
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
               <indent>
                 <tabs>true</tabs>
                 <spacesPerTab>4</spacesPerTab>
@@ -260,23 +260,23 @@
           <!-- define a language-specific format -->
           <java>
             <!-- no need to specify files, inferred automatically, but you can if you want -->
-            <cleanthat></cleanthat>
+            <cleanthat/>
             <!-- apply a specific flavor of google-java-format and reflow long strings -->
             <googleJavaFormat>
               <version>1.22.0</version>
               <style>GOOGLE</style>
               <reflowLongStrings>true</reflowLongStrings>
             </googleJavaFormat>
-            <importOrder></importOrder>
-            <removeUnusedImports></removeUnusedImports>
-            <formatAnnotations></formatAnnotations>
+            <importOrder/>
+            <removeUnusedImports/>
+            <formatAnnotations/>
           </java>
           <groovy>
             <!-- These are the defaults, you can override if you want -->
             <includes>
               <include>**/*.groovy</include>
             </includes>
-            <importOrder></importOrder>
+            <importOrder/>
           </groovy>
           <pom>
             <!-- These are the defaults, you can override if you want -->
@@ -288,7 +288,7 @@
               <!-- The encoding of the pom files -->
               <lineSeparator>${line.separator}</lineSeparator>
               <!-- line separator to use -->
-              <expandEmptyElements>true</expandEmptyElements>
+              <expandEmptyElements>false</expandEmptyElements>
               <!-- Should empty elements be expanded-->
               <spaceBeforeCloseEmptyElement>false</spaceBeforeCloseEmptyElement>
               <!-- Should a space be added inside self-closing elements-->
@@ -302,13 +302,13 @@
               <!-- Should schema locations be indented -->
               <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
               <!-- Sort order of elements: https://github.com/Ekryd/sortpom/wiki/PredefinedSortOrderProfiles-->
-              <sortOrderFile></sortOrderFile>
+              <sortOrderFile/>
               <!-- Custom sort order of elements: https://raw.githubusercontent.com/Ekryd/sortpom/master/sorter/src/main/resources/custom_1.xml -->
-              <sortDependencies></sortDependencies>
+              <sortDependencies/>
               <!-- Sort dependencies: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
-              <sortDependencyExclusions></sortDependencyExclusions>
+              <sortDependencyExclusions/>
               <!-- Sort dependency exclusions: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
-              <sortPlugins></sortPlugins>
+              <sortPlugins/>
               <!-- Sort plugins: https://github.com/Ekryd/sortpom/wiki/SortPlugins -->
               <sortProperties>false</sortProperties>
               <!-- Sort properties -->
@@ -334,7 +334,7 @@
               <exclude>.repowise/**</exclude>
               <exclude>target/**</exclude>
             </excludes>
-            <jackson></jackson>
+            <jackson/>
           </json>
         </configuration>
         <executions>
