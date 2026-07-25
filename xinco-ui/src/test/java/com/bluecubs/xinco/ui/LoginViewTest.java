@@ -3,6 +3,7 @@ package com.bluecubs.xinco.ui;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._find;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mockConstruction;
@@ -57,6 +58,21 @@ class LoginViewTest {
     _get(PasswordField.class, spec -> spec.withLabel("Password")).setValue("");
     _click(_get(Button.class, spec -> spec.withText("Login")));
     // Invalid credentials produce a notification, not a crash
+  }
+
+  @Test
+  void loginView_nullExceptionMessage_doesNotShowLoginFailedNull() {
+    // Regression: before fix, a null getMessage() produced "Login failed: null"
+    try (MockedConstruction<XincoCoreUserServer> mc =
+        mockConstruction(
+            XincoCoreUserServer.class,
+            (m, ctx) -> {
+              when(m.getStatusNumber()).thenThrow(new RuntimeException());
+            })) {
+      _get(TextField.class, spec -> spec.withLabel("Username")).setValue("user");
+      _get(PasswordField.class, spec -> spec.withLabel("Password")).setValue("badpass");
+      assertDoesNotThrow(() -> _click(_get(Button.class, spec -> spec.withText("Login"))));
+    }
   }
 
   @Test

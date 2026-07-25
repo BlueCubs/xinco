@@ -8,9 +8,9 @@ import com.vaadin.flow.server.VaadinServiceInitListener;
 import java.lang.reflect.Field;
 import java.util.stream.Stream;
 
-class ViewTestHelper {
+public class ViewTestHelper {
 
-  static void registerI18NProvider() {
+  public static void registerI18NProvider() {
     try {
       VaadinService service = VaadinService.getCurrent();
       Field f = findInstantiatorField(service.getClass());

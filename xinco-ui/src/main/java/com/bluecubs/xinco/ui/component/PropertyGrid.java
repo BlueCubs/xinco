@@ -46,7 +46,8 @@ public class PropertyGrid extends Grid<PropertyGrid.Row> {
     rows.add(new Row("ID", String.valueOf(data.getId())));
     rows.add(new Row("Name", data.getDesignation()));
     rows.add(new Row("Language", data.getXincoCoreLanguage().getSign()));
-    rows.add(new Row("Type", data.getXincoCoreDataType().getDesignation()));
+    String typeKey = data.getXincoCoreDataType().getDesignation();
+    rows.add(new Row("Type", typeKey != null ? getTranslation(typeKey) : ""));
     rows.add(new Row("Status", String.valueOf(data.getStatusNumber())));
 
     List<Object> logs = data.getXincoCoreLogs();

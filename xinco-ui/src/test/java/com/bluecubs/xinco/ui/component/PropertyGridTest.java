@@ -1,6 +1,8 @@
 package com.bluecubs.xinco.ui.component;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -9,9 +11,11 @@ import com.bluecubs.xinco.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.server.service.XincoCoreLanguage;
 import com.bluecubs.xinco.server.service.XincoCoreLog;
 import com.bluecubs.xinco.server.service.XincoVersion;
+import com.bluecubs.xinco.ui.ViewTestHelper;
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +33,7 @@ class PropertyGridTest {
   @BeforeEach
   void setup() {
     MockVaadin.setup(routes);
+    ViewTestHelper.registerI18NProvider();
   }
 
   @AfterEach
@@ -88,6 +93,25 @@ class PropertyGridTest {
 
     grid.setData(mockData);
     assertNotNull(grid);
+  }
+
+  @Test
+  void propertyGrid_setData_typeDesignation_isTranslated_notRawKey() {
+    // Regression: before fix, Type row showed raw i18n key (e.g. "general.data.type.file")
+    PropertyGrid grid = new PropertyGrid();
+    XincoCoreDataServer mockData = mockBaseData();
+    String i18nKey = "general.data.type.file";
+    XincoCoreDataType translatedType = mock(XincoCoreDataType.class);
+    when(translatedType.getDesignation()).thenReturn(i18nKey);
+    when(mockData.getXincoCoreDataType()).thenReturn(translatedType);
+    when(mockData.getXincoCoreLogs()).thenReturn(null);
+
+    grid.setData(mockData);
+
+    Optional<PropertyGrid.Row> typeRow =
+        grid.getListDataView().getItems().filter(r -> "Type".equals(r.property())).findFirst();
+    assertTrue(typeRow.isPresent(), "Type row should be present");
+    assertNotEquals(i18nKey, typeRow.get().value(), "Type must show translated text, not raw key");
   }
 
   private XincoCoreDataServer mockBaseData() {

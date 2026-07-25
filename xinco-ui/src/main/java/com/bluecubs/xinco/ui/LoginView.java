@@ -73,7 +73,9 @@ public class LoginView extends VerticalLayout {
                   "Account locked or password expired. Status: " + user.getStatusNumber());
             }
           } catch (Throwable ex) {
-            Notification.show("Login failed: " + ex.getMessage());
+            String msg =
+                ex.getMessage() != null ? ex.getMessage() : "Invalid username or password.";
+            Notification.show("Login failed: " + msg);
           }
         });
 
