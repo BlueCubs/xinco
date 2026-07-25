@@ -91,6 +91,22 @@ public class XincoCoreData implements Serializable {
   @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
   private String designation;
 
+  /**
+   * Status in the database (values 1–5).
+   *
+   * <p>Mapping (never use enum ordinals directly):
+   *
+   * <ul>
+   *   <li>1 = OPEN
+   *   <li>2 = LOCKED
+   *   <li>3 = ARCHIVED
+   *   <li>4 = CHECKED_OUT
+   *   <li>5 = PUBLISHED
+   * </ul>
+   *
+   * @see com.bluecubs.xinco.core.XincoDataStatus#toDbValue()
+   * @see com.bluecubs.xinco.core.XincoDataStatus#fromDbValue(int)
+   */
   @Basic(optional = false)
   @NotNull @Column(name = "status_number")
   private int statusNumber;

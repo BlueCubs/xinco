@@ -27,6 +27,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
@@ -37,10 +38,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -94,16 +97,19 @@ public class ExplorerView extends VerticalLayout
   private com.vaadin.flow.component.contextmenu.MenuItem miPublish;
   private com.vaadin.flow.component.contextmenu.MenuItem miArchive;
   private com.vaadin.flow.component.contextmenu.MenuItem miVersionHistory;
+  private com.vaadin.flow.component.contextmenu.MenuItem miComment;
+  private com.vaadin.flow.component.contextmenu.MenuItem miRename;
   private com.vaadin.flow.component.contextmenu.MenuItem miCut;
   private com.vaadin.flow.component.contextmenu.MenuItem miPaste;
   private com.vaadin.flow.component.contextmenu.MenuItem miManageAcl;
+  private com.vaadin.flow.component.contextmenu.MenuItem miSendEmail;
 
   // Clipboard: holds a cut node or data item
   private XincoCoreNodeServer clipboardNode;
   private XincoCoreDataServer clipboardData;
 
   // UI components
-  private final TreeGrid<XincoCoreNodeServer> nodeTree = new TreeGrid<>();
+  private final TreeGrid<Object> nodeTree = new TreeGrid<>();
   private final Grid<XincoCoreDataServer> dataGrid = new Grid<>(XincoCoreDataServer.class, false);
   private final PropertyGrid propertyGrid = new PropertyGrid();
   private final MenuBar menuBar = new MenuBar();
@@ -183,6 +189,7 @@ public class ExplorerView extends VerticalLayout
     var editMenu = menuBar.addItem(getTranslation("general.edit"));
     var editSub = editMenu.getSubMenu();
     miDelete = editSub.addItem(getTranslation("general.delete"), e -> confirmDelete());
+    miRename = editSub.addItem(getTranslation("general.rename") + "…", e -> openRenameDialog());
     editSub.addSeparator();
     miCut =
         editSub.addItem(getTranslation("menu.edit.movefolderdatatoclipboard"), e -> cutSelected());
@@ -209,6 +216,15 @@ public class ExplorerView extends VerticalLayout
     fileSub.addSeparator();
     miVersionHistory =
         fileSub.addItem(getTranslation("window.revision") + "…", e -> openVersionHistoryDialog());
+    miComment =
+        fileSub.addItem(getTranslation("menu.edit.commentdata") + "…", e -> commentSelected());
+
+    // Contact menu
+    var contactMenu = menuBar.addItem(getTranslation("general.data.type.contact"));
+    var contactSub = contactMenu.getSubMenu();
+    miSendEmail =
+        contactSub.addItem(
+            getTranslation("menu.repository.emailcontact"), e -> sendEmailSelected());
 
     // View menu
     menuBar.addItem(
@@ -227,12 +243,13 @@ public class ExplorerView extends VerticalLayout
     boolean canWriteData = loggedIn && dataSelected && hasWriteAccess(selectedData);
 
     int dataStatus = dataSelected ? selectedData.getStatusNumber() : -1;
-    // statusNumber: 1=active, 2=locked, 4=checked-out, 5=published
+    // statusNumber DB values: 1=OPEN, 2=LOCKED, 3=ARCHIVED, 4=CHECKED_OUT, 5=PUBLISHED
     boolean isCheckedOut = dataStatus == 4;
 
     miNewFolder.setEnabled(canWriteNode);
     miAddData.setEnabled(canWriteNode);
     miDelete.setEnabled(canWriteNode || canWriteData);
+    miRename.setEnabled(canWriteNode || canWriteData);
     miDownload.setEnabled(dataSelected && isFile);
     miCheckOut.setEnabled(canWriteData && isFile && dataStatus == 1);
     miCheckIn.setEnabled(canWriteData && isFile && isCheckedOut);
@@ -241,10 +258,14 @@ public class ExplorerView extends VerticalLayout
     miPublish.setEnabled(canWriteData && dataStatus == 1);
     miArchive.setEnabled(canWriteData && isFile && dataStatus != 3 && dataStatus != 4);
     miVersionHistory.setEnabled(dataSelected && isFile);
+    miComment.setEnabled(canWriteData);
     miCut.setEnabled(loggedIn && (nodeSelected || dataSelected));
     boolean hasClipboard = clipboardNode != null || clipboardData != null;
     miPaste.setEnabled(loggedIn && hasClipboard && nodeSelected);
     boolean canAdminNode = loggedIn && nodeSelected && hasAdminAccess(selectedNode);
+    boolean isContact = dataSelected && selectedData.getXincoCoreDataType().getId() == 4;
+    miSendEmail.setEnabled(isContact);
+
     boolean canAdminData = loggedIn && dataSelected && hasAdminAccess(selectedData);
     miManageAcl.setEnabled(canAdminNode || canAdminData);
   }
@@ -295,25 +316,164 @@ public class ExplorerView extends VerticalLayout
 
   private void buildNodeTree() {
     nodeTree
-        .addHierarchyColumn(XincoCoreNodeServer::getDesignation)
+        .addHierarchyColumn(this::itemDesignation)
+        .setRenderer(new ComponentRenderer<>(this::buildTreeCell))
         .setHeader(getTranslation("general.folder"));
     nodeTree.setSizeFull();
     nodeTree.addSelectionListener(
         e ->
             e.getFirstSelectedItem()
                 .ifPresent(
-                    node -> {
-                      selectedNode = node;
-                      selectedData = null;
-                      node.fillXincoCoreData();
-                      dataGrid.setItems(
-                          node.getXincoCoreData().stream()
-                              .filter(o -> o instanceof XincoCoreDataServer)
-                              .map(o -> (XincoCoreDataServer) o)
-                              .toList());
-                      propertyGrid.setNode(node);
+                    item -> {
+                      if (item instanceof XincoCoreNodeServer node) {
+                        selectedNode = node;
+                        selectedData = null;
+                        node.fillXincoCoreData();
+                        dataGrid.setItems(
+                            node.getXincoCoreData().stream()
+                                .filter(o -> o instanceof XincoCoreDataServer)
+                                .map(o -> (XincoCoreDataServer) o)
+                                .toList());
+                        propertyGrid.setNode(node);
+                      } else if (item instanceof XincoCoreDataServer data) {
+                        selectedData = data;
+                        data.loadAddAttributes();
+                        propertyGrid.setData(data);
+                      }
                       updateMenuState();
                     }));
+    nodeTree.addItemDoubleClickListener(
+        e -> {
+          if (e.getItem() instanceof XincoCoreDataServer data) {
+            selectedData = data;
+            data.loadAddAttributes();
+            openDataItem(data);
+          }
+        });
+  }
+
+  private void openDataItem(XincoCoreDataServer data) {
+    int typeId = data.getXincoCoreDataType() != null ? data.getXincoCoreDataType().getId() : 1;
+    switch (typeId) {
+      case 2 -> openTextDialog(data);
+      case 3 -> openUrlInTab(data);
+      case 4 -> openContactDialog(data);
+      default -> downloadSelected();
+    }
+  }
+
+  private void openUrlInTab(XincoCoreDataServer data) {
+    String url =
+        data.getXincoAddAttributes().stream()
+            .filter(a -> a.getAttributeId() == 1 && a.getAttribVarchar() != null)
+            .map(a -> a.getAttribVarchar().trim())
+            .filter(s -> !s.isEmpty())
+            .findFirst()
+            .orElse(null);
+    if (url == null) {
+      error("No URL defined for this item.");
+      return;
+    }
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+    UI.getCurrent().getPage().open(url, "_blank");
+  }
+
+  private void openTextDialog(XincoCoreDataServer data) {
+    String text =
+        data.getXincoAddAttributes().stream()
+            .filter(a -> a.getAttributeId() == 1)
+            .map(a -> a.getAttribText() != null ? a.getAttribText() : a.getAttribVarchar())
+            .filter(s -> s != null)
+            .findFirst()
+            .orElse("");
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(data.getDesignation());
+    TextArea ta = new TextArea();
+    ta.setValue(text);
+    ta.setReadOnly(true);
+    ta.setWidthFull();
+    ta.setMinHeight("300px");
+    dialog.add(ta);
+    dialog.setWidth("600px");
+    dialog.getFooter().add(new Button(getTranslation("general.cancel"), e -> dialog.close()));
+    dialog.open();
+  }
+
+  private void openContactDialog(XincoCoreDataServer data) {
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(data.getDesignation());
+    FormLayout form = new FormLayout();
+    form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 2));
+    String[] labels = {
+      "Salutation", "Name", "Middle Name", "Last Name", "Affix",
+      "Phone (Business)", "Phone (Private)", "Mobile", "Fax", "Email",
+      "Website", "Address", "Postal Code", "City", "State/Province",
+      "Country", "Company", "Position"
+    };
+    data.getXincoAddAttributes().stream()
+        .filter(a -> a.getAttributeId() >= 1 && a.getAttributeId() <= 19)
+        .forEach(
+            a -> {
+              String value = a.getAttribText() != null ? a.getAttribText() : a.getAttribVarchar();
+              if (value == null || value.isBlank()) return;
+              int idx = a.getAttributeId() - 1;
+              String label = idx < labels.length ? labels[idx] : "Notes";
+              TextField tf = new TextField(label);
+              tf.setValue(value);
+              tf.setReadOnly(true);
+              tf.setWidthFull();
+              if (a.getAttributeId() == 19) {
+                form.setColspan(tf, 2);
+              }
+              form.add(tf);
+            });
+    dialog.add(form);
+    dialog.setWidth("640px");
+    dialog.getFooter().add(new Button(getTranslation("general.cancel"), e -> dialog.close()));
+    dialog.open();
+  }
+
+  private String itemDesignation(Object item) {
+    if (item instanceof XincoCoreNodeServer n) return n.getDesignation();
+    if (item instanceof XincoCoreDataServer d) return d.getDesignation();
+    return "";
+  }
+
+  private HorizontalLayout buildTreeCell(Object item) {
+    Icon icon;
+    String label;
+    if (item instanceof XincoCoreNodeServer node) {
+      icon = VaadinIcon.FOLDER.create();
+      icon.getStyle().set("color", "var(--lumo-primary-color)");
+      label = node.getDesignation();
+    } else if (item instanceof XincoCoreDataServer data) {
+      icon = dataTypeIcon(data);
+      label = data.getDesignation();
+    } else {
+      return new HorizontalLayout(new Span("?"));
+    }
+    icon.setSize("1em");
+    HorizontalLayout row = new HorizontalLayout(icon, new Span(label));
+    row.setAlignItems(FlexComponent.Alignment.CENTER);
+    row.getStyle().set("gap", "var(--lumo-space-xs)");
+    row.setSpacing(false);
+    return row;
+  }
+
+  private Icon dataTypeIcon(XincoCoreDataServer data) {
+    int typeId = data.getXincoCoreDataType() != null ? data.getXincoCoreDataType().getId() : 1;
+    if (typeId == 2) return VaadinIcon.GLOBE.create();
+    if (typeId == 3) return VaadinIcon.FILE_TEXT.create();
+    if (typeId == 4) return VaadinIcon.USER.create();
+    String name = data.getDesignation().toLowerCase();
+    if (name.matches(".*\\.(png|jpg|jpeg|gif|bmp|webp|svg)")) return VaadinIcon.PICTURE.create();
+    if (name.matches(".*\\.(mp3|wav|ogg|flac|m4a|aac)")) return VaadinIcon.MUSIC.create();
+    if (name.matches(".*\\.(mp4|avi|mov|mkv|webm|wmv)")) return VaadinIcon.FILM.create();
+    if (name.matches(".*\\.(zip|tar|gz|7z|rar|bz2)")) return VaadinIcon.ARCHIVE.create();
+    if (name.matches(".*\\.pdf")) return VaadinIcon.FILE_TEXT.create();
+    return VaadinIcon.FILE_O.create();
   }
 
   // ── Data Grid ─────────────────────────────────────────────────────────────
@@ -342,13 +502,11 @@ public class ExplorerView extends VerticalLayout
                         navigateToNode(data.getXincoCoreNodeId(), data);
                       }
                     }));
-    // Double-click to download
     dataGrid.addItemDoubleClickListener(
         e -> {
           selectedData = e.getItem();
-          if (selectedData.getXincoCoreDataType().getId() == 1) {
-            downloadSelected();
-          }
+          selectedData.loadAddAttributes();
+          openDataItem(selectedData);
         });
   }
 
@@ -400,7 +558,7 @@ public class ExplorerView extends VerticalLayout
     try {
       XincoCoreNodeServer root = new XincoCoreNodeServer(1);
       root.fillXincoCoreNodes();
-      List<XincoCoreNodeServer> roots = new ArrayList<>();
+      List<Object> roots = new ArrayList<>();
       roots.add(root);
       nodeTree.setItems(roots, this::getChildNodes);
     } catch (Throwable e) {
@@ -408,12 +566,10 @@ public class ExplorerView extends VerticalLayout
     }
   }
 
-  private List<XincoCoreNodeServer> getChildNodes(XincoCoreNodeServer parent) {
+  private List<Object> getChildNodes(Object item) {
+    if (!(item instanceof XincoCoreNodeServer parent)) return List.of();
     parent.fillXincoCoreNodes();
-    return parent.getXincoCoreNodes().stream()
-        .filter(o -> o instanceof XincoCoreNodeServer)
-        .map(o -> (XincoCoreNodeServer) o)
-        .toList();
+    return new ArrayList<>(parent.getXincoCoreNodes());
   }
 
   private void navigateToNode(int targetNodeId, XincoCoreDataServer dataToReselect) {
@@ -434,12 +590,12 @@ public class ExplorerView extends VerticalLayout
     try {
       XincoCoreNodeServer root = new XincoCoreNodeServer(1);
       root.fillXincoCoreNodes();
-      nodeTree.setItems(List.of(root), this::getChildNodes);
+      nodeTree.setItems(new ArrayList<>(List.<Object>of(root)), this::getChildNodes);
 
       // Walk path: after expanding a node, getChildNodes populates its getXincoCoreNodes()
       XincoCoreNodeServer current = root;
       for (int stepId : path) {
-        nodeTree.expand(List.of(current));
+        nodeTree.expand(List.<Object>of(current));
         XincoCoreNodeServer child =
             current.getXincoCoreNodes().stream()
                 .filter(o -> o instanceof XincoCoreNodeServer)
@@ -663,7 +819,7 @@ public class ExplorerView extends VerticalLayout
             });
     Anchor anchor = new Anchor(resource, "");
     anchor.getElement().setAttribute("download", true);
-    anchor.setVisible(false);
+    anchor.getStyle().set("position", "fixed").set("top", "-9999px").set("left", "-9999px");
     add(anchor);
     anchor.getElement().callJsFunction("click");
     UI.getCurrent().getPage().executeJs("setTimeout(() => $0.remove(), 5000)", anchor.getElement());
@@ -757,10 +913,6 @@ public class ExplorerView extends VerticalLayout
     if (selectedData == null) return;
     try {
       String path = XincoCoreDataServer.getLastMajorVersionDataPath(selectedData.getId());
-      if (path == null) {
-        error("No file version found in repository.");
-        return;
-      }
       File file = new File(path);
       if (!file.exists()) {
         error("File not found on disk: " + path);
@@ -778,13 +930,11 @@ public class ExplorerView extends VerticalLayout
                   return null;
                 }
               });
-      // Add a hidden anchor and programmatically click it to trigger download
       Anchor anchor = new Anchor(resource, "");
       anchor.getElement().setAttribute("download", true);
-      anchor.setVisible(false);
+      anchor.getStyle().set("position", "fixed").set("top", "-9999px").set("left", "-9999px");
       add(anchor);
       anchor.getElement().callJsFunction("click");
-      // Clean up anchor after a short delay so it doesn't accumulate
       UI.getCurrent()
           .getPage()
           .executeJs("setTimeout(() => $0.remove(), 5000)", anchor.getElement());
@@ -904,21 +1054,70 @@ public class ExplorerView extends VerticalLayout
     typeFields.setPadding(false);
     typeFields.setSpacing(false);
 
+    // ── Archive model section (type 1 / file only) ───────────────────────────
+    Select<Integer> archiveModelSelect = new Select<>();
+    archiveModelSelect.setLabel(getTranslation("general.archive.model"));
+    archiveModelSelect.setItems(0, 1, 2);
+    archiveModelSelect.setItemLabelGenerator(
+        m ->
+            switch (m) {
+              case 1 -> getTranslation("general.archive.date");
+              case 2 -> getTranslation("general.archive.days");
+              default -> getTranslation("window.archive.archivingmodel.none");
+            });
+    archiveModelSelect.setValue(0);
+    archiveModelSelect.setWidthFull();
+
+    DatePicker archiveDatePicker = new DatePicker(getTranslation("general.archive.date"));
+    archiveDatePicker.setValue(LocalDate.now().plusDays(30));
+    archiveDatePicker.setEnabled(false);
+    archiveDatePicker.setWidthFull();
+
+    IntegerField archiveDaysField = new IntegerField(getTranslation("general.archive.days"));
+    archiveDaysField.setValue(30);
+    archiveDaysField.setMin(1);
+    archiveDaysField.setEnabled(false);
+    archiveDaysField.setWidthFull();
+
+    archiveModelSelect.addValueChangeListener(
+        ev -> {
+          archiveDatePicker.setEnabled(ev.getValue() == 1);
+          archiveDaysField.setEnabled(ev.getValue() == 2);
+        });
+
+    VerticalLayout archiveSection =
+        new VerticalLayout(archiveModelSelect, archiveDatePicker, archiveDaysField);
+    archiveSection.setPadding(false);
+    archiveSection.setSpacing(false);
+
     typeSelect.addValueChangeListener(
         e -> {
           typeFields.removeAll();
           switch (e.getValue()) {
-            case 1 -> typeFields.add(upload);
-            case 2 -> typeFields.add(textContent);
-            case 3 -> typeFields.add(urlField);
-            case 4 -> typeFields.add(contactScroll);
+            case 1 -> {
+              typeFields.add(upload);
+              archiveSection.setVisible(true);
+            }
+            case 2 -> {
+              typeFields.add(textContent);
+              archiveSection.setVisible(false);
+            }
+            case 3 -> {
+              typeFields.add(urlField);
+              archiveSection.setVisible(false);
+            }
+            case 4 -> {
+              typeFields.add(contactScroll);
+              archiveSection.setVisible(false);
+            }
           }
         });
 
     Dialog dialog = new Dialog();
     dialog.setHeaderTitle(getTranslation("menu.repository.adddata"));
     dialog.setWidth("480px");
-    dialog.add(new VerticalLayout(typeSelect, designationField, langSelect, typeFields));
+    dialog.add(
+        new VerticalLayout(typeSelect, designationField, langSelect, typeFields, archiveSection));
 
     final List<XincoCoreLanguageServer> finalLanguages = languages;
     Button addBtn =
@@ -931,7 +1130,15 @@ public class ExplorerView extends VerticalLayout
                       ? langSelect.getValue()
                       : null;
               if (type == 1) {
-                doAddData(designationField, buffer, lang, dialog);
+                int archiveModel =
+                    archiveModelSelect.getValue() != null ? archiveModelSelect.getValue() : 0;
+                LocalDate archDate =
+                    archiveDatePicker.getValue() != null
+                        ? archiveDatePicker.getValue()
+                        : LocalDate.now().plusDays(30);
+                int archDays =
+                    archiveDaysField.getValue() != null ? archiveDaysField.getValue() : 30;
+                doAddData(designationField, buffer, lang, archiveModel, archDate, archDays, dialog);
               } else if (type == 4) {
                 Map<Integer, String> attrs = new LinkedHashMap<>();
                 attrs.put(1, cSalutation.getValue());
@@ -1080,6 +1287,9 @@ public class ExplorerView extends VerticalLayout
       TextField designationField,
       MemoryBuffer buffer,
       XincoCoreLanguageServer lang,
+      int archiveModel,
+      LocalDate archiveDate,
+      int archiveDays,
       Dialog dialog) {
     String name = designationField.getValue().trim();
     if (name.isEmpty()) {
@@ -1137,7 +1347,31 @@ public class ExplorerView extends VerticalLayout
       new XincoAddAttributeServer(dataId, 2, 0, filesize, 0.0, "", "", now).write2DB();
       new XincoAddAttributeServer(dataId, 3, 0, 0L, 0.0, "", "", now).write2DB();
       new XincoAddAttributeServer(dataId, 4, 0, 1L, 0.0, "", "", now).write2DB();
-      for (int i = 5; i <= 12; i++) {
+      new XincoAddAttributeServer(dataId, 5, 0, (long) archiveModel, 0.0, "", "", now).write2DB();
+      if (archiveModel == 1) {
+        LocalDate ld = archiveDate != null ? archiveDate : LocalDate.now().plusDays(30);
+        GregorianCalendar gc =
+            new GregorianCalendar(ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
+        new XincoAddAttributeServer(
+                dataId,
+                6,
+                0,
+                0L,
+                0.0,
+                "",
+                "",
+                DatatypeFactory.newInstance().newXMLGregorianCalendar(gc))
+            .write2DB();
+      } else {
+        new XincoAddAttributeServer(dataId, 6, 0, 0L, 0.0, "", "", now).write2DB();
+      }
+      if (archiveModel == 2) {
+        int days = archiveDays > 0 ? archiveDays : 30;
+        new XincoAddAttributeServer(dataId, 7, 0, (long) days, 0.0, "", "", now).write2DB();
+      } else {
+        new XincoAddAttributeServer(dataId, 7, 0, 0L, 0.0, "", "", now).write2DB();
+      }
+      for (int i = 8; i <= 12; i++) {
         new XincoAddAttributeServer(dataId, i, 0, 0L, 0.0, "", "", now).write2DB();
       }
 
@@ -1148,6 +1382,8 @@ public class ExplorerView extends VerticalLayout
               .filter(o -> o instanceof XincoCoreDataServer)
               .map(o -> (XincoCoreDataServer) o)
               .toList());
+      nodeTree.collapse(List.<Object>of(selectedNode));
+      nodeTree.expand(List.<Object>of(selectedNode));
       Notification.show(getTranslation("datawizard.fileuploadsuccess"))
           .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     } catch (Exception ex) {
@@ -1192,6 +1428,53 @@ public class ExplorerView extends VerticalLayout
     } catch (XincoException ex) {
       LOG.log(Level.SEVERE, "Create folder failed", ex);
       error("Could not create folder: " + ex.getMessage());
+    }
+  }
+
+  void openRenameDialog() {
+    if (selectedNode == null && selectedData == null) return;
+    String current =
+        selectedData != null ? selectedData.getDesignation() : selectedNode.getDesignation();
+    Dialog dialog = new Dialog();
+    dialog.setHeaderTitle(getTranslation("general.rename"));
+    TextField nameField = new TextField(getTranslation("general.designation"));
+    nameField.setValue(current);
+    nameField.setWidthFull();
+    nameField.setAutofocus(true);
+    dialog.add(nameField);
+    dialog
+        .getFooter()
+        .add(
+            new Button(getTranslation("general.cancel"), e -> dialog.close()),
+            new Button(getTranslation("general.save"), e -> doRename(nameField, dialog)));
+    dialog.open();
+  }
+
+  void doRename(TextField nameField, Dialog dialog) {
+    String name = nameField.getValue().trim();
+    if (name.isEmpty()) {
+      nameField.setInvalid(true);
+      return;
+    }
+    try {
+      if (selectedData != null) {
+        selectedData.setDesignation(name);
+        selectedData.write2DB();
+        nodeTree.getDataProvider().refreshItem(selectedData);
+        dataGrid.getDataProvider().refreshItem(selectedData);
+        propertyGrid.setData(selectedData);
+      } else {
+        selectedNode.setDesignation(name);
+        selectedNode.write2DB();
+        nodeTree.getDataProvider().refreshItem(selectedNode);
+        propertyGrid.setNode(selectedNode);
+      }
+      dialog.close();
+      Notification.show(getTranslation("window.folder.updatesuccess"))
+          .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    } catch (Exception ex) {
+      LOG.log(Level.SEVERE, "Rename failed", ex);
+      error("Rename failed: " + ex.getMessage());
     }
   }
 
@@ -1293,6 +1576,47 @@ public class ExplorerView extends VerticalLayout
           } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Checkout failed", ex);
             error("Checkout failed: " + ex.getMessage());
+          }
+        });
+  }
+
+  void commentSelected() {
+    if (selectedData == null) return;
+    showReasonDialog(
+        getTranslation("menu.edit.commentdata"),
+        getTranslation("general.save"),
+        reason -> {
+          try {
+            XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
+            XincoCoreLogServer lastLog =
+                data.getXincoCoreLogs().isEmpty()
+                    ? null
+                    : (XincoCoreLogServer)
+                        data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1);
+            int vh = lastLog != null ? lastLog.getVersion().getVersionHigh() : 1;
+            int vm = lastLog != null ? lastLog.getVersion().getVersionMid() : 0;
+            int vl = lastLog != null ? lastLog.getVersion().getVersionLow() : 0;
+            String vp =
+                lastLog != null && lastLog.getVersion().getVersionPostfix() != null
+                    ? lastLog.getVersion().getVersionPostfix()
+                    : "";
+            new XincoCoreLogServerBuilder()
+                .setXincoCoreDataId(data.getId())
+                .setXincoCoreUserId(session.getUser().getId())
+                .setOpCode(OPCode.COMMENT.ordinal() + 1)
+                .setOperationDescription(reason)
+                .setVersionHigh(vh)
+                .setVersionMid(vm)
+                .setVersionLow(vl + 1)
+                .setVersionPostFix(vp)
+                .createXincoCoreLogServer()
+                .write2DB();
+            refreshDataGrid();
+            Notification.show(getTranslation("general.save") + " OK")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+          } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Comment failed", ex);
+            error("Comment failed: " + ex.getMessage());
           }
         });
   }
@@ -1620,6 +1944,22 @@ public class ExplorerView extends VerticalLayout
     dialog.add(new VerticalLayout(reasonField));
     dialog.getFooter().add(cancel, confirm);
     dialog.open();
+  }
+
+  void sendEmailSelected() {
+    if (selectedData == null || selectedData.getXincoCoreDataType().getId() != 4) return;
+    String email =
+        selectedData.getXincoAddAttributes().stream()
+            .filter(a -> a.getAttributeId() == 10)
+            .map(a -> a.getAttribVarchar())
+            .filter(s -> s != null && !s.isBlank())
+            .findFirst()
+            .orElse(null);
+    if (email == null) {
+      error(getTranslation("general.email") + " not found.");
+      return;
+    }
+    getUI().ifPresent(ui -> ui.getPage().open("mailto:" + email));
   }
 
   private void archiveSelected() {

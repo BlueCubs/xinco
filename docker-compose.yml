@@ -14,6 +14,8 @@ services:
       db:
         condition: service_healthy
     restart: on-failure
+    volumes:
+      - xinco_files:/tmp/xinco/file_repository
     networks:
       - xinco-net
 
@@ -41,3 +43,4 @@ networks:
 
 volumes:
   db_data:
+  xinco_files:

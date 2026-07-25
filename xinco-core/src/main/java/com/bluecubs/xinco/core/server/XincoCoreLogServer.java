@@ -215,7 +215,8 @@ public final class XincoCoreLogServer extends XincoCoreLog {
         coreLog.add(new XincoCoreLogServer(xcl));
       }
     } catch (Exception e) {
-      getLogger(XincoCoreLogServer.class.getSimpleName());
+      getLogger(XincoCoreLogServer.class.getSimpleName())
+          .log(SEVERE, "Failed to load logs for data id " + attrID, e);
       coreLog.clear();
     }
     return coreLog;
