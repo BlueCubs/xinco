@@ -50,3 +50,17 @@ XincoExplorer/src/main/resources/installer/blueCubsIcon.ico
 /XincoExplorer/signed/
 
 /XincoWebApp/.blueCubsKeystore
+
+.beads/
+
+.repowise/
+
+xinco-core/target/
+
+xinco-ui/target/
+
+xinco-ui/src/main/frontend/generated/
+
+xinco-ui/src/main/frontend/index.html
+
+*.iml
