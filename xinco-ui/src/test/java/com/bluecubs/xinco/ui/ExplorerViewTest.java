@@ -1407,7 +1407,8 @@ class ExplorerViewTest {
     TextField designField = new TextField();
     designField.setValue("");
     Dialog dialog = new Dialog();
-    view.doAddData(designField, new MemoryBuffer(), mock(XincoCoreLanguageServer.class), dialog);
+    view.doAddData(
+        designField, new MemoryBuffer(), mock(XincoCoreLanguageServer.class), 0, null, 30, dialog);
     assertTrue(designField.isInvalid(), "empty name should mark field invalid");
   }
 
@@ -1421,7 +1422,14 @@ class ExplorerViewTest {
     Dialog dialog = new Dialog();
     assertDoesNotThrow(
         () ->
-            view.doAddData(designField, emptyBuffer, mock(XincoCoreLanguageServer.class), dialog));
+            view.doAddData(
+                designField,
+                emptyBuffer,
+                mock(XincoCoreLanguageServer.class),
+                0,
+                null,
+                30,
+                dialog));
   }
 
   @Test
@@ -1433,7 +1441,7 @@ class ExplorerViewTest {
     MemoryBuffer buffer = mock(MemoryBuffer.class);
     when(buffer.getFileName()).thenReturn("file.txt");
     Dialog dialog = new Dialog();
-    assertDoesNotThrow(() -> view.doAddData(designField, buffer, null, dialog));
+    assertDoesNotThrow(() -> view.doAddData(designField, buffer, null, 0, null, 30, dialog));
   }
 
   @Test
@@ -1461,7 +1469,7 @@ class ExplorerViewTest {
       msData
           .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
           .thenThrow(new RuntimeException("path error"));
-      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, dialog));
+      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, 0, null, 30, dialog));
     }
     assertTrue(dialog.isOpened(), "dialog stays open on error");
   }
@@ -2068,8 +2076,118 @@ class ExplorerViewTest {
           .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
           .thenAnswer(inv -> cnt[0]++ == 0 ? repo.toString() : base.toString());
 
-      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, dialog));
+      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, 0, null, 30, dialog));
       assertFalse(dialog.isOpened(), "dialog should close on success");
+    } finally {
+      Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+    }
+  }
+
+  @Test
+  void doAddData_archiveModel1_writesFixedDate() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    TextField designField = new TextField();
+    designField.setValue("ArchiveFile.txt");
+    Dialog dialog = new Dialog();
+    dialog.open();
+
+    MemoryBuffer buffer = mock(MemoryBuffer.class);
+    when(buffer.getFileName()).thenReturn("upload.txt");
+    when(buffer.getInputStream()).thenReturn(new ByteArrayInputStream("content".getBytes()));
+
+    XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+    when(mockLang.getId()).thenReturn(1);
+
+    Path tempDir = Files.createTempDirectory("xinco-archive1-adddata");
+    try (MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class, (m, ctx) -> when(m.write2DB()).thenReturn(1))) {
+      Path repo = tempDir.resolve("1-1.bin");
+      Path base = tempDir.resolve("1.bin");
+      int[] cnt = {0};
+      msData
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenAnswer(inv -> cnt[0]++ == 0 ? repo.toString() : base.toString());
+
+      java.time.LocalDate fixedDate = java.time.LocalDate.now().plusDays(14);
+      assertDoesNotThrow(
+          () -> view.doAddData(designField, buffer, mockLang, 1, fixedDate, 30, dialog));
+      assertFalse(dialog.isOpened(), "dialog should close on success with model=1");
+    } finally {
+      Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+    }
+  }
+
+  @Test
+  void doAddData_archiveModel2_writesDays() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
+    when(mockNode.getId()).thenReturn(1);
+    when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
+    setField(view, "selectedNode", mockNode);
+
+    TextField designField = new TextField();
+    designField.setValue("DaysFile.txt");
+    Dialog dialog = new Dialog();
+    dialog.open();
+
+    MemoryBuffer buffer = mock(MemoryBuffer.class);
+    when(buffer.getFileName()).thenReturn("upload.txt");
+    when(buffer.getInputStream()).thenReturn(new ByteArrayInputStream("content".getBytes()));
+
+    XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
+    when(mockLang.getId()).thenReturn(1);
+
+    Path tempDir = Files.createTempDirectory("xinco-archive2-adddata");
+    try (MockedStatic<XincoCoreDataServer> msData = mockStatic(XincoCoreDataServer.class);
+        MockedConstruction<XincoCoreDataServer> mcData =
+            mockConstruction(
+                XincoCoreDataServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoCoreLogServer> mcLog =
+            mockConstruction(
+                XincoCoreLogServer.class,
+                (m, ctx) -> {
+                  when(m.getId()).thenReturn(1);
+                  when(m.write2DB()).thenReturn(1);
+                });
+        MockedConstruction<XincoAddAttributeServer> mcAttr =
+            mockConstruction(
+                XincoAddAttributeServer.class, (m, ctx) -> when(m.write2DB()).thenReturn(1))) {
+      Path repo = tempDir.resolve("1-1.bin");
+      Path base = tempDir.resolve("1.bin");
+      int[] cnt = {0};
+      msData
+          .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
+          .thenAnswer(inv -> cnt[0]++ == 0 ? repo.toString() : base.toString());
+
+      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, 2, null, 7, dialog));
+      assertFalse(dialog.isOpened(), "dialog should close on success with model=2");
     } finally {
       Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
     }

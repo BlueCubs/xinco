@@ -1043,21 +1043,70 @@ public class ExplorerView extends VerticalLayout
     typeFields.setPadding(false);
     typeFields.setSpacing(false);
 
+    // ── Archive model section (type 1 / file only) ───────────────────────────
+    Select<Integer> archiveModelSelect = new Select<>();
+    archiveModelSelect.setLabel(getTranslation("general.archive.model"));
+    archiveModelSelect.setItems(0, 1, 2);
+    archiveModelSelect.setItemLabelGenerator(
+        m ->
+            switch (m) {
+              case 1 -> getTranslation("general.archive.date");
+              case 2 -> getTranslation("general.archive.days");
+              default -> getTranslation("window.archive.archivingmodel.none");
+            });
+    archiveModelSelect.setValue(0);
+    archiveModelSelect.setWidthFull();
+
+    DatePicker archiveDatePicker = new DatePicker(getTranslation("general.archive.date"));
+    archiveDatePicker.setValue(LocalDate.now().plusDays(30));
+    archiveDatePicker.setEnabled(false);
+    archiveDatePicker.setWidthFull();
+
+    IntegerField archiveDaysField = new IntegerField(getTranslation("general.archive.days"));
+    archiveDaysField.setValue(30);
+    archiveDaysField.setMin(1);
+    archiveDaysField.setEnabled(false);
+    archiveDaysField.setWidthFull();
+
+    archiveModelSelect.addValueChangeListener(
+        ev -> {
+          archiveDatePicker.setEnabled(ev.getValue() == 1);
+          archiveDaysField.setEnabled(ev.getValue() == 2);
+        });
+
+    VerticalLayout archiveSection =
+        new VerticalLayout(archiveModelSelect, archiveDatePicker, archiveDaysField);
+    archiveSection.setPadding(false);
+    archiveSection.setSpacing(false);
+
     typeSelect.addValueChangeListener(
         e -> {
           typeFields.removeAll();
           switch (e.getValue()) {
-            case 1 -> typeFields.add(upload);
-            case 2 -> typeFields.add(textContent);
-            case 3 -> typeFields.add(urlField);
-            case 4 -> typeFields.add(contactScroll);
+            case 1 -> {
+              typeFields.add(upload);
+              archiveSection.setVisible(true);
+            }
+            case 2 -> {
+              typeFields.add(textContent);
+              archiveSection.setVisible(false);
+            }
+            case 3 -> {
+              typeFields.add(urlField);
+              archiveSection.setVisible(false);
+            }
+            case 4 -> {
+              typeFields.add(contactScroll);
+              archiveSection.setVisible(false);
+            }
           }
         });
 
     Dialog dialog = new Dialog();
     dialog.setHeaderTitle(getTranslation("menu.repository.adddata"));
     dialog.setWidth("480px");
-    dialog.add(new VerticalLayout(typeSelect, designationField, langSelect, typeFields));
+    dialog.add(
+        new VerticalLayout(typeSelect, designationField, langSelect, typeFields, archiveSection));
 
     final List<XincoCoreLanguageServer> finalLanguages = languages;
     Button addBtn =
@@ -1070,7 +1119,15 @@ public class ExplorerView extends VerticalLayout
                       ? langSelect.getValue()
                       : null;
               if (type == 1) {
-                doAddData(designationField, buffer, lang, dialog);
+                int archiveModel =
+                    archiveModelSelect.getValue() != null ? archiveModelSelect.getValue() : 0;
+                LocalDate archDate =
+                    archiveDatePicker.getValue() != null
+                        ? archiveDatePicker.getValue()
+                        : LocalDate.now().plusDays(30);
+                int archDays =
+                    archiveDaysField.getValue() != null ? archiveDaysField.getValue() : 30;
+                doAddData(designationField, buffer, lang, archiveModel, archDate, archDays, dialog);
               } else if (type == 4) {
                 Map<Integer, String> attrs = new LinkedHashMap<>();
                 attrs.put(1, cSalutation.getValue());
@@ -1219,6 +1276,9 @@ public class ExplorerView extends VerticalLayout
       TextField designationField,
       MemoryBuffer buffer,
       XincoCoreLanguageServer lang,
+      int archiveModel,
+      LocalDate archiveDate,
+      int archiveDays,
       Dialog dialog) {
     String name = designationField.getValue().trim();
     if (name.isEmpty()) {
@@ -1276,7 +1336,31 @@ public class ExplorerView extends VerticalLayout
       new XincoAddAttributeServer(dataId, 2, 0, filesize, 0.0, "", "", now).write2DB();
       new XincoAddAttributeServer(dataId, 3, 0, 0L, 0.0, "", "", now).write2DB();
       new XincoAddAttributeServer(dataId, 4, 0, 1L, 0.0, "", "", now).write2DB();
-      for (int i = 5; i <= 12; i++) {
+      new XincoAddAttributeServer(dataId, 5, 0, (long) archiveModel, 0.0, "", "", now).write2DB();
+      if (archiveModel == 1) {
+        LocalDate ld = archiveDate != null ? archiveDate : LocalDate.now().plusDays(30);
+        GregorianCalendar gc =
+            new GregorianCalendar(ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
+        new XincoAddAttributeServer(
+                dataId,
+                6,
+                0,
+                0L,
+                0.0,
+                "",
+                "",
+                DatatypeFactory.newInstance().newXMLGregorianCalendar(gc))
+            .write2DB();
+      } else {
+        new XincoAddAttributeServer(dataId, 6, 0, 0L, 0.0, "", "", now).write2DB();
+      }
+      if (archiveModel == 2) {
+        int days = archiveDays > 0 ? archiveDays : 30;
+        new XincoAddAttributeServer(dataId, 7, 0, (long) days, 0.0, "", "", now).write2DB();
+      } else {
+        new XincoAddAttributeServer(dataId, 7, 0, 0L, 0.0, "", "", now).write2DB();
+      }
+      for (int i = 8; i <= 12; i++) {
         new XincoAddAttributeServer(dataId, i, 0, 0L, 0.0, "", "", now).write2DB();
       }
 
