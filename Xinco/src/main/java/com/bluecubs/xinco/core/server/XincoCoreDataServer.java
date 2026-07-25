@@ -128,35 +128,35 @@ public class XincoCoreDataServer extends XincoCoreData {
    */
   public static String getLastMajorVersionDataPath(int xinco_core_data_id, XincoDBManager DBM)
       throws SQLException, XincoException {
-    Statement stmt;
-    stmt = DBM.con.createStatement();
     // Issue #2997801: Correct query to handle data without a second major version.
-    ResultSet rs =
-        stmt.executeQuery(
-            "select id from xinco.xinco_core_log "
-                + "where xinco_core_data_id = "
-                + xinco_core_data_id
-                + " and version_mid='0' "
-                + "and (op_code="
-                + (OPCode.CHECKIN.ordinal() + 1)
-                + " or op_code="
-                + (OPCode.CREATION.ordinal() + 1)
-                + ") order by id desc");
-    if (rs.next()) {
-      XincoCoreLogServer log = new XincoCoreLogServer(rs.getInt("id"), DBM);
-      System.out.println(
-          "Getting path: "
-              + XincoCoreDataServer.getXincoCoreDataPath(
-                  DBM.config.FileRepositoryPath,
-                  xinco_core_data_id,
-                  xinco_core_data_id + "-" + log.getId()));
-      return XincoCoreDataServer.getXincoCoreDataPath(
-          DBM.config.FileRepositoryPath,
-          xinco_core_data_id,
-          xinco_core_data_id + "-" + log.getId());
-    } else {
-      throw new XincoException(
-          "No mayor log history for XincoCoreData with id: " + xinco_core_data_id);
+    try (Statement stmt = DBM.con.createStatement();
+        ResultSet rs =
+            stmt.executeQuery(
+                "select id from xinco.xinco_core_log "
+                    + "where xinco_core_data_id = "
+                    + xinco_core_data_id
+                    + " and version_mid='0' "
+                    + "and (op_code="
+                    + (OPCode.CHECKIN.ordinal() + 1)
+                    + " or op_code="
+                    + (OPCode.CREATION.ordinal() + 1)
+                    + ") order by id desc")) {
+      if (rs.next()) {
+        XincoCoreLogServer log = new XincoCoreLogServer(rs.getInt("id"), DBM);
+        System.out.println(
+            "Getting path: "
+                + XincoCoreDataServer.getXincoCoreDataPath(
+                    DBM.config.FileRepositoryPath,
+                    xinco_core_data_id,
+                    xinco_core_data_id + "-" + log.getId()));
+        return XincoCoreDataServer.getXincoCoreDataPath(
+            DBM.config.FileRepositoryPath,
+            xinco_core_data_id,
+            xinco_core_data_id + "-" + log.getId());
+      } else {
+        throw new XincoException(
+            "No mayor log history for XincoCoreData with id: " + xinco_core_data_id);
+      }
     }
   }
 

@@ -467,45 +467,47 @@ public class XincoCoreUserServer extends XincoCoreUser {
   }
 
   public boolean isPasswordUsable(String newPass) {
-    ResultSet rs = null;
     sql = null;
     boolean passwordIsUsable = false;
     try {
       XincoDBManager DBM = new XincoDBManager();
-      Statement stmt = DBM.con.createStatement();
-      /*Bug fix: The password was only verified against past passwords not current password.
-       *The current passwords is not usable after the first change when it was added to the
-       *audit trail table.
-       */
-      // Now check if password is not the same as the current password
-      sql =
-          "select p.id from xinco_core_user p where p.id="
-              + getId()
-              + " and p.userpassword='"
-              + MD5.encrypt(newPass)
-              + "'";
-      rs = stmt.executeQuery(sql);
-      if (rs.next()) {
-        return false;
-      }
-      // Here we'll catch if the password have been used in the unusable period
-      rs =
-          stmt.executeQuery(
-              "select userpassword, last_modified from xinco_core_user_t where id="
-                  + getId()
-                  + " and userpassword = '"
-                  + MD5.encrypt(newPass)
-                  + "'");
-      GregorianCalendar current = new GregorianCalendar(), last = new GregorianCalendar();
-      current.setTime(new Date());
-      int unusable_period = Integer.valueOf(settings.getString("password.unusable_period"));
-      while (rs.next()) {
-        last.setTime(rs.getDate("last_modified"));
-        if (DateTool.getDifference(current, last, TimeUnit.DAYS) <= unusable_period) {
-          return false;
+      try (Statement stmt = DBM.con.createStatement()) {
+        /*Bug fix: The password was only verified against past passwords not current password.
+         *The current passwords is not usable after the first change when it was added to the
+         *audit trail table.
+         */
+        // Now check if password is not the same as the current password
+        sql =
+            "select p.id from xinco_core_user p where p.id="
+                + getId()
+                + " and p.userpassword='"
+                + MD5.encrypt(newPass)
+                + "'";
+        try (ResultSet rs = stmt.executeQuery(sql)) {
+          if (rs.next()) {
+            return false;
+          }
         }
+        // Here we'll catch if the password have been used in the unusable period
+        try (ResultSet rs =
+            stmt.executeQuery(
+                "select userpassword, last_modified from xinco_core_user_t where id="
+                    + getId()
+                    + " and userpassword = '"
+                    + MD5.encrypt(newPass)
+                    + "'")) {
+          GregorianCalendar current = new GregorianCalendar(), last = new GregorianCalendar();
+          current.setTime(new Date());
+          int unusable_period = Integer.valueOf(settings.getString("password.unusable_period"));
+          while (rs.next()) {
+            last.setTime(rs.getDate("last_modified"));
+            if (DateTool.getDifference(current, last, TimeUnit.DAYS) <= unusable_period) {
+              return false;
+            }
+          }
+        }
+        passwordIsUsable = true;
       }
-      passwordIsUsable = true;
       // ---------------------------
     } catch (XincoException ex) {
       Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
