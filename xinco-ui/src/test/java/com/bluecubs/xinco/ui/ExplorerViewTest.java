@@ -2029,6 +2029,52 @@ class ExplorerViewTest {
     }
   }
 
+  // ---- sendEmailSelected ----
+
+  @Test
+  void sendEmailSelected_nullData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    assertDoesNotThrow(() -> view.sendEmailSelected());
+    assertTrue(_find(Dialog.class).isEmpty());
+  }
+
+  @Test
+  void sendEmailSelected_nonContactData_isNoop() throws Exception {
+    ExplorerView view = new ExplorerView(new UserSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(1);
+    setField(view, "selectedData", mockData);
+    assertDoesNotThrow(() -> view.sendEmailSelected());
+    assertTrue(_find(Dialog.class).isEmpty());
+  }
+
+  @Test
+  void sendEmailSelected_noEmailAttr_showsError() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(4);
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>());
+    setField(view, "selectedData", mockData);
+    assertDoesNotThrow(() -> view.sendEmailSelected());
+  }
+
+  @Test
+  void sendEmailSelected_withEmail_opensMailto() throws Exception {
+    ExplorerView view = new ExplorerView(loggedInSession());
+    addView(view);
+    XincoCoreDataServer mockData = mock(XincoCoreDataServer.class, RETURNS_DEEP_STUBS);
+    when(mockData.getXincoCoreDataType().getId()).thenReturn(4);
+    XincoAddAttributeServer emailAttr = mock(XincoAddAttributeServer.class);
+    when(emailAttr.getAttributeId()).thenReturn(10);
+    when(emailAttr.getAttribVarchar()).thenReturn("test@example.com");
+    when(mockData.getXincoAddAttributes()).thenReturn(new ArrayList<>(List.of(emailAttr)));
+    setField(view, "selectedData", mockData);
+    assertDoesNotThrow(() -> view.sendEmailSelected());
+  }
+
   @Test
   void doAddData_success_closesDialog() throws Exception {
     ExplorerView view = new ExplorerView(loggedInSession());
