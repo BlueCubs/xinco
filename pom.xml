@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bluecubs.xinco</groupId>
   <artifactId>xinco-parent</artifactId>
-  <version>3.0.0-M10-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Xinco Parent</name>
   <description>The Core of Information and Document Management xinco DMS™ is a powerful Web-based Information and Document Management System (DMS) for files, text, URLs and contacts, featuring ACLs, version control, full text search and a fully web-based client.</description>
