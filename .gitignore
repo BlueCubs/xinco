@@ -21,6 +21,8 @@ XincoLibs/.DS_Store
 
 .DS_Store
 
+Docs/.DS_Store
+
 XincoExplorer/nbproject/private/
 
 Xinco/ant/
@@ -40,3 +42,9 @@ Xinco/target/
 target/
 
 XincoExplorer/src/main/resources/installer/blueCubsIcon.ico
+
+/XincoExplorer/signed/
+
+/XincoWebApp/.blueCubsKeystore
+
+*.class

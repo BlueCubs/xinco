@@ -329,6 +329,11 @@
               <!-- You have to set the target manually -->
               <include>**/*.json</include>
             </includes>
+            <excludes>
+              <exclude>.beads/**</exclude>
+              <exclude>.repowise/**</exclude>
+              <exclude>target/**</exclude>
+            </excludes>
             <jackson></jackson>
           </json>
         </configuration>

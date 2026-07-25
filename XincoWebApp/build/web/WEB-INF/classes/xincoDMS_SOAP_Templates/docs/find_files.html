@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+  <head>
+    <meta name="author" content="Georg Wittberger" />
+    <meta name="description" content="SOAP templates for xincoDMS documentation and user manual" />
+    <meta name="keywords" content="xinco, xincoDMS, DMS, XML, SOAP, document, management, system, Java, open, source" />
+    <meta name="robots" content="index,follow" />
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="content-style-type" content="text/css" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <title>SOAP templates for xincoDMS - find_files.xml</title>
+  </head>
+  <body>
+    <h1>find_files.xml</h1>
+    <p>This SOAP request allows you to search for certain data objects in the xincoDMS repository.</p>
+    <p>The response contains a vector of search results including the XincoCoreData object and all XincoCoreNode
+    objects representing the data's path in the repository.</p>
+    <p>Be careful: The response message can grow very large if there are lots of search results or the data objects
+    are located in a deep hierarchy. So be sure to use a very precise search query to reduce the number of matches.</p>
+    <h2>Basic parameters</h2>
+    <p>The text content of the following element nodes has to be adjusted:</p>
+    <table cellspacing="0">
+      <colgroup>
+        <col width="50%" />
+        <col width="50%" />
+      </colgroup>
+      <thead>
+        <tr><th>XPath query</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:findXincoCoreData/in0</td>
+          <td><b>Search query</b> defining the desired data objects.<br />
+          Example: Keyword_1:foo AND Description:bar<br />
+          <br />
+          The syntax is the same as in XincoExplorer's search function.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:findXincoCoreData/in2/username</td>
+          <td><b>Username</b> of the user performing the operation</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:findXincoCoreData/in2/userpassword</td>
+          <td><b>Password</b> of the user performing the operation</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>Searching for a specific language</h2>
+    <p>If you want to search for objects in a certain language only you also have to specify the desired language.
+    Normally the search will return objects of any language.</p>
+    <table cellspacing="0">
+      <colgroup>
+        <col width="50%" />
+        <col width="50%" />
+      </colgroup>
+      <thead>
+        <tr><th>XPath query</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:findXincoCoreData/in1/designation</td>
+          <td><b>Name</b> of the desired language<br />
+          <br />
+          Predefined values in the xincoDMS basic installation:<br />
+          unknown, English, German, French, Italian, Spanish, Russian</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:findXincoCoreData/in1/id</td>
+          <td>Internal <b>ID</b> of the desired language<br />
+          <br />
+          Predefined values in the xincoDMS basic installation:<br />
+          1 = unknown<br />
+          2 = English<br />
+          3 = German<br />
+          4 = French<br />
+          5 = Italian<br />
+          6 = Spanish<br />
+          7 = Russian</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:findXincoCoreData/in1/sign</td>
+          <td><b>Abbreviation</b> of the desired language<br />
+          <br />
+          Predefined values in the xincoDMS basic installation:<br />
+          n/a = unknown<br />
+          en = English<br />
+          de = German<br />
+          fr = French<br />
+          it = Italian<br />
+          es = Spanish<br />
+          ru = Russian</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><b>Hint:</b> Each of the XPath queries above will return an element node. To modify its content you will
+    have to go down to its text node which is typically the first child.</p>
+    <p><a href="index.html">Back to the table of contents</a></p>
+  </body>
+</html>

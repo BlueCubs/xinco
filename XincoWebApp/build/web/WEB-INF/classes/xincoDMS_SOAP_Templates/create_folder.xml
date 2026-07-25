@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns1="urn:Xinco" xmlns:ns2="http://core.xinco.bluecubs.com" xmlns:ns3="http://xml.apache.org/xml-soap">
+  <soapenv:Body>
+    <ns1:setXincoCoreNode soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+      <in0 soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoCoreNode">
+        <designation xsi:type="xsd:string">FOLDERNAME</designation>
+        <changerID soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</changerID>
+        <xinco_core_acl xsi:type="ns3:Vector" xsi:nil="true"/>
+        <xinco_core_data xsi:type="ns3:Vector" xsi:nil="true"/>
+        <xinco_core_language soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoCoreLanguage">
+          <designation xsi:type="xsd:string">unknown</designation>
+          <changerID soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</changerID>
+          <id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">1</id>
+          <sign xsi:type="xsd:string">n/a</sign>
+        </xinco_core_language>
+        <xinco_core_node_id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">1</xinco_core_node_id>
+        <xinco_core_nodes xsi:type="ns3:Vector" xsi:nil="true"/>
+        <id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</id>
+        <status_number soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">1</status_number>
+      </in0>
+      <in1 soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoCoreUser">
+        <change soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:boolean">false</change>
+        <changerID soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</changerID>
+        <email xsi:type="xsd:string"/>
+        <firstname xsi:type="xsd:string"/>
+        <id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</id>
+        <name xsi:type="xsd:string"/>
+        <reason xsi:type="xsd:string"/>
+        <status_number soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">1</status_number>
+        <username xsi:type="xsd:string">USERNAME</username>
+        <userpassword xsi:type="xsd:string">PASSWORD</userpassword>
+        <writeGroups soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:boolean">false</writeGroups>
+        <xinco_core_groups xsi:type="ns3:Vector" xsi:nil="true"/>
+      </in1>
+    </ns1:setXincoCoreNode>
+  </soapenv:Body>
+</soapenv:Envelope>
