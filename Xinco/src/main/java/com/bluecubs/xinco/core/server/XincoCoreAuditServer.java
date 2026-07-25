@@ -32,45 +32,46 @@ public class XincoCoreAuditServer {
           where += " and ";
         }
       }
-      Statement stmt = DBM.con.createStatement();
-      int record_ID = 0;
-      String sql = "select * from " + table + " where " + where;
-      ResultSet rs = stmt.executeQuery(sql);
-      try {
-        record_ID = DBM.getNewID("xinco_core_user_modified_record");
-      } catch (Exception ex) {
-        ex.printStackTrace();
-      }
-      if (rs.next()) {
-        sql = "insert into " + table + "_t values('" + record_ID + "', ";
-        for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-          if (rs.getString(i) == null) {
-            sql += rs.getString(i);
-          } else {
-            sql += "'" + rs.getString(i) + "'";
+      try (Statement stmt = DBM.con.createStatement()) {
+        int record_ID = 0;
+        String sql = "select * from " + table + " where " + where;
+        try (ResultSet rs = stmt.executeQuery(sql)) {
+          try {
+            record_ID = DBM.getNewID("xinco_core_user_modified_record");
+          } catch (Exception ex) {
+            ex.printStackTrace();
           }
-          if (i < rs.getMetaData().getColumnCount()) {
-            sql += ", ";
-          } else {
-            sql += ")";
+          if (rs.next()) {
+            sql = "insert into " + table + "_t values('" + record_ID + "', ";
+            for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+              if (rs.getString(i) == null) {
+                sql += rs.getString(i);
+              } else {
+                sql += "'" + rs.getString(i) + "'";
+              }
+              if (i < rs.getMetaData().getColumnCount()) {
+                sql += ", ";
+              } else {
+                sql += ")";
+              }
+            }
+            stmt.executeUpdate(sql);
           }
         }
+        sql =
+            "insert into xinco_core_user_modified_record (id, record_id, mod_Time, "
+                + "mod_Reason) values ("
+                + id
+                + ", "
+                + record_ID
+                + ", '"
+                + new Timestamp(System.currentTimeMillis())
+                + "', '"
+                + reason
+                + "')";
         stmt.executeUpdate(sql);
+        DBM.con.commit();
       }
-      sql =
-          "insert into xinco_core_user_modified_record (id, record_id, mod_Time, "
-              + "mod_Reason) values ("
-              + id
-              + ", "
-              + record_ID
-              + ", '"
-              + new Timestamp(System.currentTimeMillis())
-              + "', '"
-              + reason
-              + "')";
-      stmt.executeUpdate(sql);
-      // System.out.println(sql);
-      DBM.con.commit();
     } catch (SQLException ex) {
       ex.printStackTrace();
       try {

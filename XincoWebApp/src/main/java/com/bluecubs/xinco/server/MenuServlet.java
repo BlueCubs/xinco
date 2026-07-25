@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.servlet.ServletConfig;
@@ -120,7 +121,7 @@ public class MenuServlet extends HttpServlet {
           FileChannel source = null;
           FileChannel destination = null;
           try {
-            source = new FileInputStream(getdown).getChannel();
+            source = FileChannel.open(getdown.toPath(), StandardOpenOption.READ);
             destination = new FileOutputStream(backup).getChannel();
             destination.transferFrom(source, 0, source.size());
           } finally {
@@ -181,7 +182,7 @@ public class MenuServlet extends HttpServlet {
             }
           } catch (IOException ex) {
             try {
-              source = new FileInputStream(backup).getChannel();
+              source = FileChannel.open(backup.toPath(), StandardOpenOption.READ);
               destination = new FileOutputStream(getdown).getChannel();
               destination.transferFrom(source, 0, source.size());
               backup.delete();
