@@ -50,13 +50,10 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.VaadinSession;
 import java.io.ByteArrayInputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
@@ -844,13 +841,6 @@ class ExplorerViewTest {
 
       invoke(view, "openAddDataDialog");
 
-      // Simulate file upload
-      Upload upload = _get(Upload.class);
-      MemoryBuffer buffer = (MemoryBuffer) upload.getReceiver();
-      try (OutputStream out = buffer.receiveUpload("test.txt", "text/plain")) {
-        out.write("hello test content".getBytes());
-      }
-
       // Fill in designation
       _find(TextField.class, spec -> spec.withLabel("File Name")).stream()
           .findFirst()
@@ -1149,12 +1139,6 @@ class ExplorerViewTest {
 
       invoke(view, "openCheckinDialog");
 
-      Upload upload = _get(Upload.class);
-      MemoryBuffer buffer = (MemoryBuffer) upload.getReceiver();
-      try (OutputStream out = buffer.receiveUpload("revised.txt", "text/plain")) {
-        out.write("revised content".getBytes());
-      }
-
       List<Button> btns = _find(Button.class, spec -> spec.withText("Checkin File"));
       if (!btns.isEmpty()) {
         btns.get(0).click();
@@ -1368,8 +1352,7 @@ class ExplorerViewTest {
     addView(view);
     Dialog dialog = new Dialog();
     dialog.open();
-    MemoryBuffer emptyBuffer = new MemoryBuffer();
-    view.doCheckin(emptyBuffer, 1, 0, 0, "", "desc", dialog);
+    view.doCheckin("", new ByteArrayInputStream(new byte[0]), 1, 0, 0, "", "desc", dialog);
     assertTrue(dialog.isOpened(), "dialog stays open when no file uploaded");
   }
 
@@ -1383,9 +1366,6 @@ class ExplorerViewTest {
 
     Dialog dialog = new Dialog();
     dialog.open();
-    MemoryBuffer buffer = mock(MemoryBuffer.class);
-    when(buffer.getFileName()).thenReturn("file.txt");
-
     try (MockedConstruction<XincoCoreDataServer> mcData =
             mockConstruction(XincoCoreDataServer.class, (m, ctx) -> when(m.getId()).thenReturn(1));
         MockedConstruction<XincoCoreLogServer> mcLog =
@@ -1394,7 +1374,10 @@ class ExplorerViewTest {
       msData
           .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
           .thenThrow(new RuntimeException("path error"));
-      assertDoesNotThrow(() -> view.doCheckin(buffer, 1, 0, 0, "", "desc", dialog));
+      assertDoesNotThrow(
+          () ->
+              view.doCheckin(
+                  "file.txt", new ByteArrayInputStream(new byte[0]), 1, 0, 0, "", "desc", dialog));
     }
     assertTrue(dialog.isOpened(), "dialog stays open on error");
   }
@@ -1409,7 +1392,14 @@ class ExplorerViewTest {
     designField.setValue("");
     Dialog dialog = new Dialog();
     view.doAddData(
-        designField, new MemoryBuffer(), mock(XincoCoreLanguageServer.class), 0, null, 30, dialog);
+        designField,
+        "",
+        new ByteArrayInputStream(new byte[0]),
+        mock(XincoCoreLanguageServer.class),
+        0,
+        null,
+        30,
+        dialog);
     assertTrue(designField.isInvalid(), "empty name should mark field invalid");
   }
 
@@ -1419,13 +1409,13 @@ class ExplorerViewTest {
     addView(view);
     TextField designField = new TextField();
     designField.setValue("My File");
-    MemoryBuffer emptyBuffer = new MemoryBuffer();
     Dialog dialog = new Dialog();
     assertDoesNotThrow(
         () ->
             view.doAddData(
                 designField,
-                emptyBuffer,
+                "",
+                new ByteArrayInputStream(new byte[0]),
                 mock(XincoCoreLanguageServer.class),
                 0,
                 null,
@@ -1439,10 +1429,18 @@ class ExplorerViewTest {
     addView(view);
     TextField designField = new TextField();
     designField.setValue("My File");
-    MemoryBuffer buffer = mock(MemoryBuffer.class);
-    when(buffer.getFileName()).thenReturn("file.txt");
     Dialog dialog = new Dialog();
-    assertDoesNotThrow(() -> view.doAddData(designField, buffer, null, 0, null, 30, dialog));
+    assertDoesNotThrow(
+        () ->
+            view.doAddData(
+                designField,
+                "file.txt",
+                new ByteArrayInputStream(new byte[0]),
+                null,
+                0,
+                null,
+                30,
+                dialog));
   }
 
   @Test
@@ -1455,8 +1453,6 @@ class ExplorerViewTest {
 
     TextField designField = new TextField();
     designField.setValue("My File");
-    MemoryBuffer buffer = mock(MemoryBuffer.class);
-    when(buffer.getFileName()).thenReturn("file.txt");
     XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
     when(mockLang.getId()).thenReturn(1);
     Dialog dialog = new Dialog();
@@ -1470,7 +1466,17 @@ class ExplorerViewTest {
       msData
           .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
           .thenThrow(new RuntimeException("path error"));
-      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, 0, null, 30, dialog));
+      assertDoesNotThrow(
+          () ->
+              view.doAddData(
+                  designField,
+                  "file.txt",
+                  new ByteArrayInputStream(new byte[0]),
+                  mockLang,
+                  0,
+                  null,
+                  30,
+                  dialog));
     }
     assertTrue(dialog.isOpened(), "dialog stays open on error");
   }
@@ -2090,10 +2096,6 @@ class ExplorerViewTest {
     Dialog dialog = new Dialog();
     dialog.open();
 
-    MemoryBuffer buffer = mock(MemoryBuffer.class);
-    when(buffer.getFileName()).thenReturn("upload.txt");
-    when(buffer.getInputStream()).thenReturn(new ByteArrayInputStream("content".getBytes()));
-
     XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
     when(mockLang.getId()).thenReturn(1);
 
@@ -2123,7 +2125,17 @@ class ExplorerViewTest {
           .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
           .thenAnswer(inv -> cnt[0]++ == 0 ? repo.toString() : base.toString());
 
-      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, 0, null, 30, dialog));
+      assertDoesNotThrow(
+          () ->
+              view.doAddData(
+                  designField,
+                  "upload.txt",
+                  new ByteArrayInputStream("content".getBytes()),
+                  mockLang,
+                  0,
+                  null,
+                  30,
+                  dialog));
       assertFalse(dialog.isOpened(), "dialog should close on success");
     } finally {
       Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
@@ -2143,10 +2155,6 @@ class ExplorerViewTest {
     designField.setValue("ArchiveFile.txt");
     Dialog dialog = new Dialog();
     dialog.open();
-
-    MemoryBuffer buffer = mock(MemoryBuffer.class);
-    when(buffer.getFileName()).thenReturn("upload.txt");
-    when(buffer.getInputStream()).thenReturn(new ByteArrayInputStream("content".getBytes()));
 
     XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
     when(mockLang.getId()).thenReturn(1);
@@ -2179,7 +2187,16 @@ class ExplorerViewTest {
 
       java.time.LocalDate fixedDate = java.time.LocalDate.now().plusDays(14);
       assertDoesNotThrow(
-          () -> view.doAddData(designField, buffer, mockLang, 1, fixedDate, 30, dialog));
+          () ->
+              view.doAddData(
+                  designField,
+                  "upload.txt",
+                  new ByteArrayInputStream("content".getBytes()),
+                  mockLang,
+                  1,
+                  fixedDate,
+                  30,
+                  dialog));
       assertFalse(dialog.isOpened(), "dialog should close on success with model=1");
     } finally {
       Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
@@ -2199,10 +2216,6 @@ class ExplorerViewTest {
     designField.setValue("DaysFile.txt");
     Dialog dialog = new Dialog();
     dialog.open();
-
-    MemoryBuffer buffer = mock(MemoryBuffer.class);
-    when(buffer.getFileName()).thenReturn("upload.txt");
-    when(buffer.getInputStream()).thenReturn(new ByteArrayInputStream("content".getBytes()));
 
     XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
     when(mockLang.getId()).thenReturn(1);
@@ -2233,7 +2246,17 @@ class ExplorerViewTest {
           .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
           .thenAnswer(inv -> cnt[0]++ == 0 ? repo.toString() : base.toString());
 
-      assertDoesNotThrow(() -> view.doAddData(designField, buffer, mockLang, 2, null, 7, dialog));
+      assertDoesNotThrow(
+          () ->
+              view.doAddData(
+                  designField,
+                  "upload.txt",
+                  new ByteArrayInputStream("content".getBytes()),
+                  mockLang,
+                  2,
+                  null,
+                  7,
+                  dialog));
       assertFalse(dialog.isOpened(), "dialog should close on success with model=2");
     } finally {
       Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
@@ -2250,10 +2273,6 @@ class ExplorerViewTest {
     XincoCoreNodeServer mockNode = mock(XincoCoreNodeServer.class);
     when(mockNode.getXincoCoreData()).thenReturn(new ArrayList<>());
     setField(view, "selectedNode", mockNode);
-
-    MemoryBuffer buffer = mock(MemoryBuffer.class);
-    when(buffer.getFileName()).thenReturn("revised.txt");
-    when(buffer.getInputStream()).thenReturn(new ByteArrayInputStream("revised".getBytes()));
 
     Dialog dialog = new Dialog();
     dialog.open();
@@ -2284,7 +2303,17 @@ class ExplorerViewTest {
           .when(() -> XincoCoreDataServer.getXincoCoreDataPath(any(), anyInt(), anyString()))
           .thenAnswer(inv -> cnt[0]++ == 0 ? base.toString() : version.toString());
 
-      assertDoesNotThrow(() -> view.doCheckin(buffer, 1, 0, 0, "", "Test checkin", dialog));
+      assertDoesNotThrow(
+          () ->
+              view.doCheckin(
+                  "revised.txt",
+                  new ByteArrayInputStream("revised".getBytes()),
+                  1,
+                  0,
+                  0,
+                  "",
+                  "Test checkin",
+                  dialog));
       assertFalse(dialog.isOpened(), "dialog should close on success");
     } finally {
       Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());

@@ -36,12 +36,12 @@ class XincoI18NProviderTest {
     assertTrue(locales.contains(Locale.FRENCH), "French");
     assertTrue(locales.contains(Locale.GERMAN), "German");
     assertTrue(locales.contains(Locale.ITALIAN), "Italian");
-    assertTrue(locales.contains(new Locale("nl")), "Dutch");
-    assertTrue(locales.contains(new Locale("pl")), "Polish");
-    assertTrue(locales.contains(new Locale("pt")), "Portuguese");
-    assertTrue(locales.contains(new Locale("pt", "BR")), "Brazilian Portuguese");
-    assertTrue(locales.contains(new Locale("es")), "Spanish");
-    assertTrue(locales.contains(new Locale("cz")), "Czech");
+    assertTrue(locales.contains(Locale.of("nl")), "Dutch");
+    assertTrue(locales.contains(Locale.of("pl")), "Polish");
+    assertTrue(locales.contains(Locale.of("pt")), "Portuguese");
+    assertTrue(locales.contains(Locale.of("pt", "BR")), "Brazilian Portuguese");
+    assertTrue(locales.contains(Locale.of("es")), "Spanish");
+    assertTrue(locales.contains(Locale.of("cz")), "Czech");
     assertTrue(locales.contains(Locale.SIMPLIFIED_CHINESE), "Simplified Chinese");
   }
 
@@ -95,7 +95,7 @@ class XincoI18NProviderTest {
     // XincoMessages_cz.properties may not have all keys
     // If the key is present in English, we should get the English value or the locale value
     // Either way, not the key itself — because English IS the fallback
-    String result = provider.getTranslation("general.folder", new Locale("cz"));
+    String result = provider.getTranslation("general.folder", Locale.of("cz"));
     assertNotNull(result);
     assertFalse(result.isBlank(), "should not return empty for a key present in English");
     assertNotEquals(
@@ -105,7 +105,7 @@ class XincoI18NProviderTest {
   @Test
   void getTranslation_unknownLocale_fallsBackToEnglish() {
     // Klingon is not a provided locale — no bundle exists, falls back to English
-    String result = provider.getTranslation("general.folder", new Locale("tlh"));
+    String result = provider.getTranslation("general.folder", Locale.of("tlh"));
     assertEquals("Folder", result, "unknown locale falls back to English bundle");
   }
 
@@ -121,7 +121,7 @@ class XincoI18NProviderTest {
   @Test
   void getTranslation_missingKeyInAllBundles_unknownLocale_returnsKey() {
     String key = "no.such.key.xyz";
-    String result = provider.getTranslation(key, new Locale("tlh"));
+    String result = provider.getTranslation(key, Locale.of("tlh"));
     assertEquals(key, result, "absent key with unknown locale should return key");
   }
 

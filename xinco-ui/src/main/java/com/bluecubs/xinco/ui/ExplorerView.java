@@ -42,7 +42,6 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
@@ -53,6 +52,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.server.streams.UploadHandler;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -64,6 +65,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -984,16 +986,20 @@ public class ExplorerView extends VerticalLayout
     }
 
     // ── Type-specific field sets ─────────────────────────────────────────────
-    MemoryBuffer buffer = new MemoryBuffer();
-    Upload upload = new Upload(buffer);
+    AtomicReference<String> uploadedName = new AtomicReference<>("");
+    AtomicReference<byte[]> uploadedData = new AtomicReference<>(new byte[0]);
+    Upload upload =
+        new Upload(
+            UploadHandler.inMemory(
+                (metadata, bytes) -> {
+                  uploadedName.set(metadata.fileName());
+                  uploadedData.set(bytes);
+                  if (designationField.isEmpty()) {
+                    designationField.setValue(metadata.fileName());
+                  }
+                }));
     upload.setMaxFiles(1);
     upload.setWidthFull();
-    upload.addSucceededListener(
-        e -> {
-          if (designationField.isEmpty()) {
-            designationField.setValue(e.getFileName());
-          }
-        });
 
     com.vaadin.flow.component.textfield.TextArea textContent =
         new com.vaadin.flow.component.textfield.TextArea(getTranslation("general.description"));
@@ -1138,7 +1144,15 @@ public class ExplorerView extends VerticalLayout
                         : LocalDate.now().plusDays(30);
                 int archDays =
                     archiveDaysField.getValue() != null ? archiveDaysField.getValue() : 30;
-                doAddData(designationField, buffer, lang, archiveModel, archDate, archDays, dialog);
+                doAddData(
+                    designationField,
+                    uploadedName.get(),
+                    new ByteArrayInputStream(uploadedData.get()),
+                    lang,
+                    archiveModel,
+                    archDate,
+                    archDays,
+                    dialog);
               } else if (type == 4) {
                 Map<Integer, String> attrs = new LinkedHashMap<>();
                 attrs.put(1, cSalutation.getValue());
@@ -1285,7 +1299,8 @@ public class ExplorerView extends VerticalLayout
 
   void doAddData(
       TextField designationField,
-      MemoryBuffer buffer,
+      String fileName,
+      InputStream inputStream,
       XincoCoreLanguageServer lang,
       int archiveModel,
       LocalDate archiveDate,
@@ -1297,7 +1312,7 @@ public class ExplorerView extends VerticalLayout
       designationField.setInvalid(true);
       return;
     }
-    if (buffer.getFileName() == null || buffer.getFileName().isEmpty()) {
+    if (fileName == null || fileName.isEmpty()) {
       error("Please upload a file first.");
       return;
     }
@@ -1330,7 +1345,7 @@ public class ExplorerView extends VerticalLayout
               XincoDBManager.CONFIG.fileRepositoryPath, dataId, dataId + "-" + logId);
       File repoFile = new File(repoPath);
       repoFile.getParentFile().mkdirs();
-      try (InputStream in = buffer.getInputStream()) {
+      try (InputStream in = inputStream) {
         Files.copy(in, repoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
       }
       String basePath =
@@ -1341,7 +1356,7 @@ public class ExplorerView extends VerticalLayout
 
       XMLGregorianCalendar now =
           DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
-      String filename = buffer.getFileName();
+      String filename = fileName;
       long filesize = repoFile.length();
       new XincoAddAttributeServer(dataId, 1, 0, 0L, 0.0, filename, "", now).write2DB();
       new XincoAddAttributeServer(dataId, 2, 0, filesize, 0.0, "", "", now).write2DB();
@@ -1644,8 +1659,15 @@ public class ExplorerView extends VerticalLayout
     }
     final int basHigh = curHigh, basMid = curMid, basLow = curLow;
 
-    MemoryBuffer buffer = new MemoryBuffer();
-    Upload upload = new Upload(buffer);
+    AtomicReference<String> uploadedName = new AtomicReference<>("");
+    AtomicReference<byte[]> uploadedData = new AtomicReference<>(new byte[0]);
+    Upload upload =
+        new Upload(
+            UploadHandler.inMemory(
+                (metadata, bytes) -> {
+                  uploadedName.set(metadata.fileName());
+                  uploadedData.set(bytes);
+                }));
     upload.setMaxFiles(1);
     upload.setWidthFull();
 
@@ -1715,14 +1737,29 @@ public class ExplorerView extends VerticalLayout
                       descField.getValue().trim().isEmpty()
                           ? getTranslation("menu.edit.checkinfile")
                           : descField.getValue().trim();
-                  doCheckin(buffer, vh, vm, vl, vp, desc, dialog);
+                  doCheckin(
+                      uploadedName.get(),
+                      new ByteArrayInputStream(uploadedData.get()),
+                      vh,
+                      vm,
+                      vl,
+                      vp,
+                      desc,
+                      dialog);
                 }));
     dialog.open();
   }
 
   void doCheckin(
-      MemoryBuffer buffer, int vh, int vm, int vl, String vp, String desc, Dialog dialog) {
-    if (buffer.getFileName() == null || buffer.getFileName().isEmpty()) {
+      String fileName,
+      InputStream inputStream,
+      int vh,
+      int vm,
+      int vl,
+      String vp,
+      String desc,
+      Dialog dialog) {
+    if (fileName == null || fileName.isEmpty()) {
       error("Please upload the revised file first.");
       return;
     }
@@ -1748,7 +1785,7 @@ public class ExplorerView extends VerticalLayout
               XincoDBManager.CONFIG.fileRepositoryPath, data.getId(), "" + data.getId());
       File baseFile = new File(base);
       baseFile.getParentFile().mkdirs();
-      try (InputStream in = buffer.getInputStream()) {
+      try (InputStream in = inputStream) {
         Files.copy(in, baseFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
       }
 
@@ -1760,8 +1797,7 @@ public class ExplorerView extends VerticalLayout
 
       XMLGregorianCalendar now =
           DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
-      new XincoAddAttributeServer(data.getId(), 1, 0, 0L, 0.0, buffer.getFileName(), "", now)
-          .write2DB();
+      new XincoAddAttributeServer(data.getId(), 1, 0, 0L, 0.0, fileName, "", now).write2DB();
       new XincoAddAttributeServer(data.getId(), 2, 0, baseFile.length(), 0.0, "", "", now)
           .write2DB();
 
