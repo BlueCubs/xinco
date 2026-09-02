@@ -33,15 +33,14 @@ import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFact
 import static com.bluecubs.xinco.tools.Tool.MIN_PORT_NUMBER;
 import static com.bluecubs.xinco.tools.Tool.copyFile;
 import static com.bluecubs.xinco.tools.Tool.isPortAvaialble;
-import static java.lang.System.getProperty;
 import static java.util.Locale.getDefault;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static java.util.logging.Logger.getLogger;
-import static org.jodconverter.JodConverter.convert;
-import static org.jodconverter.office.LocalOfficeManager.builder;
-import static org.jodconverter.office.OfficeUtils.stopQuietly;
+import static org.jodconverter.core.office.OfficeUtils.stopQuietly;
+import static org.jodconverter.local.JodConverter.convert;
+import static org.jodconverter.local.office.LocalOfficeManager.builder;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreDataHasDependencyServer;
@@ -57,11 +56,13 @@ import com.bluecubs.xinco.tools.Tool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
-import org.jodconverter.office.OfficeException;
-import org.jodconverter.office.OfficeManager;
+import lombok.NonNull;
+import org.jodconverter.core.office.OfficeException;
+import org.jodconverter.core.office.OfficeManager;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
@@ -91,7 +92,7 @@ public class XincoRenderingThread extends Thread {
         && !original.getXincoAddAttributes().isEmpty()
         && !original
             .getXincoAddAttributes()
-            .get(0)
+            .getFirst()
             .getAttribVarchar()
             .toLowerCase(getDefault())
             .endsWith(".pdf")) {
@@ -159,7 +160,7 @@ public class XincoRenderingThread extends Thread {
             rendition,
             new File(
                 rendition.getParentFile().getAbsolutePath()
-                    + getProperty("file.separator")
+                    + FileSystems.getDefault().getSeparator()
                     + rendering.getId()));
         rendition.delete();
         LOG.log(FINE, "Converted the file!");
@@ -175,7 +176,8 @@ public class XincoRenderingThread extends Thread {
     }
   }
 
-  public static boolean getPDFRendering(File source, File dest) throws IllegalStateException {
+  public static boolean getPDFRendering(@NonNull File source, @NonNull File dest)
+      throws IllegalStateException {
     OfficeManager officeManager = null;
     try {
       // Make sure the port is available
@@ -193,7 +195,7 @@ public class XincoRenderingThread extends Thread {
       }
       // Connect to an OpenOffice.org instance running on available port
       try {
-        officeManager = builder().portNumbers(port).build();
+        officeManager = builder().install().portNumbers(port).build();
         officeManager.start();
 
         convert(source).to(dest).execute();
