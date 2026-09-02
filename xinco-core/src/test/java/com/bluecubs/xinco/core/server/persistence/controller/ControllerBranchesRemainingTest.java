@@ -9,9 +9,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import java.util.ArrayList;
-import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -302,22 +300,5 @@ public class ControllerBranchesRemainingTest extends AbstractXincoDataBaseTestCa
     data.setXincoAddAttributeList(new ArrayList<>());
     dataCtrl.create(data);
     return data;
-  }
-
-  private XincoCoreUser buildUser(XincoCoreUserJpaController ctrl, String suffix) throws Exception {
-    XincoCoreUser user = new XincoCoreUser();
-    user.setUsername("user." + suffix);
-    user.setUserpassword("pw_" + suffix);
-    user.setLastName("Last");
-    user.setFirstName("First");
-    user.setEmail(suffix + "@example.com");
-    user.setStatusNumber(1);
-    user.setAttempts(0);
-    user.setLastModified(new Date());
-    user.setXincoCoreAceList(new ArrayList<>());
-    user.setXincoCoreLogList(new ArrayList<>());
-    user.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<>());
-    ctrl.create(user);
-    return user;
   }
 }

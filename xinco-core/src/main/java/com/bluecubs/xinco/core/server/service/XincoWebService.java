@@ -255,8 +255,7 @@ public class XincoWebService {
         // specific log object is requested
         if ((data.getXincoCoreLogs().size() > 1) && (in0.getXincoCoreLogs().size() == 1)) {
           // find id of log
-          if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode()
-              == CHECKIN.ordinal() + 1)) {
+          if (((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == CHECKIN.ordinal() + 1) {
             revision = "-" + ((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getId();
           }
         }

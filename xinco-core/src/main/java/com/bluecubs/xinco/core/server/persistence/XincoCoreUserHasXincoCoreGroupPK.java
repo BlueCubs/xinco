@@ -75,7 +75,7 @@ public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
     if (this.xincoCoreUserId != other.xincoCoreUserId) {
       return false;
     }
-    return !(this.xincoCoreGroupId != other.xincoCoreGroupId);
+    return this.xincoCoreGroupId == other.xincoCoreGroupId;
   }
 
   @Override

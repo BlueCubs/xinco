@@ -610,7 +610,7 @@ class ViewerViewTest {
   }
 
   @Test
-  void urlDataItem_shouldOpenInBrowser() throws Exception {
+  void urlDataItem_shouldOpenInBrowser() {
     // §2.10: selecting a URL data item renders an Anchor in viewerPane (type=3, attrib id=1).
     ViewerView view = new ViewerView(new UserSession());
     addView(view);

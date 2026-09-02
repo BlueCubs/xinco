@@ -38,6 +38,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
@@ -60,14 +62,20 @@ public class XincoId implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
+  @Setter
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Getter
   @Column(name = "id")
   private Integer id;
 
   @Column(name = "last_id")
+  @Getter
+  @Setter
   private Integer lastId;
 
   @Size(min = 1, max = 255) @Column(name = "tablename")
+  @Getter
+  @Setter
   private String tablename;
 
   public XincoId() {}
@@ -77,34 +85,9 @@ public class XincoId implements Serializable {
     this.lastId = lastId;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public Integer getLastId() {
-    return lastId;
-  }
-
-  public void setLastId(Integer lastId) {
-    this.lastId = lastId;
-  }
-
-  public String getTablename() {
-    return tablename;
-  }
-
-  public void setTablename(String tablename) {
-    this.tablename = tablename;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -114,10 +97,8 @@ public class XincoId implements Serializable {
       return false;
     }
     XincoId other = (XincoId) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

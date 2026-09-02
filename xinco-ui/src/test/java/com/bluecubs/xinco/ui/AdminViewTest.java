@@ -84,28 +84,28 @@ class AdminViewTest {
   }
 
   @Test
-  void adminView_usersTab_hasToolbar() throws Exception {
+  void adminView_usersTab_hasToolbar() {
     HorizontalLayout toolbar = getUserToolbar();
     assertNotNull(toolbar);
     assertEquals(4, toolbar.getComponentCount(), "New / Edit / Lock / Delete");
   }
 
   @Test
-  void adminView_groupsTab_hasToolbar() throws Exception {
+  void adminView_groupsTab_hasToolbar() {
     HorizontalLayout toolbar = getGroupToolbar();
     assertNotNull(toolbar);
     assertEquals(3, toolbar.getComponentCount(), "New / Edit / Delete");
   }
 
   @Test
-  void adminView_userToolbar_firstButtonIsNewUser() throws Exception {
+  void adminView_userToolbar_firstButtonIsNewUser() {
     HorizontalLayout toolbar = getUserToolbar();
     Button btn = (Button) toolbar.getComponentAt(0);
     assertEquals("Add User", btn.getText());
   }
 
   @Test
-  void adminView_groupToolbar_firstButtonIsNewGroup() throws Exception {
+  void adminView_groupToolbar_firstButtonIsNewGroup() {
     HorizontalLayout toolbar = getGroupToolbar();
     Button btn = (Button) toolbar.getComponentAt(0);
     assertEquals("Add Group", btn.getText());
@@ -212,7 +212,7 @@ class AdminViewTest {
   // ---- openSettingDialog ----
 
   @Test
-  void adminView_settingsTab_hasToolbarWithEditButton() throws Exception {
+  void adminView_settingsTab_hasToolbarWithEditButton() {
     HorizontalLayout toolbar = getSettingsToolbar();
     assertNotNull(toolbar);
     assertEquals(1, toolbar.getComponentCount(), "Edit only — no create/delete for settings");
@@ -241,7 +241,7 @@ class AdminViewTest {
   // ---- Data Types tab ----
 
   @Test
-  void adminView_dataTypesTab_hasToolbarWithThreeButtons() throws Exception {
+  void adminView_dataTypesTab_hasToolbarWithThreeButtons() {
     HorizontalLayout toolbar = getDataTypesToolbar();
     assertNotNull(toolbar);
     assertEquals(3, toolbar.getComponentCount(), "New / Edit / Delete");
@@ -309,7 +309,9 @@ class AdminViewTest {
   }
 
   private HorizontalLayout findToolbarWithCount(Component root, int count) {
-    if (root instanceof HorizontalLayout hl && hl.getComponentCount() == count) return hl;
+    if (root instanceof HorizontalLayout hl && hl.getComponentCount() == count) {
+      return hl;
+    }
     return root.getChildren()
         .map(c -> findToolbarWithCount(c, count))
         .filter(Objects::nonNull)
@@ -323,7 +325,9 @@ class AdminViewTest {
   }
 
   private TextField findTextField(Component root, String label) {
-    if (root instanceof TextField tf && label.equals(tf.getLabel())) return tf;
+    if (root instanceof TextField tf && label.equals(tf.getLabel())) {
+      return tf;
+    }
     return root.getChildren()
         .map(c -> findTextField(c, label))
         .filter(Objects::nonNull)

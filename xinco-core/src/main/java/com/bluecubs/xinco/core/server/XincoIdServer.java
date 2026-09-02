@@ -101,7 +101,7 @@ public final class XincoIdServer extends XincoId {
     List result = namedQuery("XincoId.findAll");
     if (!result.isEmpty()) {
       result.forEach(
-          (o) -> {
+          o -> {
             ids.add(new XincoIdServer(((XincoId) o).getId()));
           });
     } else {

@@ -62,7 +62,7 @@ public class XincoDocumentTest extends AbstractXincoDataBaseTestCase {
    * Build a synthetic XincoCoreData that covers all attribute types (int, unsignedint, double,
    * varchar, text, datetime) in the getXincoDocument loop.
    */
-  public void testGetXincoDocument_allAttributeTypes() throws java.io.FileNotFoundException {
+  public void testGetXincoDocument_allAttributeTypes() {
     XincoCoreData data = new XincoCoreData();
     data.setId(42);
     data.setDesignation("AllTypesDoc");
@@ -151,7 +151,7 @@ public class XincoDocumentTest extends AbstractXincoDataBaseTestCase {
    * set to -1 (no indexing). No file access occurs and the method returns normally. Covers the
    * noIndex detection loop in getXincoDocument.
    */
-  public void testGetXincoDocument_fileType1_noIndexExt() throws java.io.FileNotFoundException {
+  public void testGetXincoDocument_fileType1_noIndexExt() {
     Document doc = XincoDocument.getXincoDocument(buildFileTypeData(77, "binary.exe"), true);
     assertNotNull(doc);
     assertEquals("77", doc.get("id"));

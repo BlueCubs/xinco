@@ -47,6 +47,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -79,7 +81,9 @@ public class XincoCoreLanguage implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreLanguageGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoCoreLanguageGen")
+  @Getter
   @TableGenerator(
       name = "XincoCoreLanguageGen",
       table = "xinco_id",
@@ -92,17 +96,25 @@ public class XincoCoreLanguage implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "sign")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "sign")
+  @Getter
   private String sign;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "designation")
+  @Getter
   private String designation;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreLanguage")
+  @Setter
   private List<XincoCoreNode> xincoCoreNodeList;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreLanguage")
+  @Setter
   private List<XincoCoreData> xincoCoreDataList;
 
   public XincoCoreLanguage() {}
@@ -117,52 +129,9 @@ public class XincoCoreLanguage implements Serializable {
     this.designation = designation;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getSign() {
-    return sign;
-  }
-
-  public void setSign(String sign) {
-    this.sign = sign;
-  }
-
-  public String getDesignation() {
-    return designation;
-  }
-
-  public void setDesignation(String designation) {
-    this.designation = designation;
-  }
-
-  @XmlTransient
-  public List<XincoCoreNode> getXincoCoreNodeList() {
-    return xincoCoreNodeList;
-  }
-
-  public void setXincoCoreNodeList(List<XincoCoreNode> xincoCoreNodeList) {
-    this.xincoCoreNodeList = xincoCoreNodeList;
-  }
-
-  @XmlTransient
-  public List<XincoCoreData> getXincoCoreDataList() {
-    return xincoCoreDataList;
-  }
-
-  public void setXincoCoreDataList(List<XincoCoreData> xincoCoreDataList) {
-    this.xincoCoreDataList = xincoCoreDataList;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -172,10 +141,8 @@ public class XincoCoreLanguage implements Serializable {
       return false;
     }
     XincoCoreLanguage other = (XincoCoreLanguage) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

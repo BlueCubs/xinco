@@ -143,9 +143,13 @@ public class PublisherView extends VerticalLayout implements HasUrlParameter<Int
     if (typeId == 1) {
       try {
         String path = XincoCoreDataServer.getLastMajorVersionDataPath(data.getId());
-        if (path == null) return new Span("-");
+        if (path == null) {
+          return new Span("-");
+        }
         File file = new File(path);
-        if (!file.exists()) return new Span("-");
+        if (!file.exists()) {
+          return new Span("-");
+        }
 
         String filename = getOriginalFilename(data);
 
@@ -205,7 +209,9 @@ public class PublisherView extends VerticalLayout implements HasUrlParameter<Int
   private static String detectMimeType(String filename, Path filePath) {
     try {
       String probed = Files.probeContentType(filePath);
-      if (probed != null) return probed;
+      if (probed != null) {
+        return probed;
+      }
     } catch (Exception ignored) {
     }
     int dot = filename.lastIndexOf('.');

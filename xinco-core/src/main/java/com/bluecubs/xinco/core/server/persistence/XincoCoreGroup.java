@@ -47,6 +47,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -76,7 +78,9 @@ public class XincoCoreGroup implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreGroupGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoCoreGroupGen")
+  @Getter
   @TableGenerator(
       name = "XincoCoreGroupGen",
       table = "xinco_id",
@@ -89,17 +93,25 @@ public class XincoCoreGroup implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "designation")
+  @Getter
   private String designation;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "status_number")
+  @NotNull @Setter
+  @Column(name = "status_number")
+  @Getter
   private int statusNumber;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(mappedBy = "xincoCoreGroup")
+  @Setter
   private List<XincoCoreAce> xincoCoreAceList;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreGroup")
+  @Setter
   private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList;
 
   public XincoCoreGroup() {}
@@ -114,53 +126,9 @@ public class XincoCoreGroup implements Serializable {
     this.statusNumber = statusNumber;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getDesignation() {
-    return designation;
-  }
-
-  public void setDesignation(String designation) {
-    this.designation = designation;
-  }
-
-  public int getStatusNumber() {
-    return statusNumber;
-  }
-
-  public void setStatusNumber(int statusNumber) {
-    this.statusNumber = statusNumber;
-  }
-
-  @XmlTransient
-  public List<XincoCoreAce> getXincoCoreAceList() {
-    return xincoCoreAceList;
-  }
-
-  public void setXincoCoreAceList(List<XincoCoreAce> xincoCoreAceList) {
-    this.xincoCoreAceList = xincoCoreAceList;
-  }
-
-  @XmlTransient
-  public List<XincoCoreUserHasXincoCoreGroup> getXincoCoreUserHasXincoCoreGroupList() {
-    return xincoCoreUserHasXincoCoreGroupList;
-  }
-
-  public void setXincoCoreUserHasXincoCoreGroupList(
-      List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList) {
-    this.xincoCoreUserHasXincoCoreGroupList = xincoCoreUserHasXincoCoreGroupList;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -170,10 +138,8 @@ public class XincoCoreGroup implements Serializable {
       return false;
     }
     XincoCoreGroup other = (XincoCoreGroup) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

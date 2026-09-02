@@ -131,7 +131,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private static UserSession resolveSession() {
-    if (VaadinSession.getCurrent() == null) return new UserSession();
+    if (VaadinSession.getCurrent() == null) {
+      return new UserSession();
+    }
     UserSession s = VaadinSession.getCurrent().getAttribute(UserSession.class);
     return s != null ? s : new UserSession();
   }
@@ -419,7 +421,9 @@ public class ExplorerView extends VerticalLayout
         .forEach(
             a -> {
               String value = a.getAttribText() != null ? a.getAttribText() : a.getAttribVarchar();
-              if (value == null || value.isBlank()) return;
+              if (value == null || value.isBlank()) {
+                return;
+              }
               int idx = a.getAttributeId() - 1;
               String label = idx < labels.length ? labels[idx] : "Notes";
               TextField tf = new TextField(label);
@@ -438,8 +442,12 @@ public class ExplorerView extends VerticalLayout
   }
 
   private String itemDesignation(Object item) {
-    if (item instanceof XincoCoreNodeServer n) return n.getDesignation();
-    if (item instanceof XincoCoreDataServer d) return d.getDesignation();
+    if (item instanceof XincoCoreNodeServer n) {
+      return n.getDesignation();
+    }
+    if (item instanceof XincoCoreDataServer d) {
+      return d.getDesignation();
+    }
     return "";
   }
 
@@ -466,15 +474,31 @@ public class ExplorerView extends VerticalLayout
 
   private Icon dataTypeIcon(XincoCoreDataServer data) {
     int typeId = data.getXincoCoreDataType() != null ? data.getXincoCoreDataType().getId() : 1;
-    if (typeId == 2) return VaadinIcon.GLOBE.create();
-    if (typeId == 3) return VaadinIcon.FILE_TEXT.create();
-    if (typeId == 4) return VaadinIcon.USER.create();
+    if (typeId == 2) {
+      return VaadinIcon.GLOBE.create();
+    }
+    if (typeId == 3) {
+      return VaadinIcon.FILE_TEXT.create();
+    }
+    if (typeId == 4) {
+      return VaadinIcon.USER.create();
+    }
     String name = data.getDesignation().toLowerCase();
-    if (name.matches(".*\\.(png|jpg|jpeg|gif|bmp|webp|svg)")) return VaadinIcon.PICTURE.create();
-    if (name.matches(".*\\.(mp3|wav|ogg|flac|m4a|aac)")) return VaadinIcon.MUSIC.create();
-    if (name.matches(".*\\.(mp4|avi|mov|mkv|webm|wmv)")) return VaadinIcon.FILM.create();
-    if (name.matches(".*\\.(zip|tar|gz|7z|rar|bz2)")) return VaadinIcon.ARCHIVE.create();
-    if (name.matches(".*\\.pdf")) return VaadinIcon.FILE_TEXT.create();
+    if (name.matches(".*\\.(png|jpg|jpeg|gif|bmp|webp|svg)")) {
+      return VaadinIcon.PICTURE.create();
+    }
+    if (name.matches(".*\\.(mp3|wav|ogg|flac|m4a|aac)")) {
+      return VaadinIcon.MUSIC.create();
+    }
+    if (name.matches(".*\\.(mp4|avi|mov|mkv|webm|wmv)")) {
+      return VaadinIcon.FILM.create();
+    }
+    if (name.matches(".*\\.(zip|tar|gz|7z|rar|bz2)")) {
+      return VaadinIcon.ARCHIVE.create();
+    }
+    if (name.matches(".*\\.pdf")) {
+      return VaadinIcon.FILE_TEXT.create();
+    }
     return VaadinIcon.FILE_O.create();
   }
 
@@ -569,7 +593,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private List<Object> getChildNodes(Object item) {
-    if (!(item instanceof XincoCoreNodeServer parent)) return List.of();
+    if (!(item instanceof XincoCoreNodeServer parent)) {
+      return List.of();
+    }
     parent.fillXincoCoreNodes();
     return new ArrayList<>(parent.getXincoCoreNodes());
   }
@@ -605,7 +631,9 @@ public class ExplorerView extends VerticalLayout
                 .filter(n -> n.getId() == stepId)
                 .findFirst()
                 .orElse(null);
-        if (child == null) return;
+        if (child == null) {
+          return;
+        }
         current = child;
       }
 
@@ -686,7 +714,9 @@ public class ExplorerView extends VerticalLayout
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void doSearch() {
     String query = searchField.getValue().trim();
-    if (query.isEmpty()) return;
+    if (query.isEmpty()) {
+      return;
+    }
 
     java.util.ArrayList raw = searcher.apply(query);
     if (raw == null) {
@@ -729,7 +759,9 @@ public class ExplorerView extends VerticalLayout
   // ── Actions ───────────────────────────────────────────────────────────────
 
   private void openVersionHistoryDialog() {
-    if (selectedData == null) return;
+    if (selectedData == null) {
+      return;
+    }
     XincoCoreDataServer data;
     try {
       data = new XincoCoreDataServer(selectedData.getId());
@@ -779,7 +811,9 @@ public class ExplorerView extends VerticalLayout
         .setFlexGrow(1);
     grid.addComponentColumn(
             row -> {
-              if (!row.hasFile()) return new Span();
+              if (!row.hasFile()) {
+                return new Span();
+              }
               Button btn = new Button(getTranslation("menu.edit.downloadrevision"));
               btn.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
               btn.addClickListener(
@@ -843,7 +877,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void pasteClipboard() {
-    if (selectedNode == null) return;
+    if (selectedNode == null) {
+      return;
+    }
     int targetNodeId = selectedNode.getId();
     int userId = session.getUser() != null ? session.getUser().getId() : 1;
 
@@ -912,7 +948,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void downloadSelected() {
-    if (selectedData == null) return;
+    if (selectedData == null) {
+      return;
+    }
     try {
       String path = XincoCoreDataServer.getLastMajorVersionDataPath(selectedData.getId());
       File file = new File(path);
@@ -947,7 +985,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void openAddDataDialog() {
-    if (selectedNode == null) return;
+    if (selectedNode == null) {
+      return;
+    }
 
     // ── Type selector ────────────────────────────────────────────────────────
     Select<Integer> typeSelect = new Select<>();
@@ -1386,7 +1426,7 @@ public class ExplorerView extends VerticalLayout
       } else {
         new XincoAddAttributeServer(dataId, 7, 0, 0L, 0.0, "", "", now).write2DB();
       }
-      for (int i = 8; i <= 12; i++) {
+      for (int i = 8; i < 12 + 1; i++) {
         new XincoAddAttributeServer(dataId, i, 0, 0L, 0.0, "", "", now).write2DB();
       }
 
@@ -1408,7 +1448,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void openNewFolderDialog() {
-    if (selectedNode == null) return;
+    if (selectedNode == null) {
+      return;
+    }
     Dialog dialog = new Dialog();
     dialog.setHeaderTitle(getTranslation("general.newfolder"));
     TextField nameField = new TextField(getTranslation("general.folder"));
@@ -1447,7 +1489,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   void openRenameDialog() {
-    if (selectedNode == null && selectedData == null) return;
+    if (selectedNode == null && selectedData == null) {
+      return;
+    }
     String current =
         selectedData != null ? selectedData.getDesignation() : selectedNode.getDesignation();
     Dialog dialog = new Dialog();
@@ -1498,7 +1542,9 @@ public class ExplorerView extends VerticalLayout
         selectedData != null
             ? "data item '" + selectedData.getDesignation() + "'"
             : selectedNode != null ? "folder '" + selectedNode.getDesignation() + "'" : null;
-    if (target == null) return;
+    if (target == null) {
+      return;
+    }
 
     ConfirmDialog confirm = new ConfirmDialog();
     confirm.setHeader("Move to Trash?");
@@ -1547,7 +1593,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void checkoutSelected() {
-    if (selectedData == null) return;
+    if (selectedData == null) {
+      return;
+    }
     showReasonDialog(
         getTranslation("menu.edit.checkoutfile"),
         getTranslation("menu.edit.checkoutfile"),
@@ -1596,7 +1644,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   void commentSelected() {
-    if (selectedData == null) return;
+    if (selectedData == null) {
+      return;
+    }
     showReasonDialog(
         getTranslation("menu.edit.commentdata"),
         getTranslation("general.save"),
@@ -1637,7 +1687,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void openCheckinDialog() {
-    if (selectedData == null) return;
+    if (selectedData == null) {
+      return;
+    }
 
     // Load current version from last log to pre-populate the version fields
     int curHigh = 1, curMid = 0, curLow = 0;
@@ -1657,7 +1709,7 @@ public class ExplorerView extends VerticalLayout
       }
     } catch (Throwable ignored) {
     }
-    final int basHigh = curHigh, basMid = curMid, basLow = curLow;
+    final int basHigh = curHigh, basMid = curMid;
 
     AtomicReference<String> uploadedName = new AtomicReference<>("");
     AtomicReference<byte[]> uploadedData = new AtomicReference<>(new byte[0]);
@@ -1815,7 +1867,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void undoCheckoutSelected() {
-    if (selectedData == null) return;
+    if (selectedData == null) {
+      return;
+    }
     ConfirmDialog confirm = new ConfirmDialog();
     confirm.setHeader(getTranslation("menu.edit.undocheckout") + "?");
     confirm.setText(
@@ -1867,7 +1921,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void lockSelected() {
-    if (selectedData == null) return;
+    if (selectedData == null) {
+      return;
+    }
     showReasonDialog(
         getTranslation("menu.edit.lockdata"),
         getTranslation("menu.edit.lockdata"),
@@ -1914,7 +1970,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void publishSelected() {
-    if (selectedData == null) return;
+    if (selectedData == null) {
+      return;
+    }
     showReasonDialog(
         getTranslation("menu.edit.publishdata"),
         getTranslation("menu.edit.publishdata"),
@@ -1983,7 +2041,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   void sendEmailSelected() {
-    if (selectedData == null || selectedData.getXincoCoreDataType().getId() != 4) return;
+    if (selectedData == null || selectedData.getXincoCoreDataType().getId() != 4) {
+      return;
+    }
     String email =
         selectedData.getXincoAddAttributes().stream()
             .filter(a -> a.getAttributeId() == 10)
@@ -1999,7 +2059,9 @@ public class ExplorerView extends VerticalLayout
   }
 
   private void archiveSelected() {
-    if (selectedData == null || selectedData.getXincoCoreDataType().getId() != 1) return;
+    if (selectedData == null || selectedData.getXincoCoreDataType().getId() != 1) {
+      return;
+    }
     try {
       XincoCoreDataServer data = new XincoCoreDataServer(selectedData.getId());
       openArchiveDialog(data);
@@ -2014,7 +2076,9 @@ public class ExplorerView extends VerticalLayout
     LocalDate currentDate = LocalDate.now().plusDays(30);
     int currentDays = 30;
     for (var attr : data.getXincoAddAttributes()) {
-      if (attr.getAttributeId() == 5) currentModel = (int) attr.getAttribUnsignedint();
+      if (attr.getAttributeId() == 5) {
+        currentModel = (int) attr.getAttribUnsignedint();
+      }
       if (attr.getAttributeId() == 6 && attr.getAttribDatetime() != null) {
         try {
           currentDate =
@@ -2022,7 +2086,9 @@ public class ExplorerView extends VerticalLayout
         } catch (Exception ignored) {
         }
       }
-      if (attr.getAttributeId() == 7) currentDays = Math.max(1, (int) attr.getAttribUnsignedint());
+      if (attr.getAttributeId() == 7) {
+        currentDays = Math.max(1, (int) attr.getAttribUnsignedint());
+      }
     }
 
     Select<Integer> modelSelect = new Select<>();
@@ -2124,7 +2190,9 @@ public class ExplorerView extends VerticalLayout
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void openAclDialog() {
-    if (selectedNode == null && selectedData == null) return;
+    if (selectedNode == null && selectedData == null) {
+      return;
+    }
 
     boolean isData = selectedData != null;
     int targetId = isData ? selectedData.getId() : selectedNode.getId();

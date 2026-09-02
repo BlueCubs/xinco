@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Extracts information from browser
@@ -22,11 +23,7 @@ public final class BrowserDataExtractor extends HttpServlet {
 
   HttpServletRequest request;
   HttpSession session;
-  String userAgent;
-
-  public void setUserAgent(String ua) {
-    this.userAgent = ua != null ? ua.toLowerCase(getDefault()) : "";
-  }
+  @Setter String userAgent;
 
   @Getter String company;
   @Getter String name;

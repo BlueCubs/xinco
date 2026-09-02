@@ -36,6 +36,8 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -69,30 +71,36 @@ import org.hibernate.envers.Audited;
 public class XincoCoreDataHasDependency implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  @EmbeddedId protected XincoCoreDataHasDependencyPK xincoCoreDataHasDependencyPK;
+  @EmbeddedId @Getter @Setter protected XincoCoreDataHasDependencyPK xincoCoreDataHasDependencyPK;
 
+  @Getter
   @JoinColumn(
       name = "dependency_type_id",
       referencedColumnName = "id",
       insertable = false,
       updatable = false)
   @ManyToOne(optional = false)
+  @Setter
   private XincoDependencyType xincoDependencyType;
 
+  @Getter
   @JoinColumn(
       name = "xinco_core_data_children_id",
       referencedColumnName = "id",
       insertable = false,
       updatable = false)
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreData xincoCoreData;
 
+  @Getter
   @JoinColumn(
       name = "xinco_core_data_parent_id",
       referencedColumnName = "id",
       insertable = false,
       updatable = false)
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreData xincoCoreData1;
 
   public XincoCoreDataHasDependency() {}
@@ -108,43 +116,10 @@ public class XincoCoreDataHasDependency implements Serializable {
             xincoCoreDataParentId, xincoCoreDataChildrenId, dependencyTypeId);
   }
 
-  public XincoCoreDataHasDependencyPK getXincoCoreDataHasDependencyPK() {
-    return xincoCoreDataHasDependencyPK;
-  }
-
-  public void setXincoCoreDataHasDependencyPK(
-      XincoCoreDataHasDependencyPK xincoCoreDataHasDependencyPK) {
-    this.xincoCoreDataHasDependencyPK = xincoCoreDataHasDependencyPK;
-  }
-
-  public XincoDependencyType getXincoDependencyType() {
-    return xincoDependencyType;
-  }
-
-  public void setXincoDependencyType(XincoDependencyType xincoDependencyType) {
-    this.xincoDependencyType = xincoDependencyType;
-  }
-
-  public XincoCoreData getXincoCoreData() {
-    return xincoCoreData;
-  }
-
-  public void setXincoCoreData(XincoCoreData xincoCoreData) {
-    this.xincoCoreData = xincoCoreData;
-  }
-
-  public XincoCoreData getXincoCoreData1() {
-    return xincoCoreData1;
-  }
-
-  public void setXincoCoreData1(XincoCoreData xincoCoreData1) {
-    this.xincoCoreData1 = xincoCoreData1;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (xincoCoreDataHasDependencyPK != null ? xincoCoreDataHasDependencyPK.hashCode() : 0);
+    int hash =
+        0 + (xincoCoreDataHasDependencyPK != null ? xincoCoreDataHasDependencyPK.hashCode() : 0);
     return hash;
   }
 
@@ -154,12 +129,10 @@ public class XincoCoreDataHasDependency implements Serializable {
       return false;
     }
     XincoCoreDataHasDependency other = (XincoCoreDataHasDependency) object;
-    if ((this.xincoCoreDataHasDependencyPK == null && other.xincoCoreDataHasDependencyPK != null)
-        || (this.xincoCoreDataHasDependencyPK != null
-            && !this.xincoCoreDataHasDependencyPK.equals(other.xincoCoreDataHasDependencyPK))) {
-      return false;
-    }
-    return true;
+    return (!(this.xincoCoreDataHasDependencyPK == null)
+            || !(other.xincoCoreDataHasDependencyPK != null))
+        && (!(this.xincoCoreDataHasDependencyPK != null)
+            || this.xincoCoreDataHasDependencyPK.equals(other.xincoCoreDataHasDependencyPK));
   }
 
   @Override

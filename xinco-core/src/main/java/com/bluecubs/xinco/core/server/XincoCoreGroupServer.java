@@ -133,7 +133,7 @@ public final class XincoCoreGroupServer extends XincoCoreGroup {
     try {
       result = createdQuery("SELECT xcg FROM XincoCoreGroup xcg ORDER BY xcg.designation");
       result.forEach(
-          (o) -> {
+          o -> {
             coreGroups.add(
                 new XincoCoreGroupServer(
                     (com.bluecubs.xinco.core.server.persistence.XincoCoreGroup) o));

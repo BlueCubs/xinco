@@ -31,6 +31,8 @@
  */
 package com.bluecubs.xinco.core;
 
+import lombok.Getter;
+
 /**
  * @author Javier A. Ortiz Bultron javier.ortiz.78@gmail.com
  */
@@ -45,7 +47,7 @@ public enum OPCode {
   ARCHIVED("datawizard.logging.archivecomment"),
   COMMENT("datawizard.logging.commentcomment"),
   DATA_MOVE("datawizard.logging.move");
-  private String name;
+  @Getter private String name;
 
   OPCode(String name) {
     this.name = name;
@@ -58,12 +60,5 @@ public enum OPCode {
     } else {
       return null;
     }
-  }
-
-  /**
-   * @return the name
-   */
-  public String getName() {
-    return name;
   }
 }

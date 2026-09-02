@@ -40,6 +40,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -76,26 +78,34 @@ import org.hibernate.envers.Audited;
 public class XincoCoreDataTypeAttribute implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  @EmbeddedId protected XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK;
+  @EmbeddedId @Getter @Setter protected XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "designation")
+  @Getter
   private String designation;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "data_type")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "data_type")
+  @Getter
   private String dataType;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "attr_size")
+  @NotNull @Setter
+  @Column(name = "attr_size")
+  @Getter
   private int attrSize;
 
+  @Getter
   @JoinColumn(
       name = "xinco_core_data_type_id",
       referencedColumnName = "id",
       insertable = false,
       updatable = false)
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreDataType xincoCoreDataType;
 
   public XincoCoreDataTypeAttribute() {}
@@ -120,51 +130,10 @@ public class XincoCoreDataTypeAttribute implements Serializable {
         new XincoCoreDataTypeAttributePK(xincoCoreDataTypeId, attributeId);
   }
 
-  public XincoCoreDataTypeAttributePK getXincoCoreDataTypeAttributePK() {
-    return xincoCoreDataTypeAttributePK;
-  }
-
-  public void setXincoCoreDataTypeAttributePK(
-      XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK) {
-    this.xincoCoreDataTypeAttributePK = xincoCoreDataTypeAttributePK;
-  }
-
-  public String getDesignation() {
-    return designation;
-  }
-
-  public void setDesignation(String designation) {
-    this.designation = designation;
-  }
-
-  public String getDataType() {
-    return dataType;
-  }
-
-  public void setDataType(String dataType) {
-    this.dataType = dataType;
-  }
-
-  public int getAttrSize() {
-    return attrSize;
-  }
-
-  public void setAttrSize(int attrSize) {
-    this.attrSize = attrSize;
-  }
-
-  public XincoCoreDataType getXincoCoreDataType() {
-    return xincoCoreDataType;
-  }
-
-  public void setXincoCoreDataType(XincoCoreDataType xincoCoreDataType) {
-    this.xincoCoreDataType = xincoCoreDataType;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (xincoCoreDataTypeAttributePK != null ? xincoCoreDataTypeAttributePK.hashCode() : 0);
+    int hash =
+        0 + (xincoCoreDataTypeAttributePK != null ? xincoCoreDataTypeAttributePK.hashCode() : 0);
     return hash;
   }
 
@@ -174,12 +143,10 @@ public class XincoCoreDataTypeAttribute implements Serializable {
       return false;
     }
     XincoCoreDataTypeAttribute other = (XincoCoreDataTypeAttribute) object;
-    if ((this.xincoCoreDataTypeAttributePK == null && other.xincoCoreDataTypeAttributePK != null)
-        || (this.xincoCoreDataTypeAttributePK != null
-            && !this.xincoCoreDataTypeAttributePK.equals(other.xincoCoreDataTypeAttributePK))) {
-      return false;
-    }
-    return true;
+    return (!(this.xincoCoreDataTypeAttributePK == null)
+            || !(other.xincoCoreDataTypeAttributePK != null))
+        && (!(this.xincoCoreDataTypeAttributePK != null)
+            || this.xincoCoreDataTypeAttributePK.equals(other.xincoCoreDataTypeAttributePK));
   }
 
   @Override

@@ -21,7 +21,7 @@ public class XincoCoreLanguageControllerTest extends AbstractXincoDataBaseTestCa
     return new TestSuite(XincoCoreLanguageControllerTest.class);
   }
 
-  private XincoCoreLanguageJpaController controller() throws XincoException {
+  private XincoCoreLanguageJpaController controller() {
     return new XincoCoreLanguageJpaController(getEntityManagerFactory());
   }
 

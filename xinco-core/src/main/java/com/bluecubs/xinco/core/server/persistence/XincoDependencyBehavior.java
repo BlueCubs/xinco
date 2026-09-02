@@ -47,6 +47,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -78,7 +80,9 @@ public class XincoDependencyBehavior implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoDependencyBehaviorGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoDependencyBehaviorGen")
+  @Getter
   @TableGenerator(
       name = "XincoDependencyBehaviorGen",
       table = "xinco_id",
@@ -91,13 +95,19 @@ public class XincoDependencyBehavior implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 45) @Column(name = "designation")
+  @NotNull @Setter
+  @Size(min = 1, max = 45) @Column(name = "designation")
+  @Getter
   private String designation;
 
   @Size(max = 45) @Column(name = "description")
+  @Getter
+  @Setter
   private String description;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoDependencyBehavior")
+  @Setter
   private List<XincoDependencyType> xincoDependencyTypeList;
 
   public XincoDependencyBehavior() {}
@@ -111,43 +121,9 @@ public class XincoDependencyBehavior implements Serializable {
     this.designation = designation;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getDesignation() {
-    return designation;
-  }
-
-  public void setDesignation(String designation) {
-    this.designation = designation;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  @XmlTransient
-  public List<XincoDependencyType> getXincoDependencyTypeList() {
-    return xincoDependencyTypeList;
-  }
-
-  public void setXincoDependencyTypeList(List<XincoDependencyType> xincoDependencyTypeList) {
-    this.xincoDependencyTypeList = xincoDependencyTypeList;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -157,10 +133,8 @@ public class XincoDependencyBehavior implements Serializable {
       return false;
     }
     XincoDependencyBehavior other = (XincoDependencyBehavior) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

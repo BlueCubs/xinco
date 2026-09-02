@@ -21,7 +21,7 @@ public class XincoCoreUserControllerTest extends AbstractXincoDataBaseTestCase {
     return new TestSuite(XincoCoreUserControllerTest.class);
   }
 
-  private XincoCoreUserJpaController controller() throws XincoException {
+  private XincoCoreUserJpaController controller() {
     return new XincoCoreUserJpaController(getEntityManagerFactory());
   }
 

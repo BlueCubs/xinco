@@ -46,6 +46,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -73,7 +75,9 @@ public class XincoCoreDataType implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreDataTypeGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoCoreDataTypeGen")
+  @Getter
   @TableGenerator(
       name = "XincoCoreDataTypeGen",
       table = "xinco_id",
@@ -86,17 +90,25 @@ public class XincoCoreDataType implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "designation")
+  @Getter
   private String designation;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "description")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "description")
+  @Getter
   private String description;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreDataType")
+  @Setter
   private List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreDataType")
+  @Setter
   private List<XincoCoreData> xincoCoreDataList;
 
   public XincoCoreDataType() {}
@@ -111,53 +123,9 @@ public class XincoCoreDataType implements Serializable {
     this.description = description;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getDesignation() {
-    return designation;
-  }
-
-  public void setDesignation(String designation) {
-    this.designation = designation;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  @XmlTransient
-  public List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttributeList() {
-    return xincoCoreDataTypeAttributeList;
-  }
-
-  public void setXincoCoreDataTypeAttributeList(
-      List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList) {
-    this.xincoCoreDataTypeAttributeList = xincoCoreDataTypeAttributeList;
-  }
-
-  @XmlTransient
-  public List<XincoCoreData> getXincoCoreDataList() {
-    return xincoCoreDataList;
-  }
-
-  public void setXincoCoreDataList(List<XincoCoreData> xincoCoreDataList) {
-    this.xincoCoreDataList = xincoCoreDataList;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -167,10 +135,8 @@ public class XincoCoreDataType implements Serializable {
       return false;
     }
     XincoCoreDataType other = (XincoCoreDataType) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

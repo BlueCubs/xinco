@@ -83,7 +83,7 @@ public final class XincoDependencyTypeServer extends XincoDependencyType {
     return getId();
   }
 
-  public static int deleteFromDB(int id) throws XincoException {
+  public static int deleteFromDB(int id) {
     try {
       new XincoDependencyTypeJpaController(getEntityManagerFactory()).destroy(id);
     } catch (IllegalOrphanException | NonexistentEntityException ex) {

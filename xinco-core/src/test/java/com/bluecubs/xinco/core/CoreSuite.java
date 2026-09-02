@@ -23,14 +23,14 @@ import org.junit.runners.Suite;
 public class CoreSuite {
 
   @BeforeClass
-  public static void setUpClass() throws Exception {}
+  public static void setUpClass() {}
 
   @AfterClass
-  public static void tearDownClass() throws Exception {}
+  public static void tearDownClass() {}
 
   @Before
-  public void setUp() throws Exception {}
+  public void setUp() {}
 
   @After
-  public void tearDown() throws Exception {}
+  public void tearDown() {}
 }

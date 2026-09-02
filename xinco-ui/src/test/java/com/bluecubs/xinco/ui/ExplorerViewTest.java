@@ -852,10 +852,7 @@ class ExplorerViewTest {
         addBtns.get(0).click();
       }
     } finally {
-      try {
-        Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
-      } catch (Exception ignored) {
-      }
+      Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
     }
   }
 
@@ -1144,10 +1141,7 @@ class ExplorerViewTest {
         btns.get(0).click();
       }
     } finally {
-      try {
-        Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
-      } catch (Exception ignored) {
-      }
+      Files.walk(tempDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
     }
   }
 
@@ -1317,7 +1311,7 @@ class ExplorerViewTest {
   }
 
   @Test
-  void doSaveAcl_withWritableAce_callsWrite2DB() throws Exception {
+  void doSaveAcl_withWritableAce_callsWrite2DB() {
     ExplorerView view = new ExplorerView(loggedInSession());
     addView(view);
     XincoCoreACEServer mockAce = mock(XincoCoreACEServer.class);
@@ -1331,7 +1325,7 @@ class ExplorerViewTest {
   }
 
   @Test
-  void doSaveAcl_writeThrows_dialogStaysOpen() throws Exception {
+  void doSaveAcl_writeThrows_dialogStaysOpen() {
     ExplorerView view = new ExplorerView(loggedInSession());
     addView(view);
     XincoCoreACEServer mockAce = mock(XincoCoreACEServer.class);
@@ -2039,7 +2033,7 @@ class ExplorerViewTest {
   // ---- sendEmailSelected ----
 
   @Test
-  void sendEmailSelected_nullData_isNoop() throws Exception {
+  void sendEmailSelected_nullData_isNoop() {
     ExplorerView view = new ExplorerView(new UserSession());
     addView(view);
     assertDoesNotThrow(() -> view.sendEmailSelected());
@@ -3139,7 +3133,9 @@ class ExplorerViewTest {
               .findFirst()
               .map(s -> (Select<Integer>) s)
               .orElse(null);
-      if (typeSelect != null) typeSelect.setValue(2);
+      if (typeSelect != null) {
+        typeSelect.setValue(2);
+      }
 
       // Fill designation
       _find(TextField.class, spec -> spec.withLabel("File Name")).stream()
@@ -3148,7 +3144,9 @@ class ExplorerViewTest {
 
       // Click Add → exercises the else-if(type==4) branch skipped, falls to doAddNonFileData
       List<Button> addBtns = _find(Button.class, spec -> spec.withText("Add"));
-      if (!addBtns.isEmpty()) addBtns.get(0).click();
+      if (!addBtns.isEmpty()) {
+        addBtns.get(0).click();
+      }
     }
   }
 

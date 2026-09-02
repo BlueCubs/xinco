@@ -56,7 +56,7 @@ class PublisherViewTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  void publisherView_loadsPublishedItems() throws Exception {
+  void publisherView_loadsPublishedItems() {
     XincoCoreLanguageServer mockLang = mock(XincoCoreLanguageServer.class);
 
     XincoCoreDataTypeServer mockType = mock(XincoCoreDataTypeServer.class);
@@ -96,7 +96,7 @@ class PublisherViewTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  void publisherView_configDisabled_showsMessage() throws Exception {
+  void publisherView_configDisabled_showsMessage() {
     try (MockedStatic<XincoConfigSingletonServer> cfg =
         mockStatic(XincoConfigSingletonServer.class)) {
       XincoConfigSingletonServer cfgInstance = mock(XincoConfigSingletonServer.class);
@@ -113,7 +113,7 @@ class PublisherViewTest {
   }
 
   @Test
-  void publisherView_nonexistentNode_showsMessage() throws Exception {
+  void publisherView_nonexistentNode_showsMessage() {
     try (MockedStatic<XincoConfigSingletonServer> cfg =
         mockStatic(XincoConfigSingletonServer.class)) {
       XincoConfigSingletonServer cfgInstance = mock(XincoConfigSingletonServer.class);

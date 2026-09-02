@@ -51,6 +51,8 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -98,7 +100,9 @@ public class XincoCoreUser implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreUserGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoCoreUserGen")
+  @Getter
   @TableGenerator(
       name = "XincoCoreUserGen",
       table = "xinco_id",
@@ -112,50 +116,71 @@ public class XincoCoreUser implements Serializable {
 
   @Basic(optional = false)
   @NotNull @Size(min = 1, max = 255) @Column(name = "username")
-  @Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Invalid user name") private String username;
+  @Getter
+  @Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Invalid user name") @Setter
+  private String username;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "userpassword")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "userpassword")
+  @Getter
   private String userpassword;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "last_name")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "last_name")
+  @Getter
   private String lastName;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "first_name")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "first_name")
+  @Getter
   private String firstName;
 
   @Pattern(
       regexp =
           "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
-      message =
-          "Invalid email") // if the field contains email address consider using this annotation to
+      message = "Invalid email")
+  @Setter // if the field contains email address consider using this annotation to
   // enforce field validation
   @Basic(optional = false)
   @NotNull @Size(min = 1, max = 255) @Column(name = "email")
+  @Getter
   private String email;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "status_number")
+  @NotNull @Setter
+  @Column(name = "status_number")
+  @Getter
   private int statusNumber;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "attempts")
+  @NotNull @Setter
+  @Column(name = "attempts")
+  @Getter
   private int attempts;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "last_modified")
+  @NotNull @Setter
+  @Column(name = "last_modified")
+  @Getter
   @Temporal(DATE)
   private Date lastModified;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(mappedBy = "xincoCoreUser")
+  @Setter
   private List<XincoCoreAce> xincoCoreAceList;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreUser")
+  @Setter
   private List<XincoCoreLog> xincoCoreLogList;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreUser")
+  @Setter
   private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList;
 
   public XincoCoreUser() {}
@@ -185,110 +210,9 @@ public class XincoCoreUser implements Serializable {
     this.lastModified = lastModified;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getUserpassword() {
-    return userpassword;
-  }
-
-  public void setUserpassword(String userpassword) {
-    this.userpassword = userpassword;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public int getStatusNumber() {
-    return statusNumber;
-  }
-
-  public void setStatusNumber(int statusNumber) {
-    this.statusNumber = statusNumber;
-  }
-
-  public int getAttempts() {
-    return attempts;
-  }
-
-  public void setAttempts(int attempts) {
-    this.attempts = attempts;
-  }
-
-  public Date getLastModified() {
-    return lastModified;
-  }
-
-  public void setLastModified(Date lastModified) {
-    this.lastModified = lastModified;
-  }
-
-  @XmlTransient
-  public List<XincoCoreAce> getXincoCoreAceList() {
-    return xincoCoreAceList;
-  }
-
-  public void setXincoCoreAceList(List<XincoCoreAce> xincoCoreAceList) {
-    this.xincoCoreAceList = xincoCoreAceList;
-  }
-
-  @XmlTransient
-  public List<XincoCoreLog> getXincoCoreLogList() {
-    return xincoCoreLogList;
-  }
-
-  public void setXincoCoreLogList(List<XincoCoreLog> xincoCoreLogList) {
-    this.xincoCoreLogList = xincoCoreLogList;
-  }
-
-  @XmlTransient
-  public List<XincoCoreUserHasXincoCoreGroup> getXincoCoreUserHasXincoCoreGroupList() {
-    return xincoCoreUserHasXincoCoreGroupList;
-  }
-
-  public void setXincoCoreUserHasXincoCoreGroupList(
-      List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList) {
-    this.xincoCoreUserHasXincoCoreGroupList = xincoCoreUserHasXincoCoreGroupList;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -298,10 +222,8 @@ public class XincoCoreUser implements Serializable {
       return false;
     }
     XincoCoreUser other = (XincoCoreUser) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

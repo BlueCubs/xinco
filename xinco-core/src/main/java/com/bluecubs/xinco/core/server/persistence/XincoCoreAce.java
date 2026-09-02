@@ -43,6 +43,8 @@ import jakarta.persistence.TableGenerator;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -76,7 +78,9 @@ public class XincoCoreAce implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreACEGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoCoreACEGen")
+  @Getter
   @TableGenerator(
       name = "XincoCoreACEGen",
       table = "xinco_id",
@@ -89,35 +93,47 @@ public class XincoCoreAce implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "read_permission")
+  @NotNull @Setter
+  @Column(name = "read_permission")
   private boolean readPermission;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "write_permission")
+  @NotNull @Setter
+  @Column(name = "write_permission")
   private boolean writePermission;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "execute_permission")
+  @NotNull @Setter
+  @Column(name = "execute_permission")
   private boolean executePermission;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "admin_permission")
+  @NotNull @Setter
+  @Column(name = "admin_permission")
   private boolean adminPermission;
 
+  @Getter
   @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id")
   @ManyToOne
+  @Setter
   private XincoCoreUser xincoCoreUser;
 
+  @Getter
   @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id")
   @ManyToOne
+  @Setter
   private XincoCoreData xincoCoreData;
 
+  @Getter
   @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id")
   @ManyToOne
+  @Setter
   private XincoCoreNode xincoCoreNode;
 
+  @Getter
   @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id")
   @ManyToOne
+  @Setter
   private XincoCoreGroup xincoCoreGroup;
 
   public XincoCoreAce() {}
@@ -139,82 +155,25 @@ public class XincoCoreAce implements Serializable {
     this.adminPermission = adminPermission;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
   public boolean getReadPermission() {
     return readPermission;
-  }
-
-  public void setReadPermission(boolean readPermission) {
-    this.readPermission = readPermission;
   }
 
   public boolean getWritePermission() {
     return writePermission;
   }
 
-  public void setWritePermission(boolean writePermission) {
-    this.writePermission = writePermission;
-  }
-
   public boolean getExecutePermission() {
     return executePermission;
-  }
-
-  public void setExecutePermission(boolean executePermission) {
-    this.executePermission = executePermission;
   }
 
   public boolean getAdminPermission() {
     return adminPermission;
   }
 
-  public void setAdminPermission(boolean adminPermission) {
-    this.adminPermission = adminPermission;
-  }
-
-  public XincoCoreUser getXincoCoreUser() {
-    return xincoCoreUser;
-  }
-
-  public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
-    this.xincoCoreUser = xincoCoreUser;
-  }
-
-  public XincoCoreData getXincoCoreData() {
-    return xincoCoreData;
-  }
-
-  public void setXincoCoreData(XincoCoreData xincoCoreData) {
-    this.xincoCoreData = xincoCoreData;
-  }
-
-  public XincoCoreNode getXincoCoreNode() {
-    return xincoCoreNode;
-  }
-
-  public void setXincoCoreNode(XincoCoreNode xincoCoreNode) {
-    this.xincoCoreNode = xincoCoreNode;
-  }
-
-  public XincoCoreGroup getXincoCoreGroup() {
-    return xincoCoreGroup;
-  }
-
-  public void setXincoCoreGroup(XincoCoreGroup xincoCoreGroup) {
-    this.xincoCoreGroup = xincoCoreGroup;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -224,10 +183,8 @@ public class XincoCoreAce implements Serializable {
       return false;
     }
     XincoCoreAce other = (XincoCoreAce) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

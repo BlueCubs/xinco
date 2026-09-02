@@ -222,7 +222,7 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
                   + getId()
                   + " ORDER BY xcn.designation");
       result.forEach(
-          (o) -> {
+          o -> {
             ((ArrayList) getXincoCoreNodes())
                 .add(
                     new XincoCoreNodeServer(
@@ -243,7 +243,7 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
                   + getId()
                   + " ORDER BY xcd.designation");
       result.forEach(
-          (o) -> {
+          o -> {
             ((ArrayList) getXincoCoreData())
                 .add(
                     new XincoCoreDataServer(

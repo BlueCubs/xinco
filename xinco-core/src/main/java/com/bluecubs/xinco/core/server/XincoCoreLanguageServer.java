@@ -134,7 +134,7 @@ public final class XincoCoreLanguageServer extends XincoCoreLanguage {
     try {
       result = createdQuery("SELECT xcl FROM XincoCoreLanguage xcl ORDER BY xcl.designation");
       result.forEach(
-          (lang) -> {
+          lang -> {
             coreLanguages.add(
                 new XincoCoreLanguageServer(
                     (com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) lang));

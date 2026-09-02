@@ -3,6 +3,8 @@ package com.bluecubs.xinco.ui;
 import com.vaadin.flow.server.CustomizedSystemMessages;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class XincoSessionInitListener implements VaadinServiceInitListener {
 
+  @Getter(AccessLevel.PACKAGE)
   @Value("${xinco.session.timeout.minutes:5}")
   private int timeoutMinutes;
 
@@ -36,9 +39,5 @@ public class XincoSessionInitListener implements VaadinServiceInitListener {
         .addSessionInitListener(
             initEvent ->
                 initEvent.getSession().getSession().setMaxInactiveInterval(timeoutMinutes * 60));
-  }
-
-  int getTimeoutMinutes() {
-    return timeoutMinutes;
   }
 }

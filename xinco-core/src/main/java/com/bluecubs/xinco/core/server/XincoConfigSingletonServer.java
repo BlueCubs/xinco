@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import lombok.Getter;
+import lombok.Setter;
 
 /** This class handles the server configuration of xinco. Edit values in database */
 public final class XincoConfigSingletonServer {
@@ -52,14 +54,15 @@ public final class XincoConfigSingletonServer {
   public String fileIndexPath = null;
   public String fileArchivePath = null;
   public long fileArchivePeriod = 0;
-  private long fileIndexOptimizerPeriod = 0;
-  private long fileIndexerCount = 0;
-  private ArrayList indexFileTypesClass = null;
-  private ArrayList indexFileTypesExt = null;
-  private String[] indexNoIndex = null;
-  private String JNDIDB = null;
-  private int maxSearchResult = 0;
-  private int OOPort = 0;
+  @Getter @Setter private long fileIndexOptimizerPeriod = 0;
+  @Getter private long fileIndexerCount = 0;
+  @Getter private ArrayList indexFileTypesClass = null;
+  @Getter private ArrayList indexFileTypesExt = null;
+  @Getter private String[] indexNoIndex = null;
+  @Getter private String JNDIDB = null;
+  @Getter private int maxSearchResult = 0;
+  @Getter private int OOPort = 0;
+  @Getter
   private boolean allowOutsideLinks = true, allowPublisherList = true, guessLanguage = false;
   private static XincoConfigSingletonServer instance = null;
   private boolean loadDefault;
@@ -76,14 +79,14 @@ public final class XincoConfigSingletonServer {
   @SuppressWarnings("unchecked")
   private XincoConfigSingletonServer() {
     try {
-      JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
+      JNDIDB = (String) new InitialContext().lookup("java:comp/env/xinco/JNDIDB");
     } catch (NamingException e) {
       JNDIDB = "XincoPUJNDI";
     }
   }
 
   private String formatPath(String p) {
-    if (!p.isEmpty() && !(p.substring(p.length() - 1).equals(getProperty("file.separator")))) {
+    if (!p.isEmpty() && !p.substring(p.length() - 1).equals(getProperty("file.separator"))) {
       p += getProperty("file.separator");
     }
     return p;
@@ -167,12 +170,12 @@ public final class XincoConfigSingletonServer {
 
     try {
       fileIndexerCount =
-          ((Long)
+          (Long)
               createdQuery(
                       "select count(s) from "
                           + "XincoSetting s where s.description like "
                           + "'FileIndexer_%_Class'")
-                  .get(0));
+                  .get(0);
     } catch (Exception e) {
       LOG.log(SEVERE, null, e);
       fileIndexerCount = 4;
@@ -270,93 +273,12 @@ public final class XincoConfigSingletonServer {
           new StringBuilder(
               "Error loading configuration!" + " Using default value for the ones not found.");
       exceptions.forEach(
-          (ex) -> {
+          ex -> {
             sb.append("\n").append(ex.getLocalizedMessage());
           });
       LOG.log(SEVERE, sb.toString());
     }
     showSettings();
-  }
-
-  public boolean isAllowOutsideLinks() {
-    return allowOutsideLinks;
-  }
-
-  public long getFileIndexOptimizerPeriod() {
-    return fileIndexOptimizerPeriod;
-  }
-
-  public void setFileIndexOptimizerPeriod(long FileIndexOptimizerPeriod) {
-    this.fileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
-  }
-
-  /**
-   * Whether the public publisher endpoint ({@code /publisher/[nodeId]}) is enabled.
-   *
-   * <p>When {@code false}, {@link com.bluecubs.xinco.ui.PublisherView} rejects all requests.
-   * Controlled by the {@code setting.allowpublisherlist} config record in the Xinco settings DB.
-   * Default: {@code true}.
-   *
-   * @return true if the publisher list is available to unauthenticated users
-   */
-  public boolean isAllowPublisherList() {
-    return allowPublisherList;
-  }
-
-  /**
-   * @return the guessLanguage
-   */
-  public boolean isGuessLanguage() {
-    return guessLanguage;
-  }
-
-  /**
-   * @return the OOPort
-   */
-  public int getOOPort() {
-    return OOPort;
-  }
-
-  /**
-   * @return the fileIndexerCount
-   */
-  public long getFileIndexerCount() {
-    return fileIndexerCount;
-  }
-
-  /**
-   * @return the indexFileTypesClass
-   */
-  public ArrayList getIndexFileTypesClass() {
-    return indexFileTypesClass;
-  }
-
-  /**
-   * @return the indexFileTypesExt
-   */
-  public ArrayList getIndexFileTypesExt() {
-    return indexFileTypesExt;
-  }
-
-  /**
-   * @return the indexNoIndex
-   */
-  public String[] getIndexNoIndex() {
-    return indexNoIndex;
-  }
-
-  /**
-   * @return the JNDIDB
-   */
-  public String getJNDIDB() {
-    return JNDIDB;
-  }
-
-  /**
-   * @return the maxSearchResult
-   */
-  public int getMaxSearchResult() {
-    return maxSearchResult;
   }
 
   private void showSettings() {

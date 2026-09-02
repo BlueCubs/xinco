@@ -75,7 +75,7 @@ public class XincoCoreDataTypeAttributePK implements Serializable {
     if (this.xincoCoreDataTypeId != other.xincoCoreDataTypeId) {
       return false;
     }
-    return !(this.attributeId != other.attributeId);
+    return this.attributeId == other.attributeId;
   }
 
   @Override

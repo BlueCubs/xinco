@@ -43,6 +43,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -76,7 +78,9 @@ public class XincoSetting implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoSettingGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoSettingGen")
+  @Getter
   @TableGenerator(
       name = "XincoSettingGen",
       table = "xinco_id",
@@ -89,20 +93,30 @@ public class XincoSetting implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 45) @Column(name = "description")
+  @NotNull @Setter
+  @Size(min = 1, max = 45) @Column(name = "description")
+  @Getter
   private String description;
 
   @Column(name = "int_value")
+  @Getter
+  @Setter
   private Integer intValue;
 
   @Lob
+  @Setter
   @Size(max = 65_535) @Column(name = "string_value")
+  @Getter
   private String stringValue;
 
   @Column(name = "bool_value")
+  @Getter
+  @Setter
   private Boolean boolValue;
 
   @Column(name = "long_value")
+  @Getter
+  @Setter
   private long longValue;
 
   public XincoSetting() {}
@@ -116,58 +130,9 @@ public class XincoSetting implements Serializable {
     this.description = description;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public Integer getIntValue() {
-    return intValue;
-  }
-
-  public void setIntValue(Integer intValue) {
-    this.intValue = intValue;
-  }
-
-  public String getStringValue() {
-    return stringValue;
-  }
-
-  public void setStringValue(String stringValue) {
-    this.stringValue = stringValue;
-  }
-
-  public Boolean getBoolValue() {
-    return boolValue;
-  }
-
-  public void setBoolValue(Boolean boolValue) {
-    this.boolValue = boolValue;
-  }
-
-  public long getLongValue() {
-    return longValue;
-  }
-
-  public void setLongValue(long longValue) {
-    this.longValue = longValue;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -177,10 +142,8 @@ public class XincoSetting implements Serializable {
       return false;
     }
     XincoSetting other = (XincoSetting) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

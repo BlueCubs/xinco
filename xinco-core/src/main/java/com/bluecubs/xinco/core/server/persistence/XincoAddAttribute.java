@@ -43,6 +43,8 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -83,36 +85,50 @@ import org.hibernate.envers.Audited;
 public class XincoAddAttribute implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  @EmbeddedId protected XincoAddAttributePK xincoAddAttributePK;
+  @EmbeddedId @Getter @Setter protected XincoAddAttributePK xincoAddAttributePK;
 
   @Column(name = "attrib_int")
+  @Getter
+  @Setter
   private Integer attribInt;
 
   @Column(name = "attrib_unsignedint")
+  @Getter
+  @Setter
   private long attribUnsignedint;
 
   // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these
   // annotations to enforce field validation
   @Column(name = "attrib_double")
+  @Getter
+  @Setter
   private Double attribDouble;
 
   @Size(max = 255) @Column(name = "attrib_varchar")
+  @Getter
+  @Setter
   private String attribVarchar;
 
   @Lob
+  @Setter
   @Size(max = 65_535) @Column(name = "attrib_text")
+  @Getter
   private String attribText;
 
   @Column(name = "attrib_datetime")
+  @Getter
+  @Setter
   @Temporal(TIMESTAMP)
   private Date attribDatetime;
 
+  @Getter
   @JoinColumn(
       name = "xinco_core_data_id",
       referencedColumnName = "id",
       insertable = false,
       updatable = false)
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreData xincoCoreData;
 
   public XincoAddAttribute() {}
@@ -125,74 +141,9 @@ public class XincoAddAttribute implements Serializable {
     this.xincoAddAttributePK = new XincoAddAttributePK(xincoCoreDataId, attributeId);
   }
 
-  public XincoAddAttributePK getXincoAddAttributePK() {
-    return xincoAddAttributePK;
-  }
-
-  public void setXincoAddAttributePK(XincoAddAttributePK xincoAddAttributePK) {
-    this.xincoAddAttributePK = xincoAddAttributePK;
-  }
-
-  public Integer getAttribInt() {
-    return attribInt;
-  }
-
-  public void setAttribInt(Integer attribInt) {
-    this.attribInt = attribInt;
-  }
-
-  public long getAttribUnsignedint() {
-    return attribUnsignedint;
-  }
-
-  public void setAttribUnsignedint(long attribUnsignedint) {
-    this.attribUnsignedint = attribUnsignedint;
-  }
-
-  public Double getAttribDouble() {
-    return attribDouble;
-  }
-
-  public void setAttribDouble(Double attribDouble) {
-    this.attribDouble = attribDouble;
-  }
-
-  public String getAttribVarchar() {
-    return attribVarchar;
-  }
-
-  public void setAttribVarchar(String attribVarchar) {
-    this.attribVarchar = attribVarchar;
-  }
-
-  public String getAttribText() {
-    return attribText;
-  }
-
-  public void setAttribText(String attribText) {
-    this.attribText = attribText;
-  }
-
-  public Date getAttribDatetime() {
-    return attribDatetime;
-  }
-
-  public void setAttribDatetime(Date attribDatetime) {
-    this.attribDatetime = attribDatetime;
-  }
-
-  public XincoCoreData getXincoCoreData() {
-    return xincoCoreData;
-  }
-
-  public void setXincoCoreData(XincoCoreData xincoCoreData) {
-    this.xincoCoreData = xincoCoreData;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (xincoAddAttributePK != null ? xincoAddAttributePK.hashCode() : 0);
+    int hash = 0 + (xincoAddAttributePK != null ? xincoAddAttributePK.hashCode() : 0);
     return hash;
   }
 
@@ -202,12 +153,9 @@ public class XincoAddAttribute implements Serializable {
       return false;
     }
     XincoAddAttribute other = (XincoAddAttribute) object;
-    if ((this.xincoAddAttributePK == null && other.xincoAddAttributePK != null)
-        || (this.xincoAddAttributePK != null
-            && !this.xincoAddAttributePK.equals(other.xincoAddAttributePK))) {
-      return false;
-    }
-    return true;
+    return (!(this.xincoAddAttributePK == null) || !(other.xincoAddAttributePK != null))
+        && (!(this.xincoAddAttributePK != null)
+            || this.xincoAddAttributePK.equals(other.xincoAddAttributePK));
   }
 
   @Override

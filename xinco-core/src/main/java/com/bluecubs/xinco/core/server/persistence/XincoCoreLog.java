@@ -47,6 +47,8 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -89,7 +91,9 @@ public class XincoCoreLog implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreLogGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoCoreLogGen")
+  @Getter
   @TableGenerator(
       name = "XincoCoreLogGen",
       table = "xinco_id",
@@ -102,36 +106,54 @@ public class XincoCoreLog implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "op_code")
+  @NotNull @Setter
+  @Column(name = "op_code")
+  @Getter
   private int opCode;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "op_datetime")
+  @NotNull @Setter
+  @Column(name = "op_datetime")
+  @Getter
   @Temporal(TIMESTAMP)
   private Date opDatetime;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "op_description")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "op_description")
+  @Getter
   private String opDescription;
 
   @Column(name = "version_high")
+  @Getter
+  @Setter
   private Integer versionHigh;
 
   @Column(name = "version_mid")
+  @Getter
+  @Setter
   private Integer versionMid;
 
   @Column(name = "version_low")
+  @Getter
+  @Setter
   private Integer versionLow;
 
   @Size(max = 255) @Column(name = "version_postfix")
+  @Getter
+  @Setter
   private String versionPostfix;
 
+  @Getter
   @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id")
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreUser xincoCoreUser;
 
+  @Getter
   @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id")
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreData xincoCoreData;
 
   public XincoCoreLog() {}
@@ -147,90 +169,9 @@ public class XincoCoreLog implements Serializable {
     this.opDescription = opDescription;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public int getOpCode() {
-    return opCode;
-  }
-
-  public void setOpCode(int opCode) {
-    this.opCode = opCode;
-  }
-
-  public Date getOpDatetime() {
-    return opDatetime;
-  }
-
-  public void setOpDatetime(Date opDatetime) {
-    this.opDatetime = opDatetime;
-  }
-
-  public String getOpDescription() {
-    return opDescription;
-  }
-
-  public void setOpDescription(String opDescription) {
-    this.opDescription = opDescription;
-  }
-
-  public Integer getVersionHigh() {
-    return versionHigh;
-  }
-
-  public void setVersionHigh(Integer versionHigh) {
-    this.versionHigh = versionHigh;
-  }
-
-  public Integer getVersionMid() {
-    return versionMid;
-  }
-
-  public void setVersionMid(Integer versionMid) {
-    this.versionMid = versionMid;
-  }
-
-  public Integer getVersionLow() {
-    return versionLow;
-  }
-
-  public void setVersionLow(Integer versionLow) {
-    this.versionLow = versionLow;
-  }
-
-  public String getVersionPostfix() {
-    return versionPostfix;
-  }
-
-  public void setVersionPostfix(String versionPostfix) {
-    this.versionPostfix = versionPostfix;
-  }
-
-  public XincoCoreUser getXincoCoreUser() {
-    return xincoCoreUser;
-  }
-
-  public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
-    this.xincoCoreUser = xincoCoreUser;
-  }
-
-  public XincoCoreData getXincoCoreData() {
-    return xincoCoreData;
-  }
-
-  public void setXincoCoreData(XincoCoreData xincoCoreData) {
-    this.xincoCoreData = xincoCoreData;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -240,10 +181,8 @@ public class XincoCoreLog implements Serializable {
       return false;
     }
     XincoCoreLog other = (XincoCoreLog) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

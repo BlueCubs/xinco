@@ -39,6 +39,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -69,26 +71,34 @@ import org.hibernate.envers.Audited;
 public class XincoCoreUserHasXincoCoreGroup implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  @EmbeddedId protected XincoCoreUserHasXincoCoreGroupPK xincoCoreUserHasXincoCoreGroupPK;
+
+  @EmbeddedId @Getter @Setter
+  protected XincoCoreUserHasXincoCoreGroupPK xincoCoreUserHasXincoCoreGroupPK;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "status_number")
+  @NotNull @Setter
+  @Column(name = "status_number")
+  @Getter
   private int statusNumber;
 
+  @Getter
   @JoinColumn(
       name = "xinco_core_user_id",
       referencedColumnName = "id",
       insertable = false,
       updatable = false)
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreUser xincoCoreUser;
 
+  @Getter
   @JoinColumn(
       name = "xinco_core_group_id",
       referencedColumnName = "id",
       insertable = false,
       updatable = false)
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreGroup xincoCoreGroup;
 
   public XincoCoreUserHasXincoCoreGroup() {}
@@ -109,46 +119,13 @@ public class XincoCoreUserHasXincoCoreGroup implements Serializable {
         new XincoCoreUserHasXincoCoreGroupPK(xincoCoreUserId, xincoCoreGroupId);
   }
 
-  public XincoCoreUserHasXincoCoreGroupPK getXincoCoreUserHasXincoCoreGroupPK() {
-    return xincoCoreUserHasXincoCoreGroupPK;
-  }
-
-  public void setXincoCoreUserHasXincoCoreGroupPK(
-      XincoCoreUserHasXincoCoreGroupPK xincoCoreUserHasXincoCoreGroupPK) {
-    this.xincoCoreUserHasXincoCoreGroupPK = xincoCoreUserHasXincoCoreGroupPK;
-  }
-
-  public int getStatusNumber() {
-    return statusNumber;
-  }
-
-  public void setStatusNumber(int statusNumber) {
-    this.statusNumber = statusNumber;
-  }
-
-  public XincoCoreUser getXincoCoreUser() {
-    return xincoCoreUser;
-  }
-
-  public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
-    this.xincoCoreUser = xincoCoreUser;
-  }
-
-  public XincoCoreGroup getXincoCoreGroup() {
-    return xincoCoreGroup;
-  }
-
-  public void setXincoCoreGroup(XincoCoreGroup xincoCoreGroup) {
-    this.xincoCoreGroup = xincoCoreGroup;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash +=
-        (xincoCoreUserHasXincoCoreGroupPK != null
-            ? xincoCoreUserHasXincoCoreGroupPK.hashCode()
-            : 0);
+    int hash =
+        0
+            + (xincoCoreUserHasXincoCoreGroupPK != null
+                ? xincoCoreUserHasXincoCoreGroupPK.hashCode()
+                : 0);
     return hash;
   }
 
@@ -158,14 +135,11 @@ public class XincoCoreUserHasXincoCoreGroup implements Serializable {
       return false;
     }
     XincoCoreUserHasXincoCoreGroup other = (XincoCoreUserHasXincoCoreGroup) object;
-    if ((this.xincoCoreUserHasXincoCoreGroupPK == null
-            && other.xincoCoreUserHasXincoCoreGroupPK != null)
-        || (this.xincoCoreUserHasXincoCoreGroupPK != null
-            && !this.xincoCoreUserHasXincoCoreGroupPK.equals(
-                other.xincoCoreUserHasXincoCoreGroupPK))) {
-      return false;
-    }
-    return true;
+    return (!(this.xincoCoreUserHasXincoCoreGroupPK == null)
+            || !(other.xincoCoreUserHasXincoCoreGroupPK != null))
+        && (!(this.xincoCoreUserHasXincoCoreGroupPK != null)
+            || this.xincoCoreUserHasXincoCoreGroupPK.equals(
+                other.xincoCoreUserHasXincoCoreGroupPK));
   }
 
   @Override

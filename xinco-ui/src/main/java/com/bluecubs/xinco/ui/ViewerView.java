@@ -64,7 +64,9 @@ public class ViewerView extends VerticalLayout
   }
 
   private static UserSession resolveSession() {
-    if (VaadinSession.getCurrent() == null) return new UserSession();
+    if (VaadinSession.getCurrent() == null) {
+      return new UserSession();
+    }
     UserSession s = VaadinSession.getCurrent().getAttribute(UserSession.class);
     return s != null ? s : new UserSession();
   }
@@ -256,7 +258,9 @@ public class ViewerView extends VerticalLayout
         .forEach(
             a -> {
               String v = a.getAttribVarchar();
-              if (v != null && !v.isBlank()) values.put(a.getAttributeId(), v);
+              if (v != null && !v.isBlank()) {
+                values.put(a.getAttributeId(), v);
+              }
             });
 
     FormLayout form = new FormLayout();
@@ -366,9 +370,13 @@ public class ViewerView extends VerticalLayout
   private void openInTab(XincoCoreDataServer data) {
     try {
       String path = XincoCoreDataServer.getLastMajorVersionDataPath(data.getId());
-      if (path == null) return;
+      if (path == null) {
+        return;
+      }
       File file = new File(path);
-      if (!file.exists()) return;
+      if (!file.exists()) {
+        return;
+      }
       String filename = getOriginalFilename(data);
       String mimeType = detectMimeType(filename, Paths.get(path));
 
@@ -416,7 +424,9 @@ public class ViewerView extends VerticalLayout
   private static String detectMimeType(String filename, Path filePath) {
     try {
       String probed = Files.probeContentType(filePath);
-      if (probed != null) return probed;
+      if (probed != null) {
+        return probed;
+      }
     } catch (IOException ignored) {
     }
     int dot = filename.lastIndexOf('.');

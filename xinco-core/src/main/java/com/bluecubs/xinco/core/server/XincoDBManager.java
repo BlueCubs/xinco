@@ -137,7 +137,7 @@ public class XincoDBManager {
       LOG.log(
           INFO,
           "Waiting for DB initialization. Current state: {0}",
-          (getState() != null ? getState().name() : null));
+          getState() != null ? getState().name() : null);
       try {
         sleep(10_000);
       } catch (InterruptedException ex) {
@@ -181,7 +181,7 @@ public class XincoDBManager {
         if (LOG.isLoggable(Level.CONFIG)) {
           getIds()
               .forEach(
-                  (next) -> {
+                  next -> {
                     LOG.log(
                         Level.CONFIG,
                         "{0}, {1}, {2}",
@@ -204,7 +204,7 @@ public class XincoDBManager {
         .getMetamodel()
         .getEmbeddables()
         .forEach(
-            (et) -> {
+            et -> {
               processFields(et.getJavaType().getDeclaredFields());
             });
     LOG.log(FINE, "Entities:");
@@ -212,7 +212,7 @@ public class XincoDBManager {
         .getMetamodel()
         .getEntities()
         .forEach(
-            (et) -> {
+            et -> {
               processFields(et.getBindableJavaType().getDeclaredFields());
             });
     LOG.log(FINE, "Done!");
@@ -236,7 +236,7 @@ public class XincoDBManager {
    * @param aLocked the lock to set
    */
   public static void setLocked(boolean aLocked) {
-    LOG.log(WARNING, "{0} the database.", (aLocked ? "Locking" : "Unlocking"));
+    LOG.log(WARNING, "{0} the database.", aLocked ? "Locking" : "Unlocking");
     locked = aLocked;
   }
 
@@ -259,11 +259,7 @@ public class XincoDBManager {
     // Set it to null so it's recreated with new Persistence Unit
     // next time is requested.
     if (cachedEm != null && cachedEm.isOpen()) {
-      try {
-        cachedEm.close();
-      } catch (Exception ex) {
-        LOG.log(SEVERE, null, ex);
-      }
+      cachedEm.close();
     }
     cachedEm = null;
     emf = null;
@@ -417,9 +413,9 @@ public class XincoDBManager {
 
   public static String getVersion() {
     return getVersionNumber()
-        + ((SETTINGS.getString("version.postfix").isEmpty()
+        + (SETTINGS.getString("version.postfix").isEmpty()
             ? ""
-            : " " + SETTINGS.getString("version.postfix")));
+            : " " + SETTINGS.getString("version.postfix"));
   }
 
   private static String getDBVersionNumber() {
@@ -515,8 +511,12 @@ public class XincoDBManager {
     String line;
     while ((line = reader.readLine()) != null) {
       line = line.trim();
-      if (line.isEmpty() || line.startsWith("--")) continue;
-      if (line.endsWith(";")) line = line.substring(0, line.length() - 1);
+      if (line.isEmpty() || line.startsWith("--")) {
+        continue;
+      }
+      if (line.endsWith(";")) {
+        line = line.substring(0, line.length() - 1);
+      }
       if (mysqlMode && line.toUpperCase().startsWith("INSERT INTO")) {
         line = "INSERT IGNORE INTO" + line.substring("INSERT INTO".length());
       }
@@ -536,21 +536,20 @@ public class XincoDBManager {
    * @return the Entity Manager Factory
    * @throws XincoException when something goes wrong
    */
-  public static EntityManagerFactory getEntityManagerFactory() throws XincoException {
+  public static EntityManagerFactory getEntityManagerFactory() {
     if (emf == null) {
       try {
         // Use the context defined Database connection
-        (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
+        new InitialContext().lookup("java:comp/env/xinco/JNDIDB");
         try {
-          demo = (Boolean) (new InitialContext()).lookup("java:comp/env/xinco/demo");
+          demo = (Boolean) new InitialContext().lookup("java:comp/env/xinco/demo");
         } catch (NamingException e) {
           LOG.log(SEVERE, null, e);
           demo = false;
         }
         if (isDemo()) {
           try {
-            demoResetPeriod =
-                (Long) (new InitialContext()).lookup("java:comp/env/xinco/demo-period");
+            demoResetPeriod = (Long) new InitialContext().lookup("java:comp/env/xinco/demo-period");
           } catch (NamingException e) {
             LOG.log(SEVERE, null, e);
             demoResetPeriod = 0;
@@ -576,12 +575,17 @@ public class XincoDBManager {
               puName);
           Map<String, String> envOverrides = new HashMap<>();
           String jdbcUrl = System.getenv("XINCO_JDBC_URL");
-          if (jdbcUrl != null) envOverrides.put("javax.persistence.jdbc.url", jdbcUrl);
+          if (jdbcUrl != null) {
+            envOverrides.put("javax.persistence.jdbc.url", jdbcUrl);
+          }
           String jdbcUser = System.getenv("XINCO_JDBC_USER");
-          if (jdbcUser != null) envOverrides.put("javax.persistence.jdbc.user", jdbcUser);
+          if (jdbcUser != null) {
+            envOverrides.put("javax.persistence.jdbc.user", jdbcUser);
+          }
           String jdbcPassword = System.getenv("XINCO_JDBC_PASSWORD");
-          if (jdbcPassword != null)
+          if (jdbcPassword != null) {
             envOverrides.put("javax.persistence.jdbc.password", jdbcPassword);
+          }
           emf =
               envOverrides.isEmpty()
                   ? createEntityManagerFactory(puName)
@@ -707,11 +711,7 @@ public class XincoDBManager {
 
   static void close() {
     if (cachedEm != null && cachedEm.isOpen()) {
-      try {
-        cachedEm.close();
-      } catch (Exception ex) {
-        LOG.log(SEVERE, null, ex);
-      }
+      cachedEm.close();
     }
     cachedEm = null;
     try {

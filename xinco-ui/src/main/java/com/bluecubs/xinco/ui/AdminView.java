@@ -477,7 +477,9 @@ public class AdminView extends VerticalLayout {
                   setting.setBoolValue(boolField.getValue());
                 } else if (XincoSettingServer.TYPE_INT.equals(type)) {
                   Integer val = intField.getValue();
-                  if (val != null) setting.setIntValue(val);
+                  if (val != null) {
+                    setting.setIntValue(val);
+                  }
                 } else {
                   setting.setStringValue(strField.getValue().trim());
                 }
@@ -804,10 +806,14 @@ public class AdminView extends VerticalLayout {
   private List<XincoCoreDataTypeServer> loadDataTypes() {
     try {
       ArrayList raw = XincoCoreDataTypeServer.getXincoCoreDataTypes();
-      if (raw == null) return List.of();
+      if (raw == null) {
+        return List.of();
+      }
       List<XincoCoreDataTypeServer> types = new ArrayList<>();
       for (Object obj : raw) {
-        if (obj instanceof XincoCoreDataTypeServer s) types.add(s);
+        if (obj instanceof XincoCoreDataTypeServer s) {
+          types.add(s);
+        }
       }
       return types;
     } catch (Throwable t) {
@@ -819,10 +825,14 @@ public class AdminView extends VerticalLayout {
   private List<XincoCoreDataTypeAttributeServer> loadAttributes(int dataTypeId) {
     try {
       ArrayList raw = XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(dataTypeId);
-      if (raw == null) return List.of();
+      if (raw == null) {
+        return List.of();
+      }
       List<XincoCoreDataTypeAttributeServer> attrs = new ArrayList<>();
       for (Object obj : raw) {
-        if (obj instanceof XincoCoreDataTypeAttributeServer a) attrs.add(a);
+        if (obj instanceof XincoCoreDataTypeAttributeServer a) {
+          attrs.add(a);
+        }
       }
       return attrs;
     } catch (Throwable t) {
@@ -852,10 +862,14 @@ public class AdminView extends VerticalLayout {
   private List<XincoCoreGroupServer> loadGroups() {
     try {
       ArrayList raw = XincoCoreGroupServer.getXincoCoreGroups();
-      if (raw == null) return List.of();
+      if (raw == null) {
+        return List.of();
+      }
       List<XincoCoreGroupServer> groups = new ArrayList<>();
       for (Object obj : raw) {
-        if (obj instanceof XincoCoreGroupServer) groups.add((XincoCoreGroupServer) obj);
+        if (obj instanceof XincoCoreGroupServer) {
+          groups.add((XincoCoreGroupServer) obj);
+        }
       }
       return groups;
     } catch (Throwable t) {
@@ -874,10 +888,14 @@ public class AdminView extends VerticalLayout {
   private Set<XincoCoreGroupServer> matchByGroupId(
       List<XincoCoreGroupServer> userGroups, List<XincoCoreGroupServer> allGroups) {
     Set<Integer> ids = new HashSet<>();
-    for (XincoCoreGroupServer g : userGroups) ids.add(g.getId());
+    for (XincoCoreGroupServer g : userGroups) {
+      ids.add(g.getId());
+    }
     Set<XincoCoreGroupServer> matched = new HashSet<>();
     for (XincoCoreGroupServer g : allGroups) {
-      if (ids.contains(g.getId())) matched.add(g);
+      if (ids.contains(g.getId())) {
+        matched.add(g);
+      }
     }
     return matched;
   }
@@ -886,7 +904,9 @@ public class AdminView extends VerticalLayout {
       int userId, Set<XincoCoreGroupServer> selected, List<XincoCoreGroupServer> allGroups)
       throws Exception {
     List<Integer> groupIds = new ArrayList<>();
-    for (XincoCoreGroupServer g : selected) groupIds.add(g.getId());
+    for (XincoCoreGroupServer g : selected) {
+      groupIds.add(g.getId());
+    }
     XincoCoreUserServer.saveUserGroups(userId, groupIds);
   }
 

@@ -1,12 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
@@ -171,7 +165,14 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
     XincoCoreDataType dt1 = new XincoCoreDataType(2);
     XincoCoreDataType dt2 = new XincoCoreDataType(2);
     assertTrue("same id should be equal", dt1.equals(dt2));
-    assertFalse("wrong type should not be equal", dt1.equals(Boolean.TRUE));
+    assertFalse(
+        "wrong"
+            + " type"
+            + " should"
+            + " not be"
+            + " equal", /*~~(Comparing unrelated types com.bluecubs.xinco.core.server.persistence.XincoCoreDataType and java.lang.Boolean always returns false)~~>*/
+        /*~~(Comparing unrelated types com.bluecubs.xinco.core.server.persistence.XincoCoreDataType and java.lang.Boolean always returns false)~~>*/ dt1
+            .equals(Boolean.TRUE));
   }
 
   public void testEntity_XincoCoreDataTypeAttribute_equalsEdgeCases() {
@@ -279,7 +280,7 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
 
   // ---- XincoSettingServer.write2DB() update path ----
 
-  public void testSetting_write2DB_updatePath() throws Exception {
+  public void testSetting_write2DB_updatePath() {
     XincoSettingServer s = new XincoSettingServer(5);
     assertEquals(5, s.getId());
     s.write2DB();
@@ -287,7 +288,7 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
 
   // ---- removeFromDB with a log entry covers the log-deletion loop body ----
 
-  public void testData_removeFromDB_withLog() throws Exception {
+  public void testData_removeFromDB_withLog() {
     XincoCoreDataServer data = new XincoCoreDataServer(0, 1, 1, 1, "rmFromDB.logCov", 1);
     data.setChangerID(1);
     int id = data.write2DB();
@@ -327,7 +328,7 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
 
   // ---- XincoIdServer.write2DB() create path (getId()==0) ----
 
-  public void testXincoIdServer_write2DB_createPath() throws Exception {
+  public void testXincoIdServer_write2DB_createPath() {
     XincoIdServer fresh = new XincoIdServer("gap_test_table_cov", 0);
     assertEquals(0, (int) fresh.getId());
     int generatedId = fresh.write2DB();
@@ -360,7 +361,7 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
 
   // ---- removeFromDB with ACE and addAttribute covers both deletion loops ----
 
-  public void testData_removeFromDB_withAceAndAddAttr() throws Exception {
+  public void testData_removeFromDB_withAceAndAddAttr() {
     XincoCoreDataServer data = new XincoCoreDataServer(0, 1, 1, 3, "rmAceAttr.cov", 1);
     data.setChangerID(1);
     int id = data.write2DB();
@@ -410,7 +411,7 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
 
   // ---- XincoCoreDataServer.deleteFromDB() instance: addAttribute + log loop bodies ----
 
-  public void testData_deleteFromDB_instanceMethod() throws Exception {
+  public void testData_deleteFromDB_instanceMethod() {
     XincoCoreDataServer data = new XincoCoreDataServer(0, 1, 1, 3, "delDBInst.cov", 1);
     data.setChangerID(1);
     int id = data.write2DB();
@@ -438,7 +439,7 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
 
   // ---- XincoCoreACEServer: group-level ACE covers groupId branch + edit path + removeFromDB ----
 
-  public void testAce_groupLevelAndEditAndRemove() throws Exception {
+  public void testAce_groupLevelAndEditAndRemove() {
     XincoCoreACEServer ace = new XincoCoreACEServer(0, 0, 1, 1, 0, true, false, false, false);
     ace.setChangerID(1);
     int aceId = ace.write2DB();
@@ -517,7 +518,7 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
   // ---- XincoSettingServer.write2DB() else branch (create path) ----
   // Using id=0 takes the else branch that calls controller.create() (12 instr).
 
-  public void testSetting_write2DB_createPath() throws Exception {
+  public void testSetting_write2DB_createPath() {
     XincoSettingServer s = new XincoSettingServer(0, "cov.create.setting", null, null, true, 0L);
     s.write2DB();
     assertTrue("write2DB() should assign a new id > 0", s.getId() > 0);
@@ -535,7 +536,7 @@ public class CoverageGapTest extends AbstractXincoDataBaseTestCase {
   // ---- XincoSettingServer.getSetting(user,desc,bool) else { return null; } (2 instr) ----
   // Invalid credentials → validCredentials() returns false → else branch runs.
 
-  public void testSetting_getSetting_invalidCredentials_returnsNull() throws Exception {
+  public void testSetting_getSetting_invalidCredentials_returnsNull() {
     com.bluecubs.xinco.server.service.XincoCoreUser invalidUser =
         new com.bluecubs.xinco.server.service.XincoCoreUser();
     invalidUser.setUsername("completely_invalid_user_xyz_cov");

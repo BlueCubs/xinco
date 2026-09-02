@@ -1,8 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;

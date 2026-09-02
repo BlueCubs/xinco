@@ -48,6 +48,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -75,7 +77,9 @@ public class XincoCoreNode implements Serializable {
 
   @Id
   @Basic(optional = false)
-  @NotNull @GeneratedValue(strategy = TABLE, generator = "XincoCoreNodeGen")
+  @NotNull @Setter
+  @GeneratedValue(strategy = TABLE, generator = "XincoCoreNodeGen")
+  @Getter
   @TableGenerator(
       name = "XincoCoreNodeGen",
       table = "xinco_id",
@@ -88,28 +92,42 @@ public class XincoCoreNode implements Serializable {
   private Integer id;
 
   @Basic(optional = false)
-  @NotNull @Size(min = 1, max = 255) @Column(name = "designation")
+  @NotNull @Setter
+  @Size(min = 1, max = 255) @Column(name = "designation")
+  @Getter
   private String designation;
 
   @Basic(optional = false)
-  @NotNull @Column(name = "status_number")
+  @NotNull @Setter
+  @Column(name = "status_number")
+  @Getter
   private int statusNumber;
 
+  @Getter
   @JoinColumn(name = "xinco_core_language_id", referencedColumnName = "id")
   @ManyToOne(optional = false)
+  @Setter
   private XincoCoreLanguage xincoCoreLanguage;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(mappedBy = "xincoCoreNode")
+  @Setter
   private List<XincoCoreNode> xincoCoreNodeList;
 
+  @Getter
   @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id")
   @ManyToOne
+  @Setter
   private XincoCoreNode xincoCoreNode;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(mappedBy = "xincoCoreNode")
+  @Setter
   private List<XincoCoreAce> xincoCoreAceList;
 
+  @Getter(onMethod_ = {@XmlTransient})
   @OneToMany(cascade = ALL, mappedBy = "xincoCoreNode")
+  @Setter
   private List<XincoCoreData> xincoCoreDataList;
 
   public XincoCoreNode() {}
@@ -124,77 +142,9 @@ public class XincoCoreNode implements Serializable {
     this.statusNumber = statusNumber;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getDesignation() {
-    return designation;
-  }
-
-  public void setDesignation(String designation) {
-    this.designation = designation;
-  }
-
-  public int getStatusNumber() {
-    return statusNumber;
-  }
-
-  public void setStatusNumber(int statusNumber) {
-    this.statusNumber = statusNumber;
-  }
-
-  public XincoCoreLanguage getXincoCoreLanguage() {
-    return xincoCoreLanguage;
-  }
-
-  public void setXincoCoreLanguage(XincoCoreLanguage xincoCoreLanguage) {
-    this.xincoCoreLanguage = xincoCoreLanguage;
-  }
-
-  @XmlTransient
-  public List<XincoCoreNode> getXincoCoreNodeList() {
-    return xincoCoreNodeList;
-  }
-
-  public void setXincoCoreNodeList(List<XincoCoreNode> xincoCoreNodeList) {
-    this.xincoCoreNodeList = xincoCoreNodeList;
-  }
-
-  public XincoCoreNode getXincoCoreNode() {
-    return xincoCoreNode;
-  }
-
-  public void setXincoCoreNode(XincoCoreNode xincoCoreNode) {
-    this.xincoCoreNode = xincoCoreNode;
-  }
-
-  @XmlTransient
-  public List<XincoCoreAce> getXincoCoreAceList() {
-    return xincoCoreAceList;
-  }
-
-  public void setXincoCoreAceList(List<XincoCoreAce> xincoCoreAceList) {
-    this.xincoCoreAceList = xincoCoreAceList;
-  }
-
-  @XmlTransient
-  public List<XincoCoreData> getXincoCoreDataList() {
-    return xincoCoreDataList;
-  }
-
-  public void setXincoCoreDataList(List<XincoCoreData> xincoCoreDataList) {
-    this.xincoCoreDataList = xincoCoreDataList;
-  }
-
   @Override
   public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    int hash = 0 + (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -204,10 +154,8 @@ public class XincoCoreNode implements Serializable {
       return false;
     }
     XincoCoreNode other = (XincoCoreNode) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-      return false;
-    }
-    return true;
+    return (!(this.id == null) || !(other.id != null))
+        && (!(this.id != null) || this.id.equals(other.id));
   }
 
   @Override

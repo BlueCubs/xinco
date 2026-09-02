@@ -57,6 +57,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 // Status list (in DB)
 // 1 = unlocked
@@ -65,10 +67,10 @@ import java.util.List;
 // Temporary statuses
 // -1 = aged password modified, ready to turn unlocked
 public final class XincoCoreUserServer extends XincoCoreUser {
-  private boolean hashPassword = true;
-  private boolean increaseAttempts = false;
-  private java.sql.Timestamp lastModified;
-  private int attempts;
+  @Getter @Setter private boolean hashPassword = true;
+  @Getter @Setter private boolean increaseAttempts = false;
+  @Getter @Setter private java.sql.Timestamp lastModified;
+  @Getter @Setter private int attempts;
   private static List result;
   private static HashMap parameters = new HashMap();
 
@@ -99,7 +101,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
     result = namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
     try {
       result.forEach(
-          (o) -> {
+          o -> {
             XincoCoreGroupServer.getXincoCoreGroups()
                 .add(
                     new XincoCoreGroupServer(
@@ -338,42 +340,6 @@ public final class XincoCoreUserServer extends XincoCoreUser {
     }
   }
 
-  /**
-   * Gets the attempts value for this XincoCoreUser.
-   *
-   * @return attempts
-   */
-  public int getAttempts() {
-    return attempts;
-  }
-
-  /**
-   * Sets the attempts value for this XincoCoreUser.
-   *
-   * @param attempts new value to set
-   */
-  public void setAttempts(int attempts) {
-    this.attempts = attempts;
-  }
-
-  /**
-   * Sets the lastModified value for this XincoCoreUser.
-   *
-   * @param lastModified new value to set
-   */
-  public void setLastModified(java.sql.Timestamp lastModified) {
-    this.lastModified = lastModified;
-  }
-
-  /**
-   * Gets the lastModified value for this XincoCoreUser.
-   *
-   * @return lastModified
-   */
-  public java.sql.Timestamp getLastModified() {
-    return lastModified;
-  }
-
   // write to db
   public int write2DB() throws XincoException {
     Timestamp ts;
@@ -506,7 +472,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
     try {
       result = createdQuery("Select x from XincoCoreUser x order by x.username");
       result.forEach(
-          (o) -> {
+          o -> {
             coreUsers.add(
                 new XincoCoreUserServer(
                     (com.bluecubs.xinco.core.server.persistence.XincoCoreUser) o));
@@ -516,22 +482,6 @@ public final class XincoCoreUserServer extends XincoCoreUser {
       coreUsers.clear();
     }
     return coreUsers;
-  }
-
-  public boolean isHashPassword() {
-    return hashPassword;
-  }
-
-  public void setHashPassword(boolean hashPassword) {
-    this.hashPassword = hashPassword;
-  }
-
-  public boolean isIncreaseAttempts() {
-    return increaseAttempts;
-  }
-
-  public void setIncreaseAttempts(boolean increaseAttempts) {
-    this.increaseAttempts = increaseAttempts;
   }
 
   public boolean isPasswordUsable(String newPass, boolean hash) {

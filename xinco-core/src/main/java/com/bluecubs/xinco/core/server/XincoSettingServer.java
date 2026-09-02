@@ -14,6 +14,7 @@ import com.bluecubs.xinco.server.service.XincoSetting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import lombok.Getter;
 
 /**
  * Handles the XincoSetting CRUD operations.
@@ -26,11 +27,7 @@ public final class XincoSettingServer extends XincoSetting {
   public static final String TYPE_INT = "int";
   public static final String TYPE_STRING = "string";
 
-  private String settingType = TYPE_BOOL;
-
-  public String getSettingType() {
-    return settingType;
-  }
+  @Getter private String settingType = TYPE_BOOL;
 
   public XincoSettingServer(int id) throws XincoException {
     XincoSettingJpaController controller = new XincoSettingJpaController(getEntityManagerFactory());

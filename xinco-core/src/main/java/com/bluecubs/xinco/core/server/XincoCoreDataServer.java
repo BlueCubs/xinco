@@ -39,7 +39,6 @@ import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFact
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import static java.lang.System.getProperty;
 import static java.util.logging.Level.SEVERE;
-import static java.util.logging.Level.WARNING;
 import static java.util.logging.Logger.getLogger;
 
 import com.bluecubs.xinco.core.XincoException;
@@ -78,8 +77,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
    * @throws SQLException on error accessing the database
    * @throws XincoException if no history present.
    */
-  public static String getLastMajorVersionDataPath(int xincoCoreDataId)
-      throws SQLException, XincoException {
+  public static String getLastMajorVersionDataPath(int xincoCoreDataId) throws XincoException {
     XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
     temp.loadLogs();
     for (Iterator<Object> it = temp.getXincoCoreLogs().iterator(); it.hasNext(); ) {
@@ -93,31 +91,26 @@ public final class XincoCoreDataServer extends XincoCoreData {
   }
 
   public XincoCoreDataServer(int attrID) throws XincoException {
-    try {
-      XincoCoreDataJpaController controller =
-          new XincoCoreDataJpaController(getEntityManagerFactory());
-      com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd =
-          controller.findXincoCoreData(attrID);
-      // throw exception if no result found
-      if (xcd != null) {
-        setId(xcd.getId());
-        setXincoCoreNodeId(xcd.getXincoCoreNode().getId());
-        setXincoCoreLanguage(new XincoCoreLanguageServer(xcd.getXincoCoreLanguage().getId()));
-        setXincoCoreDataType(new XincoCoreDataTypeServer(xcd.getXincoCoreDataType().getId()));
-        // load logs
-        loadLogs();
-        // load add attributes
-        loadAddAttributes();
-        setDesignation(xcd.getDesignation());
-        setStatusNumber(xcd.getStatusNumber());
-        // load acl for this object
-        loadACL();
-      } else {
-        throw new XincoException("Unable to find XincoCoreData with id: " + attrID);
-      }
-    } catch (Exception e) {
-      getXincoCoreAcl().clear();
-      throw new XincoException();
+    XincoCoreDataJpaController controller =
+        new XincoCoreDataJpaController(getEntityManagerFactory());
+    com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd =
+        controller.findXincoCoreData(attrID);
+    // throw exception if no result found
+    if (xcd != null) {
+      setId(xcd.getId());
+      setXincoCoreNodeId(xcd.getXincoCoreNode().getId());
+      setXincoCoreLanguage(new XincoCoreLanguageServer(xcd.getXincoCoreLanguage().getId()));
+      setXincoCoreDataType(new XincoCoreDataTypeServer(xcd.getXincoCoreDataType().getId()));
+      // load logs
+      loadLogs();
+      // load add attributes
+      loadAddAttributes();
+      setDesignation(xcd.getDesignation());
+      setStatusNumber(xcd.getStatusNumber());
+      // load acl for this object
+      loadACL();
+    } else {
+      throw new XincoException("Unable to find XincoCoreData with id: " + attrID);
     }
   }
 
@@ -231,7 +224,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
         }
         getRenderings(id)
             .forEach(
-                (next) -> {
+                next -> {
                   removeFromDB(userID, next.getId());
                 });
         // Data itself
@@ -251,48 +244,43 @@ public final class XincoCoreDataServer extends XincoCoreData {
   public static List<XincoCoreData> findXincoCoreData(
       String attrS, int attrLID, boolean attrSA, boolean attrSFD) {
     ArrayList<XincoCoreData> data = new ArrayList<>();
-    try {
-      String lang = "";
-      if (attrLID != 0) {
-        lang = "AND (x.xincoCoreData.xincoCoreLanguage.id = " + attrLID + ")";
+    String lang = "";
+    if (attrLID != 0) {
+      lang = "AND (x.xincoCoreData.xincoCoreLanguage.id = " + attrLID + ")";
+    }
+    if (attrSA) {
+      result =
+          createdQuery(
+              "SELECT x FROM XincoAddAttribute x WHERE (x.xincoCoreData.designation LIKE '"
+                  + attrS
+                  + "%' or "
+                  + "x.attribVarchar  LIKE '"
+                  + attrS
+                  + "%' or x.attribText LIKE '"
+                  + attrS
+                  + "') "
+                  + lang
+                  + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
+    } else {
+      result =
+          createdQuery(
+              "SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.designation LIKE '"
+                  + attrS
+                  + "%' "
+                  + lang
+                  + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
+    }
+    int i = 0;
+    for (Object o : result) {
+      data.add(
+          new XincoCoreDataServer(
+              ((com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) o)
+                  .getXincoCoreData()
+                  .getId()));
+      i++;
+      if (i >= CONFIG.getMaxSearchResult()) {
+        break;
       }
-      if (attrSA) {
-        result =
-            createdQuery(
-                "SELECT x FROM XincoAddAttribute x WHERE (x.xincoCoreData.designation LIKE '"
-                    + attrS
-                    + "%' or "
-                    + "x.attribVarchar  LIKE '"
-                    + attrS
-                    + "%' or x.attribText LIKE '"
-                    + attrS
-                    + "') "
-                    + lang
-                    + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
-      } else {
-        result =
-            createdQuery(
-                "SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.designation LIKE '"
-                    + attrS
-                    + "%' "
-                    + lang
-                    + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
-      }
-      int i = 0;
-      for (Object o : result) {
-        data.add(
-            new XincoCoreDataServer(
-                ((com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) o)
-                    .getXincoCoreData()
-                    .getId()));
-        i++;
-        if (i >= CONFIG.getMaxSearchResult()) {
-          break;
-        }
-      }
-    } catch (Exception e) {
-      LOG.log(SEVERE, null, e);
-      data.clear();
     }
     return data;
   }
@@ -406,25 +394,23 @@ public final class XincoCoreDataServer extends XincoCoreData {
     // add seperator
     for (int i = 0; i < 7; i++) {
       path4Id =
-          path4Id.substring(0, (i * 2 + 1))
+          path4Id.substring(0, i * 2 + 1)
               + getProperty("file.separator")
-              + path4Id.substring((i * 2 + 1));
+              + path4Id.substring(i * 2 + 1);
     }
     // create path if neccessary
-    (new File(attrRP + path4Id)).mkdirs();
+    new File(attrRP + path4Id).mkdirs();
     // check if file exists at NEW location (>= xinco DMS 2.0)
-    if ((new File(attrRP + path4Id + attrFN)).exists()) {
+    if (new File(attrRP + path4Id + attrFN).exists()) {
       // output NEW location
       path = attrRP + path4Id + attrFN;
+    } else // check if file exists at OLD location (pre xinco DMS 2.0)
+    if (new File(attrRP + attrFN).exists()) {
+      // output OLD location
+      path = attrRP + attrFN;
     } else {
-      // check if file exists at OLD location (pre xinco DMS 2.0)
-      if ((new File(attrRP + attrFN)).exists()) {
-        // output OLD location
-        path = attrRP + attrFN;
-      } else {
-        // output NEW location for NEW file
-        path = attrRP + path4Id + attrFN;
-      }
+      // output NEW location for NEW file
+      path = attrRP + path4Id + attrFN;
     }
     return path;
   }
@@ -433,28 +419,17 @@ public final class XincoCoreDataServer extends XincoCoreData {
     try {
       // delete file / file = 1
       if (getXincoCoreDataType().getId() == 1) {
-        try {
-          (new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, getId(), "" + getId())))
-              .delete();
-        } catch (Exception dfe) {
-          getLogger(XincoCoreDataServer.class.getSimpleName()).log(WARNING, null, dfe);
-          // continue, file might not exist
-        }
+        new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, getId(), "" + getId())).delete();
         // delete revisions created upon creation or checkin
         for (int i = 0; i < getXincoCoreLogs().size(); i++) {
           if ((((XincoCoreLog) getXincoCoreLogs().get(i)).getOpCode() == 1)
               || (((XincoCoreLog) getXincoCoreLogs().get(i)).getOpCode() == 5)) {
-            try {
-              (new File(
-                      getXincoCoreDataPath(
-                          CONFIG.fileRepositoryPath,
-                          getId(),
-                          getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().get(i)).getId())))
-                  .delete();
-            } catch (Exception drfe) {
-              getLogger(XincoCoreDataServer.class.getSimpleName()).log(WARNING, null, drfe);
-              // continue, delete next revision
-            }
+            new File(
+                    getXincoCoreDataPath(
+                        CONFIG.fileRepositoryPath,
+                        getId(),
+                        getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().get(i)).getId()))
+                .delete();
           }
         }
       }

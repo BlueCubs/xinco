@@ -127,7 +127,7 @@ public final class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAtt
         DatatypeFactory factory = newInstance();
         xcd.getXincoAddAttributeList()
             .forEach(
-                (attr) -> {
+                attr -> {
                   new XincoAddAttributeServer(
                           xcd.getId(),
                           attr.getXincoAddAttributePK().getAttributeId(),

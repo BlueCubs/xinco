@@ -88,7 +88,7 @@ public class XincoCoreDataHasDependencyPK implements Serializable {
     if (this.xincoCoreDataChildrenId != other.xincoCoreDataChildrenId) {
       return false;
     }
-    return !(this.dependencyTypeId != other.dependencyTypeId);
+    return this.dependencyTypeId == other.dependencyTypeId;
   }
 
   @Override
